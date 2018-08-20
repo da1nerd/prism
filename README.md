@@ -1,6 +1,7 @@
 # prism
 
-TODO: Write a description here
+A cross between a game engine and a UI toolkit.
+This is mostly a thought experiment and it may turn out to be nothing.
 
 ## Installation
 
