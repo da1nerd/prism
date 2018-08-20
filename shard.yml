@@ -10,4 +10,12 @@ targets:
 
 crystal: 0.26.0
 
+dependencies:
+  lib_gl:
+    github: calebuharrison/LibGL
+    branch: master
+  crystglfw:
+    github: calebuharrison/CrystGLFW
+    branch: master
+
 license: MIT
