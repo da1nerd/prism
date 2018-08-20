@@ -12,6 +12,8 @@ TODO: Write usage instructions here
 
 ## Development
 
+Refer to [this library](https://github.com/calebuharrison/LibGL) for differences from the c OpenGL library.
+
 TODO: Write development instructions here
 
 ## Contributing

@@ -12,7 +12,7 @@ crystal: 0.26.0
 
 dependencies:
   lib_gl:
-    github: calebuharrison/LibGL
+    github: neutrinog/LibGL
     branch: master
   crystglfw:
     github: calebuharrison/CrystGLFW

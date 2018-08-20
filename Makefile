@@ -2,7 +2,7 @@ build: directories
 	@crystal build src/prism.cr -o bin/debug/prism
 
 release: clean directories docs test
-	@crystal build src/prism.cr -o bin/release/prism --release
+	@crystal build src/prism.cr -o bin/release/prism --release --no-debug
 
 run:
 	@crystal src/prism.cr
