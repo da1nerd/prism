@@ -1,6 +1,6 @@
 require "lib_gl"
 
-def drawTriangle
+drawTriangle = ->( x : Void) {
   # LibGL.color3f(1.0, 1.0, 1.0);
   LibGL.ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
 
@@ -11,7 +11,7 @@ def drawTriangle
   LibGL.end();
 
   LibGL.flush();
-end
+}
 
 # TODO: Write documentation for `Prism`
 module Prism
