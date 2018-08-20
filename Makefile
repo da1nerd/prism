@@ -13,7 +13,7 @@ directories:
 	@mkdir -p bin/release
 
 docs:
-	@crystal docs src/prism.cr
+	@crystal docs
 
 test:
 	@crystal spec
