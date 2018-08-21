@@ -5,9 +5,19 @@ This is mostly a thought experiment and it may turn out to be nothing.
 
 ## Installation
 
-TODO: Write installation instructions here
+Add this to your application's `shard.yml`:
+
+```yaml
+dependencies:
+  prism:
+    github: neutrinog/prism
+```
 
 ## Usage
+
+```crystal
+require "prism"
+```
 
 TODO: Write usage instructions here
 

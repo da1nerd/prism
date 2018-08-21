@@ -4,18 +4,11 @@ version: 0.1.0
 authors:
   - Joel Lonbeck <joel@neutrinographics.com>
 
-targets:
-  prism:
-    main: src/prism.cr
-
 crystal: 0.26.0
 
 dependencies:
   lib_gl:
     github: neutrinog/LibGL
-    branch: master
-  crystglfw:
-    github: calebuharrison/CrystGLFW
     branch: master
 
 license: MIT
