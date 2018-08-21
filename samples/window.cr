@@ -1,4 +1,4 @@
-require "./prism"
+require "../src/prism"
 
 #  Example creating a window
 module Example
