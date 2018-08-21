@@ -1,5 +1,5 @@
 require "lib_gl"
-require "./lib_glut"
+require "lib_glut"
 
 # A game engine written in Crystal
 module Prism
