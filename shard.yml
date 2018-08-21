@@ -7,6 +7,9 @@ authors:
 crystal: 0.26.0
 
 dependencies:
+  lib_glut:
+    github: neutrinog/lib_glut
+    branch: master
   lib_gl:
     github: neutrinog/LibGL
     branch: develop
