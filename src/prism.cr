@@ -3,6 +3,7 @@ require "./lib_glut"
 
 # A game engine written in Crystal
 module Prism
+  extend self
   VERSION = "0.1.0"
 
   # TODO: we must build this.
