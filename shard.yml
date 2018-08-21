@@ -11,7 +11,7 @@ dependencies:
     github: neutrinog/lib_glut
     branch: master
   lib_gl:
-    github: neutrinog/LibGL
+    github: neutrinog/lib_gl
     branch: develop
 
 license: MIT
