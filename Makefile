@@ -1,7 +1,7 @@
 BIN_DIR=bin/samples
 
 samples: directories
-	@crystal build samples/window.cr -o $(BIN_DIR)/window
+	@crystal build samples/blank_window.cr -o $(BIN_DIR)/blank_window
 
 directories:
 	@mkdir -p $(BIN_DIR)
