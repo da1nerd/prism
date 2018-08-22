@@ -1,8 +1,9 @@
 require "../src/prism"
 require "lib_gl"
+require "lib_glut"
 
 #  Example creating a window
-module Example
+module Game
   extend self
 
   WIDTH = 800
@@ -30,6 +31,10 @@ module Example
 
   window.on_display do
     run()
+  end
+
+  def start
+
   end
 
   def stop
@@ -75,9 +80,17 @@ module Example
     LibGL.color3f(0, 0, 1);
     LibGL.vertex2f(0, 0.5);
 
+    puts "hi"
+
     LibGL.end();
     LibGL.flush();
+
+    # TODO: this won't work in a class because we can't send context to c
+    # window.render()
   end
 
-  window.open()
+  def clean_up
+
+  end
+
 end

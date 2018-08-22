@@ -10,8 +10,11 @@ module Prism
       LibGlut.init_display_mode(LibGlut::SINGLE)
       LibGlut.init_window_size(width, height)
       LibGlut.init_window_position(100, 100)
+      LibGlut.set_option(LibGlut::ACTION_ON_WINDOW_CLOSE, LibGlut::ACTION_CONTINUE_EXECUTION)
       @title = title
       @id = LibGlut.create_window(title)
+
+      LibGlut.close_func ->(x) { puts "closed" }
     end
 
     # Assigns a block to receive keyboard events.
@@ -53,8 +56,18 @@ module Prism
       LibGlut.display_func(block)
     end
 
+    # Process one iteration's worth of events
+    def render
+      LibGlut.main_loop_event()
+    end
+
+    # Terminates the window
+    def destroy
+      LibGlut.leave_main_loop()
+    end
+
     def open
-      LibGlut.main_loop
+      # LibGlut.main_loop
     end
 
     # Returns the width of the window
@@ -66,7 +79,7 @@ module Prism
     def getHeight : Int32
       return LibGlut.get(LibGlut::WINDOW_HEIGHT)
     end
-
+#GLUT_ACTION_ON_WINDOW_CLOSE
     def is_close_requested : Bool
       false
     end
