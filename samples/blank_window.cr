@@ -16,7 +16,7 @@ module Example
   end
 
   window.on_motion do |x, y|
-
+    
   end
 
   window.on_passive_motion do |x, y|

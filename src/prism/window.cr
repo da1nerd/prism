@@ -15,28 +15,34 @@ module Prism
       @is_running = false
     end
 
-    # Assigns a block to receive keyboard events
+    # Assigns a block to receive keyboard events.
+    # The block will receive the character code along with the mouse's current x,y coordinates.
     #
     # NOTE: This method must be called before `Window.on_render`
     def on_keyboard(&block : UInt8, Int32, Int32 ->)
       LibGlut.keyboard_func(block)
     end
 
-    # Assigns a block to receive mouse button events
+    # Assigns a block to receive mouse button events.
+    # The block will receive the button number, button, state, and x,y coordinates.
     #
     # NOTE: This method must be called before `Window.on_render`
     def on_mouse(&block : Int32, Int32, Int32, Int32 ->)
       LibGlut.mouse_func(block)
     end
 
-    # Assigns a block to recieve mouse motion events
+    # Assigns a block to recieve active mouse motion events.
+    # These events occur when a mouse button is pressed.
+    # The block will receive the x,y coordinates of the mouse.
     #
     # NOTE: This method must be called before `Window.on_render`
     def on_motion(&block : Int32, Int32 ->)
       LibGlut.motion_func(block)
     end
 
-    # Assigns a block to receive passive mouse motion events
+    # Assigns a block to receive passive mouse motion events.
+    # These events occur when no mouse buttons are pressed.
+    # The block will receive the x,y coordinates of the mouse.
     #
     # NOTE: This method must be called before `Window.on_render`
     def on_passive_motion(&block : Int32, Int32 ->)
