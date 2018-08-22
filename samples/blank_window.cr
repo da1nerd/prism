@@ -5,8 +5,17 @@ require "lib_gl"
 module Example
   extend self
 
+  window = Prism::Window.new(800, 600, "Sample Window")
 
-  render = ->( x : Void) {
+  window.on_keyboard do |char, x, y|
+    puts "keyboard"
+  end
+
+  window.on_mouse do |button, state, x, y|
+    puts "mouse"
+  end
+
+  window.on_render do
     LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
     LibGL.begin(LibGL::TRIANGLES);
@@ -20,19 +29,6 @@ module Example
     LibGL.end();
     puts "hello world"
     LibGL.flush();
-  }
-
-  keyboard = ->(c : UInt8, x : Int32, y : Int32) {
-    if c == 27
-      exit()
-    end
-  }
-
-  mouse = ->(button : Int32, state : Int32, x : Int32, y : Int32) {
-
-  }
-
-  # TODO: only create a blank window
-  window = Prism::Window.new(800, 600, "Sample Window", render, keyboard, mouse)
+  end
 
 end
