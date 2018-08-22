@@ -3,57 +3,61 @@ require "lib_gl"
 
 #  Example creating a window
 module Example
-  extend self
 
-  WIDTH = 800
-  HEIGHT = 600
-  TITLE = "Sample Window"
+  class Game
 
-  window = Prism::Window.new(WIDTH, HEIGHT, TITLE)
+    WIDTH = 800
+    HEIGHT = 600
+    TITLE = "Sample Window"
 
-  window.on_keyboard do |char, x, y|
-    puts "key press #{char} #{x} #{y}"
-  end
+    def initialize
+      @window = Prism::Window.new(WIDTH, HEIGHT, TITLE)
+      @window.on_keyboard do |char, x, y|
+        puts "key press #{char} #{x} #{y}"
+      end
 
-  window.on_mouse do |button, state, x, y|
-    puts "mouse click #{button} #{state} #{x} #{y}"
-  end
+      @window.on_mouse do |button, state, x, y|
+        puts "mouse click #{button} #{state} #{x} #{y}"
+      end
 
-  window.on_motion do |x, y|
+      @window.on_motion do |x, y|
+      end
 
-  end
+      @window.on_passive_motion do |x, y|
+      end
 
-  window.on_passive_motion do |x, y|
-
-  end
-
-  window.on_display do
-    run()
-  end
-
-  def stop
-
-  end
-
-  def run
-    while
-      render()
+      @window.on_display do
+        # TODO: render
+      end
     end
+
+    def start
+      @window.open()
+    end
+
+    def stop
+    end
+
+    def render
+      LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
+
+      LibGL.begin(LibGL::TRIANGLES);
+      LibGL.color3f(1, 0, 0);
+      LibGL.vertex2f(-0.5, -0.5);
+      LibGL.color3f(0, 1, 0);
+      LibGL.vertex2f(0.5, -0.5);
+      LibGL.color3f(0, 0, 1);
+      LibGL.vertex2f(0, 0.5);
+
+      LibGL.end();
+      LibGL.flush();
+    end
+
   end
 
-  def render
-    LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
-    LibGL.begin(LibGL::TRIANGLES);
-    LibGL.color3f(1, 0, 0);
-    LibGL.vertex2f(-0.5, -0.5);
-    LibGL.color3f(0, 1, 0);
-    LibGL.vertex2f(0.5, -0.5);
-    LibGL.color3f(0, 0, 1);
-    LibGL.vertex2f(0, 0.5);
+  game = Game.new()
+  game.start()
 
-    LibGL.end();
-    LibGL.flush();
-  end
 
 end

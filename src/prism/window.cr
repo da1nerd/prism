@@ -51,6 +51,9 @@ module Prism
     # Assigns a block to manage rendering the display
     def on_display(&block : Void ->)
       LibGlut.display_func(block)
+    end
+
+    def open
       LibGlut.main_loop
     end
 

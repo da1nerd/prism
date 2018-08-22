@@ -31,4 +31,6 @@ module Example
 
   end
 
+  window.open()
+
 end
