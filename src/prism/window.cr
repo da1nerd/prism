@@ -12,7 +12,6 @@ module Prism
       LibGlut.init_window_position(100, 100)
       @title = title
       @id = LibGlut.create_window(title)
-      @is_running = false
     end
 
     # Assigns a block to receive keyboard events.
@@ -49,9 +48,8 @@ module Prism
       LibGlut.passive_motion_func(block)
     end
 
-    # Assigns a block to manage the rendering
-    def on_render(&block : Void ->)
-      @is_running = true
+    # Assigns a block to manage rendering the display
+    def on_display(&block : Void ->)
       LibGlut.display_func(block)
       LibGlut.main_loop
     end
