@@ -63,5 +63,9 @@ module Prism
     def getHeight : Int32
       return LibGlut.get(LibGlut::WINDOW_HEIGHT)
     end
+
+    def is_close_requested : Bool
+      false
+    end
   end
 end
