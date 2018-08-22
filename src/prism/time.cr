@@ -1,4 +1,4 @@
-require "time"
+require "lib_glut"
 
 module Prism
   class Timer
@@ -6,7 +6,7 @@ module Prism
     @@delta : Float64 | Nil
 
     def self.get_time
-      return Time.new().millisecond
+      return LibGlut.get(LibGlut::ELAPSED_TIME)
     end
 
     def self.get_delta
