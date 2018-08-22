@@ -8,11 +8,19 @@ module Example
   window = Prism::Window.new(800, 600, "Sample Window")
 
   window.on_keyboard do |char, x, y|
-    puts "keyboard"
+    puts "key press #{char} #{x} #{y}"
   end
 
   window.on_mouse do |button, state, x, y|
-    puts "mouse"
+    puts "mouse click #{button} #{state} #{x} #{y}"
+  end
+
+  window.on_motion do |x, y|
+
+  end
+
+  window.on_passive_motion do |x, y|
+
   end
 
   window.on_render do
