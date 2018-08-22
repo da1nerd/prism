@@ -16,14 +16,14 @@ module Example
   end
 
   window.on_motion do |x, y|
-    
+
   end
 
   window.on_passive_motion do |x, y|
 
   end
 
-  window.on_render do
+  window.on_display do
     LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
     LibGL.begin(LibGL::TRIANGLES);
