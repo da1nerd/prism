@@ -14,4 +14,7 @@ dependencies:
     github: neutrinog/lib_gl
     branch: develop
 
+scripts:
+  postinstall: make release=true -c src/prism/freeglut_context/lib
+
 license: MIT
