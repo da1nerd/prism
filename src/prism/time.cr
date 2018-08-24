@@ -6,7 +6,8 @@ module Prism
     @@delta : Float64 | Nil
 
     # Returns time in milliseconds
-    def self.get_time
+    def self.get_time : Int32
+      # TODO: I'd like to get nano seconds from this
       return LibGlut.get(LibGlut::ELAPSED_TIME)
     end
 
