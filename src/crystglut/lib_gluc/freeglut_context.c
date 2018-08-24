@@ -12,7 +12,9 @@
 void* display_func_context;
 void* close_func_context;
 void* keyboard_func_context;
+void* keyboard_up_func_context;
 void* special_func_context;
+void* special_up_func_context;
 void* mouse_func_context;
 void* motion_func_context;
 void* passive_motion_func_context;
@@ -21,7 +23,9 @@ void* passive_motion_func_context;
 void (*display_func_ptr)(void*);
 void (*close_func_ptr)(void*);
 void (*keyboard_func_ptr)(void*, unsigned char, int, int );
+void (*keyboard_up_func_ptr)(void*, unsigned char, int, int );
 void (*special_func_ptr)(void*, int, int, int );
+void (*special_up_func_ptr)(void*, int, int, int );
 void (*mouse_func_ptr)(void*, int, int, int, int);
 void (*motion_func_ptr)(void*, int, int);
 void (*passive_motion_func_ptr)(void*, int, int);
@@ -32,8 +36,14 @@ void _glutCloseFuncHandler() {(*close_func_ptr)(close_func_context);}
 void _glutKeyboardFuncHandler(unsigned char key, int x, int y) {
   (*keyboard_func_ptr)(keyboard_func_context, key, x, y);
 }
+void _glutKeyboardUpFuncHandler(unsigned char key, int x, int y) {
+  (*keyboard_up_func_ptr)(keyboard_up_func_context, key, x, y);
+}
 void _glutSpecialFuncHandler(int key, int x, int y) {
   (*special_func_ptr)(special_func_context, key, x, y);
+}
+void _glutSpecialUpFuncHandler(int key, int x, int y) {
+  (*special_up_func_ptr)(special_up_func_context, key, x, y);
 }
 void _glutMouseFuncHandler(int button, int state, int x, int y) {
   (*mouse_func_ptr)(mouse_func_context, button, state, x, y);
@@ -61,10 +71,20 @@ void glutKeyboardFuncWithContext(void (*callback)(void *data, unsigned char, int
     keyboard_func_context = data;
     glutKeyboardFunc(_glutKeyboardFuncHandler);
 }
+void glutKeyboardUpFuncWithContext(void (*callback)(void *data, unsigned char, int, int), void *data ) {
+    keyboard_up_func_ptr = callback;
+    keyboard_up_func_context = data;
+    glutKeyboardUpFunc(_glutKeyboardUpFuncHandler);
+}
 void glutSpecialFuncWithContext(void (*callback)(void *data, int, int, int), void *data) {
   special_func_ptr = callback;
   special_func_context = data;
   glutSpecialFunc(_glutSpecialFuncHandler);
+}
+void glutSpecialUpFuncWithContext(void (*callback)(void *data, int, int, int), void *data) {
+  special_up_func_ptr = callback;
+  special_up_func_context = data;
+  glutSpecialUpFunc(_glutSpecialUpFuncHandler);
 }
 void glutMouseFuncWithContext( void (* callback)(void *data, int, int, int, int), void *data ) {
     mouse_func_ptr = callback;

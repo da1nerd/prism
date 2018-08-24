@@ -103,7 +103,7 @@ module Prism
 
           # log frame rate
           if(frame_counter >= Prism::Timer::SECOND)
-            puts frames
+            puts "fps: #{frames}"
             frames = 0
             frame_counter = 0
           end

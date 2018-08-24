@@ -8,7 +8,9 @@ module CrystGLUT
     @display_box : Pointer(Void)?
     @close_box : Pointer(Void)?
     @keyboard_box: Pointer(Void)?
+    @keyboard_up_box: Pointer(Void)?
     @special_keyboard_box: Pointer(Void)?
+    @special_keyboard_up_box: Pointer(Void)?
     @mouse_box: Pointer(Void)?
 
     @close_requested = false
@@ -40,7 +42,7 @@ module CrystGLUT
       }, boxed_data)
     end
 
-    # Assigns a block to receive keyboard events.
+    # Assigns a block to receive keyboard down events.
     # The block will receive the character code along with the mouse's current x,y coordinates.
     private def on_keyboard(&block : UInt8, Int32, Int32 ->)
       boxed_data = Box.box(block)
@@ -52,13 +54,37 @@ module CrystGLUT
       }, boxed_data)
     end
 
-    # Assigns a block to receive special keyboard events.
+    # Assigns a block to receive keyboard up events.
+    # The block will receive the character code along with the mouse's current x,y coordinates.
+    private def on_keyboard_up(&block : UInt8, Int32, Int32 ->)
+      boxed_data = Box.box(block)
+      @keyboard_up_box = boxed_data
+
+      LibGluc.keyboard_up_func(->(data : Void*, char : UInt8, x : Int32, y : Int32) {
+        data_as_callback = Box(typeof(block)).unbox(data)
+        data_as_callback.call(char, x, y)
+      }, boxed_data)
+    end
+
+    # Assigns a block to receive special keyboard down events.
     # The block will receive the character code along with the mouse's current x,y coordinates.
     private def on_special_keyboard(&block : Int32, Int32, Int32 ->)
       boxed_data = Box.box(block)
       @special_keyboard_box = boxed_data
 
       LibGluc.special_func(->(data : Void*, key : Int32, x : Int32, y : Int32) {
+        data_as_callback = Box(typeof(block)).unbox(data)
+        data_as_callback.call(key, x, y)
+      }, boxed_data)
+    end
+
+    # Assigns a block to receive special keyboard up events.
+    # The block will receive the character code along with the mouse's current x,y coordinates.
+    private def on_special_keyboard_up(&block : Int32, Int32, Int32 ->)
+      boxed_data = Box.box(block)
+      @special_keyboard_up_box = boxed_data
+
+      LibGluc.special_up_func(->(data : Void*, key : Int32, x : Int32, y : Int32) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call(key, x, y)
       }, boxed_data)
@@ -116,6 +142,9 @@ module CrystGLUT
       LibGlut.leave_main_loop()
       LibGluc.display_func(nil, nil)
       LibGluc.keyboard_func(nil, nil)
+      LibGluc.keyboard_up_func(nil, nil)
+      LibGluc.special_func(nil, nil)
+      LibGluc.special_up_func(nil, nil)
       LibGluc.mouse_func(nil, nil)
       LibGluc.motion_func(nil, nil)
       LibGluc.passive_motion_func(nil, nil)
@@ -142,22 +171,48 @@ module CrystGLUT
 
     # Caches input state change so it can be queried deterministically
     private def proxy_input
-
       on_keyboard do |char, x, y|
-        puts "key #{char}"
         if !contains(@key_down, char)
+          # puts "pressed key #{char}"
           @key_down.push(char)
-        else
+
+
+        # else
+        #   @key_down.delete(char)
+        end
+      end
+
+      on_keyboard_up do |char, x, y|
+        if contains(@key_down, char)
+          # puts "released key #{char}"
           @key_down.delete(char)
         end
       end
 
       on_special_keyboard do |key, x, y|
-        puts "key #{key}"
         if !contains(@key_down, key)
+          # puts "pressed special key #{key}"
           @key_down.push(key)
-        else
+
+          # puts "+["
+          # @key_down.each do |elem|
+          #   puts "#{elem},"
+          # end
+          # puts "]"
+
+        end
+      end
+
+      on_special_keyboard_up do |key, x, y|
+        if contains(@key_down, key)
+          # puts "released special key #{key}"
           @key_down.delete(key)
+
+          # puts "-["
+          # @key_down.each do |elem|
+          #   puts "#{elem},"
+          # end
+          # puts "]"
         end
       end
 
