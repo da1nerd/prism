@@ -1,5 +1,5 @@
 require "math"
-require "./vector3"
+require "./vector3f"
 
 module Prism
   struct Quaternion
