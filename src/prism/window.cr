@@ -1,7 +1,25 @@
 require "lib_glut"
 
 module Prism
+
   class Window
+    @@box : Pointer(Void)?
+
+    def self.wrapped_display_func(callback : Void* -> Void, data : Void*) : Void
+      # TODO: send proc then execute callback with data.
+      # callback.call(data)
+      proc = -> (c : (Void* -> Void), d : Void*) {
+        c.call(d)
+      }
+      # proc = -> (x : Void) {
+      #   callback.call(data)
+      # }
+      filled_proc = proc.partial(callback)
+      ready_proc = filled_proc.partial(data)
+      # ready_proc.call()
+      LibGlut.display_func(ready_proc);
+    end
+
     def initialize(width : Int32, height : Int32, title : String)
       args = [] of String
       argv = args.map(&.to_unsafe).to_unsafe
@@ -52,8 +70,14 @@ module Prism
     end
 
     # Assigns a block to manage rendering the display
-    def on_display(&block : Void ->)
-      LibGlut.display_func(block)
+    def on_display(&block : ->)
+      boxed_data = Box.box(block)
+      @@box = boxed_data
+
+      Window.wrapped_display_func(->(data : Void*) {
+        data_as_callback = Box(typeof(block)).unbox(data)
+        data_as_callback.call()
+      }, boxed_data)
     end
 
     # Process one iteration's worth of events

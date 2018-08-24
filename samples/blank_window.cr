@@ -27,9 +27,9 @@ module Example
 
   end
 
-  window.on_display do
-
-  end
+  # window.on_display do
+  #
+  # end
 
   window.open()
 
