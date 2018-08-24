@@ -1,5 +1,5 @@
 require "lib_glut"
-require "../LibGlutClosure"
+require "../lib_fgc"
 
 module Prism
 

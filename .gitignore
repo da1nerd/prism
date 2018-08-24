@@ -10,3 +10,7 @@
 
 # C
 *.a
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+src/prism/fgc/lib/Makefile

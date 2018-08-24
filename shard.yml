@@ -15,6 +15,6 @@ dependencies:
     branch: develop
 
 scripts:
-  postinstall: make release=true -c src/prism/freeglut_context/lib
+  postinstall: cd src/prism/lib_fgc && cmake . && make
 
 license: MIT
