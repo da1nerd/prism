@@ -3,7 +3,7 @@ project(freeglut_context C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_library(freeglut_context library.c library.h)
+add_library(freeglut_context freeglut_context.c freeglut_context.h)
 
 find_package(GLUT REQUIRED)
 include_directories( ${GLUT_INCLUDE_DIRS} )
