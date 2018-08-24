@@ -4,6 +4,7 @@ module Prism
 
   class Input
     NUM_KEYCODES = 256;
+    NUM_MOUSEBUTTONS = 10;
 
     KEY_F1 = 1
     KEY_F2 = 1
@@ -40,6 +41,10 @@ module Prism
     @down_keys = [] of UInt8 | Int32;
     @up_keys = [] of UInt8 | Int32;
 
+    @current_mouse = [] of Int32;
+    @down_mouse = [] of Int32;
+    @up_mouse = [] of Int32;
+
     def initialize(@window : CrystGLUT::Window)
 
     end
@@ -73,6 +78,32 @@ module Prism
         end
       end
 
+      # track mouse released this frame
+      @up_mouse.clear
+
+      0.upto(NUM_MOUSEBUTTONS) do |i|
+        if !get_mouse(i) && contains(@current_mouse, i)
+          @up_mouse.push(i)
+        end
+      end
+
+      # track mouse pressed this frame
+      @down_mouse.clear
+
+      0.upto(NUM_MOUSEBUTTONS) do |i|
+        if get_mouse(i) && !contains(@current_mouse, i)
+          @down_mouse.push(i)
+        end
+      end
+
+      # track mouse pressed last frame
+      @current_mouse.clear
+
+      0.upto(NUM_MOUSEBUTTONS) do |i|
+        if get_mouse(i)
+          @current_mouse.push(i)
+        end
+      end
     end
 
     # checks if an array contains an element
@@ -99,6 +130,20 @@ module Prism
       return contains(@up_keys, key_code)
     end
 
+    # Check if the mouse button is currently down
+    def get_mouse(mouse_button : Int32) : Bool
+      return @window.is_mouse_down(mouse_button)
+    end
+
+    # Checks if the mouse button was pressed in this frame
+    def get_mouse_down(mouse_button : Int32) : Bool
+      return contains(@down_mouse, mouse_button)
+    end
+
+    # Checks if the mouse button was released in this frame
+    def get_mouse_up(mouse_button : Int32) : Bool
+      return contains(@up_mouse, mouse_button)
+    end
   end
 
 end
