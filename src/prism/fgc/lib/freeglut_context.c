@@ -1,4 +1,4 @@
-#include "library.h"
+#include "freeglut_context.h"
 
 #include <stdio.h>
 
