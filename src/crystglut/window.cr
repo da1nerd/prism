@@ -1,7 +1,7 @@
 require "lib_glut"
 require "./lib_gluc"
 
-module Prism
+module CrystGLUT
 
   class Window
     @display_box : Pointer(Void)?
