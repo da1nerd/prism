@@ -1,4 +1,4 @@
-require "./window"
+require "./crystglut/**"
 
 module CrystGLUT
 end
