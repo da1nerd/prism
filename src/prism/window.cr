@@ -79,13 +79,13 @@ module Prism
       }, boxed_data)
     end
 
-    # Process one iteration's worth of events
+    # Process queued OpenGL commands
     def render
       LibGlut.main_loop_event()
     end
 
     # Terminates the window
-    def destroy
+    def dispose
       LibGlut.leave_main_loop()
     end
 
@@ -103,11 +103,6 @@ module Prism
       # TRICKY: render once to allow Freeglut to process events and open the window
       render
     end
-
-    # Returns the time in milliseconds that have elapsed since we last checked
-    # def get_elapsed_time : UInt64
-    #   return LibGlut.get(LibGlut::ELAPSED_TIME)
-    # end
 
     # Returns the width of the window
     def get_width : Int32
