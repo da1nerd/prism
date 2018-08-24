@@ -1,5 +1,5 @@
 require "lib_glut"
-require "./lib_gluc"
+require "../lib_gluc"
 
 module CrystGLUT
 
