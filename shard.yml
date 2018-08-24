@@ -15,6 +15,6 @@ dependencies:
     branch: develop
 
 scripts:
-  postinstall: cd src/prism/lib_fgc && cmake . && make
+  postinstall: cd src/prism/lib_gluc && cmake . && make
 
 license: MIT
