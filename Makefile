@@ -4,6 +4,9 @@ samples: directories
 	@crystal build samples/blank_window.cr -o $(BIN_DIR)/blank_window
 	@crystal build samples/game.cr -o $(BIN_DIR)/game
 
+lib:
+	cd src/prism/lib_fgc && cmake . && make
+
 directories:
 	@mkdir -p $(BIN_DIR)
 
