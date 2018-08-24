@@ -2,6 +2,7 @@ require "../crystglut"
 require "./timer"
 require "./game"
 require "./input"
+require "./render_util"
 
 module Prism
 
@@ -18,6 +19,8 @@ module Prism
 
       # set up window
       @window = CrystGLUT::Window.new(WIDTH, HEIGHT, TITLE)
+
+      RenderUtil.init_graphics
 
       @window.on_display do
         run()
@@ -107,8 +110,10 @@ module Prism
 
     # Performs game rendering
     private def render
+      RenderUtil.clear_screen
       @game.render
       @window.render
+      RenderUtil.flush
     end
 
     # Cleans up after the game quits
