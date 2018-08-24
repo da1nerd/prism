@@ -173,46 +173,25 @@ module CrystGLUT
     private def proxy_input
       on_keyboard do |char, x, y|
         if !contains(@key_down, char)
-          # puts "pressed key #{char}"
           @key_down.push(char)
-
-
-        # else
-        #   @key_down.delete(char)
         end
       end
 
       on_keyboard_up do |char, x, y|
         if contains(@key_down, char)
-          # puts "released key #{char}"
           @key_down.delete(char)
         end
       end
 
       on_special_keyboard do |key, x, y|
         if !contains(@key_down, key)
-          # puts "pressed special key #{key}"
           @key_down.push(key)
-
-          # puts "+["
-          # @key_down.each do |elem|
-          #   puts "#{elem},"
-          # end
-          # puts "]"
-
         end
       end
 
       on_special_keyboard_up do |key, x, y|
         if contains(@key_down, key)
-          # puts "released special key #{key}"
           @key_down.delete(key)
-
-          # puts "-["
-          # @key_down.each do |elem|
-          #   puts "#{elem},"
-          # end
-          # puts "]"
         end
       end
 

@@ -18,6 +18,7 @@ module Prism
       if input.get_key_up(Prism::Input::KEY_UP)
         puts "We've just released up"
       end
+
     end
 
     def update
