@@ -5,7 +5,7 @@ require "lib_glut"
 #  Example creating a window
 module Examples
 
-  class Game
+  class MainComponent
 
     WIDTH = 800
     HEIGHT = 600
@@ -33,35 +33,39 @@ module Examples
       end
 
       @window.on_display do
-        puts "displaying"
-        # run()
+        puts "starting display"
+        run()
       end
 
     end
 
+    # Starts the game
     def start
-
+      @window.open
     end
 
+    # Stops the game
     def stop
 
     end
 
+    # Main game loop
     def run
       frame_time = 1.0 / FRAME_CAP
       last_time = Prism::Timer.get_time()
+      puts "running at #{last_time}"
       unprocessed_time : Float64 = 0
       puts "running"
-      while true
+      while !@window.is_close_requested
         should_render = false
         start_time = Prism::Timer.get_time()
         passed_time = start_time - last_time
         last_time = start_time
-        puts "hi #{unprocessed_time} #{start_time} #{last_time}"
-        unprocessed_time += passed_time / Prism::Timer::SECOND
 
+        unprocessed_time += passed_time / Prism::Timer::SECOND
+        puts "wait"
         while unprocessed_time > frame_time
-          puts "hello"
+          puts "render #{unprocessed_time / frame_time}"
           should_render = true
           unprocessed_time -= frame_time
         end
@@ -75,6 +79,7 @@ module Examples
       end
     end
 
+    # Performs game rendering
     def render
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
@@ -86,20 +91,18 @@ module Examples
       LibGL.color3f(0, 0, 1);
       LibGL.vertex2f(0, 0.5);
 
-      puts "hi"
-
       LibGL.end();
       LibGL.flush();
 
-      # TODO: this won't work in a class because we can't send context to c
       @window.render
     end
 
+    # Cleans up after the game quits
     def clean_up
 
     end
   end
 
-  game = Game.new
+  game = MainComponent.new
   game.start
 end
