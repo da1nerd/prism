@@ -1,6 +1,7 @@
 require "../crystglut"
 require "./timer"
 require "./game"
+require "./input"
 
 module Prism
 
@@ -38,9 +39,12 @@ module Prism
         run()
       end
 
+      @input = Input.new(@window)
+
       # TODO: make `Game` abstract and pass in an instance through the constructor.
       # set up grame
       @game = Game.new()
+      @game.register_input(@input)
 
     end
 
@@ -90,8 +94,10 @@ module Prism
 
           Prism::Timer.set_delta(frame_time);
 
-          @game.input()
-          @game.update();
+          @input.update
+
+          @game.input
+          @game.update
 
           # TODO: update game
 
