@@ -1,9 +1,13 @@
 require "lib_glut"
+require "../LibGlutClosure"
 
 module Prism
 
   class Window
-    @@box : Pointer(Void)?
+    @display_box : Pointer(Void)?
+    @close_box : Pointer(Void)?
+    @close_requested = false
+    @is_open = false
 
     def initialize(width : Int32, height : Int32, title : String)
       args = [] of String
@@ -16,8 +20,17 @@ module Prism
       LibGlut.set_option(LibGlut::ACTION_ON_WINDOW_CLOSE, LibGlut::ACTION_CONTINUE_EXECUTION)
       @title = title
       @id = LibGlut.create_window(title)
+    end
 
-      LibGlut.close_func -> { puts "closed" }
+    # Assigns a block to receive the window close event.
+    private def on_close(&block : ->)
+      boxed_data = Box.box(block)
+      @close_box = boxed_data
+
+      LibGlutClosure.close_func(->(data : Void*) {
+        data_as_callback = Box(typeof(block)).unbox(data)
+        data_as_callback.call()
+      }, boxed_data)
     end
 
     # Assigns a block to receive keyboard events.
@@ -57,14 +70,13 @@ module Prism
     # Assigns a block to manage rendering the display
     def on_display(&block : ->)
       # TODO: this is how we would execute dispaly_func if it supported data : Void*
-      # boxed_data = Box.box(block)
-      # @@box = boxed_data
-      #
-      # LibGlut.display_func(->(data : Void*) {
-      #   data_as_callback = Box(typeof(block)).unbox(data)
-      #   data_as_callback.call()
-      # }, boxed_data)
-      puts "TODO: finish this"
+      boxed_data = Box.box(block)
+      @display_box = boxed_data
+
+      LibGlutClosure.display_func(->(data : Void*) {
+        data_as_callback = Box(typeof(block)).unbox(data)
+        data_as_callback.call()
+      }, boxed_data)
     end
 
     # Process one iteration's worth of events
@@ -77,22 +89,38 @@ module Prism
       LibGlut.leave_main_loop()
     end
 
+    # Opens the window
     def open
-      # LibGlut.main_loop
+      on_close do
+        @close_requested = true
+      end
+
+      if @is_open
+        return
+      end
+
+      @is_open = true
+      # TRICKY: render once to allow Freeglut to process events and open the window
+      render
     end
 
+    # Returns the time in milliseconds that have elapsed since we last checked
+    # def get_elapsed_time : UInt64
+    #   return LibGlut.get(LibGlut::ELAPSED_TIME)
+    # end
+
     # Returns the width of the window
-    def getWidth : Int32
+    def get_width : Int32
       return LibGlut.get(LibGlut::WINDOW_WIDTH)
     end
 
     # Returns the height of the window
-    def getHeight : Int32
+    def get_height : Int32
       return LibGlut.get(LibGlut::WINDOW_HEIGHT)
     end
 #GLUT_ACTION_ON_WINDOW_CLOSE
     def is_close_requested : Bool
-      false
+      @close_requested
     end
   end
 end
