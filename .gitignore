@@ -13,4 +13,4 @@
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
-src/prism/fgc/lib/Makefile
+src/crystglut/lib_glut/Makefile

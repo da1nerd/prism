@@ -1,9 +1,9 @@
 BIN_DIR=bin/samples
-GLUC_DIR=src/prism/lib_gluc
+GLUC_DIR=src/crystglut/lib_gluc
 
 all: samples
 
-lib: src/prism/lib_gluc
+lib: src/crystglut/lib_gluc
 	cd ${GLUC_DIR} && cmake . && make
 
 samples: lib directories
