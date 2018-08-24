@@ -4,6 +4,7 @@ require "../lib_gluc"
 module CrystGLUT
 
   class Window
+    NUM_KEYCODES = 256
     @display_box : Pointer(Void)?
     @close_box : Pointer(Void)?
     @keyboard_box: Pointer(Void)?
@@ -11,9 +12,8 @@ module CrystGLUT
 
     @close_requested = false
     @is_open = false
-
-    @down_mouse : Array(Bool) = [] of Bool
-    @key_down : Array(Bool) = [] of Bool
+    @key_down = [] of UInt8
+    @mouse_down = [] of Int32
 
     def initialize(width : Int32, height : Int32, title : String)
       args = [] of String
@@ -101,6 +101,12 @@ module CrystGLUT
     # Terminates the window
     def dispose
       LibGlut.leave_main_loop()
+      LibGluc.display_func(nil, nil)
+      LibGluc.keyboard_func(nil, nil)
+      LibGluc.mouse_func(nil, nil)
+      LibGluc.motion_func(nil, nil)
+      LibGluc.passive_motion_func(nil, nil)
+      LibGluc.close_func(nil, nil)
     end
 
     # Opens the window
@@ -109,31 +115,63 @@ module CrystGLUT
         return
       end
 
+      # TODO: use this in our main component and manage close request state there.
       on_close do
         @close_requested = true
       end
-      on_keyboard do |char, x, y|
-        puts "keyboard #{char}"
-      end
-      on_mouse do |button, state, x, y|
-        puts "mouse #{button} #{state}"
-      end
+
+      proxy_input
 
       @is_open = true
       # TRICKY: render once to allow Freeglut to process events and open the window
       render
     end
 
-    def getKeyDown(key_code : Int32) : Boolean
+    # Caches input state change so it can be queried deterministically
+    private def proxy_input
+
+      on_keyboard do |char, x, y|
+        if !contains(@key_down, char)
+          @key_down.push(char)
+        else
+          @key_down.delete(char)
+        end
+      end
+
+      on_mouse do |button, state, x, y|
+        if state == 1
+          if !contains(@mouse_down, button)
+            @mouse_down.push(button)
+          end
+        else
+          if contains(@mouse_down, button)
+            @mouse_down.delete(button)
+          end
+        end
+      end
 
     end
 
-    def getKeyUp(key_code : Int32) : Boolean
-
+    # checks if an array contains an element
+    protected def contains(array : Array(UInt8 | Int32), element : UInt8 | Int32)
+      val = array.find { |i| i == element }
+      if val && val >= 0
+        return true
+      end
+      return false
     end
 
+    def is_key_down(key_code : Int32) : Boolean
+        return contains(@key_down, key_code)
+    end
+
+    def is_key_up(key_code : Int32) : Boolean
+        return !contains(@key_down, key_code)
+    end
+
+    # checks if the mouse key is down
     def getMouseDown(key_code : Int32) : Boolean
-
+      return contains(@mouse_down, key_code)
     end
 
     def getMouseUp(key_code : Int32) : Boolean

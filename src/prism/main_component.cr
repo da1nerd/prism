@@ -13,7 +13,7 @@ module Prism
 
     @is_running = false
 
-    def initialize
+    def initialize()
 
       # set up window
       @window = CrystGLUT::Window.new(WIDTH, HEIGHT, TITLE)
@@ -38,6 +38,7 @@ module Prism
         run()
       end
 
+      # TODO: make `Game` abstract and pass in an instance through the constructor.
       # set up grame
       @game = Game.new()
 
