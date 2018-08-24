@@ -5,6 +5,7 @@ module CrystGLUT
 
   class Window
     NUM_KEYCODES = 256
+
     @display_box : Pointer(Void)?
     @close_box : Pointer(Void)?
     @keyboard_box: Pointer(Void)?
@@ -12,11 +13,15 @@ module CrystGLUT
     @special_keyboard_box: Pointer(Void)?
     @special_keyboard_up_box: Pointer(Void)?
     @mouse_box: Pointer(Void)?
+    @motion_box: Pointer(Void)?
+    @passive_motion_box: Pointer(Void)?
 
     @close_requested = false
     @is_open = false
     @key_down = [] of UInt8 | Int32
     @mouse_down = [] of Int32
+    @mouse_x : Float32 = 0.0
+    @mouse_y : Float32 = 0.0
 
     def initialize(width : Int32, height : Int32, title : String)
       args = [] of String
@@ -102,22 +107,26 @@ module CrystGLUT
       }, boxed_data)
     end
 
-    # Assigns a block to recieve active mouse motion events.
-    # These events occur when a mouse button is pressed.
-    # The block will receive the x,y coordinates of the mouse.
-    #
-    # NOTE: This method must be called before `Window.on_render`
-    def on_motion(&block : Int32, Int32 ->)
-      LibGlut.motion_func(block)
+    # Assigns a block to receive mouse motion events.
+    private def on_motion(&block : Int32, Int32 ->)
+      boxed_data = Box.box(block)
+      @motion_box = boxed_data
+
+      LibGluc.motion_func(->(data : Void*, x : Int32, y : Int32) {
+        data_as_callback = Box(typeof(block)).unbox(data)
+        data_as_callback.call(x, y)
+      }, boxed_data)
     end
 
     # Assigns a block to receive passive mouse motion events.
-    # These events occur when no mouse buttons are pressed.
-    # The block will receive the x,y coordinates of the mouse.
-    #
-    # NOTE: This method must be called before `Window.on_render`
-    def on_passive_motion(&block : Int32, Int32 ->)
-      LibGlut.passive_motion_func(block)
+    private def on_passive_motion(&block : Int32, Int32 ->)
+      boxed_data = Box.box(block)
+      @passive_motion_box = boxed_data
+
+      LibGluc.passive_motion_func(->(data : Void*, x : Int32, y : Int32) {
+        data_as_callback = Box(typeof(block)).unbox(data)
+        data_as_callback.call(x, y)
+      }, boxed_data)
     end
 
     # Assigns a block to manage rendering the display
@@ -171,6 +180,17 @@ module CrystGLUT
 
     # Caches input state change so it can be queried deterministically
     private def proxy_input
+
+      on_motion do |x, y|
+        @mouse_x = x * 1.0f32
+        @mouse_y = y * 1.0f32
+      end
+
+      on_passive_motion do |x, y|
+        @mouse_x = x * 1.0f32
+        @mouse_y = y * 1.0f32
+      end
+
       on_keyboard do |char, x, y|
         if !contains(@key_down, char)
           @key_down.push(char)
@@ -196,7 +216,7 @@ module CrystGLUT
       end
 
       on_mouse do |button, state, x, y|
-        if state == 1
+        if state == 0
           if !contains(@mouse_down, button)
             @mouse_down.push(button)
           end
@@ -218,12 +238,9 @@ module CrystGLUT
       return false
     end
 
+    # checks if the key is down
     def is_key_down(key_code : Int32) : Bool
         return contains(@key_down, key_code)
-    end
-
-    def is_key_up(key_code : Int32) : Bool
-        return !contains(@key_down, key_code)
     end
 
     # checks if the mouse key is down
@@ -231,8 +248,14 @@ module CrystGLUT
       return contains(@mouse_down, key_code)
     end
 
-    def is_mouse_up(key_code : Int32) : Bool
+    # returns the x coordinate of the mouse
+    def get_mouse_x : Float32
+      return @mouse_x
+    end
 
+    # Returns the y coordinate of the mouse
+    def get_mouse_y : Float32
+      return @mouse_y
     end
 
     # Returns the width of the window

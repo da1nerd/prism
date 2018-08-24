@@ -1,4 +1,5 @@
 require "../crystglut"
+require "./vector2f"
 
 module Prism
 
@@ -143,6 +144,11 @@ module Prism
     # Checks if the mouse button was released in this frame
     def get_mouse_up(mouse_button : Int32) : Bool
       return contains(@up_mouse, mouse_button)
+    end
+
+    # Returns the position of the mouse
+    def get_mouse_position : Vector2f
+      return Vector2f.new(@window.get_mouse_x, @window.get_mouse_y)
     end
   end
 
