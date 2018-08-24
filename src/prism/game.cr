@@ -19,6 +19,13 @@ module Prism
         puts "We've just released up"
       end
 
+      if input.get_mouse_down(1)
+        puts "We've just right clicked"
+      end
+      if input.get_mouse_up(1)
+        puts "We've just released right mouse button"
+      end
+
     end
 
     def update
