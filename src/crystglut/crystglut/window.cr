@@ -8,6 +8,8 @@ module CrystGLUT
     @close_box : Pointer(Void)?
     @close_requested = false
     @is_open = false
+    @down_mouse : Array(Bool) = [] of Bool
+    @key_down : Array(Bool) = [] of Bool
 
     def initialize(width : Int32, height : Int32, title : String)
       args = [] of String
@@ -91,17 +93,35 @@ module CrystGLUT
 
     # Opens the window
     def open
-      on_close do
-        @close_requested = true
-      end
-
       if @is_open
         return
       end
 
+      on_close do
+        @close_requested = true
+      end
+
+
+
       @is_open = true
       # TRICKY: render once to allow Freeglut to process events and open the window
       render
+    end
+
+    def getKeyDown(key_code : Int32) : Boolean
+
+    end
+
+    def getKeyUp(key_code : Int32) : Boolean
+
+    end
+
+    def getMouseDown(key_code : Int32) : Boolean
+
+    end
+
+    def getMouseUp(key_code : Int32) : Boolean
+
     end
 
     # Returns the width of the window
