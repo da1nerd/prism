@@ -2,6 +2,9 @@ module Prism
 
   class Vector2f
 
+    property x : Float32
+    property y : Float32
+
     def initialize(@x : Float32, @y : Float32)
 
     end
@@ -13,7 +16,7 @@ module Prism
 
     # Returns the dot product of the vectors
     def dot(r : Vectorf2) : Float32
-      return @x * r.get_x + @y * r.get_y
+      return @x * r.x + @y * r.t
     end
 
     # Normalizes this vector to a length of 1
@@ -26,15 +29,15 @@ module Prism
     # Rotates the vector by some angle
     def rotate(angle) : Vector2f
       rad : Float64 = angle / 180.0f64 * Math::PI
-      cos : Float64 = Math.cos(angle)
-      sin : Float64 = Math.sin(angle)
+      cos : Float64 = Math.cos(rad)
+      sin : Float64 = Math.sin(rad)
 
       return Vector2f.new(@x * cos - @y * sin, @x * sin + @y * cos)
     end
 
     # Adds two vectors
     def +(r : Vector2f) : Vector2f
-      return Vector2f.new(@x + r.get_x, @y + r.get_y)
+      return Vector2f.new(@x + r.x, @y + r.y)
     end
 
     # Adds a scalar value to the vector
@@ -44,7 +47,7 @@ module Prism
 
     # Subtracts two vectors
     def -(r : Vector2f) : Vector2f
-      return Vector2f.new(@x - r.get_x, @y - r.get_y)
+      return Vector2f.new(@x - r.x, @y - r.y)
     end
 
     # Subtracts a scalar value from the vector
@@ -54,7 +57,7 @@ module Prism
 
     # Multiplies two vectors
     def *(r : Vector2f) : Vector2f
-      return Vector2f.new(@x * r.get_x, @y * r.get_y)
+      return Vector2f.new(@x * r.x, @y * r.y)
     end
 
     # Multiplies the vector with a scalar
@@ -64,7 +67,7 @@ module Prism
 
     # Divides two vectors
     def /(r : Vector2f) : Vector2f
-      return Vector2f.new(@x / r.get_x, @y / r.get_y)
+      return Vector2f.new(@x / r.x, @y / r.y)
     end
 
     # Divides the vector by a scalar
@@ -74,22 +77,6 @@ module Prism
 
     def to_string
       return "(#{@x}, #{@y})"
-    end
-
-    def get_x
-      return @x
-    end
-
-    def get_y
-      return @yield
-    end
-
-    def set_x(@x : Float32)
-
-    end
-
-    def set_y(@y : Float32)
-
     end
 
   end
