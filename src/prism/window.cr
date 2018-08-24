@@ -1,5 +1,5 @@
 require "lib_glut"
-require "../lib_fgc"
+require "./lib_gluc"
 
 module Prism
 
@@ -27,7 +27,7 @@ module Prism
       boxed_data = Box.box(block)
       @close_box = boxed_data
 
-      LibGlutClosure.close_func(->(data : Void*) {
+      LibGluc.close_func(->(data : Void*) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call()
       }, boxed_data)
@@ -73,7 +73,7 @@ module Prism
       boxed_data = Box.box(block)
       @display_box = boxed_data
 
-      LibGlutClosure.display_func(->(data : Void*) {
+      LibGluc.display_func(->(data : Void*) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call()
       }, boxed_data)

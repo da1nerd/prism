@@ -1,11 +1,13 @@
 BIN_DIR=bin/samples
+GLUC_DIR=src/prism/lib_gluc
 
-samples: directories
-	@crystal build samples/blank_window.cr -o $(BIN_DIR)/blank_window
+all: samples
+
+lib: src/prism/lib_gluc
+	cd ${GLUC_DIR} && cmake . && make
+
+samples: lib directories
 	@crystal build samples/game.cr -o $(BIN_DIR)/game
-
-lib:
-	cd src/prism/lib_fgc && cmake . && make
 
 directories:
 	@mkdir -p $(BIN_DIR)
@@ -19,5 +21,4 @@ test:
 clean:
 	@rm -rf bin
 	@rm -rf docs
-
-.PHONY: examples
+	cd ${GLUC_DIR} && make clean
