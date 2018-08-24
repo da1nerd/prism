@@ -5,11 +5,42 @@ module Prism
   class Input
     NUM_KEYCODES = 256;
 
-    @current_keys = [] of UInt8;
-    @down_keys = [] of UInt8;
-    @up_keys = [] of UInt8;
+    KEY_F1 = 1
+    KEY_F2 = 1
+    KEY_F3 = 2
+    KEY_F4 = 3
+    KEY_F5 = 4
+    KEY_F6 = 5
+    KEY_F7 = 6
+    KEY_F8 = 7
+    KEY_F9 = 8
+    KEY_F10 = 9
+    KEY_F11 = 11
+    KEY_F12 = 12
+    KEY_LEFT = 100
+    KEY_UP = 101
+    KEY_RIGHT = 102
+    KEY_DOWN = 103
+    KEY_PAGE_UP = 104
+    KEY_PAGE_DOWN = 105
+    KEY_HOME = 106
+    KEY_END = 107
+    KEY_INSERT = 108
+    KEY_NUM_LOCK = 109
+    KEY_BACK_SLASH = 47
+    KEY_ASTERISK = 42
+    KEY_MINUS = 45
+    KEY_PLUS = 43
+    KEY_RETURN = 13
+    KEY_SHIFT = 112
+    KEY_LEFT_CTRL = 114
+    KEY_RIGHT_CTRL = 115
 
-    def initalize(@window : CrystGLUT::Window)
+    @current_keys = [] of UInt8 | Int32;
+    @down_keys = [] of UInt8 | Int32;
+    @up_keys = [] of UInt8 | Int32;
+
+    def initialize(@window : CrystGLUT::Window)
 
     end
 
@@ -54,17 +85,17 @@ module Prism
     end
 
     # Checks if the key is currently down
-    def get_key(key_code : UInt8) : Bool
+    def get_key(key_code : UInt8 | Int32) : Bool
       return @window.is_key_down(key_code)
     end
 
     # Checks if the key was pressed in this frame
-    def get_key_down(key_code : UInt8) : Bool
+    def get_key_down(key_code : UInt8 | Int32) : Bool
       return contains(@down_keys, key_code)
     end
 
     # Checks if the key was released in this frame
-    def get_key_down(key_code : UInt8) : Bool
+    def get_key_up(key_code : UInt8 | Int32) : Bool
       return contains(@up_keys, key_code)
     end
 

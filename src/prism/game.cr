@@ -1,11 +1,23 @@
 require "lib_gl"
+require "./input"
 
 module Prism
 
   class Game
 
-    def input
+    def register_input(@input : Prism::Input)
+    end
 
+    def input
+      input = @input
+      return unless input
+
+      if input.get_key_down(Prism::Input::KEY_UP)
+        puts "We've just pressed up"
+      end
+      if input.get_key_up(Prism::Input::KEY_UP)
+        puts "We've just released up"
+      end
     end
 
     def update

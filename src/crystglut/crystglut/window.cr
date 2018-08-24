@@ -8,11 +8,12 @@ module CrystGLUT
     @display_box : Pointer(Void)?
     @close_box : Pointer(Void)?
     @keyboard_box: Pointer(Void)?
+    @special_keyboard_box: Pointer(Void)?
     @mouse_box: Pointer(Void)?
 
     @close_requested = false
     @is_open = false
-    @key_down = [] of UInt8
+    @key_down = [] of UInt8 | Int32
     @mouse_down = [] of Int32
 
     def initialize(width : Int32, height : Int32, title : String)
@@ -48,6 +49,18 @@ module CrystGLUT
       LibGluc.keyboard_func(->(data : Void*, char : UInt8, x : Int32, y : Int32) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call(char, x, y)
+      }, boxed_data)
+    end
+
+    # Assigns a block to receive special keyboard events.
+    # The block will receive the character code along with the mouse's current x,y coordinates.
+    private def on_special_keyboard(&block : Int32, Int32, Int32 ->)
+      boxed_data = Box.box(block)
+      @special_keyboard_box = boxed_data
+
+      LibGluc.special_func(->(data : Void*, key : Int32, x : Int32, y : Int32) {
+        data_as_callback = Box(typeof(block)).unbox(data)
+        data_as_callback.call(key, x, y)
       }, boxed_data)
     end
 
@@ -131,10 +144,20 @@ module CrystGLUT
     private def proxy_input
 
       on_keyboard do |char, x, y|
+        puts "key #{char}"
         if !contains(@key_down, char)
           @key_down.push(char)
         else
           @key_down.delete(char)
+        end
+      end
+
+      on_special_keyboard do |key, x, y|
+        puts "key #{key}"
+        if !contains(@key_down, key)
+          @key_down.push(key)
+        else
+          @key_down.delete(key)
         end
       end
 
@@ -161,20 +184,20 @@ module CrystGLUT
       return false
     end
 
-    def is_key_down(key_code : Int32) : Boolean
+    def is_key_down(key_code : Int32) : Bool
         return contains(@key_down, key_code)
     end
 
-    def is_key_up(key_code : Int32) : Boolean
+    def is_key_up(key_code : Int32) : Bool
         return !contains(@key_down, key_code)
     end
 
     # checks if the mouse key is down
-    def getMouseDown(key_code : Int32) : Boolean
+    def is_mouse_down(key_code : Int32) : Bool
       return contains(@mouse_down, key_code)
     end
 
-    def getMouseUp(key_code : Int32) : Boolean
+    def is_mouse_up(key_code : Int32) : Bool
 
     end
 
