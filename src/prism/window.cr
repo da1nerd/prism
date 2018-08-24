@@ -5,30 +5,6 @@ module Prism
   class Window
     @@box : Pointer(Void)?
 
-    def self.wrapped_display_func(callback : Void* -> Void, data : Void*) : Void
-      # TODO: send proc then execute callback with data.
-      # callback.call(data)
-      # my_proc = -> (c : (Void* -> Void), d : Void*, x : Void) {
-      #   c.call(d)
-      # }
-      my_proc = -> (c : Void* -> Void, d : Void*) {
-        c.call(d)
-      }
-      # proc = -> (x : Void) {
-      #   callback.call(data)
-      # }
-      filled_proc = my_proc.partial(callback, data)
-      # filled_proc.call()
-      # ready_proc = filled_proc.partial(data)
-      # ready_proc.call()
-      #
-      # silly_proc : Int32 -> Void
-      # silly_proc = -> (x : String) {
-      #   puts x
-      # }
-      LibGlut.display_func(filled_proc);
-    end
-
     def initialize(width : Int32, height : Int32, title : String)
       args = [] of String
       argv = args.map(&.to_unsafe).to_unsafe
@@ -80,13 +56,15 @@ module Prism
 
     # Assigns a block to manage rendering the display
     def on_display(&block : ->)
-      boxed_data = Box.box(block)
-      @@box = boxed_data
-
-      Window.wrapped_display_func(->(data : Void*) {
-        data_as_callback = Box(typeof(block)).unbox(data)
-        data_as_callback.call()
-      }, boxed_data)
+      # TODO: this is how we would execute dispaly_func if it supported data : Void*
+      # boxed_data = Box.box(block)
+      # @@box = boxed_data
+      #
+      # LibGlut.display_func(->(data : Void*) {
+      #   data_as_callback = Box(typeof(block)).unbox(data)
+      #   data_as_callback.call()
+      # }, boxed_data)
+      puts "TODO: finish this"
     end
 
     # Process one iteration's worth of events
