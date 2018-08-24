@@ -6,8 +6,12 @@ module CrystGLUT
   class Window
     @display_box : Pointer(Void)?
     @close_box : Pointer(Void)?
+    @keyboard_box: Pointer(Void)?
+    @mouse_box: Pointer(Void)?
+
     @close_requested = false
     @is_open = false
+
     @down_mouse : Array(Bool) = [] of Bool
     @key_down : Array(Bool) = [] of Bool
 
@@ -37,18 +41,26 @@ module CrystGLUT
 
     # Assigns a block to receive keyboard events.
     # The block will receive the character code along with the mouse's current x,y coordinates.
-    #
-    # NOTE: This method must be called before `Window.on_render`
-    def on_keyboard(&block : UInt8, Int32, Int32 ->)
-      LibGlut.keyboard_func(block)
+    private def on_keyboard(&block : UInt8, Int32, Int32 ->)
+      boxed_data = Box.box(block)
+      @keyboard_box = boxed_data
+
+      LibGluc.keyboard_func(->(data : Void*, char : UInt8, x : Int32, y : Int32) {
+        data_as_callback = Box(typeof(block)).unbox(data)
+        data_as_callback.call(char, x, y)
+      }, boxed_data)
     end
 
     # Assigns a block to receive mouse button events.
     # The block will receive the button number, button, state, and x,y coordinates.
-    #
-    # NOTE: This method must be called before `Window.on_render`
-    def on_mouse(&block : Int32, Int32, Int32, Int32 ->)
-      LibGlut.mouse_func(block)
+    private def on_mouse(&block : Int32, Int32, Int32, Int32 ->)
+      boxed_data = Box.box(block)
+      @mouse_box = boxed_data
+
+      LibGluc.mouse_func(->(data : Void*, button : Int32, state : Int32, x : Int32, y : Int32) {
+        data_as_callback = Box(typeof(block)).unbox(data)
+        data_as_callback.call(button, state, x, y)
+      }, boxed_data)
     end
 
     # Assigns a block to recieve active mouse motion events.
@@ -100,8 +112,12 @@ module CrystGLUT
       on_close do
         @close_requested = true
       end
-
-
+      on_keyboard do |char, x, y|
+        puts "keyboard #{char}"
+      end
+      on_mouse do |button, state, x, y|
+        puts "mouse #{button} #{state}"
+      end
 
       @is_open = true
       # TRICKY: render once to allow Freeglut to process events and open the window
