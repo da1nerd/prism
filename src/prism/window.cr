@@ -8,16 +8,25 @@ module Prism
     def self.wrapped_display_func(callback : Void* -> Void, data : Void*) : Void
       # TODO: send proc then execute callback with data.
       # callback.call(data)
-      proc = -> (c : (Void* -> Void), d : Void*) {
+      # my_proc = -> (c : (Void* -> Void), d : Void*, x : Void) {
+      #   c.call(d)
+      # }
+      my_proc = -> (c : Void* -> Void, d : Void*) {
         c.call(d)
       }
       # proc = -> (x : Void) {
       #   callback.call(data)
       # }
-      filled_proc = proc.partial(callback)
-      ready_proc = filled_proc.partial(data)
+      filled_proc = my_proc.partial(callback, data)
+      # filled_proc.call()
+      # ready_proc = filled_proc.partial(data)
       # ready_proc.call()
-      LibGlut.display_func(ready_proc);
+      #
+      # silly_proc : Int32 -> Void
+      # silly_proc = -> (x : String) {
+      #   puts x
+      # }
+      LibGlut.display_func(filled_proc);
     end
 
     def initialize(width : Int32, height : Int32, title : String)
