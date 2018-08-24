@@ -13,6 +13,9 @@ dependencies:
   lib_gl:
     github: neutrinog/lib_gl
     branch: develop
+  matrix:
+    github: Exilor/matrix
+    branch: master
 
 scripts:
   postinstall: cd src/prism/lib_gluc && cmake . && make
