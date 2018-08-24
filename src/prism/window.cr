@@ -17,7 +17,7 @@ module Prism
       @title = title
       @id = LibGlut.create_window(title)
 
-      LibGlut.close_func ->(x) { puts "closed" }
+      LibGlut.close_func -> { puts "closed" }
     end
 
     # Assigns a block to receive keyboard events.
