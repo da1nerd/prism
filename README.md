@@ -21,13 +21,18 @@ require "prism"
 
 TODO: Write usage instructions here
 
-Usages samples can be found under `samples/`. 
+Usages samples can be found under `samples/`.
 
 ## Development
 
 Refer to [this library](https://github.com/calebuharrison/LibGL) for differences from the c OpenGL library.
 
 TODO: Write development instructions here
+
+- install cmake
+- install freeglut
+- install opengl
+- install crystal
 
 ## Contributing
 
