@@ -19,22 +19,6 @@ module Prism
       # set up window
       @window = CrystGLUT::Window.new(WIDTH, HEIGHT, TITLE)
 
-      # @window.on_keyboard do |char, x, y|
-      #   puts "key press #{char} #{x} #{y}"
-      # end
-
-      # @window.on_mouse do |button, state, x, y|
-      #   puts "mouse click #{button} #{state} #{x} #{y}"
-      # end
-
-      @window.on_motion do |x, y|
-
-      end
-
-      @window.on_passive_motion do |x, y|
-
-      end
-
       @window.on_display do
         run()
       end
