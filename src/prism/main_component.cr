@@ -78,9 +78,8 @@ module Prism
 
           Prism::Timer.set_delta(frame_time);
 
-          @input.update
-
           @game.input
+          @input.update
           @game.update
 
           # TODO: update game
