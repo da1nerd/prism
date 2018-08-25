@@ -27,7 +27,10 @@ module Prism
       LibGL.enable_vertex_attrib_array(0)
 
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
-      LibGL.vertex_attrib_pointer(0, 3, LibGL::FLOAT, 0u8, Vertex::SIZE * 4, Void*)
+
+      x = 0
+      pointer = pointerof(x)
+      LibGL.vertex_attrib_pointer(0, 3, LibGL::FLOAT, 0u8, Vertex::SIZE * 4, pointer)
 
       LibGL.draw_arrays(LibGL::TRIANGLES, 0, size.value)
 
