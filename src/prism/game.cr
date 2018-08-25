@@ -1,9 +1,25 @@
 require "lib_gl"
 require "./input"
+require "./mesh"
+require "./vertex"
+require "./vector3f"
 
 module Prism
 
   class Game
+
+    def initialize
+      @mesh = Mesh.new
+
+      data = [
+        Vertex.new(Vector3f.new(-1, -1, 0)),
+        Vertex.new(Vector3f.new(-1, 1, 0)),
+        Vertex.new(Vector3f.new(0, 1, 0))
+      ]
+
+      @mesh.add_verticies(data);
+
+    end
 
     def register_input(@input : Prism::Input)
     end
@@ -33,6 +49,7 @@ module Prism
     end
 
     def render
+      @mesh.draw
       # LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
       #
       # LibGL.begin(LibGL::TRIANGLES);
