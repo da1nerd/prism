@@ -16,9 +16,10 @@ module Prism
     def add_verticies(verticies : Array(Vertex))
         @size = verticies.size #verticies.size * Vertex::SIZE
         LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
-        # TODO: do we need to re-organize the data?
+        buffer = Util.create_flipped_buffer(verticies)
+        ptr = buffer.to_unsafe
         # see this https://www.khronos.org/opengl/wiki/VBO_-_just_examples
-        LibGL.buffer_data(LibGL::ARRAY_BUFFER, Vertex::SIZE * 4, Util.create_flipped_buffer(verticies), LibGL::STATIC_DRAW)
+        LibGL.buffer_data(LibGL::ARRAY_BUFFER, Vertex::SIZE * sizeof(Float32), ptr, LibGL::STATIC_DRAW)
     end
 
     def draw
@@ -27,7 +28,11 @@ module Prism
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
 
       # TODO: what is the last argument pointing to?
-      LibGL.vertex_attrib_pointer(0, 3, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * 4, 0)
+      # if pointer isnot null, a non-zero named buffer object must be bound to
+      # the GL_ARRAY_BUFFER target (see glBindBuffer)
+      offset = 0
+      offset_ptr = pointerof(offset)
+      LibGL.vertex_attrib_pointer(0, Vertex::SIZE, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), offset_ptr)
 
       LibGL.draw_arrays(LibGL::TRIANGLES, 0, @size)
 
