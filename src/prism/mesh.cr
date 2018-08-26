@@ -18,8 +18,7 @@ module Prism
         LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
         buffer = Util.create_flipped_buffer(verticies)
         ptr = buffer.to_unsafe
-        # see this https://www.khronos.org/opengl/wiki/VBO_-_just_examples
-        LibGL.buffer_data(LibGL::ARRAY_BUFFER, Vertex::SIZE * sizeof(Float32), ptr, LibGL::STATIC_DRAW)
+        LibGL.buffer_data(LibGL::ARRAY_BUFFER, @size * Vertex::SIZE * sizeof(Float32), ptr, LibGL::STATIC_DRAW)
     end
 
     def draw
