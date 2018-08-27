@@ -15,7 +15,7 @@ module Prism
       LibGL.front_face(LibGL::CW)
       LibGL.cull_face(LibGL::BACK)
       # TODO: enable culling for 3d objects
-      # LibGL.enable(LibGL::CULL_FACE)
+      LibGL.enable(LibGL::CULL_FACE)
       LibGL.enable(LibGL::DEPTH_TEST)
 
       # TODO: Depth clamp for later
@@ -25,6 +25,10 @@ module Prism
 
     def self.flush
       LibGL.flush()
+    end
+
+    def self.get_open_gl_version
+      return String.new(LibGL.get_string(LibGL::VERSION))
     end
 
   end

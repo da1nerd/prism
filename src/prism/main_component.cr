@@ -20,6 +20,7 @@ module Prism
       # set up window
       @window = CrystGLUT::Window.new(WIDTH, HEIGHT, TITLE)
 
+      puts RenderUtil.get_open_gl_version
       RenderUtil.init_graphics
 
       @window.on_display do
