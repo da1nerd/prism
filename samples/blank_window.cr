@@ -1,6 +1,8 @@
 require "../src/prism"
 require "lib_gl"
 
+# TODO: This sample will be moved to a new library.
+
 #  Example creating a window
 module Example
   extend self

@@ -50,6 +50,8 @@ module Prism
 
     def render
       @mesh.draw
+
+      # The sample below works, but I want o get the mesh above working.
       # LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
       # #
       # LibGL.begin(LibGL::TRIANGLES);
