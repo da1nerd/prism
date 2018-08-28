@@ -17,7 +17,20 @@ module Prism
         @size = verticies.size #verticies.size * Vertex::SIZE
         LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
         buffer = Util.create_flipped_buffer(verticies)
-        ptr = buffer.to_unsafe
+        # ptr = pointerof(buffer)
+        # TODO: pointer is to first value e.g. Pointer(verticies[0].x)
+        # start_pos = buffer[0]
+        # start_ptr = pointerof(start_pos)
+        # datas = Set.new(9)
+        # datas << -1f32
+        data = [
+          -1f32, -1f32, 0f32,
+          -1f32, 1f32, 0f32,
+          0f32, 1f32, 0f32
+        ]
+        # ptr = Pointer(Void).new(data.object_id)
+        ptr = data[0].to_unsafe
+
         LibGL.buffer_data(LibGL::ARRAY_BUFFER, @size * Vertex::SIZE * sizeof(Float32), ptr, LibGL::STATIC_DRAW)
     end
 
