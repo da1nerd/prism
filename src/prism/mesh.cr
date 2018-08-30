@@ -29,9 +29,9 @@ module Prism
           0f32, 1f32, 0f32
         ]
         # ptr = Pointer(Void).new(data.object_id)
-        ptr = data[0].to_unsafe
+        # ptr = data[0].to_unsafe
 
-        LibGL.buffer_data(LibGL::ARRAY_BUFFER, @size * Vertex::SIZE * sizeof(Float32), ptr, LibGL::STATIC_DRAW)
+        # LibGL.buffer_data(LibGL::ARRAY_BUFFER, @size * Vertex::SIZE * sizeof(Float32), ptr, LibGL::STATIC_DRAW)
     end
 
     def draw

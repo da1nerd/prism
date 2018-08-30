@@ -1,3 +1,6 @@
-@[Link(ldflags: "#{__DIR__}/c/ctools.a")]
-lib CTools
+@[Link(ldflags: "#{__DIR__}/c/libctools.a")]
+lib LibCTools
+
+  fun getMesh()
+
 end

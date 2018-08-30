@@ -3,6 +3,7 @@ require "./input"
 require "./mesh"
 require "./vertex"
 require "./vector3f"
+require "../ctools"
 
 module Prism
 
@@ -36,10 +37,10 @@ module Prism
       end
 
       if input.get_mouse_down(0)
-        puts "We've just right clicked at #{input.get_mouse_position.to_string}"
+        puts "We've just left clicked at #{input.get_mouse_position.to_string}"
       end
       if input.get_mouse_up(0)
-        puts "We've just released right mouse button"
+        puts "We've just released the left mouse button"
       end
 
     end
@@ -49,7 +50,8 @@ module Prism
     end
 
     def render
-      @mesh.draw
+      LibCTools.getMesh()
+      # @mesh.draw
 
       # The sample below works, but I want o get the mesh above working.
       # LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
