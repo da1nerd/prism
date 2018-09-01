@@ -3,7 +3,8 @@ module Prism
 
     # Loads a shader from the disk
     def self.load_shader(file_name : String) : String
-      return File.read(File.join("./res/shaders/", file_name))
+      path = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", file_name)
+      return File.read(path)
     end
 
   end
