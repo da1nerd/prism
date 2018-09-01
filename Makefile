@@ -10,6 +10,7 @@ lib: src/crystglut/lib_gluc src/ctools/c
 
 samples: lib directories
 	@crystal build samples/game.cr -o $(BIN_DIR)/game
+	@crystal build samples/blank_window.cr -o $(BIN_DIR)/blank_window
 
 directories:
 	@mkdir -p $(BIN_DIR)

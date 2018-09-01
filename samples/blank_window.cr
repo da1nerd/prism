@@ -1,38 +1,16 @@
-require "../src/prism"
-require "lib_gl"
+require "../src/crystglut"
 
-# TODO: This sample will be moved to a new library.
+include CrystGLUT
 
-#  Example creating a window
-module Example
-  extend self
+window = Window.new(800, 600, "Blank Window")
 
-  WIDTH = 800
-  HEIGHT = 600
-  TITLE = "Sample Window"
-
-  window = Prism::Window.new(WIDTH, HEIGHT, TITLE)
-
-  window.on_keyboard do |char, x, y|
-    puts "key press #{char} #{x} #{y}"
+window.on_display do
+  puts "the window is open!"
+  while !window.is_close_requested
+    window.render
   end
-
-  window.on_mouse do |button, state, x, y|
-    puts "mouse click #{button} #{state} #{x} #{y}"
-  end
-
-  window.on_motion do |x, y|
-
-  end
-
-  window.on_passive_motion do |x, y|
-
-  end
-
-  # window.on_display do
-  #
-  # end
-
-  window.open()
-
+  puts "the window is closing!"
+  window.dispose
 end
+
+window.open
