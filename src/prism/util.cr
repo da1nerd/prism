@@ -1,7 +1,9 @@
 module Prism
 
   class Util
-    def self.create_flipped_buffer(verticies : Array(Vertex))
+
+    # Creates a flattened array of verticies for OpenGL
+    def self.flatten_verticies(verticies : Array(Vertex))
       buffer = [] of Float32
 
       verticies.each do |v|
@@ -10,7 +12,6 @@ module Prism
         buffer.push(v.pos.z)
       end
 
-      buffer.reverse!
       return buffer
     end
   end
