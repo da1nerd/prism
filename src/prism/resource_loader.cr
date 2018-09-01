@@ -2,13 +2,8 @@ module Prism
   class ResourceLoader
 
     # Loads a shader from the disk
-    def load_shader(file_name : String) : String
-      data : String
-      File.open(File.join("./res/shaders/", file_name)) do |f|
-        data = f.read
-      end
-
-      return data
+    def self.load_shader(file_name : String) : String
+      return File.read(File.join("./res/shaders/", file_name))
     end
 
   end

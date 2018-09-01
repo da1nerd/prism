@@ -14,6 +14,7 @@ samples: lib directories
 
 directories:
 	@mkdir -p $(BIN_DIR)
+	@cp -r samples/res $(BIN_DIR)
 
 docs:
 	@crystal docs
