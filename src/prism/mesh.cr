@@ -10,7 +10,7 @@ module Prism
 
     def initialize
       @size = 0
-      LibGL.gen_buffers(@size, out @vbo)
+      LibGL.gen_buffers(1, out @vbo)
     end
 
     def add_verticies(verticies : Array(Vertex))
