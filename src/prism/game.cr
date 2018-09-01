@@ -6,6 +6,7 @@ require "./vector3f"
 
 module Prism
 
+  # TODO: make this an abstract class
   class Game
 
     def initialize

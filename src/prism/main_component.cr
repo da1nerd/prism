@@ -15,6 +15,7 @@ module Prism
 
     @is_running = false
 
+    # TODO: make this receive the game instance
     def initialize()
 
       # set up window
