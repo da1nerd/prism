@@ -6,6 +6,7 @@ require "./vector3f"
 
 module Prism
 
+  # TODO: make this an abstract class
   class Game
 
     def initialize
@@ -13,8 +14,8 @@ module Prism
 
       data = [
         Vertex.new(Vector3f.new(-1, -1, 0)),
-        Vertex.new(Vector3f.new(-1, 1, 0)),
-        Vertex.new(Vector3f.new(0, 1, 0))
+        Vertex.new(Vector3f.new(0, 1, 0)),
+        Vertex.new(Vector3f.new(1, -1, 0))
       ]
 
       @mesh.add_verticies(data);
@@ -36,10 +37,10 @@ module Prism
       end
 
       if input.get_mouse_down(0)
-        puts "We've just right clicked at #{input.get_mouse_position.to_string}"
+        puts "We've just left clicked at #{input.get_mouse_position.to_string}"
       end
       if input.get_mouse_up(0)
-        puts "We've just released right mouse button"
+        puts "We've just released the left mouse button"
       end
 
     end
@@ -50,20 +51,6 @@ module Prism
 
     def render
       @mesh.draw
-
-      # The sample below works, but I want o get the mesh above working.
-      # LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
-      # #
-      # LibGL.begin(LibGL::TRIANGLES);
-      # LibGL.color3f(1, 0, 0);
-      # LibGL.vertex2f(-0.5, -0.5);
-      # LibGL.color3f(0, 1, 0);
-      # LibGL.vertex2f(0.5, -0.5);
-      # LibGL.color3f(0, 0, 1);
-      # LibGL.vertex2f(0, 0.5);
-      #
-      # LibGL.end();
-      # LibGL.flush();
     end
 
   end

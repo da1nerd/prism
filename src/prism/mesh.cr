@@ -5,33 +5,27 @@ module Prism
 
   class Mesh
 
-    @vbo : UInt32
+    @vbo : LibGL::UInt
     @size : Int32
 
     def initialize
+      LibGL.gen_buffers(1, out @vbo)
       @size = 0
-      LibGL.gen_buffers(@size, out @vbo)
     end
 
     def add_verticies(verticies : Array(Vertex))
-        @size = verticies.size #verticies.size * Vertex::SIZE
+        @size = verticies.size
+
         LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
-        buffer = Util.create_flipped_buffer(verticies)
-        ptr = buffer.to_unsafe
-        LibGL.buffer_data(LibGL::ARRAY_BUFFER, @size * Vertex::SIZE * sizeof(Float32), ptr, LibGL::STATIC_DRAW)
+        LibGL.buffer_data(LibGL::ARRAY_BUFFER, verticies.size * Vertex::SIZE * sizeof(Float32), Util.flatten_verticies(verticies), LibGL::STATIC_DRAW)
     end
 
     def draw
       LibGL.enable_vertex_attrib_array(0)
 
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
-
-      # TODO: what is the last argument pointing to?
-      # if pointer isnot null, a non-zero named buffer object must be bound to
-      # the GL_ARRAY_BUFFER target (see glBindBuffer)
-      offset = 0
-      offset_ptr = pointerof(offset)
-      LibGL.vertex_attrib_pointer(0, Vertex::SIZE, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), offset_ptr)
+      offset = Pointer(Void).new(0)
+      LibGL.vertex_attrib_pointer(0, 3, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), offset)
 
       LibGL.draw_arrays(LibGL::TRIANGLES, 0, @size)
 
