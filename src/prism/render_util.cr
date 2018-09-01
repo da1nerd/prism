@@ -27,6 +27,7 @@ module Prism
       LibGL.flush()
     end
 
+    # Returns which version of OpenGL is available
     def self.get_open_gl_version
       return String.new(LibGL.get_string(LibGL::VERSION))
     end
