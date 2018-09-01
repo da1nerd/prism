@@ -10,14 +10,14 @@ module Prism
 
     def initialize
       @mesh = Mesh.new
-      #
-      # data = [
-      #   Vertex.new(Vector3f.new(-1, -1, 0)),
-      #   Vertex.new(Vector3f.new(-1, 1, 0)),
-      #   Vertex.new(Vector3f.new(0, 1, 0))
-      # ]
-      #
-      # @mesh.add_verticies(data);
+
+      data = [
+        Vertex.new(Vector3f.new(-1, -1, 0)),
+        Vertex.new(Vector3f.new(0, 1, 0)),
+        Vertex.new(Vector3f.new(1, -1, 0))
+      ]
+
+      @mesh.add_verticies(data);
 
     end
 
