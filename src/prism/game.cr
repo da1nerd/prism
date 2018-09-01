@@ -3,6 +3,8 @@ require "./input"
 require "./mesh"
 require "./vertex"
 require "./vector3f"
+require "./shader"
+require "./resource_loader"
 
 module Prism
 
@@ -11,6 +13,7 @@ module Prism
 
     def initialize
       @mesh = Mesh.new
+      @shader = Shader.new
 
       data = [
         Vertex.new(Vector3f.new(-1, -1, 0)),
@@ -20,6 +23,9 @@ module Prism
 
       @mesh.add_verticies(data);
 
+      @shader.add_vertex_shader(ResourceLoader.load_shader("basicVertex.vs"))
+      # @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment.fs"))
+      @shader.compile
     end
 
     def register_input(@input : Prism::Input)
@@ -50,6 +56,7 @@ module Prism
     end
 
     def render
+      @shader.bind
       @mesh.draw
     end
 
