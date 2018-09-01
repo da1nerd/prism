@@ -3,15 +3,13 @@ require "./input"
 require "./mesh"
 require "./vertex"
 require "./vector3f"
-require "../ctools"
 
 module Prism
 
   class Game
 
     def initialize
-      LibCTools.getMesh()
-      # @mesh = Mesh.new
+      @mesh = Mesh.new
       #
       # data = [
       #   Vertex.new(Vector3f.new(-1, -1, 0)),
@@ -51,8 +49,7 @@ module Prism
     end
 
     def render
-      LibCTools.getMesh()
-      # @mesh.draw
+      @mesh.draw
 
       # The sample below works, but I want o get the mesh above working.
       # LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)

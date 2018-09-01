@@ -24,7 +24,9 @@
 void initMesh() {
   // init
   // glGenBuffers(1, vbo);
-
+  // GLuint vbo;
+  // glGenBuffers(1, &vbo);
+  // glBindBuffer(GL_ARRAY_BUFFER, vbo);
   // add verticies
   // glBindBuffer(GL_ARRAY_BUFFER, vbo);
   // glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(GLfloat), data, GL_STATIC_DRAW);
@@ -49,24 +51,24 @@ void getMesh() {
 }
 
 void draw_triangle() {
-  GLfloat data[3][3] = {
-    {-1.0, -1.0, 0.0},
-    {0.0, 1.0, 0.0},
-    {1.0, -1.0, 0.0}
+  GLfloat data[9] = {
+    -1.0, -1.0, 0.0,
+    0.0, 1.0, 0.0,
+    1.0, -1.0, 0.0
   };
 
-  GLuint vbo;
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, 9*sizeof(GLfloat), data, GL_STATIC_DRAW);
+  // GLuint vbo;
+  // glGenBuffers(1, &vbo);
+  // glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  // glBufferData(GL_ARRAY_BUFFER, 9*sizeof(GLfloat), data, GL_STATIC_DRAW);
 
-  glEnableVertexAttribArray(0);
+  // glEnableVertexAttribArray(0);
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-  glDrawArrays(GL_TRIANGLES, 0, 9);
+  // glDrawArrays(GL_TRIANGLES, 0, 9);
 
-  glDisableVertexAttribArray(0);
+  // glDisableVertexAttribArray(0);
 }
 
 void draw_vbo()
