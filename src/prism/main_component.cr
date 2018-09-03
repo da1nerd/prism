@@ -33,7 +33,6 @@ module Prism
       # TODO: make `Game` abstract and pass in an instance through the constructor.
       # set up grame
       @game = Game.new()
-      @game.register_input(@input)
 
     end
 
@@ -83,7 +82,7 @@ module Prism
 
           Prism::Timer.set_delta(frame_time);
 
-          @game.input
+          @game.input(@input)
           @input.update
           @game.update
 

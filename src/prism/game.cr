@@ -28,12 +28,8 @@ module Prism
       @shader.compile
     end
 
-    def register_input(@input : Prism::Input)
-    end
-
-    def input
-      input = @input
-      return unless input
+    # Processes input during a frame
+    def input(input : Prism::Input)
 
       if input.get_key_down(Prism::Input::KEY_UP)
         puts "We've just pressed up"

@@ -60,10 +60,14 @@ module Prism
         exit 1
       end
 
+      puts text
       ptr = text.to_unsafe
-      ptr2 = pointerof(ptr)
+      source = [ptr]
+      size = [text.size]
       # TODO: I think shader_source is not getting the correct parameters
-      LibGL.shader_source(shader, 1, ptr2, nil)
+      # Follow this example https://www.khronos.org/opengl/wiki/Example_Code
+      size = Pointer(Int32).new(0)
+      LibGL.shader_source(shader, 1, source, size)
       LibGL.compile_shader(shader)
 
       LibGL.get_shader_iv(shader, LibGL::COMPILE_STATUS, out compile_status)
