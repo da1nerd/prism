@@ -42,7 +42,6 @@ module Prism
     @last_mouse = StaticArray(Bool, NUM_MOUSEBUTTONS).new(false)
 
     def initialize(@window : CrystGLUT::Window)
-
     end
 
     def update
@@ -57,17 +56,8 @@ module Prism
 
     end
 
-    # checks if an array contains an element
-    protected def contains(array : Array(UInt8 | Int32), element : UInt8 | Int32)
-      val = array.find { |i| i == element }
-      if val && val >= 0
-        return true
-      end
-      return false
-    end
-
     # Checks if the key is currently down
-    def get_key(key_code : UInt8 | Int32) : Bool
+    private def get_key(key_code : UInt8 | Int32) : Bool
       return @window.is_key_down(key_code)
     end
 
@@ -82,7 +72,7 @@ module Prism
     end
 
     # Check if the mouse button is currently down
-    def get_mouse(mouse_button : Int32) : Bool
+    private def get_mouse(mouse_button : Int32) : Bool
       return @window.is_mouse_down(mouse_button)
     end
 
