@@ -60,7 +60,6 @@ module Prism
         exit 1
       end
 
-      puts text
       ptr = text.to_unsafe
       source = [ptr]
       size = [text.size]
