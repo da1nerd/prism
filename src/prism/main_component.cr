@@ -58,17 +58,17 @@ module Prism
       frame_counter = 0;
 
       frame_time = 1.0 / FRAME_CAP
-      last_time = Prism::Timer.get_time()
+      last_time = Timer.get_time()
       unprocessed_time : Float64 = 0.0
 
       while running = @is_running
 
         should_render = false
-        start_time = Prism::Timer.get_time()
+        start_time = Timer.get_time()
         passed_time = start_time - last_time # how long the previous frame took
         last_time = start_time
 
-        unprocessed_time += passed_time / Prism::Timer::SECOND
+        unprocessed_time += passed_time / Timer::SECOND
         frame_counter += passed_time
 
         while unprocessed_time > frame_time
@@ -80,7 +80,7 @@ module Prism
             stop()
           end
 
-          Prism::Timer.set_delta(frame_time);
+          Timer.set_delta(frame_time);
 
           @game.input(@input)
           @input.update
@@ -89,7 +89,7 @@ module Prism
           # TODO: update game
 
           # log frame rate
-          if(frame_counter >= Prism::Timer::SECOND)
+          if(frame_counter >= Timer::SECOND)
             puts "fps: #{frames}"
             frames = 0
             frame_counter = 0

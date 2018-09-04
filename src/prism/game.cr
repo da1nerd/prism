@@ -29,12 +29,12 @@ module Prism
     end
 
     # Processes input during a frame
-    def input(input : Prism::Input)
+    def input(input : Input)
 
-      if input.get_key_down(Prism::Input::KEY_UP)
+      if input.get_key_down(Input::KEY_UP)
         puts "We've just pressed up"
       end
-      if input.get_key_up(Prism::Input::KEY_UP)
+      if input.get_key_up(Input::KEY_UP)
         puts "We've just released up"
       end
 
