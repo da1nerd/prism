@@ -63,8 +63,6 @@ module Prism
       ptr = text.to_unsafe
       source = [ptr]
       size = [text.size]
-      # TODO: I think shader_source is not getting the correct parameters
-      # Follow this example https://www.khronos.org/opengl/wiki/Example_Code
       size = Pointer(Int32).new(0)
       LibGL.shader_source(shader, 1, source, size)
       LibGL.compile_shader(shader)
