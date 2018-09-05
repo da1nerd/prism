@@ -14,7 +14,8 @@ module Prism
       @uniforms = {} of String => Int32
 
       if @program == 0
-        puts "Shader creation failed. Could not find valid memory location in constructor"
+        program_error_code = LibGL.get_error()
+        puts "Error #{program_error_code}: Shader creation failed. Could not find valid memory location in constructor"
         exit 1
       end
     end
@@ -41,7 +42,8 @@ module Prism
       uniform_location = LibGL.get_uniform_location(@program, uniform);
 
       if uniform_location == -1
-        puts "Error: Could not find uniform: #{uniform_location}"
+        uniform_error_code = LibGL.get_error()
+        puts "Error #{uniform_error_code}: Could not find uniform: #{uniform_location}"
         exit 1
       end
 
@@ -76,7 +78,8 @@ module Prism
       if link_status == 0
         LibGL.get_program_info_log(@program, 1024, nil, out link_log)
         link_log_str = String.new(pointerof(link_log))
-        puts "Failed linking shader program: #{link_log_str}"
+        link_error_code = LibGL.get_error()
+        puts "Error #{link_error_code}: Failed linking shader program: #{link_log_str}"
         exit 1
       end
 
@@ -86,7 +89,8 @@ module Prism
       if validate_status == 0
         LibGL.get_program_info_log(@program, 1024, nil, out validate_log)
         validate_log_str = String.new(pointerof(validate_log))
-        puts "Failed validating shader program: #{validate_log_str}"
+        validate_error_code = LibGL.get_error()
+        puts "Error #{validate_error_code}: Failed validating shader program: #{validate_log_str}"
         exit 1
       end
 
@@ -97,7 +101,8 @@ module Prism
     private def add_program(text : String, type : LibGL::UInt)
       shader = LibGL.create_shader(type)
       if shader == 0
-        puts "Shader creation failed. Could not find valid memory location when adding shader"
+        shader_error_code = LibGL.get_error()
+        puts "Error #{shader_error_code}: Shader creation failed. Could not find valid memory location when adding shader"
         exit 1
       end
 
@@ -112,7 +117,10 @@ module Prism
       if compile_status == 0
         LibGL.get_shader_info_log(shader, 1024, nil, out compile_log)
         compile_log_str = String.new(pointerof(compile_log))
-        puts "Failed compiling shader: #{compile_log_str}"
+
+        compile_error_code = LibGL.get_error()
+
+        puts "Error #{compile_error_code}: Failed compiling shader: #{compile_log_str}"
         exit 1
       end
 
