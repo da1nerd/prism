@@ -24,7 +24,7 @@ module Prism
       @mesh.add_verticies(data);
 
       @shader.add_vertex_shader(ResourceLoader.load_shader("basicVertex.vs"))
-      # @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment.fs"))
+      @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment.fs"))
       @shader.compile
     end
 
