@@ -1,4 +1,4 @@
-require "../crystglut"
+require "cryst_glut"
 require "./vector2f"
 
 module Prism
