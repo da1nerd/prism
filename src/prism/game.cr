@@ -5,11 +5,14 @@ require "./vertex"
 require "./vector3f"
 require "./shader"
 require "./resource_loader"
+require "./timer"
 
 module Prism
 
   # TODO: make this an abstract class
   class Game
+
+    @temp : Float32 = 0.0f32
 
     def initialize
       @mesh = Mesh.new
@@ -26,6 +29,9 @@ module Prism
       @shader.add_vertex_shader(ResourceLoader.load_shader("basicVertex.vs"))
       @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment.fs"))
       @shader.compile
+
+      @shader.add_uniform("uniformFloat")
+
     end
 
     # Processes input during a frame
@@ -48,7 +54,13 @@ module Prism
     end
 
     def update
+      delta = Timer.get_delta
 
+      if delta
+        @temp += delta
+      end
+
+      @shader.set_uniform("uniformFloat", Math.sin(@temp).abs)
     end
 
     def render

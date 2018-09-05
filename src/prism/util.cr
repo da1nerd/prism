@@ -14,6 +14,7 @@ module Prism
 
       return buffer
     end
+
   end
 
 end
