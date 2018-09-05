@@ -11,7 +11,7 @@ module Prism
     WIDTH = 800
     HEIGHT = 600
     TITLE = "3D Engine"
-    FRAME_CAP = 500.0 # maximum updates per second
+    FRAME_CAP = 500.0f32 # maximum updates per second
 
     @is_running = false
 
@@ -57,7 +57,7 @@ module Prism
       frames = 0
       frame_counter = 0;
 
-      frame_time = 1.0 / FRAME_CAP
+      frame_time = 1.0f32 / FRAME_CAP
       last_time = Timer.get_time()
       unprocessed_time : Float64 = 0.0
 

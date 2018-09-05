@@ -4,7 +4,7 @@ module Prism
 
     SECOND = 1_000.0
 
-    @@delta : Float64 | Nil
+    @@delta : Float32 | Nil
 
     # Returns time in milliseconds
     def self.get_time : Int64
@@ -16,7 +16,7 @@ module Prism
       return @@delta
     end
 
-    def self.set_delta(delta : Float64)
+    def self.set_delta(delta : Float32)
       @@delta = delta
     end
 
