@@ -7,12 +7,12 @@ authors:
 crystal: 0.26.0
 
 dependencies:
-  lib_glut:
-    github: neutrinog/lib_glut
-    branch: master
   lib_gl:
     github: neutrinog/lib_gl
     branch: develop
+  cryst_glut:
+    github: neutrinog/cryst_glut
+    branch: master
   matrix:
     github: Exilor/matrix
     branch: master

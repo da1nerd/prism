@@ -1,4 +1,4 @@
-require "../crystglut"
+require "cryst_glut"
 require "./timer"
 require "./game"
 require "./input"
