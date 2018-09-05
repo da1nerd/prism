@@ -7,11 +7,3 @@
 # Libraries don't need dependency lock
 # Dependencies will be locked in application that uses them
 /shard.lock
-
-# C
-*.a
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
-src/crystglut/lib_glut/Makefile
-src/ctools/c/Makefile

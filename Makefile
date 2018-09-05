@@ -1,12 +1,10 @@
 BIN_DIR=bin/samples
-GLUC_DIR=src/crystglut/lib_gluc
-CTOOLS_DIR=src/ctools/c
+TOOLS_DIR=src/prism/lib
 
 all: samples
 
-lib: src/crystglut/lib_gluc src/ctools/c
-	cd ${GLUC_DIR} && cmake . && make
-	cd ${CTOOLS_DIR} && cmake . && make
+lib: src/prism/lib
+	cd ${TOOLS_DIR} && cmake . && make
 
 samples: lib directories
 	@crystal build samples/game.cr -o $(BIN_DIR)/game
@@ -25,4 +23,4 @@ test:
 clean:
 	@rm -rf bin
 	@rm -rf docs
-	cd ${GLUC_DIR} && make clean
+	cd ${TOOLS_DIR} && cmake . && make clean
