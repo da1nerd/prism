@@ -18,6 +18,6 @@ dependencies:
     branch: master
 
 scripts:
-  postinstall: cd src/prism/lib_gluc && cmake . && make
+  postinstall: cd src/prism/lib && cmake . && make
 
 license: MIT

@@ -1,5 +1,4 @@
 require "lib_glut"
-require "../lib_gluc"
 
 module CrystGLUT
 
@@ -27,13 +26,13 @@ module CrystGLUT
       args = [] of String
       argv = args.map(&.to_unsafe).to_unsafe
       size = args.size
-      LibGlut.init(pointerof(size), argv)
-      LibGlut.init_display_mode(LibGlut::SINGLE)
-      LibGlut.init_window_size(width, height)
-      LibGlut.init_window_position(100, 100)
-      LibGlut.set_option(LibGlut::ACTION_ON_WINDOW_CLOSE, LibGlut::ACTION_CONTINUE_EXECUTION)
+      LibGLUT.init(pointerof(size), argv)
+      LibGLUT.init_display_mode(LibGLUT::SINGLE)
+      LibGLUT.init_window_size(width, height)
+      LibGLUT.init_window_position(100, 100)
+      LibGLUT.set_option(LibGLUT::ACTION_ON_WINDOW_CLOSE, LibGLUT::ACTION_CONTINUE_EXECUTION)
       @title = title
-      @id = LibGlut.create_window(title)
+      @id = LibGLUT.create_window(title)
     end
 
     # Assigns a block to receive the window close event.
@@ -41,7 +40,7 @@ module CrystGLUT
       boxed_data = Box.box(block)
       @close_box = boxed_data
 
-      LibGluc.close_func(->(data : Void*) {
+      LibGLUT.close_func_x(->(data : Void*) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call()
       }, boxed_data)
@@ -53,7 +52,7 @@ module CrystGLUT
       boxed_data = Box.box(block)
       @keyboard_box = boxed_data
 
-      LibGluc.keyboard_func(->(data : Void*, char : UInt8, x : Int32, y : Int32) {
+      LibGLUT.keyboard_func_x(->(data : Void*, char : UInt8, x : Int32, y : Int32) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call(char, x, y)
       }, boxed_data)
@@ -65,7 +64,7 @@ module CrystGLUT
       boxed_data = Box.box(block)
       @keyboard_up_box = boxed_data
 
-      LibGluc.keyboard_up_func(->(data : Void*, char : UInt8, x : Int32, y : Int32) {
+      LibGLUT.keyboard_up_func_x(->(data : Void*, char : UInt8, x : Int32, y : Int32) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call(char, x, y)
       }, boxed_data)
@@ -77,7 +76,7 @@ module CrystGLUT
       boxed_data = Box.box(block)
       @special_keyboard_box = boxed_data
 
-      LibGluc.special_func(->(data : Void*, key : Int32, x : Int32, y : Int32) {
+      LibGLUT.special_func_x(->(data : Void*, key : Int32, x : Int32, y : Int32) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call(key, x, y)
       }, boxed_data)
@@ -89,7 +88,7 @@ module CrystGLUT
       boxed_data = Box.box(block)
       @special_keyboard_up_box = boxed_data
 
-      LibGluc.special_up_func(->(data : Void*, key : Int32, x : Int32, y : Int32) {
+      LibGLUT.special_up_func_x(->(data : Void*, key : Int32, x : Int32, y : Int32) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call(key, x, y)
       }, boxed_data)
@@ -101,7 +100,7 @@ module CrystGLUT
       boxed_data = Box.box(block)
       @mouse_box = boxed_data
 
-      LibGluc.mouse_func(->(data : Void*, button : Int32, state : Int32, x : Int32, y : Int32) {
+      LibGLUT.mouse_func_x(->(data : Void*, button : Int32, state : Int32, x : Int32, y : Int32) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call(button, state, x, y)
       }, boxed_data)
@@ -112,7 +111,7 @@ module CrystGLUT
       boxed_data = Box.box(block)
       @motion_box = boxed_data
 
-      LibGluc.motion_func(->(data : Void*, x : Int32, y : Int32) {
+      LibGLUT.motion_func_x(->(data : Void*, x : Int32, y : Int32) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call(x, y)
       }, boxed_data)
@@ -123,7 +122,7 @@ module CrystGLUT
       boxed_data = Box.box(block)
       @passive_motion_box = boxed_data
 
-      LibGluc.passive_motion_func(->(data : Void*, x : Int32, y : Int32) {
+      LibGLUT.passive_motion_func_x(->(data : Void*, x : Int32, y : Int32) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call(x, y)
       }, boxed_data)
@@ -135,7 +134,7 @@ module CrystGLUT
       boxed_data = Box.box(block)
       @display_box = boxed_data
 
-      LibGluc.display_func(->(data : Void*) {
+      LibGLUT.display_func_x(->(data : Void*) {
         data_as_callback = Box(typeof(block)).unbox(data)
         data_as_callback.call()
       }, boxed_data)
@@ -143,21 +142,21 @@ module CrystGLUT
 
     # Process queued OpenGL commands
     def render
-      LibGlut.main_loop_event()
+      LibGLUT.main_loop_event()
     end
 
     # Terminates the window
     def dispose
-      LibGlut.leave_main_loop()
-      LibGluc.display_func(nil, nil)
-      LibGluc.keyboard_func(nil, nil)
-      LibGluc.keyboard_up_func(nil, nil)
-      LibGluc.special_func(nil, nil)
-      LibGluc.special_up_func(nil, nil)
-      LibGluc.mouse_func(nil, nil)
-      LibGluc.motion_func(nil, nil)
-      LibGluc.passive_motion_func(nil, nil)
-      LibGluc.close_func(nil, nil)
+      LibGLUT.leave_main_loop()
+      LibGLUT.display_func_x(nil, nil)
+      LibGLUT.keyboard_func_x(nil, nil)
+      LibGLUT.keyboard_up_func_x(nil, nil)
+      LibGLUT.special_func_x(nil, nil)
+      LibGLUT.special_up_func_x(nil, nil)
+      LibGLUT.mouse_func_x(nil, nil)
+      LibGLUT.motion_func_x(nil, nil)
+      LibGLUT.passive_motion_func_x(nil, nil)
+      LibGLUT.close_func_x(nil, nil)
     end
 
     # Opens the window
@@ -260,12 +259,12 @@ module CrystGLUT
 
     # Returns the width of the window
     def get_width : Int32
-      return LibGlut.get(LibGlut::WINDOW_WIDTH)
+      return LibGLUT.get(LibGLUT::WINDOW_WIDTH)
     end
 
     # Returns the height of the window
     def get_height : Int32
-      return LibGlut.get(LibGlut::WINDOW_HEIGHT)
+      return LibGLUT.get(LibGLUT::WINDOW_HEIGHT)
     end
 #GLUT_ACTION_ON_WINDOW_CLOSE
     def is_close_requested : Bool
