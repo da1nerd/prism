@@ -13,6 +13,8 @@ dependencies:
     github: neutrinog/prism
 ```
 
+We are still very early in the development of this library and have not finished adding support for external integration.
+
 ## Usage
 
 ```crystal

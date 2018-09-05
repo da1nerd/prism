@@ -14,3 +14,6 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #endif
+
+// This is here so we can quickly mock out c commands as needed.
+// Ideally this will only be needed for debugging how to use third party c libraries.
