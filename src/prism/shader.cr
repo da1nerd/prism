@@ -74,8 +74,9 @@ module Prism
 
       LibGL.get_program_iv(@program, LibGL::LINK_STATUS, out link_status)
       if link_status == 0
-        LibGL.get_program_info_log(@program, 1024, out link_log_len, out link_log)
-        puts link_log
+        LibGL.get_program_info_log(@program, 1024, nil, out link_log)
+        link_log_str = String.new(pointerof(link_log))
+        puts "Failed linking shader program: #{link_log_str}"
         exit 1
       end
 
@@ -83,10 +84,14 @@ module Prism
 
       LibGL.get_program_iv(@program, LibGL::VALIDATE_STATUS, out validate_status)
       if validate_status == 0
-        LibGL.get_program_info_log(@program, 1024, out validate_log_len, out validate_log)
-        puts validate_log
+        LibGL.get_program_info_log(@program, 1024, nil, out validate_log)
+        validate_log_str = String.new(pointerof(validate_log))
+        puts "Failed validating shader program: #{validate_log_str}"
         exit 1
       end
+
+      # TODO: delete the shaders since they are linked into the program and we no longer need them
+      # LibGL.delete_shader(shader)
     end
 
     private def add_program(text : String, type : LibGL::UInt)
@@ -105,13 +110,13 @@ module Prism
 
       LibGL.get_shader_iv(shader, LibGL::COMPILE_STATUS, out compile_status)
       if compile_status == 0
-        LibGL.get_shader_info_log(shader, 1024, out log_len, out log)
-        puts log
+        LibGL.get_shader_info_log(shader, 1024, nil, out compile_log)
+        compile_log_str = String.new(pointerof(compile_log))
+        puts "Failed compiling shader: #{compile_log_str}"
         exit 1
       end
 
       LibGL.attach_shader(@program, shader)
-
     end
 
   end
