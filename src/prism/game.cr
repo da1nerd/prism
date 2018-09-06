@@ -63,6 +63,7 @@ module Prism
       end
 
       @transform.translation(Math.sin(@temp), 0, 0)
+      @transform.rotation(0, 0, Math.sin(@temp) * 180);
     end
 
     def render
