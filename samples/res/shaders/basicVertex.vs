@@ -1,10 +1,10 @@
 #version 320 es
 
-layout (location = 0) in vec3 position;
+layout (location = 0) in lowp vec3 position;
 
-out vec4 color;
+out lowp vec4 color;
 
-uniform float uniformFloat;
+uniform lowp float uniformFloat;
 
 void main()
 {

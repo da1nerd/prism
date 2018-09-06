@@ -1,8 +1,8 @@
 #version 320 es
 
-in vec4 color;
+in lowp vec4 color;
 
-out vec4 fragColor;
+out lowp vec4 fragColor;
 
 void main()
 {
