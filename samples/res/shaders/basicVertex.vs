@@ -4,7 +4,7 @@ layout (location = 0) in lowp vec3 position;
 
 out lowp vec4 color;
 
-uniform mediump mat4 transform;
+uniform lowp mat4 transform;
 
 void main()
 {
