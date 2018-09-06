@@ -14,7 +14,7 @@ module Prism
 
       LibGL.front_face(LibGL::CW)
       LibGL.cull_face(LibGL::BACK)
-      LibGL.enable(LibGL::CULL_FACE)
+      # LibGL.enable(LibGL::CULL_FACE)
       LibGL.enable(LibGL::DEPTH_TEST)
 
       # TODO: Depth clamp for later
