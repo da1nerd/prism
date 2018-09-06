@@ -32,6 +32,7 @@ module Prism
       offset = Pointer(Void).new(0)
       LibGL.vertex_attrib_pointer(0, 3, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), offset)
 
+      # Draw faces using the index buffer
       LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @ibo)
       indicies_offset = Pointer(Void).new(0)
       LibGL.draw_elements(LibGL::TRIANGLES, @size, LibGL::UNSIGNED_INT, indicies_offset)

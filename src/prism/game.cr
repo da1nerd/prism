@@ -23,11 +23,15 @@ module Prism
       verticies = [
         Vertex.new(Vector3f.new(-1, -1, 0)),
         Vertex.new(Vector3f.new(0, 1, 0)),
-        Vertex.new(Vector3f.new(1, -1, 0))
+        Vertex.new(Vector3f.new(1, -1, 0)),
+        Vertex.new(Vector3f.new(0, -1, 1))
       ]
 
       indicies = Array(LibGL::Int) {
-        0, 1, 2
+        0, 1, 3,
+        3, 1, 2,
+        2, 1, 0,
+        0, 2, 3
       }
 
       @mesh.add_verticies(verticies, indicies);
@@ -69,7 +73,7 @@ module Prism
       sinTemp = Math.sin(@temp)
 
       @transform.translation(sinTemp, 0, 0)
-      @transform.rotation(0, 0, sinTemp * 180);
+      @transform.rotation(0, sinTemp * 180, 0);
       @transform.scale(sinTemp, sinTemp, sinTemp)
     end
 
