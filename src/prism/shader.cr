@@ -38,6 +38,7 @@ module Prism
     end
 
     # Adds a uniform variable for the shader to keep track of
+    # The shader must be compiled before adding uniforms.
     def add_uniform( uniform : String)
       uniform_location = LibGL.get_uniform_location(@program, uniform);
 
@@ -75,7 +76,7 @@ module Prism
       LibGL.link_program(@program)
 
       LibGL.get_program_iv(@program, LibGL::LINK_STATUS, out link_status)
-      if link_status == 0
+      if link_status == LibGL::FALSE
         LibGL.get_program_info_log(@program, 1024, nil, out link_log)
         link_log_str = String.new(pointerof(link_log))
         link_error_code = LibGL.get_error()
@@ -86,7 +87,7 @@ module Prism
       LibGL.validate_program(@program)
 
       LibGL.get_program_iv(@program, LibGL::VALIDATE_STATUS, out validate_status)
-      if validate_status == 0
+      if validate_status == LibGL::FALSE
         LibGL.get_program_info_log(@program, 1024, nil, out validate_log)
         validate_log_str = String.new(pointerof(validate_log))
         validate_error_code = LibGL.get_error()
@@ -114,12 +115,10 @@ module Prism
       LibGL.compile_shader(shader)
 
       LibGL.get_shader_iv(shader, LibGL::COMPILE_STATUS, out compile_status)
-      if compile_status == 0
+      if compile_status == LibGL::FALSE
         LibGL.get_shader_info_log(shader, 1024, nil, out compile_log)
         compile_log_str = String.new(pointerof(compile_log))
-
         compile_error_code = LibGL.get_error()
-
         puts "Error #{compile_error_code}: Failed compiling shader: #{compile_log_str}"
         exit 1
       end
