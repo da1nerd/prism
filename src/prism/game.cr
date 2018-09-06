@@ -62,8 +62,11 @@ module Prism
         @temp += delta
       end
 
-      @transform.translation(Math.sin(@temp), 0, 0)
-      @transform.rotation(0, 0, Math.sin(@temp) * 180);
+      sinTemp = Math.sin(@temp)
+
+      @transform.translation(sinTemp, 0, 0)
+      @transform.rotation(0, 0, sinTemp * 180);
+      @transform.scale(sinTemp, sinTemp, sinTemp)
     end
 
     def render

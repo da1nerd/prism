@@ -33,6 +33,14 @@ module Prism
       @m.[]=(2, 3, z);
     end
 
+    def init_scale( x : Float32, y : Float32, z : Float32)
+      @m = Matrix(Float32).new(4, 4) do |i, r, c|
+        r == c ? 1f32 : 0f32
+      end
+      @m.[]=(0, 0, x);
+      @m.[]=(1, 1, y);
+      @m.[]=(2, 2, z);
+    end
 
     def init_rotation( x : Float32, y : Float32, z : Float32)
       rx = Matrix(Float32).new(4, 4) do |i, r, c|
