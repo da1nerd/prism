@@ -1,4 +1,4 @@
-#version 330
+#version 320 es
 
 in vec4 color;
 
