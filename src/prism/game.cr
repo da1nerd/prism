@@ -6,6 +6,7 @@ require "./vector3f"
 require "./shader"
 require "./resource_loader"
 require "./timer"
+require "./transform"
 
 module Prism
 
@@ -17,6 +18,7 @@ module Prism
     def initialize
       @mesh = Mesh.new
       @shader = Shader.new
+      @transform = Transform.new
 
       data = [
         Vertex.new(Vector3f.new(-1, -1, 0)),
@@ -30,7 +32,7 @@ module Prism
       @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment.fs"))
       @shader.compile
 
-      @shader.add_uniform("uniformFloat")
+      @shader.add_uniform("transform")
 
     end
 
@@ -60,11 +62,12 @@ module Prism
         @temp += delta
       end
 
-      @shader.set_uniform("uniformFloat", Math.sin(@temp).abs)
+      @transform.translation(Math.sin(@temp), 0, 0)
     end
 
     def render
       @shader.bind
+      @shader.set_uniform("transform", @transform.get_transformation)
       @mesh.draw
     end
 

@@ -68,7 +68,7 @@ module Prism
 
     # Sets a 4 dimensional matrix float value to a uniform variable
     def set_uniform( name : String, value : Matrix4f)
-      LibGL.uniform_matrix_4fv(@uniforms[name], true, value.to_a)
+      LibGL.uniform_matrix_4fv(@uniforms[name], 1, LibGL::TRUE, value.as_array)
     end
 
     # compiles the shader
