@@ -20,13 +20,17 @@ module Prism
       @shader = Shader.new
       @transform = Transform.new
 
-      data = [
+      verticies = [
         Vertex.new(Vector3f.new(-1, -1, 0)),
         Vertex.new(Vector3f.new(0, 1, 0)),
         Vertex.new(Vector3f.new(1, -1, 0))
       ]
 
-      @mesh.add_verticies(data);
+      indicies = Array(LibGL::Int) {
+        0, 1, 2
+      }
+
+      @mesh.add_verticies(verticies, indicies);
 
       @shader.add_vertex_shader(ResourceLoader.load_shader("basicVertex.vs"))
       @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment.fs"))
