@@ -15,11 +15,11 @@ module Prism
 
     @temp : Float32 = 0.0f32
 
-    def initialize
+    def initialize(width : Float32, height : Float32)
       @mesh = ResourceLoader.load_mesh("box.obj") # Mesh.new
       @shader = Shader.new
       @transform = Transform.new
-
+      @transform.set_projection(70f32, width, height, 0.1f32, 1_000f32)
       # verticies = [
       #   Vertex.new(Vector3f.new(-1, -1, 0)),
       #   Vertex.new(Vector3f.new(0, 1, 0)),
@@ -72,9 +72,9 @@ module Prism
 
       sinTemp = Math.sin(@temp)
 
-      @transform.translation(sinTemp, 0, 0)
-      @transform.rotation(0, sinTemp * 180, 0);
-      @transform.scale(sinTemp, sinTemp, sinTemp)
+      @transform.translation(sinTemp, 0, 10)
+      @transform.rotation(0, sinTemp * 180, 0)
+      @transform.scale(0.7f32 * sinTemp, 0.7f32 * sinTemp, 0.7f32 * sinTemp)
     end
 
     def render

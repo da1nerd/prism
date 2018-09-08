@@ -13,6 +13,11 @@ module Prism
       @m = Matrix(Float32).new(4, 4)
     end
 
+    # Converts degress to radians
+    def self.rad(degree : Float32) : Float32
+      return degree / 180.0f32 * Math::PI
+    end
+
     def initialize(matrix : Matrix(Float32))
       dimensions = matrix.dimensions;
       raise Matrix::DimensionMismatch.new unless dimensions[0] == 4 && dimensions[1] == 4
@@ -23,17 +28,34 @@ module Prism
       @m.to_a
     end
 
-    # Turns the matrix into a translation matrix
-    def init_translation( x : Float32, y : Float32, z : Float32)
+    def init_projection(fov : Float32, width : Float32, height : Float32, z_near : Float32, z_far : Float32)
+      ar = width / height # aspect ratio
+      tan_half_fov = Math.tan(Matrix4f.rad(fov / 2)) # center of window
+      z_range = z_near - z_far
+
+      # start with identity matrix
       @m = Matrix(Float32).new(4, 4) do |i, r, c|
         r == c ? 1f32 : 0f32
       end
-      @m.[]=(0, 3, x);
-      @m.[]=(1, 3, y);
-      @m.[]=(2, 3, z);
+      @m.[]=(0, 0, 1.0f32 / (tan_half_fov * ar))
+      @m.[]=(1, 1, 1.0f32 / tan_half_fov)
+      @m.[]=(2, 2, (-z_near - z_far) / z_range);  @m.[]=(2, 3, 2.0f32 * z_far * z_near / z_range)
+      @m.[]=(3, 2, 1.0f32);                       @m.[]=(3, 3, 0.0f32)
+    end
+
+    # Turns the matrix into a translation matrix
+    def init_translation( x : Float32, y : Float32, z : Float32)
+      # start with identity matrix
+      @m = Matrix(Float32).new(4, 4) do |i, r, c|
+        r == c ? 1f32 : 0f32
+      end
+      @m.[]=(0, 3, x)
+      @m.[]=(1, 3, y)
+      @m.[]=(2, 3, z)
     end
 
     def init_scale( x : Float32, y : Float32, z : Float32)
+      # start with identity matrix
       @m = Matrix(Float32).new(4, 4) do |i, r, c|
         r == c ? 1f32 : 0f32
       end
@@ -43,6 +65,7 @@ module Prism
     end
 
     def init_rotation( x : Float32, y : Float32, z : Float32)
+      # start with identity matricies
       rx = Matrix(Float32).new(4, 4) do |i, r, c|
         r == c ? 1f32 : 0f32
       end
