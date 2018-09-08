@@ -3,6 +3,9 @@ TOOLS_DIR=src/prism/lib
 
 all: samples
 
+run: samples
+	./bin/samples/game
+
 lib: src/prism/lib
 	cd ${TOOLS_DIR} && cmake . && make
 
