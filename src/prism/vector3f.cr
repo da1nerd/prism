@@ -1,3 +1,6 @@
+require "./math"
+require "./quanternion"
+
 module Prism
 
   class Vector3f
@@ -11,7 +14,7 @@ module Prism
 
     # Returns the length the vector (pythagorean theorem)
     def length : Float32
-      return Math.sqrt(@x^2 + @y^2 + @z^2)
+      return Math.sqrt(@x*@x + @y*@y + @z*@z)
     end
 
     # Returns the dot product of the vectors
@@ -25,11 +28,11 @@ module Prism
       y = @z * r.x - x * r.z
       z = @x * r.y - y * r.x
 
-      return new Vector3f.new(x, y, z)
+      return Vector3f.new(x, y, z)
     end
 
     # Normalizes this vector to a length of 1
-    def normalize : Vector3f
+    def normalize
       length = length()
       @x /= length
       @y /= length
@@ -37,8 +40,25 @@ module Prism
     end
 
     # Rotates the vector by some angle
-    def rotate(angle) : Vector3f
-      return nil
+    def rotate(angle : Float32, axis : Vector3f) : Vector3f
+      sin_half_angle = Math.sin(Prism.to_rad(angle / 2))
+      cos_half_angle = Math.cos(Prism.to_rad(angle / 2))
+
+      r_x = axis.x * sin_half_angle
+      r_y = axis.y * sin_half_angle
+      r_z = axis.z * sin_half_angle
+      r_w = cos_half_angle
+
+      rotation = Quaternion.new(r_x.to_f, r_y.to_f, r_z.to_f, r_w.to_f)
+      conjugate = rotation.conjugate
+
+      w = rotation * self * conjugate
+
+      @x = w.x.to_f32
+      @y = w.y.to_f32
+      @z = w.z.to_f32
+
+      return self
     end
 
     # Adds two vectors

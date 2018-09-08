@@ -1,4 +1,5 @@
 require "matrix"
+require "./math"
 
 module Prism
 
@@ -13,11 +14,6 @@ module Prism
       @m = Matrix(Float32).new(4, 4)
     end
 
-    # Converts degress to radians
-    def self.rad(degree : Float32) : Float32
-      return degree / 180.0f32 * Math::PI
-    end
-
     def initialize(matrix : Matrix(Float32))
       dimensions = matrix.dimensions;
       raise Matrix::DimensionMismatch.new unless dimensions[0] == 4 && dimensions[1] == 4
@@ -30,7 +26,7 @@ module Prism
 
     def init_projection(fov : Float32, width : Float32, height : Float32, z_near : Float32, z_far : Float32)
       ar = width / height # aspect ratio
-      tan_half_fov = Math.tan(Matrix4f.rad(fov / 2)) # center of window
+      tan_half_fov = Math.tan(Prism.to_rad(fov / 2)) # center of window
       z_range = z_near - z_far
 
       # start with identity matrix
@@ -41,6 +37,26 @@ module Prism
       @m.[]=(1, 1, 1.0f32 / tan_half_fov)
       @m.[]=(2, 2, (-z_near - z_far) / z_range);  @m.[]=(2, 3, 2.0f32 * z_far * z_near / z_range)
       @m.[]=(3, 2, 1.0f32);                       @m.[]=(3, 3, 0.0f32)
+    end
+
+    def init_camera(forward : Vector3f, up : Vector3f)
+      f = forward;
+      f.normalize
+
+      r = up;
+      r.normalize
+      r = r.cross(f)
+
+      u = f.cross(r)
+
+      # start with identity matrix
+      @m = Matrix(Float32).new(4, 4) do |i, r, c|
+        r == c ? 1f32 : 0f32
+      end
+
+      @m.[]=(0, 0, r.x); @m.[]=(0, 1, r.y); @m.[]=(0, 2, r.z);
+      @m.[]=(1, 0, u.x); @m.[]=(1, 1, u.y); @m.[]=(1, 2, u.z);
+      @m.[]=(2, 0, f.x); @m.[]=(2, 1, f.y); @m.[]=(2, 2, f.z);
     end
 
     # Turns the matrix into a translation matrix
@@ -76,9 +92,9 @@ module Prism
         r == c ? 1f32 : 0f32
       end
 
-      xrad = x / 180.0f32 * Math::PI
-      yrad = y / 180.0f32 * Math::PI
-      zrad = z / 180.0f32 * Math::PI
+      xrad = Prism.to_rad(x)
+      yrad = Prism.to_rad(y)
+      zrad = Prism.to_rad(z)
 
       rz.[]=(0, 0, Math.cos(zrad)); rz.[]=(0, 1, -Math.sin(zrad))
       rz.[]=(1, 0, Math.sin(zrad)); rz.[]=(1, 1, Math.cos(zrad))

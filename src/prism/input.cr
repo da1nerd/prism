@@ -37,6 +37,10 @@ module Prism
     KEY_SHIFT = 112
     KEY_LEFT_CTRL = 114
     KEY_RIGHT_CTRL = 115
+    KEY_W = 119
+    KEY_S = 115
+    KEY_A = 97
+    KEY_D = 100
 
     @last_keys = StaticArray(Bool, NUM_KEYCODES).new(false)
     @last_mouse = StaticArray(Bool, NUM_MOUSEBUTTONS).new(false)
@@ -57,7 +61,7 @@ module Prism
     end
 
     # Checks if the key is currently down
-    private def get_key(key_code : UInt8 | Int32) : Bool
+    def get_key(key_code : UInt8 | Int32) : Bool
       return @window.is_key_down(key_code)
     end
 
@@ -66,13 +70,24 @@ module Prism
       return get_key(key_code) && !@last_keys[key_code]
     end
 
+    # Returns an array of keys that are current pressed
+    def get_any_key_down : Array(Int32 | UInt8)
+      keys = [] of (Int32 | UInt8)
+      @window.get_keys_down.each do |key|
+        if get_key_down(key)
+          keys.push(key)
+        end
+      end
+      return keys
+    end
+
     # Checks if the key was released in this frame
     def get_key_up(key_code : UInt8 | Int32) : Bool
       return !get_key(key_code) && @last_keys[key_code]
     end
 
     # Check if the mouse button is currently down
-    private def get_mouse(mouse_button : Int32) : Bool
+    def get_mouse(mouse_button : Int32) : Bool
       return @window.is_mouse_down(mouse_button)
     end
 

@@ -7,6 +7,7 @@ require "./shader"
 require "./resource_loader"
 require "./timer"
 require "./transform"
+require "./camera"
 
 module Prism
 
@@ -18,8 +19,10 @@ module Prism
     def initialize(width : Float32, height : Float32)
       @mesh = ResourceLoader.load_mesh("box.obj") # Mesh.new
       @shader = Shader.new
+      @camera = Camera.new
       @transform = Transform.new
       @transform.set_projection(70f32, width, height, 0.1f32, 1_000f32)
+      @transform.camera = @camera
       # verticies = [
       #   Vertex.new(Vector3f.new(-1, -1, 0)),
       #   Vertex.new(Vector3f.new(0, 1, 0)),
@@ -46,20 +49,24 @@ module Prism
 
     # Processes input during a frame
     def input(input : Input)
-
-      if input.get_key_down(Input::KEY_UP)
-        puts "We've just pressed up"
+      keys = input.get_any_key_down
+      if keys.size > 0
+        puts "Pressed keys #{keys}"
       end
-      if input.get_key_up(Input::KEY_UP)
-        puts "We've just released up"
-      end
-
-      if input.get_mouse_down(0)
-        puts "We've just left clicked at #{input.get_mouse_position.to_string}"
-      end
-      if input.get_mouse_up(0)
-        puts "We've just released the left mouse button"
-      end
+      @camera.input(input)
+      # if input.get_key_down(Input::KEY_UP)
+      #   puts "We've just pressed up"
+      # end
+      # if input.get_key_up(Input::KEY_UP)
+      #   puts "We've just released up"
+      # end
+      #
+      # if input.get_mouse_down(0)
+      #   puts "We've just left clicked at #{input.get_mouse_position.to_string}"
+      # end
+      # if input.get_mouse_up(0)
+      #   puts "We've just released the left mouse button"
+      # end
 
     end
 
