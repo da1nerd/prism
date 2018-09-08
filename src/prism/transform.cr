@@ -6,6 +6,14 @@ module Prism
 
   class Transform
 
+    # projection variables
+    @z_near : Float32?
+    @z_far : Float32?
+    @width : Float32?
+    @height : Float32?
+    @fov : Float32?
+
+    # transformation variables
     @translation : Vector3f
     @rotation : Vector3f
     @scale : Vector3f
@@ -36,6 +44,9 @@ module Prism
       @scale = Vector3f.new(x, y, z)
     end
 
+    def set_projection(@fov, @width, @height, @z_near, @z_far)
+    end
+
     def get_transformation : Matrix4f
       trans = Matrix4f.new
       trans.init_translation(@translation.x, @translation.y, @translation.z)
@@ -47,6 +58,25 @@ module Prism
       scl.init_scale(@scale.x, @scale.y, @scale.z)
 
       return trans * (rot * scl)
+    end
+
+    def get_projected_transformation : Matrix4f
+
+      fov = @fov
+      width = @width
+      height = @height
+      z_near = @z_near
+      z_far = @z_far
+
+      trans = get_transformation()
+
+      if fov && width && height && z_near && z_far
+        proj = Matrix4f.new
+        proj.init_projection(fov, width, height, z_near, z_far)
+        return proj * trans
+      else
+        return trans
+      end
     end
 
   end

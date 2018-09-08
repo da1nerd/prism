@@ -32,7 +32,7 @@ module Prism
 
       # TODO: make `Game` abstract and pass in an instance through the constructor.
       # set up grame
-      @game = Game.new()
+      @game = Game.new(WIDTH.to_f32, HEIGHT.to_f32)
 
     end
 
