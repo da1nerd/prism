@@ -16,25 +16,25 @@ module Prism
     @temp : Float32 = 0.0f32
 
     def initialize
-      @mesh = Mesh.new
+      @mesh = ResourceLoader.load_mesh("box.obj") # Mesh.new
       @shader = Shader.new
       @transform = Transform.new
 
-      verticies = [
-        Vertex.new(Vector3f.new(-1, -1, 0)),
-        Vertex.new(Vector3f.new(0, 1, 0)),
-        Vertex.new(Vector3f.new(1, -1, 0)),
-        Vertex.new(Vector3f.new(0, -1, 1))
-      ]
-
-      indicies = Array(LibGL::Int) {
-        0, 1, 3,
-        3, 1, 2,
-        2, 1, 0,
-        0, 2, 3
-      }
-
-      @mesh.add_verticies(verticies, indicies);
+      # verticies = [
+      #   Vertex.new(Vector3f.new(-1, -1, 0)),
+      #   Vertex.new(Vector3f.new(0, 1, 0)),
+      #   Vertex.new(Vector3f.new(1, -1, 0)),
+      #   Vertex.new(Vector3f.new(0, -1, 1))
+      # ]
+      #
+      # indicies = Array(LibGL::Int) {
+      #   0, 1, 3,
+      #   3, 1, 2,
+      #   2, 1, 0,
+      #   0, 2, 3
+      # }
+      #
+      # @mesh.add_verticies(verticies, indicies);
 
       @shader.add_vertex_shader(ResourceLoader.load_shader("basicVertex.vs"))
       @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment.fs"))
