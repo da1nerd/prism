@@ -29,9 +29,15 @@ module Prism
           v = Vector3f.new(tokens[1].to_f32, tokens[2].to_f32, tokens[3].to_f32)
           verticies.push(Vertex.new(v))
         elsif tokens[0] === "f"
-          indicies.push(tokens[1].to_i32 - 1);
-          indicies.push(tokens[2].to_i32 - 1);
-          indicies.push(tokens[3].to_i32 - 1);
+          indicies.push(tokens[1].split("/")[0].to_i32 - 1);
+          indicies.push(tokens[2].split("/")[0].to_i32 - 1);
+          indicies.push(tokens[3].split("/")[0].to_i32 - 1);
+
+          if tokens.size > 4
+            indicies.push(tokens[1].split("/")[0].to_i32 - 1);
+            indicies.push(tokens[3].split("/")[0].to_i32 - 1);
+            indicies.push(tokens[4].split("/")[0].to_i32 - 1);
+          end
         end
       end
 

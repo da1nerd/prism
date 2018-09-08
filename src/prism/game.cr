@@ -36,8 +36,8 @@ module Prism
       #
       # @mesh.add_verticies(verticies, indicies);
 
-      @shader.add_vertex_shader(ResourceLoader.load_shader("basicVertex.vs"))
-      @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment.fs"))
+      @shader.add_vertex_shader(ResourceLoader.load_shader("basicVertex120.vs"))
+      @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment120.fs"))
       @shader.compile
 
       @shader.add_uniform("transform")
