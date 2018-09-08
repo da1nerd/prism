@@ -22,13 +22,13 @@ module Prism
       return Math.sqrt(@x^2, @y^2, @z^2, @w^2)
     end
 
-    def *(r : Quanternion)
+    def *(r : Quaternion)
       w = @w * r.w - @x * r.x - @y * r.y - @z * r.z
       x = @x * r.w + @w * r.x + @y * r.z - @z * r.y
       y = @y * r.w + @w * r.y + @z * r.x - @x * r.z
       z = @z * r.w + @w * r.z + @x * r.y - @y * r.x
 
-      return Qanternion.new(x, y, z, w)
+      return Quaternion.new(x, y, z, w)
     end
 
     def *(r : Vector3f)
@@ -37,7 +37,7 @@ module Prism
       y = @w * r.y + @z * r.x - @x * r.z
       z = @w * r.z + @x * r.y - @y * r.x
 
-      return Qanternion.new(x, y, z, w)
+      return Quaternion.new(x, y, z, w)
     end
 
     # Converts euler angles to Quaternion

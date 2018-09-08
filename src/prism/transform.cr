@@ -1,10 +1,13 @@
 require "./vector3f"
 require "matrix"
 require "./matrix4f"
+require "./camera"
 
 module Prism
 
   class Transform
+
+    @camera : Camera?
 
     # projection variables
     @z_near : Float32?
@@ -18,12 +21,8 @@ module Prism
     @rotation : Vector3f
     @scale : Vector3f
 
-    getter translation
-    setter translation
-    getter rotation
-    setter rotation
-    getter scale
-    setter scale
+    getter translation, rotation, scale, camera
+    setter translation, rotation, scale, camera
 
     def initialize()
       @translation = Vector3f.new(0, 0, 0)
@@ -67,13 +66,18 @@ module Prism
       height = @height
       z_near = @z_near
       z_far = @z_far
+      camera = @camera
 
       trans = get_transformation()
+      proj = Matrix4f.new
+      camera_rotation = Matrix4f.new
+      camera_translation = Matrix4f.new
 
-      if fov && width && height && z_near && z_far
-        proj = Matrix4f.new
+      if fov && width && height && z_near && z_far && camera
+        camera_rotation.init_camera(camera.forward, camera.up)
+        camera_translation.init_translation(-camera.pos.x, -camera.pos.y, -camera.pos.z)
         proj.init_projection(fov, width, height, z_near, z_far)
-        return proj * trans
+        return proj * camera_rotation * camera_translation * trans
       else
         return trans
       end
