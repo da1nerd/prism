@@ -28,7 +28,7 @@ module Prism
     def initialize()
       @translation = Vector3f.new(0, 0, 0)
       @rotation = Vector3f.new(0, 0, 0)
-      @scale = Vector3f.new(0, 0, 0)
+      @scale = Vector3f.new(1, 1, 1)
     end
 
     # additional setter in case I don't want to create a vector before hand.
