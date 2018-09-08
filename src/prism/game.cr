@@ -72,14 +72,14 @@ module Prism
 
       sinTemp = Math.sin(@temp)
 
-      @transform.translation(sinTemp, 0, 10)
+      @transform.translation(sinTemp, 0, 5)
       @transform.rotation(0, sinTemp * 180, 0)
-      @transform.scale(0.7f32 * sinTemp, 0.7f32 * sinTemp, 0.7f32 * sinTemp)
+      # @transform.scale(0.7f32 * sinTemp, 0.7f32 * sinTemp, 0.7f32 * sinTemp)
     end
 
     def render
       @shader.bind
-      @shader.set_uniform("transform", @transform.get_transformation)
+      @shader.set_uniform("transform", @transform.get_projected_transformation)
       @mesh.draw
     end
 

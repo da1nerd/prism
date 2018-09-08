@@ -3,7 +3,7 @@ TOOLS_DIR=src/prism/lib
 
 all: samples
 
-run: samples
+start: samples
 	./bin/samples/game
 
 lib: src/prism/lib
