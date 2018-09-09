@@ -91,14 +91,14 @@ module Prism
 
     # returns the left direction
     def left : Vector3f
-      l = @up.cross(@forward)
+      l = @forward.cross(@up)
       l.normalize
       return l
     end
 
     # returns the right direction
     def right : Vector3f
-      r = @forward.cross(@up)
+      r = @up.cross(@forward)
       r.normalize
       return r
     end
