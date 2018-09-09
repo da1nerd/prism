@@ -15,8 +15,8 @@ module Prism
     end
 
     def initialize(@pos : Vector3f, @forward : Vector3f, @up : Vector3f)
-      up.normalize
-      forward.normalize
+      @up.normalize
+      @forward.normalize
     end
 
     def input(input : Input)
@@ -58,7 +58,7 @@ module Prism
 
     # moves the camera
     def move(direction : Vector3f, amount : Float32)
-      @pos = @pos + direction * amount
+      @pos = @pos + direction * amount # TODO: double check operator logic in Vector3f
     end
 
     # rotates around the y axis
@@ -75,7 +75,7 @@ module Prism
 
     # rotates around the x axis
     def rotate_x(angle : Float32)
-      h_axis = Y_AXIS.cross(@forward)
+      h_axis = Y_AXIS.cross(@forward) # TODO: confirm cross product logic
       h_axis.normalize
 
       @forward.rotate(angle, h_axis)
@@ -87,16 +87,16 @@ module Prism
 
     # returns the left direction
     def left : Vector3f
-      left = @up.cross(@forward)
-      left.normalize
-      return left
+      l = @up.cross(@forward)
+      l.normalize
+      return l
     end
 
     # returns the right direction
     def right : Vector3f
-      right = @forward.cross(@up)
-      right.normalize
-      return right
+      r = @forward.cross(@up)
+      r.normalize
+      return r
     end
 
   end
