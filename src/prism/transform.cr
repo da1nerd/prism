@@ -24,7 +24,7 @@ module Prism
     getter translation, rotation, scale, camera
     setter translation, rotation, scale, camera
 
-    def initialize()
+    def initialize() # TODO: maybe make this recieve the camera as a prop
       @translation = Vector3f.new(0, 0, 0)
       @rotation = Vector3f.new(0, 0, 0)
       @scale = Vector3f.new(1, 1, 1)
@@ -77,7 +77,7 @@ module Prism
         camera_rotation.init_camera(camera.forward, camera.up)
         camera_translation.init_translation(-camera.pos.x, -camera.pos.y, -camera.pos.z)
         proj.init_projection(fov, width, height, z_near, z_far)
-        return proj * camera_rotation * camera_translation * trans
+        return proj * (camera_rotation * (camera_translation * trans))
       else
         return trans
       end

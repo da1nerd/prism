@@ -40,10 +40,10 @@ module Prism
     end
 
     def init_camera(forward : Vector3f, up : Vector3f)
-      f = forward;
+      f = forward.clone;
       f.normalize
 
-      r = up;
+      r = up.clone;
       r.normalize
       r = r.cross(f)
 

@@ -12,6 +12,11 @@ module Prism
     def initialize(@x : Float32, @y : Float32, @z : Float32)
     end
 
+    # Returns a copy of the vector
+    def clone
+      return Vector3f.new(@x, @y, @z)
+    end
+
     # Returns the length the vector (pythagorean theorem)
     def length : Float32
       return Math.sqrt(@x*@x + @y*@y + @z*@z)
@@ -49,10 +54,10 @@ module Prism
       r_z = axis.z * sin_half_angle
       r_w = cos_half_angle
 
-      rotation = Quaternion.new(r_x.to_f, r_y.to_f, r_z.to_f, r_w.to_f)
+      rotation = Quaternion.new(r_x.to_f, r_y.to_f, r_z.to_f, r_w.to_f) # TODO: verify quaternion logic. Also perhaps make it take float32 so we do not have to convert.
       conjugate = rotation.conjugate
 
-      w = rotation * self * conjugate
+      w = (rotation * self) * conjugate
 
       @x = w.x.to_f32
       @y = w.y.to_f32
