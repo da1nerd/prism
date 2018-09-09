@@ -11,12 +11,12 @@ module Prism
 
     # Returns the length the vector (pythagorean theorem)
     def length : Float32
-      return Math.sqrt(@x^2 + @y^2)
+      return Math.sqrt(@x * @x + @y * @y)
     end
 
     # Returns the dot product of the vectors
     def dot(r : Vectorf2) : Float32
-      return @x * r.x + @y * r.t
+      return @x * r.x + @y * r.y
     end
 
     # Normalizes this vector to a length of 1
@@ -24,10 +24,12 @@ module Prism
       length = length()
       @x /= length
       @y /= length
+
+      return self
     end
 
     # Rotates the vector by some angle
-    def rotate(angle) : Vector2f
+    def rotate(angle : Float32) : Vector2f
       rad : Float64 = angle / 180.0f64 * Math::PI
       cos : Float64 = Math.cos(rad)
       sin : Float64 = Math.sin(rad)
