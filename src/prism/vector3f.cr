@@ -5,9 +5,8 @@ module Prism
 
   class Vector3f
 
-    property x : Float32
-    property y : Float32
-    property z : Float32
+    getter x, y, z
+    setter z, y, z
 
     def initialize(@x : Float32, @y : Float32, @z : Float32)
     end
@@ -29,9 +28,9 @@ module Prism
 
     # Returns the cross product of the vectors
     def cross(r : Vector3f) : Vector3f
-      x = @y * r.z - z * r.y
-      y = @z * r.x - x * r.z
-      z = @x * r.y - y * r.x
+      x = @y * r.z - @z * r.y
+      y = @z * r.x - @x * r.z
+      z = @x * r.y - @y * r.x
 
       return Vector3f.new(x, y, z)
     end

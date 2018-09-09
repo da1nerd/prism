@@ -1,3 +1,5 @@
+require "./math"
+
 module Prism
 
   class Vector2f
@@ -30,9 +32,9 @@ module Prism
 
     # Rotates the vector by some angle
     def rotate(angle : Float32) : Vector2f
-      rad : Float64 = angle / 180.0f64 * Math::PI
-      cos : Float64 = Math.cos(rad)
-      sin : Float64 = Math.sin(rad)
+      rad : Float32 = Prism.to_rad(angle)
+      cos : Float32 = Math.cos(rad)
+      sin : Float32 = Math.sin(rad)
 
       return Vector2f.new(@x * cos - @y * sin, @x * sin + @y * cos)
     end
