@@ -53,7 +53,7 @@ module Prism
       if keys.size > 0
         puts "Pressed keys #{keys}"
       end
-      # @camera.input(input)
+      @camera.input(input)
       # if input.get_key_down(Input::KEY_UP)
       #   puts "We've just pressed up"
       # end
