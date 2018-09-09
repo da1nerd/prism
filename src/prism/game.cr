@@ -20,9 +20,8 @@ module Prism
       @mesh = ResourceLoader.load_mesh("box.obj") # Mesh.new
       @shader = Shader.new
       @camera = Camera.new
-      @transform = Transform.new
+      @transform = Transform.new(@camera)
       @transform.set_projection(70f32, width, height, 0.1f32, 1_000f32)
-      @transform.camera = @camera
       # verticies = [
       #   Vertex.new(Vector3f.new(-1, -1, 0)),
       #   Vertex.new(Vector3f.new(0, 1, 0)),
