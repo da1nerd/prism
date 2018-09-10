@@ -9,16 +9,26 @@ module Prism
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
     end
 
+    # Enable/disables textures
+    def self.set_textures(enabled : Boolean)
+      if enabled
+        LibGL.enable(LibGL::TEXTURE_2D)
+      else
+        LibGL.disable(LibGL::TEXTURE_2D)
+      end
+    end
+
     def self.init_graphics
       LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
 
       LibGL.front_face(LibGL::CW)
       LibGL.cull_face(LibGL::BACK)
-      # LibGL.enable(LibGL::CULL_FACE)
+      LibGL.enable(LibGL::CULL_FACE)
       LibGL.enable(LibGL::DEPTH_TEST)
 
       # TODO: Depth clamp for later
 
+      LibGL.enable(LibGL::TEXTURE_2D)
       LibGL.enable(LibGL::FRAMEBUFFER_SRGB)
     end
 

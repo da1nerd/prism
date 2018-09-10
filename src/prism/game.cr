@@ -17,29 +17,31 @@ module Prism
     @temp : Float32 = 0.0f32
 
     def initialize(width : Float32, height : Float32)
-      @mesh = ResourceLoader.load_mesh("box.obj") # Mesh.new
+      @mesh = Mesh.new #ResourceLoader.load_mesh("box.obj") # Mesh.new
+      @texture = ResourceLoader.load_texture("test.png")
       @shader = Shader.new
       @camera = Camera.new
       @transform = Transform.new(@camera)
       @transform.set_projection(70f32, width, height, 0.1f32, 1_000f32)
-      # verticies = [
-      #   Vertex.new(Vector3f.new(-1, -1, 0)),
-      #   Vertex.new(Vector3f.new(0, 1, 0)),
-      #   Vertex.new(Vector3f.new(1, -1, 0)),
-      #   Vertex.new(Vector3f.new(0, -1, 1))
-      # ]
-      #
-      # indicies = Array(LibGL::Int) {
-      #   0, 1, 3,
-      #   3, 1, 2,
-      #   2, 1, 0,
-      #   0, 2, 3
-      # }
-      #
-      # @mesh.add_verticies(verticies, indicies);
 
-      @shader.add_vertex_shader(ResourceLoader.load_shader("basicVertex120.vs"))
-      @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment120.fs"))
+      verticies = [
+        Vertex.new(Vector3f.new(-1, -1, 0), Vector2f.new(0, 0)),
+        Vertex.new(Vector3f.new(0, 1, 0), Vector2f.new(0.5, 0)),
+        Vertex.new(Vector3f.new(1, -1, 0), Vector2f.new(1.0, 0)),
+        Vertex.new(Vector3f.new(0, -1, 1), Vector2f.new(0.0, 0.5))
+      ]
+
+      indicies = Array(LibGL::Int) {
+        3, 1, 0,
+        2, 1, 3,
+        0, 1, 2,
+        0, 2, 3
+      }
+
+      @mesh.add_verticies(verticies, indicies);
+
+      @shader.add_vertex_shader(ResourceLoader.load_shader("basicVertex.vs"))
+      @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment.fs"))
       @shader.compile
 
       @shader.add_uniform("transform")
@@ -78,7 +80,7 @@ module Prism
 
       sinTemp = Math.sin(@temp)
 
-      @transform.translation(0, 0, 10)
+      @transform.translation(0, 0, 5)
       @transform.rotation(0, 0, 0)
       # @transform.scale(0.7f32 * sinTemp, 0.7f32 * sinTemp, 0.7f32 * sinTemp)
     end
@@ -86,6 +88,7 @@ module Prism
     def render
       @shader.bind
       @shader.set_uniform("transform", @transform.get_projected_transformation)
+      @texture.bind
       @mesh.draw
     end
 

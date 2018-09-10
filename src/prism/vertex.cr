@@ -4,13 +4,15 @@ module Prism
 
   class Vertex
 
-    SIZE = 3
+    SIZE = 5
 
-    # setter pos
-    getter pos
+    getter pos, tex_coord
 
     def initialize(@pos : Vector3f)
+      initialize(@pos, Vector2f.new(0,0))
+    end
 
+    def initialize(@pos : Vector3f, @tex_coord : Vector2f)
     end
 
   end

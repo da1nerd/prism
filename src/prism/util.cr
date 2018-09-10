@@ -10,6 +10,8 @@ module Prism
         buffer.push(v.pos.x)
         buffer.push(v.pos.y)
         buffer.push(v.pos.z)
+        buffer.push(v.tex_coord.x)
+        buffer.push(v.tex_coord.y)
       end
 
       return buffer
