@@ -14,11 +14,15 @@ module Prism
       path = File.join(File.dirname(PROGRAM_NAME), "/res/textures/", file_name)
       data = File.read(path)
 
-      # bind texture
-      # id = uninitialized LibGL::UInt
+      # create texture
       LibGL.gen_textures 1, out id
 
       # generate texture
+      # use this to load png https://github.com/stumpycr/stumpy_png
+      # https://github.com/nya-engine/nya/blob/585ae659542590edb500646e22ba428e9684fa8a/src/nya/render/texture.cr#L15
+      # see https://github.com/nya-engine/nya/blob/585ae659542590edb500646e22ba428e9684fa8a/src/nya/render/backends/gl.cr#L157
+      LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MIN_FILTER, LibGL::LINEAR)
+      LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MAG_FILTER, LibGL::LINEAR)
       LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGB, 512, 512, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
       LibGL.generate_mipmap(LibGL::TEXTURE_2D)
 
