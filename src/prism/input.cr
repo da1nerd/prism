@@ -4,7 +4,7 @@ require "./vector2f"
 module Prism
 
   class Input
-    NUM_KEYCODES = 256
+    NUM_KEYCODES = 1256
     NUM_MOUSEBUTTONS = 10
 
     KEY_F1 = 1
@@ -19,10 +19,10 @@ module Prism
     KEY_F10 = 9
     KEY_F11 = 11
     KEY_F12 = 12
-    KEY_LEFT = 100
-    KEY_UP = 101
-    KEY_RIGHT = 102
-    KEY_DOWN = 103
+    KEY_LEFT = 1100
+    KEY_UP = 1101
+    KEY_RIGHT = 1102
+    KEY_DOWN = 1103
     KEY_PAGE_UP = 104
     KEY_PAGE_DOWN = 105
     KEY_HOME = 106
