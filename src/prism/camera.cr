@@ -79,7 +79,7 @@ module Prism
 
     # rotates around the x axis
     def rotate_x(angle : Float32)
-      h_axis = Y_AXIS.cross(@forward) # TODO: confirm cross product logic
+      h_axis = Y_AXIS.cross(@forward)
       h_axis.normalize
 
       @forward.rotate(angle, h_axis)

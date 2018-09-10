@@ -6,7 +6,7 @@ module Prism
   class Vector3f
 
     getter x, y, z
-    setter z, y, z
+    # setter z, y, z
 
     def initialize(@x : Float32, @y : Float32, @z : Float32)
     end
@@ -38,39 +38,26 @@ module Prism
     # Normalizes this vector to a length of 1
     def normalize
       length = length()
-      @x /= length
-      @y /= length
-      @z /= length
+      if length > 0
+        @x /= length
+        @y /= length
+        @z /= length
+      end
     end
 
     # Rotates the vector by some angle
     def rotate(angle : Float32, axis : Vector3f) : Vector3f
-      # sin_angle = Math.sin(Prism.to_rad(-angle))
-      # cos_angle = Math.cos(Prism.to_rad(-angle))
-      #
-      # x_rotation = self.cross(axis * sin_angle) # rotation on local X
-      # z_rotation = self * cos_angle # roate on local Z
-      # y_rotation = axis * self.dot(axis * (1 - cos_angle)) # rotation on local Y
-      #
-      # return x_rotation + z_rotation + y_rotation
+      sin_angle = Math.sin(Prism.to_rad(-angle))
+      cos_angle = Math.cos(Prism.to_rad(-angle))
 
-      # TODO: this doesn't work
-      sin_half_angle = Math.sin(Prism.to_rad(angle / 2))
-      cos_half_angle = Math.cos(Prism.to_rad(angle / 2))
+      x_rotation = self.cross(axis * sin_angle) # rotation on local X
+      z_rotation = self * cos_angle # roate on local Z
+      y_rotation = axis * self.dot(axis * (1 - cos_angle)) # rotation on local Y
 
-      r_x = axis.x * sin_half_angle
-      r_y = axis.y * sin_half_angle
-      r_z = axis.z * sin_half_angle
-      r_w = cos_half_angle
-
-      rotation = Quaternion.new(r_x.to_f, r_y.to_f, r_z.to_f, r_w.to_f) # TODO: verify quaternion logic. Also perhaps make it take float32 so we do not have to convert.
-      conjugate = rotation.conjugate
-
-      w = (rotation * self) * conjugate
-
-      @x = w.x.to_f32
-      @y = w.y.to_f32
-      @z = w.z.to_f32
+      rotation = x_rotation + z_rotation + y_rotation
+      @x = rotation.x
+      @y = rotation.y
+      @z = rotation.z
 
       return self
     end

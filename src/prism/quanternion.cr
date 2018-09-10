@@ -4,7 +4,6 @@ require "./vector3f"
 module Prism
   struct Quaternion
     getter x, y, z, w
-    setter x, y, z, w
 
     @x : Float64
     @y : Float64
@@ -19,7 +18,7 @@ module Prism
     end
 
     def length : Float32
-      return Math.sqrt(@x^2, @y^2, @z^2, @w^2)
+      magnitude
     end
 
     def *(r : Quaternion)
