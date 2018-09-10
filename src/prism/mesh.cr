@@ -27,10 +27,14 @@ module Prism
 
     def draw
       LibGL.enable_vertex_attrib_array(0)
+      LibGL.enable_vertex_attrib_array(1)
 
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
-      offset = Pointer(Void).new(0)
-      LibGL.vertex_attrib_pointer(0, 3, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), offset)
+      mesh_offset = Pointer(Void).new(0)
+      LibGL.vertex_attrib_pointer(0, 3, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), mesh_offset)
+      
+      texture_offset = Pointer(Void).new(12) # TRICKY: skip the three floating point numbers above
+      LibGL.vertex_attrib_pointer(1, 2, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), texture_offset)
 
       # Draw faces using the index buffer
       LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @ibo)
@@ -38,6 +42,7 @@ module Prism
       LibGL.draw_elements(LibGL::TRIANGLES, @size, LibGL::UNSIGNED_INT, indicies_offset)
 
       LibGL.disable_vertex_attrib_array(0)
+      LibGL.disable_vertex_attrib_array(1)
     end
 
   end

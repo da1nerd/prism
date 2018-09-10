@@ -1,15 +1,37 @@
 require "./vector3f"
 require "./mesh"
 require "./vertex"
+require "./texture"
+require "lib_gl"
 
 module Prism
   class ResourceLoader
+
+    def self.load_texture(file_name : String) : Texture
+      ext = File.extname(file_name)
+
+      # read data
+      path = File.join(File.dirname(PROGRAM_NAME), "/res/textures/", file_name)
+      data = File.read(path)
+
+      # bind texture
+      # id = uninitialized LibGL::UInt
+      LibGL.gen_textures 1, out id
+
+      # generate texture
+      LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGB, 512, 512, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
+      LibGL.generate_mipmap(LibGL::TEXTURE_2D)
+
+      Texture.new(id)
+    end
+
     # Loads a shader from the disk
     def self.load_shader(file_name : String) : String
       path = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", file_name)
       return File.read(path)
     end
 
+    # Loads a mesh from the disk
     def self.load_mesh(file_name : String) : Mesh
       ext = File.extname(file_name)
       unless ext === ".obj"
