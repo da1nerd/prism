@@ -78,7 +78,7 @@ module Prism
 
       sinTemp = Math.sin(@temp)
 
-      @transform.translation(sinTemp, 0, 5)
+      @transform.translation(0, 0, 10)
       @transform.rotation(0, sinTemp * 180, 0)
       # @transform.scale(0.7f32 * sinTemp, 0.7f32 * sinTemp, 0.7f32 * sinTemp)
     end

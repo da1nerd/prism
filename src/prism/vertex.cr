@@ -6,7 +6,7 @@ module Prism
 
     SIZE = 3
 
-    setter pos
+    # setter pos
     getter pos
 
     def initialize(@pos : Vector3f)

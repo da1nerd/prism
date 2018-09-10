@@ -4,8 +4,8 @@ module Prism
 
   class Vector2f
 
-    property x : Float32
-    property y : Float32
+    getter x : Float32
+    getter y : Float32
 
     def initialize(@x : Float32, @y : Float32)
 
