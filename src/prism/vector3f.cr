@@ -27,12 +27,12 @@ module Prism
     end
 
     # Returns the cross product of the vectors
-    def cross(r : Vector3f) : Vector3f
-      x = @y * r.z - @z * r.y
-      y = @z * r.x - @x * r.z
-      z = @x * r.y - @y * r.x
-
-      return Vector3f.new(x, y, z)
+    def cross(other : Vector3f) : Vector3f
+      Vector3f.new(
+        @y*other.z - @z*other.y,
+        @z*other.x - @x*other.z,
+        @x*other.y - @y*other.x
+      )
     end
 
     # Normalizes this vector to a length of 1
@@ -45,6 +45,16 @@ module Prism
 
     # Rotates the vector by some angle
     def rotate(angle : Float32, axis : Vector3f) : Vector3f
+      # sin_angle = Math.sin(Prism.to_rad(-angle))
+      # cos_angle = Math.cos(Prism.to_rad(-angle))
+      #
+      # x_rotation = self.cross(axis * sin_angle) # rotation on local X
+      # z_rotation = self * cos_angle # roate on local Z
+      # y_rotation = axis * self.dot(axis * (1 - cos_angle)) # rotation on local Y
+      #
+      # return x_rotation + z_rotation + y_rotation
+
+      # TODO: this doesn't work
       sin_half_angle = Math.sin(Prism.to_rad(angle / 2))
       cos_half_angle = Math.cos(Prism.to_rad(angle / 2))
 
