@@ -105,7 +105,7 @@ module Prism
       ry.[]=(0, 0, Math.cos(yrad)); ry.[]=(0, 2, -Math.sin(yrad));
       ry.[]=(2, 0, Math.sin(yrad)); ry.[]=(2, 2, Math.cos(yrad));
 
-      @m = rz * ry * rz
+      @m = rx * ry * rz
 
     end
 

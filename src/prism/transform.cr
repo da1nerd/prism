@@ -22,7 +22,7 @@ module Prism
     getter translation, rotation, scale, camera
     setter translation, rotation, scale, camera
 
-    def initialize(@camera : Camera) # TODO: maybe make this recieve the camera as a prop
+    def initialize(@camera : Camera)
       @translation = Vector3f.new(0, 0, 0)
       @rotation = Vector3f.new(0, 0, 0)
       @scale = Vector3f.new(1, 1, 1)

@@ -28,36 +28,36 @@ module Prism
       rot_amt = 100 * delta
 
       # move
-      if input.get_key(Input::KEY_W)
-        move(forward, mov_amt)
-      end
-      if input.get_key(Input::KEY_S)
-        move(forward, -mov_amt)
-      end
-      if input.get_key(Input::KEY_A)
-        move(left, mov_amt)
-      end
-      if input.get_key(Input::KEY_D)
-        move(right, mov_amt)
-      end
+      # if input.get_key(Input::KEY_W)
+      #   move(forward, mov_amt)
+      # end
+      # if input.get_key(Input::KEY_S)
+      #   move(forward, -mov_amt)
+      # end
+      # if input.get_key(Input::KEY_A)
+      #   move(left, mov_amt)
+      # end
+      # if input.get_key(Input::KEY_D)
+      #   move(right, mov_amt)
+      # end
 
       # TODO: the special keys and keyboard keys do not have unique values.
       # e..g KEY_D has the same code as KEY_LEFT
 
       # TODO: the rotation is broken. Need to fix quaternion logic
       # rotate
-      # if input.get_key(Input::KEY_UP)
-      #   rotate_x(-rot_amt)
-      # end
-      # if input.get_key(Input::KEY_DOWN)
-      #   rotate_x(rot_amt)
-      # end
-      # if input.get_key(Input::KEY_LEFT)
-      #   rotate_y(-rot_amt)
-      # end
-      # if input.get_key(Input::KEY_RIGHT)
-      #   rotate_y(rot_amt)
-      # end
+      if input.get_key(Input::KEY_UP)
+        rotate_x(-rot_amt)
+      end
+      if input.get_key(Input::KEY_DOWN)
+        rotate_x(rot_amt)
+      end
+      if input.get_key(Input::KEY_LEFT)
+        rotate_y(-rot_amt)
+      end
+      if input.get_key(Input::KEY_RIGHT)
+        rotate_y(rot_amt)
+      end
     end
 
     # moves the camera

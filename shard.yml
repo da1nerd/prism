@@ -7,6 +7,8 @@ authors:
 crystal: 0.26.0
 
 dependencies:
+  crystaledge:
+    github: unn4m3d/crystaledge
   lib_gl:
     github: neutrinog/lib_gl
     branch: develop
