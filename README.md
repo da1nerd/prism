@@ -3,6 +3,9 @@
 A cross between a game engine and a UI toolkit.
 This is mostly a thought experiment and it may turn out to be nothing.
 
+Once I get far enough along I'll re-organize all-the-things so it's a modular engine instead of just a hacky-not-usable-library.
+
+
 ## Installation
 
 Add this to your application's `shard.yml`:
@@ -13,23 +16,20 @@ dependencies:
     github: neutrinog/prism
 ```
 
-We are still very early in the development of this library and have not finished adding support for external integration.
-
 ## Usage
 
 ```crystal
 require "prism"
 ```
+For now you can't really use it because it's still under development. But you can run the sample application.
 
-TODO: Write usage instructions here
-
-Usages samples can be found under `samples/`.
+```bash
+make start
+```
 
 ## Development
 
-Refer to [this library](https://github.com/calebuharrison/LibGL) for differences from the c OpenGL library.
-
-TODO: Write development instructions here
+TODO: Write development instructions here.
 
 - install cmake
 - install freeglut
@@ -37,6 +37,8 @@ TODO: Write development instructions here
 - install crystal
 
 ## Contributing
+
+I'm using this as a learning exercise by following along with [this tutorial](https://www.youtube.com/watch?v=ss3AnSxJ2X8&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&index=1). But if you are super interested send me a message so we can coordinate maybe?
 
 1. Fork it (<https://github.com/neutrinog/prism/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
