@@ -37,6 +37,12 @@ TODO: Write development instructions here.
 - install opengl
 - install crystal
 
+Supporting libraires I've built/forked-and-modified for this project:
+
+- [CrystGLUT](https://github.com/neutrinog/cryst_glut) - an OpenGL context toolkit that leverages [Freeglut](http://freeglut.sourceforge.net/).
+- [LibGLUT](https://github.com/neutrinog/lib_glut) - [Freeglut](http://freeglut.sourceforge.net/) bindings for Crystal.
+- [LibGL](https://github.com/neutrinog/cryst_glut) - OpenGL bindings for Crystal with some custom bindings of my own to support passing closure from Crystal to C.
+
 ## Contributing
 
 I'm using this as a learning exercise by following along with [this tutorial](https://www.youtube.com/watch?v=ss3AnSxJ2X8&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&index=1). But if you are super interested send me a message so we can coordinate maybe?
