@@ -5,6 +5,7 @@ This is mostly a thought experiment and it may turn out to be nothing.
 
 Once I get far enough along I'll re-organize all-the-things so it's a modular engine instead of just a hacky-not-usable-library.
 
+I hope this will be usable on Windows some day. But that depends on [Crystal](https://github.com/crystal-lang/crystal/wiki/Platform-Support) which is still in beta.
 
 ## Installation
 
