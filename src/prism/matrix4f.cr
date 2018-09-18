@@ -6,8 +6,6 @@ module Prism
   # TODO: port another matrix class to here
   class Matrix4f
 
-    getter m
-
     @m : Matrix(Float32)
 
     def initialize
@@ -18,6 +16,10 @@ module Prism
       dimensions = matrix.dimensions;
       raise Matrix::DimensionMismatch.new unless dimensions[0] == 4 && dimensions[1] == 4
       @m = matrix
+    end
+
+    def m
+      return @m.clone
     end
 
     def as_array

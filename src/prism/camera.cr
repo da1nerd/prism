@@ -31,7 +31,7 @@ module Prism
       mov_amt = 10 * delta
 
       # un-lock the cursor
-      if input.get_key(Input::ESCAPE)
+      if input.get_key(Input::KEY_ESCAPE)
         input.set_cursor(true)
         @mouse_locked = false
       end
