@@ -86,7 +86,7 @@ module Prism
     end
 
     def render
-      RenderUtil.set_clear_color((@camera.pos / 2048).abs)
+      RenderUtil.set_clear_color((@camera.pos / 1024).abs)
       @shader.bind
       @shader.set_uniform("transform", @transform.get_projected_transformation)
       @texture.bind
