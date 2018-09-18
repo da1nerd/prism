@@ -46,6 +46,10 @@ module Prism
       LibGL.clear_color(color.x, color.y, color.z, 1.0);
     end
 
+    def self.unbind_textures
+      LibGL.bind_texture(LibGL::TEXTURE_2D, 0)
+    end
+
   end
 
 end
