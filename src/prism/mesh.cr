@@ -32,8 +32,8 @@ module Prism
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
       mesh_offset = Pointer(Void).new(0)
       LibGL.vertex_attrib_pointer(0, 3, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), mesh_offset)
-      
-      texture_offset = Pointer(Void).new(12) # TRICKY: skip the three floating point numbers above
+
+      texture_offset = Pointer(Void).new(3 * sizeof(Float32)) # TRICKY: skip the three floating point numbers above
       LibGL.vertex_attrib_pointer(1, 2, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), texture_offset)
 
       # Draw faces using the index buffer
