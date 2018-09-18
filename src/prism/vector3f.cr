@@ -6,7 +6,6 @@ module Prism
   class Vector3f
 
     getter x, y, z
-    # setter z, y, z
 
     def initialize(@x : Float32, @y : Float32, @z : Float32)
     end
@@ -36,13 +35,9 @@ module Prism
     end
 
     # Normalizes this vector to a length of 1
-    def normalize
+    def normalized
       length = length()
-      if length > 0
-        @x /= length
-        @y /= length
-        @z /= length
-      end
+      return Vector3f.new(@x / length, @y / length, @z / length)
     end
 
     # Rotates the vector by some angle
@@ -54,12 +49,7 @@ module Prism
       z_rotation = self * cos_angle # roate on local Z
       y_rotation = axis * self.dot(axis * (1 - cos_angle)) # rotation on local Y
 
-      rotation = x_rotation + z_rotation + y_rotation
-      @x = rotation.x
-      @y = rotation.y
-      @z = rotation.z
-
-      return self
+      return x_rotation + z_rotation + y_rotation
     end
 
     # Adds two vectors

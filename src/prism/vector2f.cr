@@ -4,11 +4,9 @@ module Prism
 
   class Vector2f
 
-    getter x : Float32
-    getter y : Float32
+    getter x, y : Float32
 
     def initialize(@x : Float32, @y : Float32)
-
     end
 
     # Returns the length the vector (pythagorean theorem)
@@ -22,12 +20,9 @@ module Prism
     end
 
     # Normalizes this vector to a length of 1
-    def normalize : Vector2f
+    def normalized : Vector2f
       length = length()
-      @x /= length
-      @y /= length
-
-      return self
+      return Vector2f.new(@x / length, @y / length)
     end
 
     # Rotates the vector by some angle
@@ -81,6 +76,10 @@ module Prism
 
     def to_string
       return "(#{@x}, #{@y})"
+    end
+
+    def abs : Vector2f
+      return Vector2f.new(@x.abs, @y.abs)
     end
 
   end

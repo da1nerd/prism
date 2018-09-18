@@ -40,13 +40,8 @@ module Prism
     end
 
     def init_camera(forward : Vector3f, up : Vector3f)
-      f = forward.clone;
-      f.normalize
-
-      r = up.clone;
-      r.normalize
-      r = r.cross(f)
-
+      f = forward.normalized;
+      r = up.normalized.cross(f);
       u = f.cross(r)
 
       # start with identity matrix

@@ -17,8 +17,8 @@ module Prism
     end
 
     def initialize(@pos : Vector3f, @forward : Vector3f, @up : Vector3f)
-      @up.normalize
-      @forward.normalize
+      @up = @up.normalized
+      @forward = @forward.normalized
     end
 
     def input(input : Input)
@@ -34,24 +34,6 @@ module Prism
       if input.get_key(Input::ESCAPE)
         input.set_cursor(true)
         @mouse_locked = false
-      end
-
-      if @mouse_locked
-        delta_pos = input.get_mouse_position - center_position
-
-        rot_y = delta_pos.x != 0
-        rot_x = delta_pos.y != 0
-
-        if rot_y
-          rotate_y(delta_pos.x * sensitivity)
-        end
-        if rot_x
-          rotate_x(delta_pos.y * sensitivity)
-        end
-
-        if rot_y || rot_x
-          input.set_mouse_position(center_position)
-        end
       end
 
       # lock the cursor
@@ -75,7 +57,24 @@ module Prism
         move(right, mov_amt)
       end
 
+      # rotate
+      if @mouse_locked
+        delta_pos = input.get_mouse_position - center_position
 
+        rot_y = delta_pos.x != 0
+        rot_x = delta_pos.y != 0
+
+        if rot_y
+          rotate_y(delta_pos.x * sensitivity)
+        end
+        if rot_x
+          rotate_x(delta_pos.y * sensitivity)
+        end
+
+        if rot_y || rot_x
+          input.set_mouse_position(center_position)
+        end
+      end
     end
 
     # moves the camera
@@ -85,40 +84,26 @@ module Prism
 
     # rotates around the y axis
     def rotate_y(angle : Float32)
-      h_axis = Y_AXIS.cross(@forward)
-      h_axis.normalize
-
-      @forward.rotate(angle, Y_AXIS)
-      @forward.normalize
-
-      @up = @forward.cross(h_axis)
-      @up.normalize
+      h_axis = Y_AXIS.cross(@forward).normalized
+      @forward = @forward.rotate(angle, Y_AXIS).normalized
+      @up = @forward.cross(h_axis).normalized
     end
 
     # rotates around the x axis
     def rotate_x(angle : Float32)
-      h_axis = Y_AXIS.cross(@forward)
-      h_axis.normalize
-
-      @forward.rotate(angle, h_axis)
-      @forward.normalize
-
-      @up = @forward.cross(h_axis)
-      @up.normalize
+      h_axis = Y_AXIS.cross(@forward).normalized
+      @forward = @forward.rotate(angle, h_axis).normalized
+      @up = @forward.cross(h_axis).normalized
     end
 
     # returns the left direction
     def left : Vector3f
-      l = @forward.cross(@up)
-      l.normalize
-      return l
+      return @forward.cross(@up).normalized
     end
 
     # returns the right direction
     def right : Vector3f
-      r = @up.cross(@forward)
-      r.normalize
-      return r
+      return @up.cross(@forward).normalized
     end
 
   end
