@@ -106,6 +106,10 @@ module Prism
       return "(#{@x}, #{@y}, #{@z})"
     end
 
+    def abs : Vector3f
+      return Vector3f.new(@x.abs, @y.abs, @z.abs)
+    end
+
   end
 
 end

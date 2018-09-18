@@ -7,6 +7,7 @@ module Prism
     NUM_KEYCODES = 1256
     NUM_MOUSEBUTTONS = 10
 
+    ESCAPE = 27
     KEY_F1 = 1
     KEY_F2 = 1
     KEY_F3 = 2
@@ -104,6 +105,21 @@ module Prism
     # Returns the position of the mouse
     def get_mouse_position : Vector2f
       return Vector2f.new(@window.get_mouse_x, @window.get_mouse_y)
+    end
+
+    # Sets the mouse position within the window
+    def set_mouse_position (position : Vector2f)
+      @window.set_mouse_position(position.x, position.y)
+    end
+
+    # Controls the cursor visibility within the window
+    def set_cursor(enabled : Bool)
+      @window.enable_cursor(enabled)
+    end
+
+    # Returns the center of the window
+    def get_center : Vector2f
+      return Vector2f.new(@window.get_width / 2.0f32, @window.get_height / 2.0f32)
     end
   end
 

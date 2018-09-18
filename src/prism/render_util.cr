@@ -1,4 +1,5 @@
 require "lib_gl"
+require "./vector3f"
 
 module Prism
 
@@ -39,6 +40,10 @@ module Prism
     # Returns which version of OpenGL is available
     def self.get_open_gl_version
       return String.new(LibGL.get_string(LibGL::VERSION))
+    end
+
+    def self.set_clear_color(color : Vector3f)
+      LibGL.clear_color(color.x, color.y, color.z, 1.0);
     end
 
   end
