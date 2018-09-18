@@ -11,26 +11,28 @@ module Prism
     def self.load_texture(file_name : String) : Texture
       ext = File.extname(file_name)
 
-      # read data
+      # read texture data
       path = File.join(File.dirname(PROGRAM_NAME), "/res/textures/", file_name)
       data = LibTools.load_png(path, out width, out height, out num_channels)
-      puts "loaded image #{width} #{height} #{num_channels}"
-
-      # data = File.read(path)
 
       # create texture
       LibGL.gen_textures(1, out id)
       LibGL.bind_texture(LibGL::TEXTURE_2D, id)
 
-      # generate texture
-      # use this to load png https://github.com/stumpycr/stumpy_png
-      # https://github.com/nya-engine/nya/blob/585ae659542590edb500646e22ba428e9684fa8a/src/nya/render/texture.cr#L15
-      # see https://github.com/nya-engine/nya/blob/585ae659542590edb500646e22ba428e9684fa8a/src/nya/render/backends/gl.cr#L157
+      # set the texture wrapping/filtering options
+      LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_WRAP_S, LibGL::REPEAT)
+      LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_WRAP_T, LibGL::REPEAT)
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MIN_FILTER, LibGL::LINEAR)
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MAG_FILTER, LibGL::LINEAR)
-      LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGB, width, height, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
-      LibGL.generate_mipmap(LibGL::TEXTURE_2D)
 
+      if data
+        LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGB, width, height, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
+        LibGL.generate_mipmap(LibGL::TEXTURE_2D)
+        # TODO: free image data from stbi. see LibTools.
+      else
+        puts "Error: Failed to load texture data from #{path}"
+        exit 1
+      end
       Texture.new(id)
     end
 

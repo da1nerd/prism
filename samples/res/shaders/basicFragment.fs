@@ -1,6 +1,6 @@
 #version 330
 
-in vec4 color;
+// in vec4 color;
 in vec2 texCoord0;
 
 uniform sampler2D sampler;

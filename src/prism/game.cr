@@ -28,7 +28,7 @@ module Prism
         Vertex.new(Vector3f.new(-1, -1, 0), Vector2f.new(0, 0)),
         Vertex.new(Vector3f.new(0, 1, 0), Vector2f.new(0.5, 0)),
         Vertex.new(Vector3f.new(1, -1, 0), Vector2f.new(1.0, 0)),
-        Vertex.new(Vector3f.new(0, -1, 1), Vector2f.new(0.0, 0.5))
+        Vertex.new(Vector3f.new(0, -1, 1), Vector2f.new(0.5, 1.0))
       ]
 
       indicies = Array(LibGL::Int) {
