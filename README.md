@@ -57,7 +57,7 @@ I'm using this as a learning exercise by following along with [this tutorial](ht
 
 - [x] load models
 - [x] load shaders
-- [x] manipulate camera (awsd and arrow keys in the sample)
+- [x] manipulate camera (awsd for movement, click mouse to capture and rotate, ESC to release mouse)
 - [x] load textures
 - [x] basic mouse capture
 

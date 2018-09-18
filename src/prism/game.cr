@@ -3,7 +3,7 @@ require "./input"
 require "./mesh"
 require "./vertex"
 require "./vector3f"
-require "./basic_shader"
+require "./phong_shader"
 require "./resource_loader"
 require "./timer"
 require "./transform"
@@ -19,10 +19,12 @@ module Prism
     def initialize(width : Float32, height : Float32)
       @mesh = Mesh.new #ResourceLoader.load_mesh("box.obj") # Mesh.new
       @material = Material.new(ResourceLoader.load_texture("test.png"), Vector3f.new(0,1,1));
-      @shader = BasicShader.new
+      @shader = PhongShader.new
       @camera = Camera.new
       @transform = Transform.new(@camera)
       @transform.set_projection(70f32, width, height, 0.1f32, 1_000f32)
+
+      PhongShader.ambient_light = Vector3f.new(0.1, 0.1, 0.1)
 
       verticies = [
         Vertex.new(Vector3f.new(-1, -1, 0), Vector2f.new(0, 0)),
