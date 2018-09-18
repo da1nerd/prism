@@ -3,7 +3,7 @@ require "./input"
 require "./mesh"
 require "./vertex"
 require "./vector3f"
-require "./shader"
+require "./basic_shader"
 require "./resource_loader"
 require "./timer"
 require "./transform"
@@ -18,8 +18,8 @@ module Prism
 
     def initialize(width : Float32, height : Float32)
       @mesh = Mesh.new #ResourceLoader.load_mesh("box.obj") # Mesh.new
-      @texture = ResourceLoader.load_texture("test.png")
-      @shader = Shader.new
+      @material = Material.new(ResourceLoader.load_texture("test.png"), Vector3f.new(0,1,1));
+      @shader = BasicShader.new
       @camera = Camera.new
       @transform = Transform.new(@camera)
       @transform.set_projection(70f32, width, height, 0.1f32, 1_000f32)
@@ -39,12 +39,6 @@ module Prism
       }
 
       @mesh.add_verticies(verticies, indicies);
-
-      @shader.add_vertex_shader(ResourceLoader.load_shader("basicVertex.vs"))
-      @shader.add_fragment_shader(ResourceLoader.load_shader("basicFragment.fs"))
-      @shader.compile
-
-      @shader.add_uniform("transform")
 
     end
 
@@ -88,8 +82,7 @@ module Prism
     def render
       RenderUtil.set_clear_color((@camera.pos / 1024).abs)
       @shader.bind
-      @shader.set_uniform("transform", @transform.get_projected_transformation)
-      @texture.bind
+      @shader.update_uniforms(@transform.get_transformation, @transform.get_projected_transformation, @material)
       @mesh.draw
     end
 

@@ -1,6 +1,7 @@
 require "lib_gl"
 require "./vector3f"
 require "./matrix4f"
+require "./material"
 
 module Prism
 
@@ -23,6 +24,10 @@ module Prism
     # uses the shader
     def bind
       LibGL.use_program(@program)
+    end
+
+    def update_uniforms(world_matrix : Matrix4f, projected_matrix : Matrix4f, material : Material)
+
     end
 
     def add_vertex_shader(text : String)
