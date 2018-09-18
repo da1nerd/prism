@@ -40,8 +40,8 @@ TODO: Write development instructions here.
 Supporting libraires I've built/forked-and-modified for this project:
 
 - [CrystGLUT](https://github.com/neutrinog/cryst_glut) - an OpenGL context toolkit that leverages [Freeglut](http://freeglut.sourceforge.net/).
-- [LibGLUT](https://github.com/neutrinog/lib_glut) - [Freeglut](http://freeglut.sourceforge.net/) bindings for Crystal.
-- [LibGL](https://github.com/neutrinog/cryst_glut) - OpenGL bindings for Crystal with some custom bindings of my own to support passing closure from Crystal to C.
+- [LibGLUT](https://github.com/neutrinog/lib_glut) - [Freeglut](http://freeglut.sourceforge.net/) bindings for Crystal with some custom bindings of my own to support passing closure from Crystal to C.
+- [LibGL](https://github.com/neutrinog/cryst_glut) - OpenGL bindings for Crystal.
 
 ## Contributing
 
