@@ -81,11 +81,12 @@ module Prism
       sinTemp = Math.sin(@temp)
 
       @transform.translation(0, 0, 5)
-      @transform.rotation(0, 0, 0)
+      @transform.rotation(0, 180 *sinTemp, 0)
       # @transform.scale(0.7f32 * sinTemp, 0.7f32 * sinTemp, 0.7f32 * sinTemp)
     end
 
     def render
+      RenderUtil.set_clear_color((@camera.pos / 2048).abs)
       @shader.bind
       @shader.set_uniform("transform", @transform.get_projected_transformation)
       @texture.bind
