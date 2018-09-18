@@ -60,9 +60,10 @@ I'm using this as a learning exercise by following along with [this tutorial](ht
 - [x] manipulate camera (awsd for movement, click mouse to capture and rotate, ESC to release mouse)
 - [x] load textures
 - [x] basic mouse capture
+- [x] ambient lighting
 
 Next few items immediately on the road map
-- [ ] ambient lighting
+
 - [ ] directional lighting
 - [ ] specular reflection
 - [ ] point lights
