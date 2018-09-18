@@ -59,6 +59,7 @@ I'm using this as a learning exercise by following along with [this tutorial](ht
 - [x] load shaders
 - [x] manipulate camera (awsd and arrow keys in the sample)
 - [x] load textures
+- [x] basic mouse capture
 
 Next few items immediately on the road map
 - [ ] ambient lighting
