@@ -7,7 +7,7 @@ module Prism
     NUM_KEYCODES = 1256
     NUM_MOUSEBUTTONS = 10
 
-    ESCAPE = 27
+    KEY_ESCAPE = 27
     KEY_F1 = 1
     KEY_F2 = 1
     KEY_F3 = 2
