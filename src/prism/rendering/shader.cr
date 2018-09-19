@@ -100,6 +100,10 @@ module Prism
       LibGL.uniform_matrix_4fv(@uniforms[name], 1, LibGL::TRUE, value.as_array)
     end
 
+    def set_attrib_location(attribute : String, location : LibGL::Int)
+      LibGL.bind_attrib_location(@program, location, attribute)
+    end
+
     # compiles the shader
     def compile
       LibGL.link_program(@program)
@@ -148,7 +152,7 @@ module Prism
         LibGL.get_shader_info_log(shader, 1024, nil, out compile_log)
         compile_log_str = String.new(pointerof(compile_log))
         compile_error_code = LibGL.get_error()
-        puts "Error #{compile_error_code}: Failed compiling shader: #{compile_log_str}"
+        puts "Error #{compile_error_code}: Failed compiling shader '#{text}': #{compile_log_str}"
         exit 1
       end
 
