@@ -36,7 +36,7 @@ vec4 calcLight(BaseLight base, vec3 direction, vec3 normal)
   return diffuseColor;
 }
 
-vec4 calcDirectionalLight(DirectionalLight directionalLight, vec4 normal)
+vec4 calcDirectionalLight(DirectionalLight directionalLight, vec3 normal)
 {
   return calcLight(directionalLight.base, -directionalLight.direction, normal);
 }
