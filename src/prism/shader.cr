@@ -49,7 +49,7 @@ module Prism
 
       if uniform_location == -1
         uniform_error_code = LibGL.get_error()
-        puts "Error #{uniform_error_code}: Could not find uniform: #{uniform_location}"
+        puts "Error #{uniform_error_code}: Could not find location for uniform '#{uniform}'."
         exit 1
       end
 
