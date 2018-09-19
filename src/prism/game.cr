@@ -5,7 +5,6 @@ require "./vertex"
 require "./vector3f"
 require "./phong_shader"
 require "./basic_shader"
-require "./resource_loader"
 require "./timer"
 require "./transform"
 require "./camera"
@@ -24,8 +23,7 @@ module Prism
     @slight1 = SpotLight.new(PointLight.new(BaseLight.new(Vector3f.new(0,1,1), 0.8), Attenuation.new(0, 0, 0.1), Vector3f.new(-2, 0, 5), 30), Vector3f.new(1,1,1), 0.7)
 
     def initialize(width : Float32, height : Float32)
-      @mesh = Mesh.new #ResourceLoader.load_mesh("box.obj") # Mesh.new
-      @material = Material.new(ResourceLoader.load_texture("test.png"), Vector3f.new(1,1,1), 1, 8);
+      @material = Material.new(Texture.new("test.png"), Vector3f.new(1,1,1), 1, 8);
       @shader = PhongShader.new
       @camera = Camera.new
       @transform = Transform.new(@camera)
@@ -45,7 +43,7 @@ module Prism
         2, 1, 3
       }
 
-      @mesh.add_verticies(verticies, indicies, true);
+      @mesh = Mesh.new(verticies, indicies, true);
 
       @transform.set_projection(70f32, width, height, 0.1f32, 1_000f32)
 

@@ -1,5 +1,4 @@
 require "./shader"
-require "./resource_loader"
 require "./material"
 require "./render_util"
 require "./vector3f"
@@ -23,8 +22,8 @@ module Prism
     def initialize
       super
 
-      add_vertex_shader(ResourceLoader.load_shader("phongVertex.vert"))
-      add_fragment_shader(ResourceLoader.load_shader("phongFragment.frag"))
+      add_vertex_shader_from_file("phongVertex.vert")
+      add_fragment_shader_from_file("phongFragment.frag")
       compile
 
       add_uniform("transform")

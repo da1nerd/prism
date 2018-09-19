@@ -1,5 +1,4 @@
 require "./shader"
-require "./resource_loader"
 require "./material"
 require "./render_util"
 
@@ -10,8 +9,8 @@ module Prism
     def initialize
       super
 
-      add_vertex_shader(ResourceLoader.load_shader("basicVertex.vs"))
-      add_fragment_shader(ResourceLoader.load_shader("basicFragment.fs"))
+      add_vertex_shader_from_file("basicVertex.vs")
+      add_fragment_shader_from_file("basicFragment.fs")
       compile
 
       add_uniform("transform")
