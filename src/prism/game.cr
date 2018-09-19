@@ -48,8 +48,8 @@ module Prism
       @transform.set_projection(70f32, width, height, 0.1f32, 1_000f32)
 
       PhongShader.ambient_light = Vector3f.new(0.1, 0.1, 0.1)
-      # PhongShader.directional_light = DirectionalLight.new(BaseLight.new(Vector3f.new(1,1,1), 0.8), Vector3f.new(1,1,1))
-      # PhongShader.point_lights = [@plight1, @plight2]
+      PhongShader.directional_light = DirectionalLight.new(BaseLight.new(Vector3f.new(1,1,1), 0.18), Vector3f.new(1,1,1))
+      PhongShader.point_lights = [@plight1, @plight2]
       PhongShader.spot_lights = [@slight1]
 
     end
