@@ -1,7 +1,6 @@
 require "cryst_glut"
 require "./timer"
 require "./input"
-require "../rendering/render_util"
 require "./rendering_engine"
 require "./game"
 
@@ -16,22 +15,16 @@ module Prism
 
       # set up window
       @window = CrystGLUT::Window.new(@width, @height, "TITLE")
-      init_rendering
+      @rendering_engine = RenderingEngine.new
 
       @is_running = false
       @frametime = 1.0f32 / @framerate
-      @rendering_engine = RenderingEngine.new
 
       @window.on_display do
         run()
       end
 
       @input = Input.new(@window)
-    end
-
-    def init_rendering
-      puts RenderUtil.get_open_gl_version
-      RenderUtil.init_graphics
     end
 
     # Starts the game
@@ -97,8 +90,9 @@ module Prism
         end
 
         if should_render
-          # @rendering_engine.render(@game.root_object)
-          render()
+          @rendering_engine.render(@game.get_root_object)
+          @window.render
+          @rendering_engine.flush
           frames += 1;
         else
           # sleep for 1 millisecond
@@ -107,14 +101,6 @@ module Prism
 
       end
       clean_up()
-    end
-
-    # Performs game rendering
-    private def render
-      RenderUtil.clear_screen
-      @game.render
-      @window.render
-      RenderUtil.flush
     end
 
     # Cleans up after the game quits

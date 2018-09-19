@@ -1,6 +1,5 @@
 require "./shader"
 require "./material"
-require "./render_util"
 
 module Prism
 
@@ -24,11 +23,7 @@ module Prism
     end
 
     def update_uniforms(world_matrix : Matrix4f, projected_matrix : Matrix4f, material : Material)
-      if material.texture
-        material.texture.bind
-      else
-        RenderUtil.unbind_textures
-      end
+      material.texture.bind
 
       set_uniform("transform", projected_matrix)
       set_uniform("color", material.color)
