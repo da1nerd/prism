@@ -1,7 +1,7 @@
 require "./vector3f"
 require "matrix"
 require "./matrix4f"
-require "./camera"
+require "../rendering/camera"
 
 module Prism
 

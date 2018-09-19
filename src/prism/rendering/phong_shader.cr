@@ -1,7 +1,7 @@
 require "./shader"
 require "./material"
 require "./render_util"
-require "./vector3f"
+require "../core/vector3f"
 require "./directional_light"
 require "./base_light"
 require "./point_light"

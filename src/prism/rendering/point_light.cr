@@ -1,6 +1,6 @@
 require "./base_light"
 require "./attenuation"
-require "./vector3f"
+require "../core/vector3f"
 
 module Prism
 

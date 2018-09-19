@@ -1,5 +1,5 @@
-require "./vector3f"
-require "./timer"
+require "../core/vector3f"
+require "../core/timer"
 
 module Prism
 
@@ -75,7 +75,7 @@ module Prism
         input.set_cursor(false)
         @mouse_locked = true
       end
-      
+
     end
 
     # moves the camera
