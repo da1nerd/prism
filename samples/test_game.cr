@@ -1,20 +1,11 @@
 require "lib_gl"
-require "../prism/core/input"
-require "../prism/rendering/mesh"
-require "../prism/rendering/vertex"
-require "../prism/core/vector3f"
-require "../prism/rendering/phong_shader"
-require "../prism/rendering/basic_shader"
-require "../prism/core/timer"
-require "../prism/core/transform"
-require "../prism/rendering/camera"
-require "../prism/rendering/spot_light"
-require "../src/game/game"
+require "../src/prism"
 
-module Prism
+include Prism
 
-  # TODO: make this an abstract class
-  class TestGame < Game
+module Sample
+
+  class TestGame < Prism::Game
 
     @camera : Camera?
     @transform : Transform?
@@ -70,19 +61,6 @@ module Prism
       if camera = @camera
         camera.input(input)
       end
-      # if input.get_key_down(Input::KEY_UP)
-      #   puts "We've just pressed up"
-      # end
-      # if input.get_key_up(Input::KEY_UP)
-      #   puts "We've just released up"
-      # end
-      #
-      # if input.get_mouse_down(0)
-      #   puts "We've just left clicked at #{input.get_mouse_position.to_string}"
-      # end
-      # if input.get_mouse_up(0)
-      #   puts "We've just released the left mouse button"
-      # end
 
     end
 
