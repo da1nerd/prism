@@ -15,7 +15,7 @@ module Prism
 
       # set up window
       @window = CrystGLUT::Window.new(@width, @height, "TITLE")
-      @rendering_engine = RenderingEngine.new
+      @rendering_engine = RenderingEngine.new(@window)
 
       @is_running = false
       @frametime = 1.0f32 / @framerate
@@ -75,7 +75,9 @@ module Prism
           Timer.set_delta(@frametime);
 
           @game.input(@input)
+          @rendering_engine.input(@input) # temporary hack
           @input.update
+
           @game.update
 
           # TODO: update game

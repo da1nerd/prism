@@ -9,7 +9,7 @@ class MeshRenderer < GameComponent
 
   def render(transform : Transform, shader : Shader)
     shader.bind
-    shader.update_uniforms(transform.get_transformation, transform.get_projected_transformation, @material)
+    shader.update_uniforms(transform, @material)
     @mesh.draw
   end
 

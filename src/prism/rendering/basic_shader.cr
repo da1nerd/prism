@@ -1,5 +1,6 @@
 require "./shader"
 require "./material"
+require "../core/transform"
 
 module Prism
 
@@ -22,7 +23,16 @@ module Prism
       @@instance ||= new
     end
 
-    def update_uniforms(world_matrix : Matrix4f, projected_matrix : Matrix4f, material : Material)
+    def update_uniforms(transform : Transform, material : Material)
+      r_engine = rendering_engine
+      unless r_engine
+        puts "Error: The rendering engine was not configured."
+        exit 1
+      end
+
+      world_matrix = transform.get_transformation
+      projected_matrix = r_engine.main_camera.get_view_projection * world_matrix
+
       material.texture.bind
 
       set_uniform("transform", projected_matrix)

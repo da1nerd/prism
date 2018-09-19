@@ -6,7 +6,7 @@ include Prism
 
 class TestGame < Prism::Game
 
-  @camera : Camera?
+  # @camera : Camera?
   @transform : Transform?
   @temp : Float32 = 0.0f32
 
@@ -15,8 +15,8 @@ class TestGame < Prism::Game
   end
 
   def init
-    camera = Camera.new
-    @camera = camera
+    # camera = Camera.new
+    # @camera = camera
 
     field_depth = 10.0f32
     field_width = 10.0f32
@@ -44,8 +44,8 @@ class TestGame < Prism::Game
 
     get_root_object.add_child(plane_object)
 
-    Transform.set_projection(70f32, @width, @height, 0.1f32, 1_000f32)
-    Transform.camera = camera
+    # Transform.set_projection(70f32, @width, @height, 0.1f32, 1_000f32)
+    # Transform.camera = camera
   end
 
   # Processes input during a frame

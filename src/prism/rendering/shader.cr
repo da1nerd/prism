@@ -2,13 +2,20 @@ require "lib_gl"
 require "../core/vector3f"
 require "../core/matrix4f"
 require "./material"
+require "../core/transform"
+require "./camera"
+require "../core/rendering_engine"
 
 module Prism
 
   class Shader
 
+    @rendering_engine : RenderingEngine?
     @program : LibGL::UInt
     @uniforms : Hash(String, Int32)
+
+    getter rendering_engine
+    setter rendering_engine
 
     def initialize
       @program = LibGL.create_program()
@@ -31,7 +38,7 @@ module Prism
       LibGL.use_program(@program)
     end
 
-    def update_uniforms(world_matrix : Matrix4f, projected_matrix : Matrix4f, material : Material)
+    def update_uniforms(transform : Transform, material : Material)
 
     end
 
