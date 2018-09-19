@@ -26,6 +26,7 @@ module Prism
       @transform.set_projection(70f32, width, height, 0.1f32, 1_000f32)
 
       PhongShader.ambient_light = Vector3f.new(0.1, 0.1, 0.1)
+      PhongShader.directional_light = DirectionalLight.new(BaseLight.new(Vector3f.new(1,1,1), 0.8), Vector3f.new(1,1,1))
 
       verticies = [
         Vertex.new(Vector3f.new(-1, -1, 0), Vector2f.new(0, 0)),
@@ -41,7 +42,7 @@ module Prism
         0, 2, 3
       }
 
-      @mesh.add_verticies(verticies, indicies);
+      @mesh.add_verticies(verticies, indicies, true);
 
     end
 

@@ -74,8 +74,8 @@ module Prism
         normal = v1.cross(v2).normalized
 
         verticies[i0].normal = verticies[i0].normal + normal
-        verticies[i1].normal = verticies[i0].normal + normal
-        verticies[i2].normal = verticies[i0].normal + normal
+        verticies[i1].normal = verticies[i1].normal + normal
+        verticies[i2].normal = verticies[i2].normal + normal
 
         i += 3
       end
