@@ -10,6 +10,10 @@ module Prism
     def initialize(@x : Float32, @y : Float32, @z : Float32)
     end
 
+    def initialize(vector : Vector3f)
+      initialize(vector.x, vector.y, vector.z)
+    end
+
     # Returns a copy of the vector
     def clone
       return Vector3f.new(@x, @y, @z)
