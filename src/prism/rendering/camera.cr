@@ -28,12 +28,11 @@ module Prism
       @projection * (camera_rotation * camera_translation)
     end
 
-    def input(input : Input)
+    def input(delta : Float32, input : Input)
       center_position = input.get_center
       sensitivity = 0.5f32
-      delta = Timer.get_delta.to_f32
 
-      mov_amt = 10 * delta
+      mov_amt = 10.0f32 * delta
 
       # un-lock the cursor
       if input.get_key(Input::KEY_ESCAPE)
