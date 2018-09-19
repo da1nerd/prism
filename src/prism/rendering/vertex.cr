@@ -1,5 +1,3 @@
-require "./vector3f"
-
 module Prism
 
   class Vertex
