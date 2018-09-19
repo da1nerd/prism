@@ -19,7 +19,7 @@ module Prism
 
     def initialize(width : Float32, height : Float32)
       @mesh = Mesh.new #ResourceLoader.load_mesh("box.obj") # Mesh.new
-      @material = Material.new(ResourceLoader.load_texture("test.png"), Vector3f.new(0,1,1));
+      @material = Material.new(ResourceLoader.load_texture("test.png"), Vector3f.new(1,1,1));
       @shader = PhongShader.new
       @camera = Camera.new
       @transform = Transform.new(@camera)

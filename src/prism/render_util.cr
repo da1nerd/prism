@@ -27,10 +27,9 @@ module Prism
       LibGL.enable(LibGL::CULL_FACE)
       LibGL.enable(LibGL::DEPTH_TEST)
 
-      # TODO: Depth clamp for later
+      LibGL.enable(LibGL::DEPTH_CLAMP)
 
       LibGL.enable(LibGL::TEXTURE_2D)
-      LibGL.enable(LibGL::FRAMEBUFFER_SRGB)
     end
 
     def self.flush
