@@ -9,6 +9,7 @@ require "./resource_loader"
 require "./timer"
 require "./transform"
 require "./camera"
+require "./spot_light"
 
 module Prism
 
@@ -19,6 +20,8 @@ module Prism
 
     @plight1 = PointLight.new(BaseLight.new(Vector3f.new(1,0.5,0), 0.8), Attenuation.new(0, 0, 1), Vector3f.new(-2, 0, 5), 10)
     @plight2 = PointLight.new(BaseLight.new(Vector3f.new(0,0.5,1), 0.8), Attenuation.new(0, 0, 1), Vector3f.new(2, 0, 7), 10)
+
+    @slight1 = SpotLight.new(PointLight.new(BaseLight.new(Vector3f.new(0,1,1), 0.8), Attenuation.new(0, 0, 0.1), Vector3f.new(-2, 0, 5), 30), Vector3f.new(1,1,1), 0.7)
 
     def initialize(width : Float32, height : Float32)
       @mesh = Mesh.new #ResourceLoader.load_mesh("box.obj") # Mesh.new
@@ -48,7 +51,8 @@ module Prism
 
       PhongShader.ambient_light = Vector3f.new(0.1, 0.1, 0.1)
       # PhongShader.directional_light = DirectionalLight.new(BaseLight.new(Vector3f.new(1,1,1), 0.8), Vector3f.new(1,1,1))
-      PhongShader.point_lights = [@plight1, @plight2]
+      # PhongShader.point_lights = [@plight1, @plight2]
+      PhongShader.spot_lights = [@slight1]
 
     end
 
@@ -89,6 +93,9 @@ module Prism
 
       @plight1.position = Vector3f.new(3, 0, 8 * (Math.sin(@temp) + 1.0/2.0) + 10)
       @plight2.position = Vector3f.new(7, 0, 8 * (Math.cos(@temp) + 1.0/2.0) + 10)
+
+      @slight1.point_light.position = @camera.pos
+      @slight1.direction = @camera.forward
 
       # @transform.scale(0.7f32 * sinTemp, 0.7f32 * sinTemp, 0.7f32 * sinTemp)
     end
