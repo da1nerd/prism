@@ -13,10 +13,26 @@ require "../rendering/spot_light"
 module Prism
 
   abstract class Game
+
+    @root : GameObject = GameObject.new
+
     abstract def init
-    abstract def input(input : Input)
-    abstract def update
-    abstract def render
+
+    def input(input : Input)
+      get_root_object.input
+    end
+
+    def update
+      get_root_object.update
+    end
+
+    def render
+      get_root_object.render
+    end
+
+    def get_root_object : GameObject
+      @root
+    end
   end
 
 end

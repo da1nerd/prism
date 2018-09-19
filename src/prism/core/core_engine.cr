@@ -2,6 +2,7 @@ require "cryst_glut"
 require "./timer"
 require "./input"
 require "../rendering/render_util"
+require "./rendering_engine"
 require "./game"
 
 module Prism
@@ -9,6 +10,7 @@ module Prism
   class CoreEngine
 
     @frametime : Float32
+    @rendering_engine : RenderingEngine
 
     def initialize(@width : Int32, @height : Int32, @framerate : Float32, @title : String, @game : Game)
 
@@ -18,6 +20,7 @@ module Prism
 
       @is_running = false
       @frametime = 1.0f32 / @framerate
+      @rendering_engine = RenderingEngine.new
 
       @window.on_display do
         run()
@@ -94,6 +97,7 @@ module Prism
         end
 
         if should_render
+          # @rendering_engine.render(@game.root_object)
           render()
           frames += 1;
         else
