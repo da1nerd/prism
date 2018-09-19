@@ -34,6 +34,14 @@ module Prism
       return Vector2f.new(@x * cos - @y * sin, @x * sin + @y * cos)
     end
 
+    def lerp(dest : Vector2f, lerp_factor : Float32) : Vector2f
+      return ((dest - self) * lerp_factor) + self
+    end
+
+    def cross(r : Vector2f) : Float32
+      @x * r.y - @y * r.x
+    end
+
     # Adds two vectors
     def +(r : Vector2f) : Vector2f
       return Vector2f.new(@x + r.x, @y + r.y)
@@ -72,6 +80,10 @@ module Prism
     # Divides the vector by a scalar
     def /(r : Float32) : Vector2f
       return Vector2f.new(@x / r, @y / r)
+    end
+
+    def ==(r : Vector2f) : Bool
+      return @x == r.x && @y == r.y
     end
 
     def to_string

@@ -56,6 +56,10 @@ module Prism
       return x_rotation + z_rotation + y_rotation
     end
 
+    def lerp(dest : Vector3f, lerp_factor : Float32) : Vector3f
+      return ((dest - self) * lerp_factor) + self
+    end
+
     # Adds two vectors
     def +(r : Vector3f) : Vector3f
       return Vector3f.new(@x + r.x, @y + r.y, @z + r.z)
@@ -94,6 +98,10 @@ module Prism
     # Divides the vector by a scalar
     def /(r : Float32) : Vector3f
       return Vector3f.new(@x / r, @y / r, @z / r)
+    end
+
+    def ==(r : Vector3f) : Bool
+      return @x == r.x && @y == r.y && @z == r.z
     end
 
     def to_string
