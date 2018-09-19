@@ -63,7 +63,10 @@ module Prism
     end
 
 
-    def update_uniforms(world_matrix : Matrix4f, projected_matrix : Matrix4f, material : Material, camera_position : Vector3f)
+    def update_uniforms(transform : Transform, material : Material)
+
+      world_matrix = transform.get_transformation
+      projected_matrix = rendering_engine.main_camera.get_view_projection * world_matrix
       material.texture.bind
 
       set_uniform("transformProjected", projected_matrix)
@@ -84,7 +87,7 @@ module Prism
       set_uniform("specularIntensity", material.specular_intensity)
       set_uniform("specularExponent", material.specular_exponent)
 
-      set_uniform("eyePos", camera_position)
+      set_uniform("eyePos", rendering_engine.main_camera.pos)
     end
 
     # Sets the global ambient light

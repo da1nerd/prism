@@ -6,14 +6,14 @@ require "../rendering/camera"
 module Prism
 
   class Transform
-    @@camera : Camera = Camera.new
+    # @@camera : Camera = Camera.new
 
     # projection variables
-    @@z_near : Float32?
-    @@z_far : Float32?
-    @@width : Float32?
-    @@height : Float32?
-    @@fov : Float32?
+    # @@z_near : Float32?
+    # @@z_far : Float32?
+    # @@width : Float32?
+    # @@height : Float32?
+    # @@fov : Float32?
 
     # transformation variables
     @translation : Vector3f
@@ -29,12 +29,12 @@ module Prism
       @scale = Vector3f.new(1, 1, 1)
     end
 
-    def self.camera=(@@camera : Camera)
-    end
-
-    def self.camera
-      @@camera
-    end
+    # def self.camera=(@@camera : Camera)
+    # end
+    #
+    # def self.camera
+    #   @@camera
+    # end
 
     # additional setter in case I don't want to create a vector before hand.
     def translation(x : Float32, y : Float32 , z : Float32)
@@ -47,9 +47,6 @@ module Prism
 
     def scale(x : Float32, y : Float32 , z : Float32)
       @scale = Vector3f.new(x, y, z)
-    end
-
-    def self.set_projection(@@fov, @@width, @@height, @@z_near, @@z_far)
     end
 
     def get_transformation : Matrix4f
@@ -65,33 +62,34 @@ module Prism
       return trans * (rot * scl)
     end
 
-    def get_projected_transformation : Matrix4f
-
-      fov = @@fov
-      width = @@width
-      height = @@height
-      z_near = @@z_near
-      z_far = @@z_far
-
-      trans = get_transformation()
-      proj = Matrix4f.new
-
-
-      camera_rotation = Matrix4f.new
-      camera_translation = Matrix4f.new
-
-      if camera = @@camera
-        camera_rotation.init_camera(camera.forward, camera.up)
-        camera_translation.init_translation(-camera.pos.x, -camera.pos.y, -camera.pos.z)
-      end
-
-      if fov && width && height && z_near && z_far
-        proj.init_projection(fov, width, height, z_near, z_far)
-        return proj * (camera_rotation * (camera_translation * trans))
-      else
-        return trans
-      end
-    end
+    # def get_projected_transformation(camera : Camera) : Matrix4f
+      # camera.get_view_projection * get_transformation
+    #
+    #   fov = @@fov
+    #   width = @@width
+    #   height = @@height
+    #   z_near = @@z_near
+    #   z_far = @@z_far
+    #
+    #   trans = get_transformation()
+    #   proj = Matrix4f.new
+    #
+    #
+    #   camera_rotation = Matrix4f.new
+    #   camera_translation = Matrix4f.new
+    #
+    #   if camera = @@camera
+    #     camera_rotation.init_camera(camera.forward, camera.up)
+    #     camera_translation.init_translation(-camera.pos.x, -camera.pos.y, -camera.pos.z)
+    #   end
+    #
+    #   if fov && width && height && z_near && z_far
+    #     proj.init_projection(fov, width, height, z_near, z_far)
+    #     return proj * (camera_rotation * (camera_translation * trans))
+    #   else
+    #     return trans
+    #   end
+    # end
 
   end
 

@@ -1,5 +1,6 @@
 require "../core/vector3f"
 require "../core/timer"
+require "../core/matrix4f"
 
 module Prism
 
@@ -8,17 +9,23 @@ module Prism
     Y_AXIS = Vector3f.new(0, 1, 0)
 
     @mouse_locked = false
+    @projection : Matrix4f
 
     getter pos, forward, up
     setter pos, forward, up
 
-    def initialize
-      initialize(Vector3f.new(0, 0, 0), Vector3f.new(0, 0, 1), Vector3f.new(0, 1, 0))
+    def initialize(fov : Float32, aspect : Float32, z_near : Float32, z_far : Float32)
+      @pos = Vector3f.new(0,0,0)
+      @forward = Vector3f.new(0,0,1)
+      @up = Vector3f.new(0,1,0)
+      @projection = Matrix4f.new().init_perspective(fov, aspect, z_near, z_far)
     end
 
-    def initialize(@pos : Vector3f, @forward : Vector3f, @up : Vector3f)
-      @up = @up.normalized
-      @forward = @forward.normalized
+    def get_view_projection : Matrix4f
+      camera_rotation = Matrix4f.new.init_rotation(@forward, @up)
+      camera_translation = Matrix4f.new.init_translation(-@pos.x, -@pos.y, -@pos.z)
+
+      @projection * (camera_rotation * camera_translation)
     end
 
     def input(input : Input)
