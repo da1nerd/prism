@@ -36,13 +36,6 @@ module Prism
         @mouse_locked = false
       end
 
-      # lock the cursor
-      if input.get_mouse_down(0)
-        input.set_mouse_position(center_position)
-        input.set_cursor(false)
-        @mouse_locked = true
-      end
-
       # move
       if input.get_key(Input::KEY_W)
         move(forward, mov_amt)
@@ -75,6 +68,14 @@ module Prism
           input.set_mouse_position(center_position)
         end
       end
+
+      # lock the cursor
+      if input.get_mouse_down(0)
+        input.set_mouse_position(center_position)
+        input.set_cursor(false)
+        @mouse_locked = true
+      end
+      
     end
 
     # moves the camera

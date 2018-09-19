@@ -6,10 +6,10 @@ module Prism
 
   class PointLight
 
-    getter base_light, position, atten
-    setter base_light, position, atten
+    getter base_light, position, atten, range
+    setter base_light, position, atten, range
 
-    def initialize(@base_light : BaseLight, @atten : Attenuation, @position : Vector3f)
+    def initialize(@base_light : BaseLight, @atten : Attenuation, @position : Vector3f, @range : Float32)
     end
 
   end
