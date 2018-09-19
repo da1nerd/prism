@@ -1,6 +1,5 @@
 require "./shader"
 require "./material"
-require "./render_util"
 require "../core/vector3f"
 require "./directional_light"
 require "./base_light"
@@ -65,11 +64,7 @@ module Prism
 
 
     def update_uniforms(world_matrix : Matrix4f, projected_matrix : Matrix4f, material : Material, camera_position : Vector3f)
-      if material.texture
-        material.texture.bind
-      else
-        RenderUtil.unbind_textures
-      end
+      material.texture.bind
 
       set_uniform("transformProjected", projected_matrix)
       set_uniform("transform", world_matrix)

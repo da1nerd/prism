@@ -26,10 +26,6 @@ module Prism
       get_root_object.update
     end
 
-    def render
-      get_root_object.render
-    end
-
     def get_root_object : GameObject
       @root
     end
