@@ -4,14 +4,17 @@ require "../rendering/basic_shader"
 require "../rendering/camera"
 require "cryst_glut"
 require "./math"
+require "./vector3f"
+require "../rendering/forward_ambient"
 
 module Prism
 
   class RenderingEngine
 
     @main_camera : Camera
+    @ambient_light : Vector3f
 
-    getter main_camera
+    getter main_camera, ambient_light
     setter main_camera
 
     def initialize(window : CrystGLUT::Window)
@@ -27,15 +30,23 @@ module Prism
       LibGL.enable(LibGL::TEXTURE_2D)
 
       @main_camera = Camera.new(to_rad(70.0), window.get_width.to_f32/window.get_height.to_f32, 0.01f32, 1000.0f32)
+      @ambient_light = Vector3f.new(0.2, 0.2, 0.2)
     end
 
     def render(object : GameObject)
       clear_screen
 
-      shader = BasicShader.instance
-      shader.rendering_engine = self
+      forward_ambient = ForwardAmbient.instance
+      forward_ambient.rendering_engine = self
 
-      object.render(BasicShader.instance)
+      object.render(forward_ambient)
+
+      
+
+      # shader = BasicShader.instance
+      # shader.rendering_engine = self
+      #
+      # object.render(BasicShader.instance)
     end
 
     # temporary hack
