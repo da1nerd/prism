@@ -21,6 +21,11 @@ module Prism
       end
     end
 
+    private def load_shader(file_name : String) : String
+      path = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", file_name)
+      return File.read(path)
+    end
+
     # uses the shader
     def bind
       LibGL.use_program(@program)
@@ -28,6 +33,18 @@ module Prism
 
     def update_uniforms(world_matrix : Matrix4f, projected_matrix : Matrix4f, material : Material)
 
+    end
+
+    def add_vertex_shader_from_file(file : String)
+      add_program(load_shader(file), LibGL::VERTEX_SHADER)
+    end
+
+    def add_geometry_shader_from_file(file : String)
+        add_program(load_shader(file), LibGL::GEOMETRY_SHADER)
+    end
+
+    def add_fragment_shader_from_file(file : String)
+        add_program(load_shader(file), LibGL::FRAGMENT_SHADER)
     end
 
     def add_vertex_shader(text : String)

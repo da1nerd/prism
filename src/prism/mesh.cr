@@ -10,17 +10,69 @@ module Prism
     @ibo : LibGL::UInt
     @size : Int32
 
-    def initialize
+    def initialize(file_name : String)
       LibGL.gen_buffers(1, out @vbo)
       LibGL.gen_buffers(1, out @ibo)
       @size = 0
+      load_mesh(file_name)
     end
 
-    def add_verticies(verticies : Array(Vertex), indicies : Array(LibGL::Int))
-      add_verticies(verticies, indicies, false)
+    def initialize(verticies : Array(Vertex), indicies : Array(LibGL::Int))
+      initialize(verticies, indicies, false)
     end
 
-    def add_verticies(verticies : Array(Vertex), indicies : Array(LibGL::Int), calc_normals : Bool)
+    def initialize(verticies : Array(Vertex), indicies : Array(LibGL::Int), calc_normals : Bool)
+      LibGL.gen_buffers(1, out @vbo)
+      LibGL.gen_buffers(1, out @ibo)
+      @size = 0
+      add_verticies(verticies, indicies, calc_normals)
+    end
+
+    # def initialize
+      # LibGL.gen_buffers(1, out @vbo)
+      # LibGL.gen_buffers(1, out @ibo)
+      # @size = 0
+    # end
+
+    private def load_mesh(file_name : String)
+      ext = File.extname(file_name)
+      unless ext === ".obj"
+        puts "Error: File format not supported for mesh data: #{ext}"
+        exit 1
+      end
+
+      verticies = [] of Vertex
+      indicies = [] of LibGL::Int
+
+      path = File.join(File.dirname(PROGRAM_NAME), "/res/models/", file_name)
+      File.each_line(path) do |line|
+        tokens = line.split(" ", remove_empty: true)
+        if tokens.size === 0 || tokens[0] === "#"
+          next
+        elsif tokens[0] === "v"
+          v = Vector3f.new(tokens[1].to_f32, tokens[2].to_f32, tokens[3].to_f32)
+          verticies.push(Vertex.new(v))
+        elsif tokens[0] === "f"
+          indicies.push(tokens[1].split("/")[0].to_i32 - 1);
+          indicies.push(tokens[2].split("/")[0].to_i32 - 1);
+          indicies.push(tokens[3].split("/")[0].to_i32 - 1);
+
+          if tokens.size > 4
+            indicies.push(tokens[1].split("/")[0].to_i32 - 1);
+            indicies.push(tokens[3].split("/")[0].to_i32 - 1);
+            indicies.push(tokens[4].split("/")[0].to_i32 - 1);
+          end
+        end
+      end
+
+      add_verticies(verticies, indicies)
+    end
+
+    # def add_verticies(verticies : Array(Vertex), indicies : Array(LibGL::Int))
+    #   add_verticies(verticies, indicies, false)
+    # end
+
+    private def add_verticies(verticies : Array(Vertex), indicies : Array(LibGL::Int), calc_normals : Bool)
         if calc_normals
           calc_normals(verticies, indicies)
         end
