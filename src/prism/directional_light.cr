@@ -9,6 +9,7 @@ module Prism
     setter base, direction
 
     def initialize(@base : BaseLight, @direction : Vector3f)
+      @direction = @direction.normalized
     end
 
   end
