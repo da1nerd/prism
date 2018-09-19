@@ -6,26 +6,34 @@ require "../rendering/camera"
 module Prism
 
   class Transform
+    @@camera : Camera = Camera.new
 
     # projection variables
-    @z_near : Float32?
-    @z_far : Float32?
-    @width : Float32?
-    @height : Float32?
-    @fov : Float32?
+    @@z_near : Float32?
+    @@z_far : Float32?
+    @@width : Float32?
+    @@height : Float32?
+    @@fov : Float32?
 
     # transformation variables
     @translation : Vector3f
     @rotation : Vector3f
     @scale : Vector3f
 
-    getter translation, rotation, scale, camera
-    setter translation, rotation, scale, camera
+    getter translation, rotation, scale
+    setter translation, rotation, scale
 
-    def initialize(@camera : Camera)
+    def initialize()
       @translation = Vector3f.new(0, 0, 0)
       @rotation = Vector3f.new(0, 0, 0)
       @scale = Vector3f.new(1, 1, 1)
+    end
+
+    def self.camera=(@@camera : Camera)
+    end
+
+    def self.camera
+      @@camera
     end
 
     # additional setter in case I don't want to create a vector before hand.
@@ -41,7 +49,7 @@ module Prism
       @scale = Vector3f.new(x, y, z)
     end
 
-    def set_projection(@fov, @width, @height, @z_near, @z_far)
+    def self.set_projection(@@fov, @@width, @@height, @@z_near, @@z_far)
     end
 
     def get_transformation : Matrix4f
@@ -59,19 +67,23 @@ module Prism
 
     def get_projected_transformation : Matrix4f
 
-      fov = @fov
-      width = @width
-      height = @height
-      z_near = @z_near
-      z_far = @z_far
+      fov = @@fov
+      width = @@width
+      height = @@height
+      z_near = @@z_near
+      z_far = @@z_far
 
       trans = get_transformation()
       proj = Matrix4f.new
 
+
       camera_rotation = Matrix4f.new
       camera_translation = Matrix4f.new
-      camera_rotation.init_camera(@camera.forward, @camera.up)
-      camera_translation.init_translation(-@camera.pos.x, -@camera.pos.y, -@camera.pos.z)
+
+      if camera = @@camera
+        camera_rotation.init_camera(camera.forward, camera.up)
+        camera_translation.init_translation(-camera.pos.x, -camera.pos.y, -camera.pos.z)
+      end
 
       if fov && width && height && z_near && z_far
         proj.init_projection(fov, width, height, z_near, z_far)

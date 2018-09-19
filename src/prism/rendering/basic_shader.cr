@@ -6,6 +6,8 @@ module Prism
 
   class BasicShader < Shader
 
+    @@instance : BasicShader?
+
     def initialize
       super
 
@@ -17,6 +19,9 @@ module Prism
       add_uniform("color")
     end
 
+    def self.instance
+      @@instance ||= new
+    end
 
     def update_uniforms(world_matrix : Matrix4f, projected_matrix : Matrix4f, material : Material)
       if material.texture
