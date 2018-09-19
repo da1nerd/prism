@@ -1,12 +1,12 @@
 module Prism
 
   abstract class GameComponent
+  
+    abstract def input(transform : Transform)
 
-    abstract def init
-    abstract def input
-    abstract def update
+    abstract def update(transform : Transform)
 
-    abstract def render
+    abstract def render(transform : Transform)
 
   end
 

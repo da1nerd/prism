@@ -10,7 +10,7 @@ module Prism
 
     def initialize()
       @children = [] of GameObject
-      @components = [] of GameComponents
+      @components = [] of GameComponent
       @transform = Transform.new()
     end
 
@@ -24,7 +24,7 @@ module Prism
 
     def input
       0.upto(@components.size - 1) do |i|
-        @components[i].input
+        @components[i].input(@transform)
       end
 
       0.upto(@children.size - 1) do |i|
@@ -34,7 +34,7 @@ module Prism
 
     def update
       0.upto(@components.size - 1) do |i|
-        @components[i].update
+        @components[i].update(@transform)
       end
 
       0.upto(@children.size - 1) do |i|
@@ -44,7 +44,7 @@ module Prism
 
     def render
       0.upto(@components.size - 1) do |i|
-        @components[i].render
+        @components[i].render(@transform)
       end
 
       0.upto(@children.size - 1) do |i|
