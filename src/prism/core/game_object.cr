@@ -22,23 +22,23 @@ module Prism
       @components.push(component)
     end
 
-    def input
+    def input(delta : Float32)
       0.upto(@components.size - 1) do |i|
-        @components[i].input(@transform)
+        @components[i].input(@transform, delta)
       end
 
       0.upto(@children.size - 1) do |i|
-        @children[i].input
+        @children[i].input(delta)
       end
     end
 
-    def update
+    def update(delta : Float32)
       0.upto(@components.size - 1) do |i|
-        @components[i].update(@transform)
+        @components[i].update(@transform, delta)
       end
 
       0.upto(@children.size - 1) do |i|
-        @children[i].update
+        @children[i].update(delta)
       end
     end
 

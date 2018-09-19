@@ -13,9 +13,9 @@ class MeshRenderer < GameComponent
     @mesh.draw
   end
 
-  def input(transform : Transform)
+  def input(transform : Transform, delta : Float32)
   end
 
-  def update(transform : Transform)
+  def update(transform : Transform, delta : Float32)
   end
 end

@@ -5,19 +5,8 @@ require "./mesh_renderer"
 include Prism
 
 class TestGame < Prism::Game
-
-  # @camera : Camera?
-  @transform : Transform?
-  @temp : Float32 = 0.0f32
-
-  def initialize(@width : Float32, @height : Float32)
-    # @root = GameObject.new
-  end
-
+  
   def init
-    # camera = Camera.new
-    # @camera = camera
-
     field_depth = 10.0f32
     field_width = 10.0f32
 
@@ -44,32 +33,6 @@ class TestGame < Prism::Game
 
     get_root_object.add_child(plane_object)
 
-    # Transform.set_projection(70f32, @width, @height, 0.1f32, 1_000f32)
-    # Transform.camera = camera
   end
-
-  # Processes input during a frame
-  # def input(input : Input)
-  #   # for debugging
-  #   keys = input.get_any_key_down
-  #   if keys.size > 0
-  #     puts "Pressed keys #{keys}"
-  #   end
-  #
-  #   if camera = @camera
-  #     camera.input(input)
-  #   end
-  #
-  #   @root.input
-  # end
-
-  # def update
-  #   @root.transform.translation(0, -1, 5)
-  #   @root.update
-  # end
-  #
-  # def render
-  #   @root.render
-  # end
 
 end

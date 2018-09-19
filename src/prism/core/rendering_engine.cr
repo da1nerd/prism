@@ -39,8 +39,8 @@ module Prism
     end
 
     # temporary hack
-    def input(input : Input)
-      @main_camera.input(input)
+    def input(delta : Float32, input : Input)
+      @main_camera.input(delta, input)
     end
 
     private def clear_screen

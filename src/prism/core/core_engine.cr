@@ -72,13 +72,11 @@ module Prism
             stop()
           end
 
-          Timer.set_delta(@frametime);
-
-          @game.input(@input)
-          @rendering_engine.input(@input) # temporary hack
+          @game.input(@frametime.to_f32, @input)
+          @rendering_engine.input(@frametime.to_f32, @input) # temporary hack
           @input.update
 
-          @game.update
+          @game.update(@frametime.to_f32)
 
           # TODO: update game
 

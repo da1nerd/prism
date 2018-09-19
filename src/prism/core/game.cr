@@ -18,12 +18,12 @@ module Prism
 
     abstract def init
 
-    def input(input : Input)
-      get_root_object.input
+    def input(delta : Float32, input : Input)
+      get_root_object.input(delta)
     end
 
-    def update
-      get_root_object.update
+    def update(delta : Float32)
+      get_root_object.update(delta)
     end
 
     def get_root_object : GameObject
