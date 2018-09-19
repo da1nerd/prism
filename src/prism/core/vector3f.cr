@@ -100,6 +100,30 @@ module Prism
       return "(#{@x}, #{@y}, #{@z})"
     end
 
+    def xy : Vector2f
+      Vector2f.new(@x, @y)
+    end
+
+    def yz : Vector2f
+      Vector2f.new(@y, @z)
+    end
+
+    def zx : Vector2f
+      Vector2f.new(@z, @x)
+    end
+
+    def yx : Vector2f
+      Vector2f.new(@y, @x)
+    end
+
+    def zy : Vector2f
+      Vector2f.new(@z, @y)
+    end
+
+    def xz : Vector2f
+      Vector2f.new(@x, @z)
+    end
+
     def abs : Vector3f
       return Vector3f.new(@x.abs, @y.abs, @z.abs)
     end
