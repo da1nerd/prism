@@ -40,6 +40,7 @@ module Prism
       LibGL.enable_vertex_attrib_array(2)
 
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
+
       mesh_offset = Pointer(Void).new(0)
       LibGL.vertex_attrib_pointer(0, 3, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), mesh_offset)
 
@@ -60,7 +61,7 @@ module Prism
     end
 
     # Calculates the up direction for all the verticies
-    private def calc_normals(verticies : Array(Vertex), indicies : Array(Int32))
+    private def calc_normals(verticies : Array(Vertex), indicies : Array(LibGL::Int))
       i = 0
       while i < indicies.size
         i0 = indicies[i];
@@ -73,8 +74,8 @@ module Prism
         normal = v1.cross(v2).normalized
 
         verticies[i0].normal = verticies[i0].normal + normal
-        verticies[i1].normal = verticies[i1].normal + normal
-        verticies[i2].normal = verticies[i2].normal + normal
+        verticies[i1].normal = verticies[i0].normal + normal
+        verticies[i2].normal = verticies[i0].normal + normal
 
         i += 3
       end
