@@ -2,21 +2,21 @@ module Prism
 
   class Timer
 
-    SECOND = 1_000.0
+    private SECOND = 1_000.0f64
 
-    @@delta : Float32 | Nil
+    @@delta : Float64 = 0.0
 
     # Returns time in milliseconds
-    def self.get_time : Int64
+    def self.get_time : Float64
       # TODO: I'd like to get nano seconds from this
-      return self.compute_millisecond
+      return self.compute_millisecond / SECOND
     end
 
     def self.get_delta
       return @@delta
     end
 
-    def self.set_delta(delta : Float32)
+    def self.set_delta(delta : Float64)
       @@delta = delta
     end
 

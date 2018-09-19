@@ -40,7 +40,7 @@ class TestGame < Prism::Game
 
     plane_object = GameObject.new
     plane_object.add_component(mesh_renderer)
-    plane_object.transform.translation(0, -1, 5)
+    plane_object.transform.pos(0, -1, 5)
 
     get_root_object.add_child(plane_object)
 
