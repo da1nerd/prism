@@ -8,7 +8,7 @@ module Prism
 
   class CoreEngine
 
-    @frametime : Float32
+    @frametime : Float64
     @rendering_engine : RenderingEngine
 
     def initialize(@width : Int32, @height : Int32, @framerate : Float32, @title : String, @game : Game)
@@ -18,7 +18,7 @@ module Prism
       @rendering_engine = RenderingEngine.new(@window)
 
       @is_running = false
-      @frametime = 1.0f32 / @framerate
+      @frametime = 1.0f64 / @framerate.to_f64
 
       @window.on_display do
         run()
@@ -60,7 +60,7 @@ module Prism
         passed_time = start_time - last_time # how long the previous frame took
         last_time = start_time
 
-        unprocessed_time += passed_time / Timer::SECOND
+        unprocessed_time += passed_time
         frame_counter += passed_time
 
         while unprocessed_time > @frametime
@@ -83,7 +83,7 @@ module Prism
           # TODO: update game
 
           # log frame rate
-          if(frame_counter >= Timer::SECOND)
+          if(frame_counter >= 1.0)
             puts "fps: #{frames}"
             frames = 0
             frame_counter = 0

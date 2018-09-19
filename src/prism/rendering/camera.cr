@@ -31,9 +31,7 @@ module Prism
     def input(input : Input)
       center_position = input.get_center
       sensitivity = 0.5f32
-      delta = Timer.get_delta
-
-      return unless delta
+      delta = Timer.get_delta.to_f32
 
       mov_amt = 10 * delta
 
