@@ -6,16 +6,19 @@ require "./vector3f"
 require "./directional_light"
 require "./base_light"
 require "./point_light"
+require "./spot_light"
 
 module Prism
 
   class PhongShader < Shader
 
     MAX_POINT_LIGHTS = 4;
+    MAX_SPOT_LIGHTS = 4;
 
     @@ambient_light : Vector3f = Vector3f.new(1, 1, 1)
     @@directional_light : DirectionalLight = DirectionalLight.new(BaseLight.new(Vector3f.new(1,1,1), 0), Vector3f.new(0,0,0))
     @@point_lights = [] of PointLight
+    @@spot_lights = [] of SpotLight
 
     def initialize
       super
@@ -46,6 +49,19 @@ module Prism
         add_uniform("pointLights[#{i}].position")
         add_uniform("pointLights[#{i}].range")
       end
+
+      0.upto(MAX_SPOT_LIGHTS - 1) do |i|
+        add_uniform("spotLights[#{i}].pointLight.base.color")
+        add_uniform("spotLights[#{i}].pointLight.base.intensity")
+        add_uniform("spotLights[#{i}].pointLight.atten.constant")
+        add_uniform("spotLights[#{i}].pointLight.atten.linear")
+        add_uniform("spotLights[#{i}].pointLight.atten.exponent")
+        add_uniform("spotLights[#{i}].pointLight.position")
+        add_uniform("spotLights[#{i}].pointLight.range")
+
+        add_uniform("spotLights[#{i}].direction")
+        add_uniform("spotLights[#{i}].cutoff")
+      end
     end
 
 
@@ -65,6 +81,10 @@ module Prism
 
       0.upto(@@point_lights.size - 1) do |i|
         set_uniform("pointLights[#{i}]", @@point_lights[i])
+      end
+
+      0.upto(@@spot_lights.size - 1) do |i|
+        set_uniform("spotLights[#{i}]", @@spot_lights[i])
       end
 
       set_uniform("specularIntensity", material.specular_intensity)
@@ -101,6 +121,16 @@ module Prism
       @@point_lights = point_lights
     end
 
+    # Sets the global spot lights
+    def self.spot_lights=(spot_lights : Array(SpotLight))
+      if spot_lights.size > MAX_SPOT_LIGHTS
+        puts "Error: You passed in too many spot lights. Max allowed is #{MAX_SPOT_LIGHTS}, you passed in #{spot_lights.size}"
+        exit 1
+      end
+
+      @@spot_lights = spot_lights
+    end
+
     def set_uniform( name : String, base_light : BaseLight)
       set_uniform(name + ".color", base_light.color)
       set_uniform(name + ".intensity", base_light.intensity)
@@ -119,6 +149,12 @@ module Prism
       set_uniform(name + ".atten.exponent", point_light.atten.exponent)
       set_uniform(name + ".position", point_light.position)
       set_uniform(name + ".range", point_light.range)
+    end
+
+    def set_uniform( name : String, spot_light : SpotLight)
+      set_uniform(name + ".pointLight", spot_light.point_light)
+      set_uniform(name + ".direction", spot_light.direction)
+      set_uniform(name + ".cutoff", spot_light.cutoff)
     end
 
   end
