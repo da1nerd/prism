@@ -21,9 +21,13 @@ module Prism
       compile
 
       add_uniform("transform")
-      add_uniform("transformProjected");
+      add_uniform("transformProjected")
       add_uniform("baseColor")
       add_uniform("ambientLight")
+
+      add_uniform("specularIntensity")
+      add_uniform("specularExponent")
+      add_uniform("eyePos")
 
       add_uniform("directionalLight.base.color")
       add_uniform("directionalLight.base.intensity")
@@ -31,7 +35,7 @@ module Prism
     end
 
 
-    def update_uniforms(world_matrix : Matrix4f, projected_matrix : Matrix4f, material : Material)
+    def update_uniforms(world_matrix : Matrix4f, projected_matrix : Matrix4f, material : Material, camera_position : Vector3f)
       if material.texture
         material.texture.bind
       else
@@ -41,8 +45,14 @@ module Prism
       set_uniform("transformProjected", projected_matrix)
       set_uniform("transform", world_matrix)
       set_uniform("baseColor", material.color)
+
       set_uniform("ambientLight", @@ambient_light)
       set_uniform("directionalLight", @@directional_light)
+
+      set_uniform("specularIntensity", material.specular_intensity)
+      set_uniform("specularExponent", material.specular_exponent)
+
+      set_uniform("eyePos", camera_position)
     end
 
     # Sets the global ambient light

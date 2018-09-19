@@ -86,7 +86,7 @@ module Prism
     def render
       RenderUtil.set_clear_color((@camera.pos / 1024).abs)
       @shader.bind
-      @shader.update_uniforms(@transform.get_transformation, @transform.get_projected_transformation, @material)
+      @shader.update_uniforms(@transform.get_transformation, @transform.get_projected_transformation, @material, @camera.pos)
       @mesh.draw
     end
 
