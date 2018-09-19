@@ -44,6 +44,7 @@ module Prism
         add_uniform("pointLights[#{i}].atten.linear")
         add_uniform("pointLights[#{i}].atten.exponent")
         add_uniform("pointLights[#{i}].position")
+        add_uniform("pointLights[#{i}].range")
       end
     end
 
@@ -117,6 +118,7 @@ module Prism
       set_uniform(name + ".atten.linear", point_light.atten.linear)
       set_uniform(name + ".atten.exponent", point_light.atten.exponent)
       set_uniform(name + ".position", point_light.position)
+      set_uniform(name + ".range", point_light.range)
     end
 
   end
