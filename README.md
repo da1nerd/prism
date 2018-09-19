@@ -64,12 +64,7 @@ I'm using this as a learning exercise by following along with [this tutorial](ht
 - [x] directional lighting
 - [x] specular reflection
 - [x] point lights
-
-Next few items immediately on the road map
-
-- [ ] spot lights
-
-
+- [x] spot lights
 
 ## Contributors
 
