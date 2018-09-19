@@ -1,39 +1,34 @@
 require "cryst_glut"
 require "./timer"
-require "../../game/game"
 require "./input"
 require "../rendering/render_util"
+require "../../game/game"
 
 module Prism
 
-  class MainComponent
+  class CoreEngine
 
-    WIDTH = 800
-    HEIGHT = 600
-    TITLE = "3D Engine"
-    FRAME_CAP = 500.0f32 # maximum updates per second
+    @frametime : Float32
 
-    @is_running = false
-
-    # TODO: make this receive the game instance
-    def initialize()
+    def initialize(@width : Int32, @height : Int32, @framerate : Float32, @title : String, @game : Game)
 
       # set up window
-      @window = CrystGLUT::Window.new(WIDTH, HEIGHT, TITLE)
+      @window = CrystGLUT::Window.new(@width, @height, "TITLE")
+      init_rendering
 
-      puts RenderUtil.get_open_gl_version
-      RenderUtil.init_graphics
+      @is_running = false
+      @frametime = 1.0f32 / @framerate
 
       @window.on_display do
         run()
       end
 
       @input = Input.new(@window)
+    end
 
-      # TODO: make `Game` abstract and pass in an instance through the constructor.
-      # set up grame
-      @game = Game.new(WIDTH.to_f32, HEIGHT.to_f32)
-
+    def init_rendering
+      puts RenderUtil.get_open_gl_version
+      RenderUtil.init_graphics
     end
 
     # Starts the game
@@ -57,7 +52,8 @@ module Prism
       frames = 0
       frame_counter = 0;
 
-      frame_time = 1.0f32 / FRAME_CAP
+      @game.init
+
       last_time = Timer.get_time()
       unprocessed_time : Float64 = 0.0
 
@@ -71,16 +67,16 @@ module Prism
         unprocessed_time += passed_time / Timer::SECOND
         frame_counter += passed_time
 
-        while unprocessed_time > frame_time
+        while unprocessed_time > @frametime
           should_render = true
 
-          unprocessed_time -= frame_time
+          unprocessed_time -= @frametime
 
           if @window.is_close_requested
             stop()
           end
 
-          Timer.set_delta(frame_time);
+          Timer.set_delta(@frametime);
 
           @game.input(@input)
           @input.update

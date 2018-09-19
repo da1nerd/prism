@@ -10,7 +10,7 @@ lib: src/prism/lib
 	cd ${TOOLS_DIR} && cmake . && make
 
 samples: lib directories
-	@crystal build samples/game.cr -o $(BIN_DIR)/game
+	@crystal build samples/main.cr -o $(BIN_DIR)/game
 
 directories:
 	@mkdir -p $(BIN_DIR)
