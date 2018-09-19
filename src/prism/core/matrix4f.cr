@@ -41,6 +41,23 @@ module Prism
       self
     end
 
+    def init_orthographic(left : Float32, right : Float32, bottom : Float32, top : Float32, near : Float32, far : Float32) : Matrix4f
+      width = right - left
+      height = top - bottom
+      depth = far - near
+
+      # start with identity matrix
+      @m = Matrix(Float32).new(4, 4) do |i, r, c|
+        r == c ? 1f32 : 0f32
+      end
+
+      @m.[]=(0, 0, 2/width); @m.[]=(0, 3, -(right + left)/width)
+      @m.[]=(1, 1, 2/height); @m.[]=(1, 3, -(top + bottom)/height)
+      @m.[]=(2, 2, -2/depth); @m.[]=(2, 3, -(far + near)/depth)
+
+      self
+    end
+
     def init_rotation(forward : Vector3f, up : Vector3f)
       f = forward.normalized;
       r = up.normalized.cross(f);
