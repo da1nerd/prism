@@ -27,7 +27,7 @@ module Prism
 
       add_uniform("directionalLight.base.color")
       add_uniform("directionalLight.base.intensity")
-      add_uniform("directionalLight.base.direction")
+      add_uniform("directionalLight.direction")
     end
 
 

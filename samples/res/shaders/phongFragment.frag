@@ -50,7 +50,7 @@ void main()
   if(textureColor != vec4(0,0,0,0))
     color *= textureColor;
 
-  vec3 normal = normalized(normal0);
+  vec3 normal = normalize(normal0);
 
   totalLight += calcDirectionalLight(directionalLight, normal);
 
