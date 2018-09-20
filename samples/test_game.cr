@@ -1,11 +1,10 @@
 require "lib_gl"
 require "../src/prism"
-require "./mesh_renderer"
 
 include Prism
 
 class TestGame < Prism::Game
-  
+
   def init
     field_depth = 10.0f32
     field_width = 10.0f32
@@ -31,8 +30,17 @@ class TestGame < Prism::Game
     plane_object.add_component(mesh_renderer)
     plane_object.transform.pos(0, -1, 5)
 
-    get_root_object.add_child(plane_object)
+    directional_light_object = GameObject.new()
+    directional_light = DirectionalLight.new(BaseLight.new(Vector3f.new(0,0,1), 0.4), Vector3f.new(1,1,1))
+    directional_light_object.add_component(directional_light)
 
+    point_light_object = GameObject.new()
+    point_light = PointLight.new(BaseLight.new(Vector3f.new(0,1,0), 0.4), Attenuation.new(0,0,1), Vector3f.new(5, 0, 5), 100.0)
+    point_light_object.add_component(point_light)
+
+    get_root_object.add_child(plane_object)
+    get_root_object.add_child(directional_light_object)
+    get_root_object.add_child(point_light_object)
   end
 
 end

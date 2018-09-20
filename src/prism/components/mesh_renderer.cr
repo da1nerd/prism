@@ -1,4 +1,4 @@
-require "../src/prism"
+require "../../prism"
 
 include Prism
 
