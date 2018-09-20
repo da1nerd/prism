@@ -1,3 +1,5 @@
+require "../../prism"
+
 module Prism
 
   class GameObject
@@ -49,6 +51,16 @@ module Prism
 
       0.upto(@children.size - 1) do |i|
         @children[i].render(shader)
+      end
+    end
+
+    def add_to_rendering_engine(rendering_engine : RenderingEngine)
+      0.upto(@components.size - 1) do |i|
+        @components[i].add_to_rendering_engine(rendering_engine)
+      end
+
+      0.upto(@children.size - 1) do |i|
+        @children[i].add_to_rendering_engine(rendering_engine)
       end
     end
 
