@@ -9,6 +9,8 @@ require "../rendering/forward_ambient"
 require "../rendering/forward_directional"
 require "../rendering/directional_light"
 require "../rendering/base_light"
+require "../rendering/point_light"
+require "../rendering/attenuation"
 
 module Prism
 
@@ -18,8 +20,9 @@ module Prism
     @ambient_light : Vector3f
     @directional_light : DirectionalLight
     @directional_light2 : DirectionalLight
+    @point_light : PointLight
 
-    getter main_camera, ambient_light, directional_light
+    getter main_camera, ambient_light, directional_light, point_light
     setter main_camera
 
     def initialize(window : CrystGLUT::Window)
@@ -38,6 +41,7 @@ module Prism
       @ambient_light = Vector3f.new(0.2, 0.2, 0.2)
       @directional_light = DirectionalLight.new(BaseLight.new(Vector3f.new(0,0,1), 0.4), Vector3f.new(1,1,1))
       @directional_light2 = DirectionalLight.new(BaseLight.new(Vector3f.new(1,0,0), 0.4), Vector3f.new(-1,1,-1))
+      @point_light = PointLight.new(BaseLight.new(Vector3f.new(0,1,0), 0.4), Attenuation.new(0,0,1), Vector3f.new(5, 0, 5), 100.0)
     end
 
     def render(object : GameObject)
@@ -45,8 +49,10 @@ module Prism
 
       forward_ambient = ForwardAmbient.instance
       forward_directional = ForwardDirectional.instance
+      forward_point = ForwardPoint.instance
       forward_ambient.rendering_engine = self
       forward_directional.rendering_engine = self
+      forward_point.rendering_engine = self
 
       object.render(forward_ambient)
 
@@ -66,6 +72,8 @@ module Prism
       temp = @directional_light
       @directional_light = @directional_light2
       @directional_light2 = temp
+
+      object.render(forward_point)
 
       LibGL.depth_func(LibGL::LESS)
       LibGL.depth_mask(LibGL::TRUE)
