@@ -11,6 +11,8 @@ require "../rendering/directional_light"
 require "../rendering/base_light"
 require "../rendering/point_light"
 require "../rendering/attenuation"
+require "../rendering/spot_light"
+require "../rendering/forward_spot"
 
 module Prism
 
@@ -22,7 +24,11 @@ module Prism
     @directional_light2 : DirectionalLight
     @point_light : PointLight
 
-    getter main_camera, ambient_light, directional_light, point_light
+    @point_light_list : Array(PointLight)
+
+    @spot_light : SpotLight
+
+    getter main_camera, ambient_light, directional_light, point_light, spot_light
     setter main_camera
 
     def initialize(window : CrystGLUT::Window)
@@ -41,7 +47,34 @@ module Prism
       @ambient_light = Vector3f.new(0.2, 0.2, 0.2)
       @directional_light = DirectionalLight.new(BaseLight.new(Vector3f.new(0,0,1), 0.4), Vector3f.new(1,1,1))
       @directional_light2 = DirectionalLight.new(BaseLight.new(Vector3f.new(1,0,0), 0.4), Vector3f.new(-1,1,-1))
-      @point_light = PointLight.new(BaseLight.new(Vector3f.new(0,1,0), 0.4), Attenuation.new(0,0,1), Vector3f.new(5, 0, 5), 100.0)
+
+      @point_light_list = [] of PointLight
+      light_field_width = 5
+      light_field_depth = 5
+      light_field_start_x = 0.0f32
+      light_field_start_y = 0.0f32
+      light_field_step_x = 7.0f32
+      light_field_step_y = 7.0f32
+
+      0.upto(light_field_width - 1) do |r|
+        0.upto(light_field_depth -1) do |c|
+          @point_light_list.push(PointLight.new(
+                                  BaseLight.new(Vector3f.new(0,1,0), 0.4),
+                                  Attenuation.new(0,0,1),
+                                  Vector3f.new(light_field_start_x + light_field_step_x * r, 0, light_field_start_y + light_field_step_y * c),
+                                  100.0))
+        end
+      end
+
+      @point_light = @point_light_list[0]#PointLight.new(BaseLight.new(Vector3f.new(0,1,0), 0.4), Attenuation.new(0,0,1), Vector3f.new(5, 0, 5), 100.0)
+      @spot_light = SpotLight.new(
+                      PointLight.new(
+                        BaseLight.new(Vector3f.new(0,1,1), 0.4),
+                        Attenuation.new(0,0,0.1),
+                        Vector3f.new(7, 0, 7),
+                        100.0
+                      ),
+                      Vector3f.new(1,0,0), 0.7)
     end
 
     def render(object : GameObject)
@@ -50,9 +83,11 @@ module Prism
       forward_ambient = ForwardAmbient.instance
       forward_directional = ForwardDirectional.instance
       forward_point = ForwardPoint.instance
+      forward_spot = ForwardSpot.instance
       forward_ambient.rendering_engine = self
       forward_directional.rendering_engine = self
       forward_point.rendering_engine = self
+      forward_spot.rendering_engine = self
 
       object.render(forward_ambient)
 
@@ -73,7 +108,12 @@ module Prism
       @directional_light = @directional_light2
       @directional_light2 = temp
 
-      object.render(forward_point)
+      0.upto(@point_light_list.size - 1) do |i|
+        @point_light = @point_light_list[i]
+        object.render(forward_point)
+      end
+
+      object.render(forward_spot)
 
       LibGL.depth_func(LibGL::LESS)
       LibGL.depth_mask(LibGL::TRUE)
