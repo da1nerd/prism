@@ -53,17 +53,17 @@ module Prism
       set_uniform("specularExponent", material.specular_exponent)
       set_uniform("eyePos", r_engine.main_camera.pos)
 
-      set_uniform("directionalLight", r_engine.directional_light)
+      set_uniform_directional_light("directionalLight", r_engine.active_light.as(DirectionalLight))
 
     end
 
-    def set_uniform( name : String, base_light : BaseLight)
+    def set_uniform_base_light( name : String, base_light : BaseLight)
       set_uniform(name + ".color", base_light.color)
       set_uniform(name + ".intensity", base_light.intensity)
     end
 
-    def set_uniform( name : String, directional_light : DirectionalLight)
-      set_uniform(name + ".base", directional_light.base)
+    def set_uniform_directional_light( name : String, directional_light : DirectionalLight)
+      set_uniform_base_light(name + ".base", directional_light)
       set_uniform(name + ".direction", directional_light.direction)
     end
 

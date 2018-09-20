@@ -10,21 +10,26 @@ module Prism
     # @directional_light2 : DirectionalLight
     # @point_light_list : Array(PointLight)
 
-
-    getter main_camera, ambient_light
-    setter main_camera
-
-    # "Permanent" Structures
-    @directional_lights : Array(DirectionalLight)
-    @point_lights : Array(PointLight)
     @spot_lights : Array(SpotLight)
+
 
 
     @active_directional_light : DirectionalLight
     @active_point_light : PointLight
     @active_spot_light : SpotLight
 
+    getter main_camera, ambient_light
+    setter main_camera, active_light
+
+    # "Permanent" Structures
+    @directional_lights : Array(DirectionalLight)
+    @point_lights : Array(PointLight)
+
+    @lights : Array(BaseLight)
+    @active_light : BaseLight
+
     def initialize(window : CrystGLUT::Window)
+      @lights = [] of BaseLight
       @directional_lights = [] of DirectionalLight
       @point_lights = [] of PointLight
       @spot_lights = [] of SpotLight
@@ -78,7 +83,7 @@ module Prism
 
     def render(object : GameObject)
       clear_screen
-      clear_light_list
+      @lights.clear
       object.add_to_rendering_engine(self)
 
       forward_ambient = ForwardAmbient.instance
@@ -97,42 +102,57 @@ module Prism
       LibGL.depth_mask(LibGL::FALSE)
       LibGL.depth_func(LibGL::EQUAL)
 
-      0.upto(@directional_lights.size - 1) do |i|
-        @active_directional_light = @directional_lights[i]
-        object.render(forward_directional)
+      0.upto(@lights.size - 1) do |i|
+        light = @lights[i]
+        if shader = light.shader
+          shader.set_rendering_engine(self)
+
+          @active_light = light
+
+          object.render(shader)
+        end
       end
 
-      0.upto(@point_lights.size - 1) do |i|
-        @active_point_light = @point_lights[i]
-        object.render(forward_point)
-      end
-
-      0.upto(@spot_lights.size - 1) do |i|
-        @active_spot_light = @spot_lights[i]
-        object.render(forward_spot)
-      end
+      # 0.upto(@directional_lights.size - 1) do |i|
+      #   @active_directional_light = @directional_lights[i]
+      #   object.render(forward_directional)
+      # end
+      #
+      # 0.upto(@point_lights.size - 1) do |i|
+      #   @active_point_light = @point_lights[i]
+      #   object.render(forward_point)
+      # end
+      #
+      # 0.upto(@spot_lights.size - 1) do |i|
+      #   @active_spot_light = @spot_lights[i]
+      #   object.render(forward_spot)
+      # end
 
       LibGL.depth_func(LibGL::LESS)
       LibGL.depth_mask(LibGL::TRUE)
       LibGL.disable(LibGL::BLEND)
     end
 
-    private def clear_light_list
-      @directional_lights.clear
-      @point_lights.clear
-      @spot_lights.clear
-    end
+    # private def clear_light_list
+    #   @directional_lights.clear
+    #   @point_lights.clear
+    #   @spot_lights.clear
+    # end
 
-    def add_directional_light(light : DirectionalLight)
-      @directional_lights.push(light)
-    end
-
-    def add_point_light(light : PointLight)
-      @point_lights.push(light)
-    end
-
-    def add_spot_light(light : SpotLight)
-      @spot_lights.push(light)
+    # def add_directional_light(light : DirectionalLight)
+    #   @directional_lights.push(light)
+    # end
+    #
+    # def add_point_light(light : PointLight)
+    #   @point_lights.push(light)
+    # end
+    #
+    # def add_spot_light(light : SpotLight)
+    #   @spot_lights.push(light)
+    # end
+    #
+    def add_light(light : BaseLight)
+      @lights.push(light)
     end
 
     # temporary hack
