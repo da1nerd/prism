@@ -1,18 +1,16 @@
-require "../../prism"
+require "./base_light"
 
 module Prism
 
-  class DirectionalLight < GameComponent
+  class DirectionalLight < BaseLight
 
-    getter base, direction
-    setter base
+    getter direction
 
-    def add_to_rendering_engine(rendering_engine : RenderingEngine)
-      rendering_engine.add_directional_light(self)
-    end
-
-    def initialize(@base : BaseLight, @direction : Vector3f)
+    def initialize(color : Vector3f, intensity : Float32, @direction : Vector3f)
+      super(color, intensity)
       @direction = @direction.normalized
+
+      self.shader = ForwardDirectional.instance
     end
 
     def direction=(@direction : Vector3f)
