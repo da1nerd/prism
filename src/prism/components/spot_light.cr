@@ -7,10 +7,9 @@ module Prism
     getter direction, cutoff
     setter cutoff
 
-    def initialize(color : Vector3f, intensity : Float32, attenuation : Vector3f, position : Vector3f, range : Float32, @direction : Vector3f, @cutoff : Float32)
-      super(color, intensity, attenuation, position, range)
+    def initialize(color : Vector3f, intensity : Float32, attenuation : Vector3f, @direction : Vector3f, @cutoff : Float32)
+      super(color, intensity, attenuation)
       @direction = @direction.normalized
-
       self.shader = ForwardSpot.instance
     end
 

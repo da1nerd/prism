@@ -4,12 +4,12 @@ module Prism
 
   class PointLight < BaseLight
 
-    getter position, range
-    setter position, range
+    getter range
+    setter range
 
-    def initialize(color : Vector3f, intensity : Float32, @attenuation : Vector3f, @position : Vector3f, @range : Float32)
+    def initialize(color : Vector3f, intensity : Float32, @attenuation : Vector3f)
       super(color, intensity)
-
+      @range = 1_000.0f32 # TODO: calculate
       self.shader = ForwardPoint.instance
     end
 

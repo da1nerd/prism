@@ -23,12 +23,13 @@ module Prism
     end
 
     def add_component(component : GameComponent)
+      component.parent = self
       @components.push(component)
     end
 
     def input(delta : Float32)
       0.upto(@components.size - 1) do |i|
-        @components[i].input(@transform, delta)
+        @components[i].input(delta)
       end
 
       0.upto(@children.size - 1) do |i|
@@ -38,7 +39,7 @@ module Prism
 
     def update(delta : Float32)
       0.upto(@components.size - 1) do |i|
-        @components[i].update(@transform, delta)
+        @components[i].update(delta)
       end
 
       0.upto(@children.size - 1) do |i|
@@ -48,7 +49,7 @@ module Prism
 
     def render(shader : Shader)
       0.upto(@components.size - 1) do |i|
-        @components[i].render(@transform, shader)
+        @components[i].render(shader)
       end
 
       0.upto(@children.size - 1) do |i|
