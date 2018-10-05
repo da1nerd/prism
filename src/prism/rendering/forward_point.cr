@@ -69,9 +69,9 @@ module Prism
 
     def set_uniform_point_light( name : String, point_light : PointLight)
       set_uniform_base_light(name + ".base", point_light)
-      set_uniform(name + ".atten.constant", point_light.atten.constant)
-      set_uniform(name + ".atten.linear", point_light.atten.linear)
-      set_uniform(name + ".atten.exponent", point_light.atten.exponent)
+      set_uniform(name + ".atten.constant", point_light.constant)
+      set_uniform(name + ".atten.linear", point_light.linear)
+      set_uniform(name + ".atten.exponent", point_light.exponent)
       set_uniform(name + ".position", point_light.position)
       set_uniform(name + ".range", point_light.range)
     end

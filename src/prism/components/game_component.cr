@@ -1,5 +1,5 @@
 require "../core/transform"
-require "../core/rendering_engine_protocol"
+require "../rendering/rendering_engine_protocol"
 require "../rendering/shader"
 
 module Prism

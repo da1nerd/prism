@@ -1,8 +1,5 @@
 require "lib_gl"
 require "../rendering/camera"
-require "../rendering/spot_light"
-require "../components/directional_light"
-require "../components/point_light"
 require "../components/base_light"
 require "./rendering_engine_protocol"
 
@@ -44,13 +41,7 @@ module Prism
       object.add_to_rendering_engine(self)
 
       forward_ambient = ForwardAmbient.instance
-      forward_directional = ForwardDirectional.instance
-      forward_point = ForwardPoint.instance
-      forward_spot = ForwardSpot.instance
       forward_ambient.rendering_engine = self
-      forward_directional.rendering_engine = self
-      forward_point.rendering_engine = self
-      forward_spot.rendering_engine = self
 
       object.render(forward_ambient)
 

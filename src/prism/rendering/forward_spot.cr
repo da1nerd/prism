@@ -61,26 +61,26 @@ module Prism
       set_uniform("specularExponent", material.specular_exponent)
       set_uniform("eyePos", r_engine.main_camera.pos)
 
-      # set_uniform("spotLight", r_engine.spot_light)
+      set_uniform_spot_light("spotLight", r_engine.active_light.as(SpotLight))
 
     end
 
-    def set_uniform( name : String, base_light : BaseLight)
+    def set_uniform_base_light( name : String, base_light : BaseLight)
       set_uniform(name + ".color", base_light.color)
       set_uniform(name + ".intensity", base_light.intensity)
     end
 
-    def set_uniform( name : String, point_light : PointLight)
-      set_uniform(name + ".base", point_light.base_light)
-      set_uniform(name + ".atten.constant", point_light.atten.constant)
-      set_uniform(name + ".atten.linear", point_light.atten.linear)
-      set_uniform(name + ".atten.exponent", point_light.atten.exponent)
+    def set_uniform_point_light( name : String, point_light : PointLight)
+      set_uniform_base_light(name + ".base", point_light)
+      set_uniform(name + ".atten.constant", point_light.constant)
+      set_uniform(name + ".atten.linear", point_light.linear)
+      set_uniform(name + ".atten.exponent", point_light.exponent)
       set_uniform(name + ".position", point_light.position)
       set_uniform(name + ".range", point_light.range)
     end
 
-    def set_uniform( name : String, spot_light : SpotLight)
-      set_uniform(name + ".pointLight", spot_light.point_light)
+    def set_uniform_spot_light( name : String, spot_light : SpotLight)
+      set_uniform_point_light(name + ".pointLight", spot_light)
       set_uniform(name + ".direction", spot_light.direction)
       set_uniform(name + ".cutoff", spot_light.cutoff)
     end

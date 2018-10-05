@@ -7,7 +7,6 @@ require "../rendering/basic_shader"
 require "./timer"
 require "./transform"
 require "../rendering/camera"
-require "../rendering/spot_light"
 
 module Prism
 
