@@ -8,11 +8,11 @@ module Prism
     setter normal
 
     def initialize(@pos : Vector3f)
-      initialize(@pos, Vector2f.new(0,0))
+      initialize(@pos, Vector2f.new(0.0f32, 0.0f32))
     end
 
     def initialize(@pos : Vector3f, @tex_coord : Vector2f)
-      initialize(@pos, @tex_coord, Vector3f.new(0,0,0))
+      initialize(@pos, @tex_coord, Vector3f.new(0.0f32, 0.0f32, 0.0f32))
     end
 
     def initialize(@pos : Vector3f, @tex_coord : Vector2f, @normal : Vector3f)
