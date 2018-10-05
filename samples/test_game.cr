@@ -35,11 +35,11 @@ class TestGame < Prism::Game
     directional_light_object.add_component(directional_light)
 
     point_light_object = GameObject.new()
-    point_light = PointLight.new(Vector3f.new(0,1,0), 0.4, Vector3f.new(0,0,1))
+    point_light = PointLight.new(Vector3f.new(0.0f32, 1.0f32, 0.0f32), 0.4f32, Vector3f.new(0.0f32, 0.0f32, 1.0f32))
     point_light_object.add_component(point_light)
 
     spot_light_object = GameObject.new()
-    spot_light = SpotLight.new(Vector3f.new(0,1,1), 0.4, Vector3f.new(0,0,0.1), Vector3f.new(1, 0, 0), 0.7)
+    spot_light = SpotLight.new(Vector3f.new(0.0f32, 1.0f32, 1.0f32), 0.4f32, Vector3f.new(0.0f32, 0.0f32, 0.1f32), Vector3f.new(1.0f32, 0.0f32, 0.0f32), 0.7f32)
     spot_light_object.add_component(spot_light)
 
     spot_light_object.transform.pos(5, 0, 5)

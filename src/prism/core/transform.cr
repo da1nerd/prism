@@ -15,9 +15,9 @@ module Prism
     setter pos, rot, scale
 
     def initialize()
-      @pos = Vector3f.new(0, 0, 0)
-      @rot = Vector3f.new(0, 0, 0)
-      @scale = Vector3f.new(1, 1, 1)
+      @pos = Vector3f.new(0.0f32, 0.0f32, 0.0f32)
+      @rot = Vector3f.new(0.0f32, 0.0f32, 0.0f32)
+      @scale = Vector3f.new(1.0f32, 1.0f32, 1.0f32)
     end
 
     # additional setter in case I don't want to create a vector before hand.

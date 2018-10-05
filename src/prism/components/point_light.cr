@@ -4,12 +4,22 @@ module Prism
 
   class PointLight < BaseLight
 
+    COLOR_DEPTH = 256.0f32
+
+    @range : Float32
+
     getter range
     setter range
 
     def initialize(color : Vector3f, intensity : Float32, @attenuation : Vector3f)
       super(color, intensity)
-      @range = 1_000.0f32 # TODO: calculate
+
+      a = @attenuation.z
+      b = @attenuation.y
+      c = @attenuation.x - COLOR_DEPTH * intensity * color.max
+
+      @range = (-b + Math.sqrt(b * b - 4.0f32 * a * c)) / (2.0f32 * a)
+
       self.shader = ForwardPoint.instance
     end
 

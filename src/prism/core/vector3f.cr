@@ -24,6 +24,11 @@ module Prism
       return Math.sqrt(@x*@x + @y*@y + @z*@z)
     end
 
+    # Returns the maximum component size
+    def max
+      return Math.max(@x, Math.max(@y, @z))
+    end
+
     # Returns the dot product of the vectors
     def dot(r : Vector3f) : Float32
       return @x * r.x + @y * r.y + @z * r.z
