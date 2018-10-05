@@ -1,5 +1,4 @@
 require "./game_component"
-require "../rendering/rendering_engine_protocol"
 require "../core/vector3f"
 require "../rendering/shader"
 
@@ -15,7 +14,7 @@ module Prism
     def initialize(@color : Vector3f, @intensity : Float32)
     end
 
-    def add_to_rendering_engine(rendering_engine : RenderingEngineProtocol)
+    def add_to_rendering_engine(rendering_engine : RenderingEngine)
       rendering_engine.add_light(self)
     end
 
