@@ -4,12 +4,15 @@ require "../rendering/attenuation"
 
 module Prism
 
-  class PointLight < GameComponent
+  class PointLight < BaseLight
 
-    getter base_light, position, atten, range
-    setter base_light, position, atten, range
+    getter position, atten, range
+    setter position, atten, range
 
-    def initialize(@base_light : BaseLight, @atten : Attenuation, @position : Vector3f, @range : Float32)
+    def initialize(color : Vector3f, intensity : Float32, @atten : Attenuation, @position : Vector3f, @range : Float32)
+      super(color, intensity)
+
+      self.shader = ForwardPoint.instance
     end
 
   end
