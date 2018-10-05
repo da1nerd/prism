@@ -1,6 +1,6 @@
 require "../components/game_component"
 require "./transform"
-require "./rendering_engine"
+require "../rendering/rendering_engine"
 
 module Prism
 

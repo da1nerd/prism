@@ -1,7 +1,7 @@
 require "cryst_glut"
 require "./timer"
 require "./input"
-require "./rendering_engine"
+require "../rendering/rendering_engine"
 require "./game"
 
 module Prism

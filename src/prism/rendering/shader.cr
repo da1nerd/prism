@@ -4,7 +4,7 @@ require "../core/matrix4f"
 require "./material"
 require "../core/transform"
 require "./camera"
-require "../core/rendering_engine_protocol"
+require "./rendering_engine_protocol"
 
 module Prism
 

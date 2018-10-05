@@ -1,5 +1,5 @@
 require "./game_component"
-require "../core/rendering_engine_protocol"
+require "../rendering/rendering_engine_protocol"
 require "../core/vector3f"
 require "../rendering/shader"
 
