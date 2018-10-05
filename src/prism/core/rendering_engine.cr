@@ -1,9 +1,15 @@
 require "lib_gl"
-require "../../prism"
+require "../rendering/camera"
+require "../rendering/spot_light"
+require "../components/directional_light"
+require "../components/point_light"
+require "../components/base_light"
+require "./rendering_engine_protocol"
 
 module Prism
 
   class RenderingEngine
+    include RenderingEngineProtocol
 
     @main_camera : Camera
     @ambient_light : Vector3f
@@ -18,7 +24,7 @@ module Prism
     @active_point_light : PointLight
     @active_spot_light : SpotLight
 
-    getter main_camera, ambient_light
+    getter main_camera, ambient_light, active_light
     setter main_camera, active_light
 
     # "Permanent" Structures
@@ -26,7 +32,7 @@ module Prism
     @point_lights : Array(PointLight)
 
     @lights : Array(BaseLight)
-    @active_light : BaseLight
+    @active_light : BaseLight?
 
     def initialize(window : CrystGLUT::Window)
       @lights = [] of BaseLight
@@ -49,7 +55,7 @@ module Prism
       @ambient_light = Vector3f.new(0.1, 0.1, 0.1)
 
       # default values
-      @active_directional_light = DirectionalLight.new(BaseLight.new(Vector3f.new(0,0,1), 0.4), Vector3f.new(1,1,1))
+      @active_directional_light = DirectionalLight.new(Vector3f.new(0,0,1), 0.4, Vector3f.new(1,1,1))
       # @directional_light2 = DirectionalLight.new(BaseLight.new(Vector3f.new(1,0,0), 0.4), Vector3f.new(-1,1,-1))
       #
       # @point_light_list = [] of PointLight
@@ -105,7 +111,7 @@ module Prism
       0.upto(@lights.size - 1) do |i|
         light = @lights[i]
         if shader = light.shader
-          shader.set_rendering_engine(self)
+          shader.rendering_engine = self
 
           @active_light = light
 
