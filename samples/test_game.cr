@@ -34,13 +34,13 @@ class TestGame < Prism::Game
     directional_light = DirectionalLight.new(Vector3f.new(0,0,1), 0.4, Vector3f.new(1,1,1))
     directional_light_object.add_component(directional_light)
 
-    # point_light_object = GameObject.new()
-    # point_light = PointLight.new(BaseLight.new(Vector3f.new(0,1,0), 0.4), Attenuation.new(0,0,1), Vector3f.new(5, 0, 5), 100.0)
-    # point_light_object.add_component(point_light)
+    point_light_object = GameObject.new()
+    point_light = PointLight.new(Vector3f.new(0,1,0), 0.4, Attenuation.new(0,0,1), Vector3f.new(5, 0, 5), 100.0)
+    point_light_object.add_component(point_light)
 
     get_root_object.add_child(plane_object)
     get_root_object.add_child(directional_light_object)
-    # get_root_object.add_child(point_light_object)
+    get_root_object.add_child(point_light_object)
   end
 
 end

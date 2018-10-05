@@ -61,7 +61,7 @@ module Prism
       set_uniform("specularExponent", material.specular_exponent)
       set_uniform("eyePos", r_engine.main_camera.pos)
 
-      set_uniform("spotLight", r_engine.spot_light)
+      # set_uniform("spotLight", r_engine.spot_light)
 
     end
 
