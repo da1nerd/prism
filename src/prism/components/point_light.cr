@@ -1,4 +1,6 @@
-require "../../prism"
+require "./game_component"
+require "./base_light"
+require "../rendering/attenuation"
 
 module Prism
 

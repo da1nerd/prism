@@ -4,13 +4,13 @@ require "../core/matrix4f"
 require "./material"
 require "../core/transform"
 require "./camera"
-require "../core/rendering_engine"
+require "../core/rendering_engine_protocol"
 
 module Prism
 
   class Shader
 
-    @rendering_engine : RenderingEngine?
+    @rendering_engine : RenderingEngineProtocol?
     @program : LibGL::UInt
     @uniforms : Hash(String, Int32)
 
