@@ -5,18 +5,25 @@ module Prism
 
   abstract class GameComponent
 
-    def input(transform : Transform, delta : Float32)
+    setter parent
+
+    @parent : GameObject = GameObject.new
+
+    def input(delta : Float32)
     end
 
-    def update(transform : Transform, delta : Float32)
+    def update(delta : Float32)
     end
 
-    def render(transform : Transform, shader : Shader)
+    def render(shader : Shader)
     end
 
     def add_to_rendering_engine(rendering_engine : RenderingEngine)
     end
 
+    def transform : Transform
+      @parent.transform
+    end
   end
 
 end

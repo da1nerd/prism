@@ -72,7 +72,7 @@ module Prism
       set_uniform(name + ".atten.constant", point_light.constant)
       set_uniform(name + ".atten.linear", point_light.linear)
       set_uniform(name + ".atten.exponent", point_light.exponent)
-      set_uniform(name + ".position", point_light.position)
+      set_uniform(name + ".position", point_light.transform.pos)
       set_uniform(name + ".range", point_light.range)
     end
 
