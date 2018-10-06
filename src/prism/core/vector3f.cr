@@ -50,10 +50,12 @@ module Prism
     end
 
     # Rotates the vector by some angle
-    def rotate(angle : Float32, axis : Vector3f) : Vector3f
-      rotation = Quaternion.new().init_rotation(axis, angle)
-      conjugate = rotation.conjugate
+    def rotate(axis : Vector3f, angle : Float32) : Vector3f
+      return self.rotate(Quaternion.new().init_rotation(axis, angle))
+    end
 
+    def rotate(rotation : Quaternion) : Vector3f
+      conjugate = rotation.conjugate
       w = (rotation * self) * conjugate
       return Vector3f.new(w.x.to_f32, w.y.to_f32, w.z.to_f32)
     end

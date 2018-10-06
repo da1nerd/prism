@@ -9,7 +9,7 @@ module Prism
 
     @parent : GameObject = GameObject.new
 
-    def input(delta : Float32)
+    def input(delta : Float32, input : Input)
     end
 
     def update(delta : Float32)

@@ -1,15 +1,15 @@
 require "lib_gl"
-require "../rendering/camera"
+require "../components/camera"
 require "../components/base_light"
 
 module Prism
 
   class RenderingEngine
 
-    @main_camera : Camera
+    @main_camera : Camera?
     @ambient_light : Vector3f
 
-    getter main_camera, ambient_light, active_light
+    getter ambient_light, active_light
     setter main_camera, active_light
 
     @lights : Array(BaseLight)
@@ -29,7 +29,7 @@ module Prism
 
       LibGL.enable(LibGL::TEXTURE_2D)
 
-      @main_camera = Camera.new(to_rad(70.0f32), window.get_width.to_f32/window.get_height.to_f32, 0.01f32, 1000.0f32)
+      # @main_camera = Camera.new(to_rad(70.0f32), window.get_width.to_f32/window.get_height.to_f32, 0.01f32, 1000.0f32)
       @ambient_light = Vector3f.new(0.1f32, 0.1f32, 0.1f32)
     end
 
@@ -68,10 +68,23 @@ module Prism
       @lights.push(light)
     end
 
-    # temporary hack
-    def input(delta : Float32, input : Input)
-      @main_camera.input(delta, input)
+    def add_camera(camera : Camera)
+      @main_camera = camera
     end
+
+    def main_camera : Camera
+      if camera = @main_camera
+        return camera
+      else
+        puts "Error: No camera has been set."
+        exit 1
+      end
+    end
+
+    # temporary hack
+    # def input(delta : Float32, input : Input)
+    #   @main_camera.input(delta, input)
+    # end
 
     private def clear_screen
       # TODO: stencil buffer
