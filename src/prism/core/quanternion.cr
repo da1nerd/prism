@@ -65,7 +65,7 @@ module Prism
     end
 
     def back
-      return Vector3f.new(-2.0f64 * (@x*@z - @w*@y), -2.0f64 * (@y*@z + @w*@x), -(1.0f64 - 2.0f64 * (@x*@x + @y*@y)))
+      return Vector3f.new((-2.0f64 * (@x*@z - @w*@y)).to_f32, (-2.0f64 * (@y*@z + @w*@x)).to_f32, -(1.0f64 - 2.0f64 * (@x*@x + @y*@y)).to_f32)
     end
 
     def up
@@ -73,7 +73,7 @@ module Prism
     end
 
     def down
-      return Vector3f.new(-2.0f64 * (@x*@y + @w*@z), -(1.0f64 - 2.0f64 * (@x*@x + @z*@z)), -2.0f64 * (@y*@z - @w*@x))
+      return Vector3f.new((-2.0f64 * (@x*@y + @w*@z)).to_f32, -(1.0f64 - 2.0f64 * (@x*@x + @z*@z)).to_f32, (-2.0f64 * (@y*@z - @w*@x)).to_f32)
     end
 
     def right
@@ -81,7 +81,7 @@ module Prism
     end
 
     def left
-      return Vector3f.new(-(1.0f64 - 2.0f64 * (@y*@y + @z*@z)), -2.0f64 * (@x*@y - @w*@z), -2.0f64 * (@x*@z + @w*@y))
+      return Vector3f.new(-(1.0f64 - 2.0f64 * (@y*@y + @z*@z)).to_f32, (-2.0f64 * (@x*@y - @w*@z)).to_f32, (-2.0f64 * (@x*@z + @w*@y)).to_f32)
     end
 
     # Converts euler angles to Quaternion
@@ -220,10 +220,10 @@ module Prism
     def normalize!
       m = magnitude
       unless m == 0
-        self.x /= m
-        self.y /= m
-        self.z /= m
-        self.w /= m
+        @x /= m
+        @y /= m
+        @z /= m
+        @w /= m
       end
       self
     end

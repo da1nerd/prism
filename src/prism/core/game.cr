@@ -6,7 +6,7 @@ require "./vector3f"
 require "../rendering/basic_shader"
 require "./timer"
 require "./transform"
-require "../rendering/camera"
+require "../components/camera"
 
 module Prism
 
@@ -17,7 +17,7 @@ module Prism
     abstract def init
 
     def input(delta : Float32, input : Input)
-      get_root_object.input(delta)
+      get_root_object.input(delta, input)
     end
 
     def update(delta : Float32)

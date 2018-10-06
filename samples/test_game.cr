@@ -53,6 +53,8 @@ class TestGame < Prism::Game
     get_root_object.add_child(directional_light_object)
     get_root_object.add_child(point_light_object)
     get_root_object.add_child(spot_light_object)
+
+    get_root_object.add_child(GameObject.new().add_component(Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)))
   end
 
 end

@@ -25,15 +25,16 @@ module Prism
     def add_component(component : GameComponent)
       component.parent = self
       @components.push(component)
+      return self
     end
 
-    def input(delta : Float32)
+    def input(delta : Float32, input : Input)
       0.upto(@components.size - 1) do |i|
-        @components[i].input(delta)
+        @components[i].input(delta, input)
       end
 
       0.upto(@children.size - 1) do |i|
-        @children[i].input(delta)
+        @children[i].input(delta, input)
       end
     end
 

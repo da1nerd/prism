@@ -73,7 +73,7 @@ module Prism
           end
 
           @game.input(@frametime.to_f32, @input)
-          @rendering_engine.input(@frametime.to_f32, @input) # temporary hack
+          # @rendering_engine.input(@frametime.to_f32, @input) # temporary hack
           @input.update
 
           @game.update(@frametime.to_f32)
