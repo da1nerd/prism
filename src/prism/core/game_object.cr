@@ -1,6 +1,7 @@
 require "../components/game_component"
 require "./transform"
 require "../rendering/rendering_engine"
+require "./input"
 
 module Prism
 
