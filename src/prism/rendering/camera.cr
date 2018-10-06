@@ -62,10 +62,10 @@ module Prism
         rot_x = delta_pos.y != 0
 
         if rot_y
-          rotate_y(delta_pos.x * sensitivity)
+          rotate_y(Prism.to_rad(delta_pos.x * sensitivity))
         end
         if rot_x
-          rotate_x(delta_pos.y * sensitivity)
+          rotate_x(Prism.to_rad(delta_pos.y * sensitivity))
         end
 
         if rot_y || rot_x

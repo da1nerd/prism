@@ -21,16 +21,15 @@ module Prism
     end
 
     def get_transformation : Matrix4f
-      trans = Matrix4f.new
-      trans.init_translation(@pos.x, @pos.y, @pos.z)
+      translation_matrix = Matrix4f.new
+      translation_matrix.init_translation(@pos.x, @pos.y, @pos.z)
 
-      rot = @rot.to_rotation_matrix #Matrix4f.new
-      #rot.init_rotation(@rot.x, @rot.y, @rot.z)
+      rotation_matrix = @rot.to_rotation_matrix
 
-      scl = Matrix4f.new
-      scl.init_scale(@scale.x, @scale.y, @scale.z)
+      scale_matrix = Matrix4f.new
+      scale_matrix.init_scale(@scale.x, @scale.y, @scale.z)
 
-      return trans * (rot * scl)
+      return translation_matrix * (rotation_matrix * scale_matrix)
     end
 
   end

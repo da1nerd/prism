@@ -51,14 +51,11 @@ module Prism
 
     # Rotates the vector by some angle
     def rotate(angle : Float32, axis : Vector3f) : Vector3f
-      sin_angle = Math.sin(Prism.to_rad(-angle))
-      cos_angle = Math.cos(Prism.to_rad(-angle))
+      rotation = Quaternion.new().init_rotation(axis, angle)
+      conjugate = rotation.conjugate
 
-      x_rotation = self.cross(axis * sin_angle) # rotation on local X
-      z_rotation = self * cos_angle # roate on local Z
-      y_rotation = axis * self.dot(axis * (1 - cos_angle)) # rotation on local Y
-
-      return x_rotation + z_rotation + y_rotation
+      w = (rotation * self) * conjugate
+      return Vector3f.new(w.x.to_f32, w.y.to_f32, w.z.to_f32)
     end
 
     def lerp(dest : Vector3f, lerp_factor : Float32) : Vector3f
