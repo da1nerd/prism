@@ -28,7 +28,7 @@ class TestGame < Prism::Game
 
     plane_object = GameObject.new
     plane_object.add_component(mesh_renderer)
-    plane_object.transform.pos(0, -1, 5)
+    plane_object.transform.pos.set(0, -1, 5)
 
     directional_light_object = GameObject.new()
     directional_light = DirectionalLight.new(Vector3f.new(0,0,1), 0.4, Vector3f.new(1,1,1))
@@ -42,7 +42,7 @@ class TestGame < Prism::Game
     spot_light = SpotLight.new(Vector3f.new(0.0f32, 1.0f32, 1.0f32), 0.4f32, Vector3f.new(0.0f32, 0.0f32, 0.1f32), Vector3f.new(1.0f32, 0.0f32, 0.0f32), 0.7f32)
     spot_light_object.add_component(spot_light)
 
-    spot_light_object.transform.pos(5, 0, 5)
+    spot_light_object.transform.pos.set(5, 0, 5)
 
     get_root_object.add_child(plane_object)
     get_root_object.add_child(directional_light_object)
