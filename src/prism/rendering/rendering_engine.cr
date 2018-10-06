@@ -1,10 +1,12 @@
 require "lib_gl"
 require "../components/camera"
 require "../components/base_light"
+require "./rendering_engine_protocol"
 
 module Prism
 
   class RenderingEngine
+    include RenderingEngineProtocol
 
     @main_camera : Camera?
     @ambient_light : Vector3f
