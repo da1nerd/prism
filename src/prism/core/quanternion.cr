@@ -39,6 +39,34 @@ module Prism
       return Quaternion.new(x, y, z, w)
     end
 
+    def to_rotation_matrix
+      return Matrix4f.new().init_rotation(self.forward, self.up, self.right)
+    end
+
+    def forward
+      return Vector3f.new((2.0f64 * (@x*@z - @w*@y)).to_f32, (2.0f64 * (@y*@z + @w*@x)).to_f32, (1.0f64 - 2.0f64 * (@x*@x + @y*@y)).to_f32)
+    end
+
+    def back
+      return Vector3f.new(-2.0f64 * (@x*@z - @w*@y), -2.0f64 * (@y*@z + @w*@x), -(1.0f64 - 2.0f64 * (@x*@x + @y*@y)))
+    end
+
+    def up
+      return Vector3f.new((2.0f64 * (@x*@y + @w*@z)).to_f32, (1.0f64 - 2.0f64 * (@x*@x + @z*@z)).to_f32, (2.0f64 * (@y*@z - @w*@x)).to_f32)
+    end
+
+    def down
+      return Vector3f.new(-2.0f64 * (@x*@y + @w*@z), -(1.0f64 - 2.0f64 * (@x*@x + @z*@z)), -2.0f64 * (@y*@z - @w*@x))
+    end
+
+    def right
+      return Vector3f.new((1.0f64 - 2.0f64 * (@y*@y + @z*@z)).to_f32, (2.0f64 * (@x*@y - @w*@z)).to_f32, (2.0f64 * (@x*@z + @w*@y)).to_f32)
+    end
+
+    def left
+      return Vector3f.new(-(1.0f64 - 2.0f64 * (@y*@y + @z*@z)), -2.0f64 * (@x*@y - @w*@z), -2.0f64 * (@x*@z + @w*@y))
+    end
+
     # Converts euler angles to Quaternion
     # Angles are in radians!
     def self.from_euler(euler : Vector3)

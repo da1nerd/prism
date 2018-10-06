@@ -63,6 +63,14 @@ module Prism
       r = up.normalized.cross(f);
       u = f.cross(r)
 
+      return self.init_rotation(f, u, r)
+    end
+
+    def init_rotation(forward : Vector3f, up : Vector3f, right : Vector3f)
+      f = forward
+      r = right
+      u = up
+
       # start with identity matrix
       @m = Matrix(Float32).new(4, 4) do |i, r, c|
         r == c ? 1f32 : 0f32

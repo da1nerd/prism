@@ -141,6 +141,9 @@ module Prism
       return Vector3f.new(@x.abs, @y.abs, @z.abs)
     end
 
+    def set(@x : Float32, @y : Float32, @z : Float32)
+    end
+
   end
 
 end
