@@ -1,5 +1,6 @@
 require "../core/transform"
 require "../rendering/shader"
+require "../rendering/rendering_engine_protocol"
 
 module Prism
 
@@ -18,7 +19,7 @@ module Prism
     def render(shader : Shader)
     end
 
-    def add_to_rendering_engine(rendering_engine : RenderingEngine)
+    def add_to_rendering_engine(rendering_engine : RenderingEngineProtocol)
     end
 
     def transform : Transform
