@@ -85,30 +85,6 @@ module Prism
     def move(direction : Vector3f, amount : Float32)
       self.transform.pos = self.transform.pos + direction * amount
     end
-    #
-    # # rotates around the y axis
-    # def rotate_y(angle : Float32)
-    #   h_axis = Y_AXIS.cross(@forward).normalized
-    #   @forward = @forward.rotate(Y_AXIS, angle).normalized
-    #   @up = @forward.cross(h_axis).normalized
-    # end
-    #
-    # # rotates around the x axis
-    # def rotate_x(angle : Float32)
-    #   h_axis = Y_AXIS.cross(@forward).normalized
-    #   @forward = @forward.rotate(h_axis, angle).normalized
-    #   @up = @forward.cross(h_axis).normalized
-    # end
-    #
-    # # returns the left direction
-    # def left : Vector3f
-    #   return @forward.cross(@up).normalized
-    # end
-    #
-    # # returns the right direction
-    # def right : Vector3f
-    #   return @up.cross(@forward).normalized
-    # end
 
   end
 

@@ -1,12 +1,6 @@
 require "lib_gl"
 require "./input"
-require "../rendering/mesh"
-require "../rendering/vertex"
-require "./vector3f"
-require "../rendering/basic_shader"
-require "./timer"
-require "./transform"
-require "../components/camera"
+require "./game_object"
 
 module Prism
 

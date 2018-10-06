@@ -29,7 +29,6 @@ module Prism
 
       LibGL.enable(LibGL::TEXTURE_2D)
 
-      # @main_camera = Camera.new(to_rad(70.0f32), window.get_width.to_f32/window.get_height.to_f32, 0.01f32, 1000.0f32)
       @ambient_light = Vector3f.new(0.1f32, 0.1f32, 0.1f32)
     end
 
@@ -80,11 +79,6 @@ module Prism
         exit 1
       end
     end
-
-    # temporary hack
-    # def input(delta : Float32, input : Input)
-    #   @main_camera.input(delta, input)
-    # end
 
     private def clear_screen
       # TODO: stencil buffer

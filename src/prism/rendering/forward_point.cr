@@ -1,5 +1,6 @@
 require "lib_gl"
 require "./shader"
+require "./material"
 
 module Prism
 
