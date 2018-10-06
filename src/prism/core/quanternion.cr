@@ -10,7 +10,24 @@ module Prism
     @z : Float64
     @w : Float64
 
+    def initialize
+      initialize(0.0f64, 0.0f64, 0.0f64, 1.0f64)
+    end
+
     def initialize(@x, @y, @z, @w : Float64)
+    end
+
+    # angle is in radians
+    def init_rotation(axis : Vector3f, angle : Float32) : Quaternion
+      sin_half_angle = Math.sin(angle.to_f64 / 2.0f64)
+      cos_half_angle = Math.cos(angle.to_f64 / 2.0f64)
+
+      @x = axis.x.to_f64 * sin_half_angle
+      @y = axis.y.to_f64 * sin_half_angle
+      @z = axis.z.to_f64 * sin_half_angle
+      @w = cos_half_angle
+
+      return self
     end
 
     def values
@@ -147,10 +164,6 @@ module Prism
       Quaternion.new(-self.x, -self.y, -self.z, -self.w)
     end
 
-    def *(other : Quaternion)
-      Quaternion.new(self.x*other.x, self.y*other.y, self.z*other.z, self.w*other.w)
-    end
-
     def *(other : Vector3)
       Quaternion.new(
         self.w * other.x + self.y * other.z - self.z * other.y,
@@ -173,7 +186,7 @@ module Prism
     end
 
     def conjugate
-      Quaternion.new(-self.x, -self.y, -self.z, self.w)
+      Quaternion.new(-@x, -@y, -@z, @w)
     end
 
     def pure?

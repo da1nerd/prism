@@ -4,17 +4,16 @@ module Prism
 
   class SpotLight < PointLight
 
-    getter direction, cutoff
+    getter cutoff
     setter cutoff
 
-    def initialize(color : Vector3f, intensity : Float32, attenuation : Vector3f, @direction : Vector3f, @cutoff : Float32)
+    def initialize(color : Vector3f, intensity : Float32, attenuation : Vector3f, @cutoff : Float32)
       super(color, intensity, attenuation)
-      @direction = @direction.normalized
       self.shader = ForwardSpot.instance
     end
 
-    def direction=(@direction : Vector3f)
-      @direction = @direction.normalized
+    def direction
+      return self.transform.rot.forward
     end
 
   end
