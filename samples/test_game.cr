@@ -21,6 +21,20 @@ class TestGame < Prism::Game
       2, 1, 3
     }
 
+    verticies2 = [
+      Vertex.new(Vector3f.new(-field_width/10.0f32, 0, -field_depth/10.0f32), Vector2f.new(0, 0)),
+      Vertex.new(Vector3f.new(-field_width/10.0f32, 0, field_depth/10.0f32 * 3), Vector2f.new(0, 1)),
+      Vertex.new(Vector3f.new(field_width/10.0f32 * 3, 0, -field_depth/10.0f32), Vector2f.new(1, 0)),
+      Vertex.new(Vector3f.new(field_width/10.0f32 * 3, 0, field_depth/10.0f32 * 3), Vector2f.new(1, 1))
+    ]
+
+    indicies2 = Array(LibGL::Int) {
+      0, 1, 2,
+      2, 1, 3
+    }
+
+    mesh2 = Mesh.new(verticies2, indicies2, true);
+
     mesh = Mesh.new(verticies, indicies, true);
     material = Material.new(Texture.new("test.png"), Vector3f.new(1,1,1), 1, 8);
 
@@ -55,6 +69,15 @@ class TestGame < Prism::Game
     get_root_object.add_child(spot_light_object)
 
     get_root_object.add_child(GameObject.new().add_component(Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)))
+
+    test_mesh1 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
+    test_mesh2 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
+
+    test_mesh1.transform.pos.set(0f32, 2f32, 0f32)
+
+    test_mesh1.add_child(test_mesh2)
+
+    get_root_object.add_child(test_mesh1)
   end
 
 end
