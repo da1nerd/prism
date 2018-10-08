@@ -21,6 +21,7 @@ module Prism
 
     def add_child(child : GameObject)
       @children.push(child)
+      child.transform.parent = @transform
     end
 
     def add_component(component : GameComponent)

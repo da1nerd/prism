@@ -26,6 +26,13 @@ module Prism
       @m.to_a
     end
 
+    def init_identity
+      @m = Matrix(Float32).new(4, 4) do |i, r, c|
+        r == c ? 1f32 : 0f32
+      end
+      self
+    end
+
     def init_perspective(fov : Float32, aspect_ratio : Float32, z_near : Float32, z_far : Float32)
       tan_half_fov = Math.tan(fov / 2) # center of window
       z_range = z_near - z_far

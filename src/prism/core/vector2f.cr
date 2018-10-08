@@ -99,6 +99,15 @@ module Prism
       return Vector2f.new(@x.abs, @y.abs)
     end
 
+    def set(@x : Float32, @y : Float32)
+      self
+    end
+
+    def set(r : Vector2f)
+      self.set(r.x, r.y)
+      self
+    end
+
   end
 
 end

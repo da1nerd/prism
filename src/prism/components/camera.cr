@@ -61,10 +61,10 @@ module Prism
         rot_x = delta_pos.y != 0
 
         if rot_y
-          self.transform.rot = self.transform.rot * Quaternion.new().init_rotation(Y_AXIS, Prism.to_rad(delta_pos.x * sensitivity)).normalize
+          self.transform.rot = self.transform.rot * Quaternion.new(Y_AXIS, Prism.to_rad(delta_pos.x * sensitivity)).normalize
         end
         if rot_x
-          self.transform.rot = self.transform.rot * Quaternion.new().init_rotation(self.transform.rot.right, Prism.to_rad(delta_pos.y * sensitivity)).normalize
+          self.transform.rot = self.transform.rot * Quaternion.new(self.transform.rot.right, Prism.to_rad(delta_pos.y * sensitivity)).normalize
         end
 
         if rot_y || rot_x

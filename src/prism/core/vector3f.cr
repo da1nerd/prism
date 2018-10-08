@@ -141,6 +141,12 @@ module Prism
     end
 
     def set(@x : Float32, @y : Float32, @z : Float32)
+      self
+    end
+
+    def set(r : Vector3f)
+      self.set(r.x, r.y, r.z)
+      self
     end
 
   end

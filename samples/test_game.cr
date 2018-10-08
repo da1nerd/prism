@@ -61,21 +61,24 @@ class TestGame < Prism::Game
     spot_light_object.add_component(spot_light)
 
     spot_light_object.transform.pos.set(5, 0, 5)
-    spot_light_object.transform.rot = Quaternion.new().init_rotation(Vector3f.new(0.0f32, 1.0f32, 0.0f32), Prism.to_rad(-90.0f32))
+    spot_light_object.transform.rot = Quaternion.new(Vector3f.new(0.0f32, 1.0f32, 0.0f32), Prism.to_rad(-90.0f32))
 
     get_root_object.add_child(plane_object)
     get_root_object.add_child(directional_light_object)
     get_root_object.add_child(point_light_object)
     get_root_object.add_child(spot_light_object)
 
-    get_root_object.add_child(GameObject.new().add_component(Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)))
+    # get_root_object.add_child(GameObject.new().add_component(Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)))
 
     test_mesh1 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
     test_mesh2 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
 
     test_mesh1.transform.pos.set(0f32, 2f32, 0f32)
+    test_mesh1.transform.rot = Quaternion.new(Vector3f.new(0f32, 1f32, 0f32), 0.4f32)
+    test_mesh2.transform.pos.set(0f32, 0f32, 5f32)
 
     test_mesh1.add_child(test_mesh2)
+    test_mesh2.add_child(GameObject.new().add_component(Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)))
 
     get_root_object.add_child(test_mesh1)
   end
