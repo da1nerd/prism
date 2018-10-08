@@ -17,8 +17,9 @@ module Prism
     end
 
     def get_view_projection : Matrix4f
-      camera_rotation = self.transform.rot.to_rotation_matrix
-      camera_translation = Matrix4f.new.init_translation(-self.transform.pos.x, -self.transform.pos.y, -self.transform.pos.z)
+      camera_rotation = self.transform.get_transformed_rot.to_rotation_matrix
+      camera_pos = self.transform.get_transformed_pos * -1
+      camera_translation = Matrix4f.new.init_translation(camera_pos.x, camera_pos.y, camera_pos.z)
 
       @projection * (camera_rotation * camera_translation)
     end
@@ -64,7 +65,7 @@ module Prism
           self.transform.rot = self.transform.rot * Quaternion.new(Y_AXIS, Prism.to_rad(delta_pos.x * sensitivity)).normalize
         end
         if rot_x
-          self.transform.rot = self.transform.rot * Quaternion.new(self.transform.rot.right, Prism.to_rad(delta_pos.y * sensitivity)).normalize
+          self.transform.rot = self.transform.rot * Quaternion.new(self.transform.get_transformed_rot.right, Prism.to_rad(delta_pos.y * sensitivity)).normalize
         end
 
         if rot_y || rot_x

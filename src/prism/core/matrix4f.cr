@@ -141,6 +141,14 @@ module Prism
       self
     end
 
+    def transform(r : Vector3f) : Vector3f
+      return Vector3f.new(
+        @m[0, 0] * r.x + @m[0, 1] * r.y + @m[0, 2] * r.z + @m[0, 3],
+        @m[1, 0] * r.x + @m[1, 1] * r.y + @m[1, 2] * r.z + @m[1, 3],
+        @m[2, 0] * r.x + @m[2, 1] * r.y + @m[2, 2] * r.z + @m[2, 3]
+      )
+    end
+
     def *(other : Matrix4f)
       result = @m * other.m
       return Matrix4f.new(result)

@@ -4,17 +4,14 @@ module Prism
 
   class DirectionalLight < BaseLight
 
-    getter direction
-
-    def initialize(color : Vector3f, intensity : Float32, @direction : Vector3f)
+    def initialize(color : Vector3f, intensity : Float32)
       super(color, intensity)
-      @direction = @direction.normalized
 
       self.shader = ForwardDirectional.instance
     end
 
-    def direction=(@direction : Vector3f)
-      @direction = @direction.normalized
+    def direction
+      return self.transform.rot.forward
     end
 
   end
