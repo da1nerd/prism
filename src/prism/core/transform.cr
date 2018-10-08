@@ -69,6 +69,22 @@ module Prism
       return self.get_parent_matrix * translation_matrix * rotation_matrix * scale_matrix
     end
 
+    def get_transformed_pos : Vector3f
+      return self.get_parent_matrix.transform(@pos)
+    end
+
+    def get_transformed_rot : Quaternion
+      parent_rotation = Quaternion.new(0f64, 0f64, 0f64, 1f64)
+
+      if parent = @parent
+        if parent.has_changed
+          parent_rotation = parent.get_transformed_rot
+        end
+      end
+
+      return parent_rotation * @rot
+    end
+
     private def get_parent_matrix : Matrix4f
       if parent = @parent
         if parent.has_changed
