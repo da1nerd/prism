@@ -17,7 +17,7 @@ module Prism
     end
 
     def get_view_projection : Matrix4f
-      camera_rotation = self.transform.get_transformed_rot.to_rotation_matrix
+      camera_rotation = self.transform.get_transformed_rot.conjugate.to_rotation_matrix
       camera_pos = self.transform.get_transformed_pos * -1
       camera_translation = Matrix4f.new.init_translation(camera_pos.x, camera_pos.y, camera_pos.z)
 
@@ -30,7 +30,7 @@ module Prism
 
     def input(delta : Float32, input : Input)
       center_position = input.get_center
-      sensitivity = -0.5f32
+      sensitivity = 0.5f32
 
       mov_amt = 10.0f32 * delta
 
@@ -62,10 +62,10 @@ module Prism
         rot_x = delta_pos.y != 0
 
         if rot_y
-          self.transform.rot = self.transform.rot * Quaternion.new(Y_AXIS, Prism.to_rad(delta_pos.x * sensitivity)).normalize
+          self.transform.rotate(Y_AXIS, Prism.to_rad(delta_pos.x * sensitivity))
         end
         if rot_x
-          self.transform.rot = self.transform.rot * Quaternion.new(self.transform.get_transformed_rot.right, Prism.to_rad(delta_pos.y * sensitivity)).normalize
+          self.transform.rotate(self.transform.rot.right, Prism.to_rad(delta_pos.y * sensitivity))
         end
 
         if rot_y || rot_x

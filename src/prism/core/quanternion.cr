@@ -50,31 +50,35 @@ module Prism
     end
 
     def to_rotation_matrix
-      return Matrix4f.new().init_rotation(self.forward, self.up, self.right)
+      forward = Vector3f.new((2.0f64 * (@x*@z - @w*@y)).to_f32, (2.0f64 * (@y*@z + @w*@x)).to_f32, (1.0f64 - 2.0f64 * (@x*@x + @y*@y)).to_f32)
+      up = Vector3f.new((2.0f64 * (@x*@y + @w*@z)).to_f32, (1.0f64 - 2.0f64 * (@x*@x + @z*@z)).to_f32, (2.0f64 * (@y*@z - @w*@x)).to_f32)
+      right = Vector3f.new((1.0f64 - 2.0f64 * (@y*@y + @z*@z)).to_f32, (2.0f64 * (@x*@y - @w*@z)).to_f32, (2.0f64 * (@x*@z + @w*@y)).to_f32)
+
+      return Matrix4f.new().init_rotation(forward, up, right)
     end
 
     def forward
-      return Vector3f.new((2.0f64 * (@x*@z - @w*@y)).to_f32, (2.0f64 * (@y*@z + @w*@x)).to_f32, (1.0f64 - 2.0f64 * (@x*@x + @y*@y)).to_f32)
+      return Vector3f.new(0f32, 0f32, 1f32).rotate(self)
     end
 
     def back
-      return Vector3f.new((-2.0f64 * (@x*@z - @w*@y)).to_f32, (-2.0f64 * (@y*@z + @w*@x)).to_f32, -(1.0f64 - 2.0f64 * (@x*@x + @y*@y)).to_f32)
+      return Vector3f.new(0f32, 0f32, -1f32).rotate(self)
     end
 
     def up
-      return Vector3f.new((2.0f64 * (@x*@y + @w*@z)).to_f32, (1.0f64 - 2.0f64 * (@x*@x + @z*@z)).to_f32, (2.0f64 * (@y*@z - @w*@x)).to_f32)
+      return Vector3f.new(0f32, 1f32, 0f32).rotate(self)
     end
 
     def down
-      return Vector3f.new((-2.0f64 * (@x*@y + @w*@z)).to_f32, -(1.0f64 - 2.0f64 * (@x*@x + @z*@z)).to_f32, (-2.0f64 * (@y*@z - @w*@x)).to_f32)
+      return Vector3f.new(0f32, -1f32, 0f32).rotate(self)
     end
 
     def right
-      return Vector3f.new((1.0f64 - 2.0f64 * (@y*@y + @z*@z)).to_f32, (2.0f64 * (@x*@y - @w*@z)).to_f32, (2.0f64 * (@x*@z + @w*@y)).to_f32)
+      return Vector3f.new(1f32, 0f32, 0f32).rotate(self)
     end
 
     def left
-      return Vector3f.new(-(1.0f64 - 2.0f64 * (@y*@y + @z*@z)).to_f32, (-2.0f64 * (@x*@y - @w*@z)).to_f32, (-2.0f64 * (@x*@z + @w*@y)).to_f32)
+      return Vector3f.new(-1f32, 0f32, 0f32).rotate(self)
     end
 
     # Converts euler angles to Quaternion

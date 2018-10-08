@@ -31,6 +31,8 @@ module Prism
     end
 
     def input(delta : Float32, input : Input)
+      @transform.update
+
       0.upto(@components.size - 1) do |i|
         @components[i].input(delta, input)
       end

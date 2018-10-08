@@ -11,7 +11,7 @@ module Prism
     end
 
     def direction
-      return self.transform.rot.forward
+      return self.transform.get_transformed_rot.forward
     end
 
   end

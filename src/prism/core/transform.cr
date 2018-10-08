@@ -27,14 +27,23 @@ module Prism
       @parent_matrix = Matrix4f.new().init_identity
     end
 
-    def has_changed
-
-      if @old_pos == nil
-        @old_pos = Vector3f.new(0f32,0f32,0f32).set(@pos)
-        @old_rot = Quaternion.new(0f64, 0f64, 0f64, 0f64).set(@rot)
-        @old_scale = Vector3f.new(0f32, 0f32, 0f32).set(@scale)
-        return true
+    def update
+      if @old_pos != nil
+        @old_pos = @pos
+        @old_rot = @rot
+        @old_scale = @scale
+      else
+        @old_pos = Vector3f.new(0f32,0f32,0f32).set(@pos) + 1.0f32
+        @old_rot = Quaternion.new(0f64, 0f64, 0f64, 0f64).set(@rot) * 0.5f64
+        @old_scale = Vector3f.new(0f32, 0f32, 0f32).set(@scale) + 1.0f32
       end
+    end
+
+    def rotate(axis : Vector3f, angle : Float32)
+      @rot = (Quaternion.new(axis, angle) * @rot).normalize
+    end
+
+    def has_changed
 
       if parent = @parent
         return parent.has_changed
@@ -59,12 +68,6 @@ module Prism
       translation_matrix = Matrix4f.new().init_translation(@pos.x, @pos.y, @pos.z)
       rotation_matrix = @rot.to_rotation_matrix
       scale_matrix = Matrix4f.new().init_scale(@scale.x, @scale.y, @scale.z)
-
-      if @old_pos != nil
-        @old_pos = @pos
-        @old_rot = @rot
-        @old_scale = @scale
-      end
 
       return self.get_parent_matrix * translation_matrix * rotation_matrix * scale_matrix
     end

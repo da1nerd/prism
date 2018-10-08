@@ -61,7 +61,7 @@ class TestGame < Prism::Game
     spot_light_object.add_component(spot_light)
 
     spot_light_object.transform.pos.set(5, 0, 5)
-    spot_light_object.transform.rot = Quaternion.new(Vector3f.new(0.0f32, 1.0f32, 0.0f32), Prism.to_rad(-90.0f32))
+    spot_light_object.transform.rot = Quaternion.new(Vector3f.new(0.0f32, 1.0f32, 0.0f32), Prism.to_rad(90.0f32))
 
     get_root_object.add_child(plane_object)
     get_root_object.add_child(directional_light_object)
@@ -82,7 +82,7 @@ class TestGame < Prism::Game
 
     get_root_object.add_child(test_mesh1)
 
-    directional_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism.to_rad(45f32))
+    directional_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism.to_rad(-45f32))
   end
 
 end
