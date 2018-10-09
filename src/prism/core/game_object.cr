@@ -52,13 +52,13 @@ module Prism
       end
     end
 
-    def render(shader : Shader)
+    def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
       0.upto(@components.size - 1) do |i|
-        @components[i].render(shader)
+        @components[i].render(shader, rendering_engine)
       end
 
       0.upto(@children.size - 1) do |i|
-        @children[i].render(shader)
+        @children[i].render(shader, rendering_engine)
       end
     end
 

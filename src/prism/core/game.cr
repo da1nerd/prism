@@ -1,6 +1,7 @@
 require "lib_gl"
 require "./input"
 require "./game_object"
+require "../rendering/rendering_engine_protocol"
 
 module Prism
 
@@ -11,16 +12,23 @@ module Prism
     abstract def init
 
     def input(delta : Float32, input : Input)
-      get_root_object.input(delta, input)
+      @root.input(delta, input)
+    end
+
+    # Renders the game's scene graph
+    def render(rendering_engine : RenderingEngineProtocol)
+      rendering_engine.render(@root)
+    end
+
+    # Adds an object to the game's scene graph
+    def add_object(object : GameObject)
+      @root.add_child(object)
     end
 
     def update(delta : Float32)
-      get_root_object.update(delta)
+      @root.update(delta)
     end
 
-    def get_root_object : GameObject
-      @root
-    end
   end
 
 end

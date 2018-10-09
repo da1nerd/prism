@@ -16,7 +16,7 @@ module Prism
     def update(delta : Float32)
     end
 
-    def render(shader : Shader)
+    def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
     end
 
     def add_to_rendering_engine(rendering_engine : RenderingEngineProtocol)

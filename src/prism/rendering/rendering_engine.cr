@@ -40,9 +40,8 @@ module Prism
       object.add_to_rendering_engine(self)
 
       forward_ambient = ForwardAmbient.instance
-      forward_ambient.rendering_engine = self
 
-      object.render(forward_ambient)
+      object.render(forward_ambient, self)
 
       LibGL.enable(LibGL::BLEND)
       LibGL.blend_func(LibGL::ONE, LibGL::ONE)
@@ -52,11 +51,10 @@ module Prism
       0.upto(@lights.size - 1) do |i|
         light = @lights[i]
         if shader = light.shader
-          shader.rendering_engine = self
 
           @active_light = light
 
-          object.render(shader)
+          object.render(shader, self)
         end
       end
 
