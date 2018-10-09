@@ -37,38 +37,46 @@ module Prism
     private def load_mesh(file_name : String)
       ext = File.extname(file_name)
 
-      teststuff = OBJModel.new(File.join(File.dirname(PROGRAM_NAME), "/res/models/", file_name))
-
       unless ext === ".obj"
         puts "Error: File format not supported for mesh data: #{ext}"
         exit 1
       end
 
+      test1 = OBJModel.new(File.join(File.dirname(PROGRAM_NAME), "/res/models/", file_name))
+      model = test1.to_indexed_model
+
       verticies = [] of Vertex
-      indicies = [] of LibGL::Int
-
-      path = File.join(File.dirname(PROGRAM_NAME), "/res/models/", file_name)
-      File.each_line(path) do |line|
-        tokens = line.split(" ", remove_empty: true)
-        if tokens.size === 0 || tokens[0] === "#"
-          next
-        elsif tokens[0] === "v"
-          v = Vector3f.new(tokens[1].to_f32, tokens[2].to_f32, tokens[3].to_f32)
-          verticies.push(Vertex.new(v))
-        elsif tokens[0] === "f"
-          indicies.push(tokens[1].split("/")[0].to_i32 - 1);
-          indicies.push(tokens[2].split("/")[0].to_i32 - 1);
-          indicies.push(tokens[3].split("/")[0].to_i32 - 1);
-
-          if tokens.size > 4
-            indicies.push(tokens[1].split("/")[0].to_i32 - 1);
-            indicies.push(tokens[3].split("/")[0].to_i32 - 1);
-            indicies.push(tokens[4].split("/")[0].to_i32 - 1);
-          end
-        end
+      0.upto(model.positions.size - 1) do |i|
+        verticies.push(Vertex.new(model.positions[i], model.tex_coords[i], model.normals[i]))
       end
 
-      add_verticies(verticies, indicies)
+      add_verticies(verticies, model.indicies, true)
+
+      # verticies = [] of Vertex
+      # indicies = [] of LibGL::Int
+      #
+      # path = File.join(File.dirname(PROGRAM_NAME), "/res/models/", file_name)
+      # File.each_line(path) do |line|
+      #   tokens = line.split(" ", remove_empty: true)
+      #   if tokens.size === 0 || tokens[0] === "#"
+      #     next
+      #   elsif tokens[0] === "v"
+      #     v = Vector3f.new(tokens[1].to_f32, tokens[2].to_f32, tokens[3].to_f32)
+      #     verticies.push(Vertex.new(v))
+      #   elsif tokens[0] === "f"
+      #     indicies.push(tokens[1].split("/")[0].to_i32 - 1);
+      #     indicies.push(tokens[2].split("/")[0].to_i32 - 1);
+      #     indicies.push(tokens[3].split("/")[0].to_i32 - 1);
+      #
+      #     if tokens.size > 4
+      #       indicies.push(tokens[1].split("/")[0].to_i32 - 1);
+      #       indicies.push(tokens[3].split("/")[0].to_i32 - 1);
+      #       indicies.push(tokens[4].split("/")[0].to_i32 - 1);
+      #     end
+      #   end
+      # end
+      #
+      # add_verticies(verticies, indicies)
     end
 
     def add_verticies(verticies : Array(Vertex), indicies : Array(LibGL::Int))

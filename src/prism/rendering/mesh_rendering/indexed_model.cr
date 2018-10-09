@@ -10,6 +10,7 @@ module Prism
     @indicies : Array(Int32)
 
     getter positions, tex_coords, normals, indicies
+    setter positions, tex_coords, normals, indicies
 
     def initialize
       @positions = [] of Vector3f
