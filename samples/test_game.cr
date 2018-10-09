@@ -87,6 +87,9 @@ class TestGame < Prism::Game
     add_object(test_mesh1)
     add_object(test_mesh3)
 
+    test_mesh3.transform.pos.set(5,5,5)
+    test_mesh3.transform.rot.set(Quaternion.new(Vector3f.new(0,1,0), Prism.to_rad(-70)))
+
     directional_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism.to_rad(-45f32))
   end
 
