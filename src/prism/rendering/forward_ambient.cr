@@ -36,7 +36,7 @@ module Prism
       world_matrix = transform.get_transformation
       projected_matrix = r_engine.main_camera.get_view_projection * world_matrix
 
-      material.texture.bind
+      material.get_texture("diffuse").bind
 
       set_uniform("MVP", projected_matrix)
       set_uniform("ambientIntensity", r_engine.ambient_light)

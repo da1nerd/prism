@@ -50,13 +50,13 @@ module Prism
       world_matrix = transform.get_transformation
       projected_matrix = r_engine.main_camera.get_view_projection * world_matrix
 
-      material.texture.bind
+      material.get_texture("diffuse").bind
 
       set_uniform("model", world_matrix)
       set_uniform("MVP", projected_matrix)
 
-      set_uniform("specularIntensity", material.specular_intensity)
-      set_uniform("specularExponent", material.specular_exponent)
+      set_uniform("specularIntensity", material.get_float("specularIntensity"))
+      set_uniform("specularExponent", material.get_float("specularPower"))
       set_uniform("eyePos", r_engine.main_camera.transform.get_transformed_pos)
 
       set_uniform_point_light("pointLight", r_engine.active_light.as(PointLight))
