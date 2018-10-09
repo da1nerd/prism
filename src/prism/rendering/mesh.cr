@@ -36,6 +36,9 @@ module Prism
 
     private def load_mesh(file_name : String)
       ext = File.extname(file_name)
+
+      teststuff = OBJModel.new(File.join(File.dirname(PROGRAM_NAME), "/res/models/", file_name))
+
       unless ext === ".obj"
         puts "Error: File format not supported for mesh data: #{ext}"
         exit 1
@@ -68,9 +71,9 @@ module Prism
       add_verticies(verticies, indicies)
     end
 
-    # def add_verticies(verticies : Array(Vertex), indicies : Array(LibGL::Int))
-    #   add_verticies(verticies, indicies, false)
-    # end
+    def add_verticies(verticies : Array(Vertex), indicies : Array(LibGL::Int))
+      add_verticies(verticies, indicies, false)
+    end
 
     private def add_verticies(verticies : Array(Vertex), indicies : Array(LibGL::Int), calc_normals : Bool)
         if calc_normals

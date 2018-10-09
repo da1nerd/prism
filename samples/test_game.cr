@@ -41,6 +41,8 @@ class TestGame < Prism::Game
     material.add_float("specularIntensity", 1)
     material.add_float("specularPower", 8)
 
+    temp_mesh = Mesh.new("monkey3.obj")
+
     mesh_renderer = MeshRenderer.new(mesh, material)
 
     plane_object = GameObject.new
@@ -70,8 +72,6 @@ class TestGame < Prism::Game
     add_object(directional_light_object)
     add_object(point_light_object)
     add_object(spot_light_object)
-
-    # add_object(GameObject.new().add_component(Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)))
 
     test_mesh1 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
     test_mesh2 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
