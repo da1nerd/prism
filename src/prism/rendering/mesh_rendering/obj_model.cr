@@ -50,7 +50,7 @@ module Prism
 
     def to_indexed_model : IndexedModel
       result = IndexedModel.new
-      index_map = {} of Int32 => Int32
+      index_map = {} of OBJIndex => Int32
 
       current_vertex_index = 0
       0.upto(@indicies.size - 1) do |i|
@@ -68,16 +68,13 @@ module Prism
         end
 
         previous_vertex_index = -1
-        0.upto(i - 1) do |j|
-          old_index = @indicies[j]
-          if current_index.vertex_index == old_index.vertex_index && current_index.tex_coord_index == old_index.tex_coord_index && current_index.normal_index == old_index.normal_index
-            previous_vertex_index = j
-            break
-          end
+
+        if index_map.has_key?(current_index)
+          previous_vertex_index = index_map[current_index]
         end
 
         if previous_vertex_index == -1
-          index_map[i] = current_vertex_index
+          index_map[current_index] = current_vertex_index
 
           result.positions.push(current_position)
           result.tex_coords.push(current_tex_coord)
@@ -85,8 +82,20 @@ module Prism
           result.indicies.push(current_vertex_index)
           current_vertex_index += 1
         else
-          result.indicies.push(index_map[previous_vertex_index])
+          result.indicies.push(previous_vertex_index)
         end
+
+        # if previous_vertex_index == -1
+        #   index_map[i] = current_vertex_index
+        #
+        #   result.positions.push(current_position)
+        #   result.tex_coords.push(current_tex_coord)
+        #   result.normals.push(current_normal)
+        #   result.indicies.push(current_vertex_index)
+        #   current_vertex_index += 1
+        # else
+        #   result.indicies.push(index_map[previous_vertex_index])
+        # end
       end
 
       return result
