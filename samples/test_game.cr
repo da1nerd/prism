@@ -75,6 +75,7 @@ class TestGame < Prism::Game
 
     test_mesh1 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
     test_mesh2 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
+    test_mesh3 = GameObject.new().add_component(MeshRenderer.new(temp_mesh, material))
 
     test_mesh1.transform.pos.set(0f32, 2f32, 0f32)
     test_mesh1.transform.rot = Quaternion.new(Vector3f.new(0f32, 1f32, 0f32), 0.4f32)
@@ -84,6 +85,7 @@ class TestGame < Prism::Game
     test_mesh2.add_child(GameObject.new().add_component(Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)))
 
     add_object(test_mesh1)
+    add_object(test_mesh3)
 
     directional_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism.to_rad(-45f32))
   end

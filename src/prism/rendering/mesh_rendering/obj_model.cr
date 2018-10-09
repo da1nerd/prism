@@ -14,7 +14,7 @@ module Prism
     @has_tex_coords : Bool
     @has_normals : Bool
 
-    getter positions, tex_coords, normals, indicies
+    # getter positions, tex_coords, normals, indicies
 
     def initialize(file_name : String)
       @positions = [] of Vector3f
@@ -46,6 +46,32 @@ module Prism
           end
         end
       end
+    end
+
+    def to_indexed_model : IndexedModel
+      result = IndexedModel.new
+
+      0.upto(@indicies.size - 1) do |i|
+        current_index = @indicies[i]
+        current_position = @positions[current_index.vertex_index]
+        current_tex_coord = Vector2f.new(0f32, 0f32)
+        current_normal = Vector3f.new(0f32, 0f32, 0f32)
+
+        if @has_tex_coords
+          current_tex_coord = @tex_coords[current_index.tex_coord_index]
+        end
+
+        if @has_normals
+          current_normal = @normals[current_index.normal_index]
+        end
+
+        result.positions.push(current_position)
+        result.tex_coords.push(current_tex_coord)
+        result.normals.push(current_normal)
+        result.indicies.push(i)
+      end
+
+      return result
     end
 
     private def parse_obj_index(token : String) : OBJIndex
