@@ -44,13 +44,14 @@ module Prism
 
       test1 = OBJModel.new(File.join(File.dirname(PROGRAM_NAME), "/res/models/", file_name))
       model = test1.to_indexed_model
+      model.calc_normals
 
       verticies = [] of Vertex
       0.upto(model.positions.size - 1) do |i|
         verticies.push(Vertex.new(model.positions[i], model.tex_coords[i], model.normals[i]))
       end
 
-      add_verticies(verticies, model.indicies, true)
+      add_verticies(verticies, model.indicies, false)
 
       # verticies = [] of Vertex
       # indicies = [] of LibGL::Int
