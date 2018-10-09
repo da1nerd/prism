@@ -26,20 +26,15 @@ module Prism
       @@instance ||= new
     end
 
-    def update_uniforms(transform : Transform, material : Material)
-      r_engine = rendering_engine
-      unless r_engine
-        puts "Error: The rendering engine was not configured."
-        exit 1
-      end
+    def update_uniforms(transform : Transform, material : Material, rendering_engine : RenderingEngineProtocol)
 
       world_matrix = transform.get_transformation
-      projected_matrix = r_engine.main_camera.get_view_projection * world_matrix
+      projected_matrix = rendering_engine.main_camera.get_view_projection * world_matrix
 
       material.get_texture("diffuse").bind
 
       set_uniform("MVP", projected_matrix)
-      set_uniform("ambientIntensity", r_engine.ambient_light)
+      set_uniform("ambientIntensity", rendering_engine.ambient_light)
     end
   end
 

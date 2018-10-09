@@ -9,12 +9,8 @@ module Prism
 
   class Shader
 
-    @rendering_engine : RenderingEngineProtocol?
     @program : LibGL::UInt
     @uniforms : Hash(String, Int32)
-
-    getter rendering_engine
-    setter rendering_engine
 
     def initialize
       @program = LibGL.create_program()
@@ -37,8 +33,7 @@ module Prism
       LibGL.use_program(@program)
     end
 
-    def update_uniforms(transform : Transform, material : Material)
-
+    def update_uniforms(transform : Transform, material : Material, rendering_engine : RenderingEngineProtocol)
     end
 
     def add_vertex_shader_from_file(file : String)

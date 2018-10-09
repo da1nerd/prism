@@ -90,7 +90,7 @@ module Prism
         end
 
         if should_render
-          @rendering_engine.render(@game.get_root_object)
+          @game.render(@rendering_engine)
           @window.render
           @rendering_engine.flush
           frames += 1;
