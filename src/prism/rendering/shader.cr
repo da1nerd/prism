@@ -76,6 +76,7 @@ module Prism
         add_program(text, LibGL::FRAGMENT_SHADER)
     end
 
+    # Parses the shader text for attribute delcarations and automatically adds them
     def add_all_attributes(shader_text : String)
       keyword = "attribute"
       start_location = shader_text.index(keyword)
@@ -94,6 +95,7 @@ module Prism
       end
     end
 
+    # Parses the shader text for uniform declarations and automatically adds them
     def add_all_uniforms(shader_text : String)
       keyword = "uniform"
       start_location = shader_text.index(keyword)
