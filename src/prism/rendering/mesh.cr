@@ -15,6 +15,7 @@ module Prism
       @file_name = file_name
       if @loaded_models.has_key?(file_name)
         @resource = @loaded_models[file_name]
+        @resource.add_reference
       else
         @resource = MeshResource.new()
         @loaded_models[file_name] = @resource
