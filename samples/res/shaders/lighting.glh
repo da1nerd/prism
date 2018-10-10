@@ -1,4 +1,3 @@
-
 uniform vec3 eyePos;
 uniform float specularIntensity;
 uniform float specularExponent;
