@@ -10,16 +10,18 @@ module Prism
     def initialize
       super
 
-      add_vertex_shader_from_file("forward-ambient.vs")
-      add_fragment_shader_from_file("forward-ambient.fs")
+      vertex_shader_text = load_shader("forward-ambient.vs")
+      fragment_shader_text = load_shader("forward-ambient.fs")
 
-      set_attrib_location("position", 0)
-      set_attrib_location("texCoord", 1)
+      add_vertex_shader(vertex_shader_text)
+      add_fragment_shader(fragment_shader_text)
+
+      add_all_attributes(vertex_shader_text)
 
       compile
 
-      add_uniform("MVP")
-      add_uniform("ambientIntensity")
+      add_all_uniforms(vertex_shader_text)
+      add_all_uniforms(fragment_shader_text)
     end
 
     def self.instance

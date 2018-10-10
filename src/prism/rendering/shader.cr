@@ -23,7 +23,8 @@ module Prism
       end
     end
 
-    private def load_shader(file_name : String) : String
+    # TODO: make this private again
+    def load_shader(file_name : String) : String
 
       include_directive = "#include"
 
@@ -73,6 +74,40 @@ module Prism
 
     def add_fragment_shader(text : String)
         add_program(text, LibGL::FRAGMENT_SHADER)
+    end
+
+    def add_all_attributes(shader_text : String)
+      keyword = "attribute"
+      start_location = shader_text.index(keyword)
+      attribute_number = 0
+      while start = start_location
+        end_location = shader_text.index(";", start).not_nil!
+        uniform_line = shader_text[start..end_location]
+        matches = uniform_line.scan(/#{keyword}\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)/)
+        attribute_type = matches[0][1]
+        attribute_name = matches[0][2]
+
+        set_attrib_location(attribute_name, attribute_number)
+        attribute_number += 1
+
+        start_location = shader_text.index(keyword, end_location)
+      end
+    end
+
+    def add_all_uniforms(shader_text : String)
+      keyword = "uniform"
+      start_location = shader_text.index(keyword)
+      while start = start_location
+        end_location = shader_text.index(";", start).not_nil!
+        uniform_line = shader_text[start..end_location]
+        matches = uniform_line.scan(/#{keyword}\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)/)
+        uniform_type = matches[0][1]
+        uniform_name = matches[0][2]
+
+        add_uniform(uniform_name)
+
+        start_location = shader_text.index(keyword, end_location)
+      end
     end
 
     # Adds a uniform variable for the shader to keep track of
