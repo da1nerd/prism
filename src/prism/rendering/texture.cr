@@ -1,22 +1,45 @@
 require "lib_gl"
+require "./resource_management/texture_resource"
 
 module Prism
 
   class Texture
 
-    getter id
+    @loaded_textures = {} of String => TextureResource
+    @resource : TextureResource
+    @file_name : String?
 
     def initialize(file_name : String)
-      initialize(load_texture(file_name))
+      @file_name = file_name
+      if @loaded_textures.has_key?(file_name)
+        @resource = @loaded_textures[file_name]
+        @resource.add_reference
+      else
+        @resource = TextureResource.new(load_texture(file_name))
+        @loaded_textures[file_name] = @resource
+      end
     end
 
-    def initialize(@id : LibGL::UInt)
+    # garbage collection
+    def finalize
+      # TODO: make sure this is getting called
+      puts "cleaning up garbage"
+      if @resource.remove_reference && @file_name != nil
+        @loaded_textures.delete(@file_name)
+      end
+    end
+
+    def id
+      return @resource.id
     end
 
     def bind
-      LibGL.bind_texture(LibGL::TEXTURE_2D, id);
+      LibGL.bind_texture(LibGL::TEXTURE_2D, @resource.id);
     end
 
+    # Loads a texture
+    #
+    # Returns the gl buffer id
     private def load_texture(file_name : String) : LibGL::UInt
       ext = File.extname(file_name)
 
@@ -35,7 +58,7 @@ module Prism
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MAG_FILTER, LibGL::LINEAR)
 
       if data
-        LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGB, width, height, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
+        LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGBA8, width, height, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
         LibGL.generate_mipmap(LibGL::TEXTURE_2D)
         # TODO: free image data from stbi. see LibTools.
       else
