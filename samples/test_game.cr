@@ -41,6 +41,11 @@ class TestGame < Prism::Game
     material.add_float("specularIntensity", 1)
     material.add_float("specularPower", 8)
 
+    material2 = Material.new()
+    material2.add_texture("diffuse", Texture.new("bricks.jpg"))
+    material2.add_float("specularIntensity", 1)
+    material2.add_float("specularPower", 8)
+
     temp_mesh = Mesh.new("monkey3.obj")
 
     mesh_renderer = MeshRenderer.new(mesh, material)
@@ -89,6 +94,8 @@ class TestGame < Prism::Game
 
     test_mesh3.transform.pos.set(5,5,5)
     test_mesh3.transform.rot.set(Quaternion.new(Vector3f.new(0,1,0), Prism.to_rad(-70)))
+
+    add_object(GameObject.new().add_component(MeshRenderer.new(Mesh.new("monkey3.obj"), material2)))
 
     directional_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism.to_rad(-45f32))
   end

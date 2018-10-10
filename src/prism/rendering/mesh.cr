@@ -1,19 +1,24 @@
 require "lib_gl"
 require "./util"
 require "./vertex"
+require "./resource_management/mesh_resource"
 
 module Prism
 
   class Mesh
 
-    @vbo : LibGL::UInt
-    @ibo : LibGL::UInt
-    @size : Int32
+    @loaded_models = {} of String => MeshResource
+    @resource : MeshResource
+    @file_name : String?
 
     def initialize(file_name : String)
-      LibGL.gen_buffers(1, out @vbo)
-      LibGL.gen_buffers(1, out @ibo)
-      @size = 0
+      @file_name = file_name
+      if @loaded_models.has_key?(file_name)
+        @resource = @loaded_models[file_name]
+      else
+        @resource = MeshResource.new()
+        @loaded_models[file_name] = @resource
+      end
       load_mesh(file_name)
     end
 
@@ -22,17 +27,18 @@ module Prism
     end
 
     def initialize(verticies : Array(Vertex), indicies : Array(LibGL::Int), calc_normals : Bool)
-      LibGL.gen_buffers(1, out @vbo)
-      LibGL.gen_buffers(1, out @ibo)
-      @size = 0
+      @resource = MeshResource.new()
       add_verticies(verticies, indicies, calc_normals)
     end
 
-    # def initialize
-      # LibGL.gen_buffers(1, out @vbo)
-      # LibGL.gen_buffers(1, out @ibo)
-      # @size = 0
-    # end
+    # garbage collection
+    def finalize
+      # TODO: make sure this is getting called
+      puts "cleaning up garbage"
+      if @resource.remove_reference && @file_name != nil
+        @loaded_models.delete(@file_name)
+      end
+    end
 
     private def load_mesh(file_name : String)
       ext = File.extname(file_name)
@@ -52,32 +58,6 @@ module Prism
       end
 
       add_verticies(verticies, model.indicies, false)
-
-      # verticies = [] of Vertex
-      # indicies = [] of LibGL::Int
-      #
-      # path = File.join(File.dirname(PROGRAM_NAME), "/res/models/", file_name)
-      # File.each_line(path) do |line|
-      #   tokens = line.split(" ", remove_empty: true)
-      #   if tokens.size === 0 || tokens[0] === "#"
-      #     next
-      #   elsif tokens[0] === "v"
-      #     v = Vector3f.new(tokens[1].to_f32, tokens[2].to_f32, tokens[3].to_f32)
-      #     verticies.push(Vertex.new(v))
-      #   elsif tokens[0] === "f"
-      #     indicies.push(tokens[1].split("/")[0].to_i32 - 1);
-      #     indicies.push(tokens[2].split("/")[0].to_i32 - 1);
-      #     indicies.push(tokens[3].split("/")[0].to_i32 - 1);
-      #
-      #     if tokens.size > 4
-      #       indicies.push(tokens[1].split("/")[0].to_i32 - 1);
-      #       indicies.push(tokens[3].split("/")[0].to_i32 - 1);
-      #       indicies.push(tokens[4].split("/")[0].to_i32 - 1);
-      #     end
-      #   end
-      # end
-      #
-      # add_verticies(verticies, indicies)
     end
 
     def add_verticies(verticies : Array(Vertex), indicies : Array(LibGL::Int))
@@ -89,12 +69,12 @@ module Prism
           calc_normals(verticies, indicies)
         end
 
-        @size = indicies.size
+        @resource.size = indicies.size
 
-        LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
+        LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @resource.vbo)
         LibGL.buffer_data(LibGL::ARRAY_BUFFER, verticies.size * Vertex::SIZE * sizeof(Float32), Util.flatten_verticies(verticies), LibGL::STATIC_DRAW)
 
-        LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @ibo)
+        LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @resource.ibo)
         LibGL.buffer_data(LibGL::ELEMENT_ARRAY_BUFFER, indicies.size * Vertex::SIZE * sizeof(Float32), indicies, LibGL::STATIC_DRAW)
     end
 
@@ -103,7 +83,7 @@ module Prism
       LibGL.enable_vertex_attrib_array(1)
       LibGL.enable_vertex_attrib_array(2)
 
-      LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @vbo)
+      LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @resource.vbo)
 
       mesh_offset = Pointer(Void).new(0)
       LibGL.vertex_attrib_pointer(0, 3, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), mesh_offset)
@@ -115,9 +95,9 @@ module Prism
       LibGL.vertex_attrib_pointer(2, 3, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), normals_offset)
 
       # Draw faces using the index buffer
-      LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @ibo)
+      LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @resource.ibo)
       indicies_offset = Pointer(Void).new(0)
-      LibGL.draw_elements(LibGL::TRIANGLES, @size, LibGL::UNSIGNED_INT, indicies_offset)
+      LibGL.draw_elements(LibGL::TRIANGLES, @resource.size, LibGL::UNSIGNED_INT, indicies_offset)
 
       LibGL.disable_vertex_attrib_array(0)
       LibGL.disable_vertex_attrib_array(1)
