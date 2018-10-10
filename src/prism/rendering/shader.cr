@@ -24,8 +24,23 @@ module Prism
     end
 
     private def load_shader(file_name : String) : String
+
+      include_directive = "#include"
+
       path = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", file_name)
-      return File.read(path)
+      shader_source = ""
+
+      # glsl dependencies can be added like: #include "file.sh"
+      File.each_line(path) do |line|
+        include_match = line.scan(/\#include\s+["<]([^">]*)[>"]/)
+        if include_match.size > 0
+          shader_source += self.load_shader(include_match[0][1])
+        else
+          shader_source += line + "\n"
+        end
+      end
+
+      return shader_source
     end
 
     # uses the shader

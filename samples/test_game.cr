@@ -37,12 +37,12 @@ class TestGame < Prism::Game
 
     mesh = Mesh.new(verticies, indicies, true);
     material = Material.new()
-    material.add_texture("diffuse", Texture.new("test.png"))
+    material.add_texture("diffuse", Texture.new("bricks.jpg"))
     material.add_float("specularIntensity", 1)
     material.add_float("specularPower", 8)
 
     material2 = Material.new()
-    material2.add_texture("diffuse", Texture.new("bricks.jpg"))
+    material2.add_texture("diffuse", Texture.new("test.png"))
     material2.add_float("specularIntensity", 1)
     material2.add_float("specularPower", 8)
 
