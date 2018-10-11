@@ -11,10 +11,14 @@ module Prism
 
     @program : LibGL::UInt
     @uniforms : Hash(String, Int32)
+    @uniform_names : Array(String)
+    @uniform_types : Array(String)
 
     def initialize(file_name : String)
       @program = LibGL.create_program()
       @uniforms = {} of String => Int32
+      @uniform_names = [] of String
+      @uniform_types = [] of String
 
       if @program == 0
         program_error_code = LibGL.get_error()
@@ -42,6 +46,48 @@ module Prism
     end
 
     def update_uniforms(transform : Transform, material : Material, rendering_engine : RenderingEngineProtocol)
+      world_matrix = transform.get_transformation
+      mvp_matrix = rendering_engine.main_camera.get_view_projection * world_matrix
+
+      if @uniform_names.size > 0
+        0.upto(@uniform_names.size - 1) do |i|
+          uniform_name = @uniform_names[i]
+          uniform_type = @uniform_types[i]
+
+          if uniform_name.starts_with?("T_")
+            # transformations
+            if uniform_name == "T_MVP"
+              set_uniform(uniform_name, mvp_matrix)
+            elsif uniform_name == "T_world"
+              set_uniform(uniform_name, world_matrix)
+            else
+              puts "Error: #{uniform_name} is not a valid component of Transform"
+              exit 1
+            end
+          elsif uniform_name.starts_with?("R_")
+            # rendering
+            unprefixed_uniform_name = uniform_name[2..-1]
+
+            if uniform_type == "sampler2D"
+              sampler_slot : LibGL::Int = rendering_engine.get_sampler_slot(unprefixed_uniform_name)
+              material.get_texture(unprefixed_uniform_name).bind(sampler_slot)
+              set_uniform(uniform_name, sampler_slot)
+            elsif uniform_type == "vec3"
+              set_uniform(uniform_name, rendering_engine.get_vector(unprefixed_uniform_name))
+            elsif uniform_type == "float"
+              set_uniform(uniform_name, rendering_engine.get_float(unprefixed_uniform_name))
+            end
+          else
+            # materials
+            if uniform_type == "vec3"
+              set_uniform(uniform_name, material.get_vector(uniform_name))
+            elsif uniform_type == "float"
+              set_uniform(uniform_name, material.get_float(uniform_name))
+            end
+          end
+
+        end
+      end
     end
 
     # Sets an integer uniform variable value
@@ -136,7 +182,7 @@ module Prism
       while start = start_location
         end_location = shader_text.index(";", start).not_nil!
         uniform_line = shader_text[start..end_location]
-        matches = uniform_line.scan(/\b#{keyword}\b\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)/)
+        matches = uniform_line.scan(/\b#{keyword}\b\s+([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_]+)/)
         attribute_type = matches[0][1]
         attribute_name = matches[0][2]
 
@@ -159,12 +205,12 @@ module Prism
 
         # read struct name
         name_lines = shader_text[start..start_brace_location]
-        name_matches = name_lines.scan(/\b#{keyword}\b\s+([a-zA-Z0-9]+)\s+{/)
+        name_matches = name_lines.scan(/\b#{keyword}\b\s+([a-zA-Z0-9_]+)\s+{/)
         struct_name = name_matches[0][1]
 
         # read struct properties
         property_lines = shader_text[start_brace_location..end_brace_location]
-        property_matches = property_lines.scan(/\s*([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)/)
+        property_matches = property_lines.scan(/\s*([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_]+)/)
         properties = [] of GLSLProperty
         if property_matches.size > 0
           0.upto(property_matches.size - 1) do |i|
@@ -184,15 +230,26 @@ module Prism
     end
 
     # Adds a uniform while expanding it's struct properties as needed
-    private def add_uniform_struct(uniform_name : String, uniform_type : String, structs : Hash(String, GLSLStruct))
+    private def add_uniform(uniform_name : String, uniform_type : String, structs : Hash(String, GLSLStruct))
       if structs.has_key?(uniform_type)
         properties = structs[uniform_type].properties
         0.upto(properties.size - 1) do |i|
           prop : GLSLProperty = properties[i]
-          add_uniform_struct("#{uniform_name}.#{prop.name}", prop.prop_type, structs)
+          add_uniform("#{uniform_name}.#{prop.name}", prop.prop_type, structs)
         end
       else
-        add_uniform(uniform_name)
+        # add the final uniform
+        uniform_location = LibGL.get_uniform_location(@program, uniform_name);
+
+        if uniform_location == -1
+          uniform_error_code = LibGL.get_error()
+          puts "Error #{uniform_error_code}: Could not find location for uniform '#{uniform_name}'."
+          exit 1
+        end
+
+        @uniforms[uniform_name] = uniform_location
+        @uniform_names.push(uniform_name)
+        @uniform_types.push(uniform_type)
       end
     end
 
@@ -205,28 +262,14 @@ module Prism
       while start = start_location
         end_location = shader_text.index(";", start).not_nil!
         uniform_line = shader_text[start..end_location]
-        matches = uniform_line.scan(/\b#{keyword}\b\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)/)
+        matches = uniform_line.scan(/\b#{keyword}\b\s+([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_]+)/)
         uniform_type = matches[0][1]
         uniform_name = matches[0][2]
 
-        self.add_uniform_struct(uniform_name, uniform_type, structs)
+        self.add_uniform(uniform_name, uniform_type, structs)
 
         start_location = shader_text.index(/\b#{keyword}\b/, end_location)
       end
-    end
-
-    # Adds a uniform variable for the shader to keep track of
-    # The shader must be compiled before adding uniforms.
-    private def add_uniform( uniform : String)
-      uniform_location = LibGL.get_uniform_location(@program, uniform);
-
-      if uniform_location == -1
-        uniform_error_code = LibGL.get_error()
-        puts "Error #{uniform_error_code}: Could not find location for uniform '#{uniform}'."
-        exit 1
-      end
-
-      @uniforms[uniform] = uniform_location
     end
 
     private def add_program(text : String, type : LibGL::UInt)

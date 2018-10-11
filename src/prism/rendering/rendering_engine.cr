@@ -2,23 +2,32 @@ require "lib_gl"
 require "../components/camera"
 require "../components/base_light"
 require "./rendering_engine_protocol"
+require "./resource_management/mapped_values"
 
 module Prism
 
-  class RenderingEngine
+  class RenderingEngine < MappedValues
     include RenderingEngineProtocol
 
     @main_camera : Camera?
     @ambient_light : Vector3f
 
-    getter ambient_light, active_light
+    getter active_light
     setter main_camera, active_light
 
     @lights : Array(BaseLight)
     @active_light : BaseLight?
 
+    @sampler_map : Hash(String, LibGL::Int)
+
     def initialize(window : CrystGLUT::Window)
+      super()
+
       @lights = [] of BaseLight
+      @sampler_map = {} of String => LibGL::Int
+      @sampler_map["diffuse"] = 0
+
+      add_vector("ambient", Vector3f.new(0.1f32, 0.1f32, 0.1f32))
 
       LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
 
@@ -35,7 +44,8 @@ module Prism
     end
 
     def render(object : GameObject)
-      clear_screen
+      LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
+
       @lights.clear
       object.add_to_rendering_engine(self)
 
@@ -80,20 +90,6 @@ module Prism
       end
     end
 
-    private def clear_screen
-      # TODO: stencil buffer
-      LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
-    end
-
-    # Enable/disables textures
-    private def set_textures(enabled : Boolean)
-      if enabled
-        LibGL.enable(LibGL::TEXTURE_2D)
-      else
-        LibGL.disable(LibGL::TEXTURE_2D)
-      end
-    end
-
     def flush
       LibGL.flush()
     end
@@ -103,12 +99,8 @@ module Prism
       return String.new(LibGL.get_string(LibGL::VERSION))
     end
 
-    private def set_clear_color(color : Vector3f)
-      LibGL.clear_color(color.x, color.y, color.z, 1.0);
-    end
-
-    private def unbind_textures
-      LibGL.bind_texture(LibGL::TEXTURE_2D, 0)
+    def get_sampler_slot(sampler_name : String) : LibGL::Int
+      @sampler_map[sampler_name]
     end
 
   end
