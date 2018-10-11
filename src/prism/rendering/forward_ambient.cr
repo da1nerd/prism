@@ -8,20 +8,7 @@ module Prism
     @@instance : ForwardAmbient?
 
     def initialize
-      super
-
-      vertex_shader_text = load_shader("forward-ambient.vs")
-      fragment_shader_text = load_shader("forward-ambient.fs")
-
-      add_vertex_shader(vertex_shader_text)
-      add_fragment_shader(fragment_shader_text)
-
-      add_all_attributes(vertex_shader_text)
-
-      compile
-
-      add_all_uniforms(vertex_shader_text)
-      add_all_uniforms(fragment_shader_text)
+      super("forward-ambient")
     end
 
     def self.instance

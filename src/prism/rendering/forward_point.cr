@@ -8,32 +8,7 @@ module Prism
     @@instance : ForwardPoint?
 
     def initialize
-      super
-
-      add_vertex_shader_from_file("forward-point.vs")
-      add_fragment_shader_from_file("forward-point.fs")
-
-      set_attrib_location("position", 0)
-      set_attrib_location("texCoord", 1)
-      set_attrib_location("normal", 2)
-
-      compile
-
-      add_uniform("model")
-      add_uniform("MVP")
-
-      add_uniform("specularIntensity")
-      add_uniform("specularExponent")
-      add_uniform("eyePos")
-
-      add_uniform("pointLight.base.color")
-      add_uniform("pointLight.base.intensity")
-      add_uniform("pointLight.atten.constant")
-      add_uniform("pointLight.atten.linear")
-      add_uniform("pointLight.atten.exponent")
-      add_uniform("pointLight.position")
-      add_uniform("pointLight.range")
-
+      super("forward-point")
     end
 
     def self.instance
