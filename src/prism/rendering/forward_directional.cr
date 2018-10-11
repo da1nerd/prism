@@ -8,18 +8,7 @@ module Prism
     @@instance : ForwardDirectional?
 
     def initialize
-      super
-
-      vertex_shader_text = load_shader("forward-directional.vs")
-      fragment_shader_text = load_shader("forward-directional.fs")
-
-      add_vertex_shader(vertex_shader_text)
-      add_fragment_shader(fragment_shader_text)
-
-      compile
-
-      add_all_uniforms(vertex_shader_text)
-      add_all_uniforms(fragment_shader_text)
+      super("forward-directional")
     end
 
     def self.instance

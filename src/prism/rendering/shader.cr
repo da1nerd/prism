@@ -12,7 +12,7 @@ module Prism
     @program : LibGL::UInt
     @uniforms : Hash(String, Int32)
 
-    def initialize
+    def initialize(file_name : String)
       @program = LibGL.create_program()
       @uniforms = {} of String => Int32
 
@@ -21,6 +21,19 @@ module Prism
         puts "Error #{program_error_code}: Shader creation failed. Could not find valid memory location in constructor"
         exit 1
       end
+
+      vertex_shader_text = load_shader("#{file_name}.vs")
+      fragment_shader_text = load_shader("#{file_name}.fs")
+
+      add_vertex_shader(vertex_shader_text)
+      add_fragment_shader(fragment_shader_text)
+
+      add_all_attributes(vertex_shader_text)
+
+      compile
+
+      add_all_uniforms(vertex_shader_text)
+      add_all_uniforms(fragment_shader_text)
     end
 
     # TODO: make this private again
@@ -79,26 +92,26 @@ module Prism
     # Parses the shader text for attribute delcarations and automatically adds them
     def add_all_attributes(shader_text : String)
       keyword = "attribute"
-      start_location = shader_text.index(keyword)
+      start_location = shader_text.index(/\b#{keyword}\b/)
       attribute_number = 0
       while start = start_location
         end_location = shader_text.index(";", start).not_nil!
         uniform_line = shader_text[start..end_location]
-        matches = uniform_line.scan(/#{keyword}\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)/)
+        matches = uniform_line.scan(/\b#{keyword}\b\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)/)
         attribute_type = matches[0][1]
         attribute_name = matches[0][2]
 
         set_attrib_location(attribute_name, attribute_number)
         attribute_number += 1
 
-        start_location = shader_text.index(keyword, end_location)
+        start_location = shader_text.index(/\b#{keyword}\b/, end_location)
       end
     end
 
     # search for struct definitions in the shader text
     private def find_uniform_structs(shader_text : String) : Hash(String, GLSLStruct)
       keyword = "struct"
-      start_location = shader_text.index(keyword)
+      start_location = shader_text.index(/\b#{keyword}\b/)
       structs = {} of String => GLSLStruct
 
       while start = start_location
@@ -107,7 +120,7 @@ module Prism
 
         # read struct name
         name_lines = shader_text[start..start_brace_location]
-        name_matches = name_lines.scan(/#{keyword}\s+([a-zA-Z0-9]+)\s+{/)
+        name_matches = name_lines.scan(/\b#{keyword}\b\s+([a-zA-Z0-9]+)\s+{/)
         struct_name = name_matches[0][1]
 
         # read struct properties
@@ -126,7 +139,7 @@ module Prism
         end
 
         structs[struct_name] = GLSLStruct.new(struct_name, properties)
-        start_location = shader_text.index(keyword, end_brace_location)
+        start_location = shader_text.index(/\b#{keyword}\b/, end_brace_location)
       end
       return structs
     end
@@ -149,17 +162,17 @@ module Prism
       structs = self.find_uniform_structs(shader_text)
 
       keyword = "uniform"
-      start_location = shader_text.index(keyword)
+      start_location = shader_text.index(/\b#{keyword}\b/)
       while start = start_location
         end_location = shader_text.index(";", start).not_nil!
         uniform_line = shader_text[start..end_location]
-        matches = uniform_line.scan(/#{keyword}\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)/)
+        matches = uniform_line.scan(/\b#{keyword}\b\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)/)
         uniform_type = matches[0][1]
         uniform_name = matches[0][2]
 
         self.add_uniform_struct(uniform_name, uniform_type, structs)
 
-        start_location = shader_text.index(keyword, end_location)
+        start_location = shader_text.index(/\b#{keyword}\b/, end_location)
       end
     end
 
