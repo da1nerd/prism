@@ -95,8 +95,59 @@ module Prism
       end
     end
 
+    # search for struct definitions in the shader text
+    private def find_uniform_structs(shader_text : String) : Hash(String, GLSLStruct)
+      keyword = "struct"
+      start_location = shader_text.index(keyword)
+      structs = {} of String => GLSLStruct
+
+      while start = start_location
+        start_brace_location = shader_text.index("{", start).not_nil!
+        end_brace_location = shader_text.index("}", start_brace_location).not_nil!
+
+        # read struct name
+        name_lines = shader_text[start..start_brace_location]
+        name_matches = name_lines.scan(/#{keyword}\s+([a-zA-Z0-9]+)\s+{/)
+        struct_name = name_matches[0][1]
+
+        # read struct properties
+        property_lines = shader_text[start_brace_location..end_brace_location]
+        property_matches = property_lines.scan(/\s*([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)/)
+        properties = [] of GLSLProperty
+        if property_matches.size > 0
+          0.upto(property_matches.size - 1) do |i|
+            property_type = property_matches[i][1]
+            property_name = property_matches[i][2]
+            properties.push(GLSLProperty.new(property_name, property_type))
+          end
+        else
+          puts "Error: #{struct_name} at position #{start} has no properties"
+          exit 1
+        end
+
+        structs[struct_name] = GLSLStruct.new(struct_name, properties)
+        start_location = shader_text.index(keyword, end_brace_location)
+      end
+      return structs
+    end
+
+    # Adds a uniform while expanding it's struct properties as needed
+    def add_uniform_struct(uniform_name : String, uniform_type : String, structs : Hash(String, GLSLStruct))
+      if structs.has_key?(uniform_type)
+        properties = structs[uniform_type].properties
+        0.upto(properties.size - 1) do |i|
+          prop : GLSLProperty = properties[i]
+          add_uniform_struct("#{uniform_name}.#{prop.name}", prop.prop_type, structs)
+        end
+      else
+        add_uniform(uniform_name)
+      end
+    end
+
     # Parses the shader text for uniform declarations and automatically adds them
     def add_all_uniforms(shader_text : String)
+      structs = self.find_uniform_structs(shader_text)
+
       keyword = "uniform"
       start_location = shader_text.index(keyword)
       while start = start_location
@@ -106,7 +157,7 @@ module Prism
         uniform_type = matches[0][1]
         uniform_name = matches[0][2]
 
-        add_uniform(uniform_name)
+        self.add_uniform_struct(uniform_name, uniform_type, structs)
 
         start_location = shader_text.index(keyword, end_location)
       end
