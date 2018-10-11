@@ -10,25 +10,16 @@ module Prism
     def initialize
       super
 
-      add_vertex_shader_from_file("forward-directional.vs")
-      add_fragment_shader_from_file("forward-directional.fs")
+      vertex_shader_text = load_shader("forward-directional.vs")
+      fragment_shader_text = load_shader("forward-directional.fs")
 
-      set_attrib_location("position", 0)
-      set_attrib_location("texCoord", 1)
-      set_attrib_location("normal", 2)
+      add_vertex_shader(vertex_shader_text)
+      add_fragment_shader(fragment_shader_text)
 
       compile
 
-      add_uniform("model")
-      add_uniform("MVP")
-
-      add_uniform("specularIntensity")
-      add_uniform("specularExponent")
-      add_uniform("eyePos")
-
-      add_uniform("directionalLight.base.color")
-      add_uniform("directionalLight.base.intensity")
-      add_uniform("directionalLight.direction")
+      add_all_uniforms(vertex_shader_text)
+      add_all_uniforms(fragment_shader_text)
     end
 
     def self.instance
