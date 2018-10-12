@@ -5,16 +5,15 @@ module Prism
   class Texture
     @loaded_textures = {} of String => TextureResource
     @resource : TextureResource
-    @file_name : String?
+    @file_name : String
 
-    def initialize(file_name : String)
-      @file_name = file_name
-      if @loaded_textures.has_key?(file_name)
-        @resource = @loaded_textures[file_name]
+    def initialize(@file_name : String)
+      if @loaded_textures.has_key?(@file_name)
+        @resource = @loaded_textures[@file_name]
         @resource.add_reference
       else
-        @resource = load_texture(file_name)
-        @loaded_textures[file_name] = @resource
+        @resource = load_texture(@file_name)
+        @loaded_textures[@file_name] = @resource
       end
     end
 
@@ -22,7 +21,7 @@ module Prism
     def finalize
       # TODO: make sure this is getting called
       puts "cleaning up garbage"
-      if @resource.remove_reference && @file_name != nil
+      if @resource.remove_reference
         @loaded_textures.delete(@file_name)
       end
     end
