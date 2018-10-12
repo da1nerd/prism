@@ -29,14 +29,11 @@ module Prism
       @forward_ambient = Shader.new("forward-ambient")
 
       LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
-
       LibGL.front_face(LibGL::CW)
       LibGL.cull_face(LibGL::BACK)
       LibGL.enable(LibGL::CULL_FACE)
       LibGL.enable(LibGL::DEPTH_TEST)
-
       LibGL.enable(LibGL::DEPTH_CLAMP)
-
       LibGL.enable(LibGL::TEXTURE_2D)
     end
 
