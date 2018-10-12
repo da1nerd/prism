@@ -4,6 +4,8 @@ require "./game_object"
 require "../rendering/rendering_engine_protocol"
 
 module Prism
+  # The game interace.
+  # A game must inherit this class in order to be used by the engine.
   abstract class Game
     @root : GameObject = GameObject.new
 

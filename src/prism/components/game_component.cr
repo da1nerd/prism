@@ -2,6 +2,11 @@ require "../core/transform"
 require "../rendering/shader"
 
 module Prism
+  # The fundamental building block of the game.
+  # Components are the lights, material, meshes, etc.
+  # that represent all the things in the game.
+  # The `GameComponent` is added to a `GameObject`
+  # which composes the scene graph.
   abstract class GameComponent
     setter parent
 

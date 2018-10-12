@@ -1,6 +1,8 @@
 require "./base_light"
 
 module Prism
+  # Represents a point light.
+  # That is, light that radiates out from a point.
   class PointLight < BaseLight
     COLOR_DEPTH = 256.0f32
 

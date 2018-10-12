@@ -3,6 +3,7 @@ require "matrix"
 require "./matrix4f"
 
 module Prism
+  # Handles positional transformations
   class Transform
     @parent : Transform?
     @parent_matrix : Matrix4f

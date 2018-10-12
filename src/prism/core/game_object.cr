@@ -4,6 +4,8 @@ require "../rendering/rendering_engine"
 require "./input"
 
 module Prism
+  # Represents an object within the scene graph.
+  # The screen graph is composed of a tree of `GameObject`s.
   class GameObject
     @children : Array(GameObject)
     @components : Array(GameComponent)
@@ -18,6 +20,9 @@ module Prism
       @transform = Transform.new
     end
 
+    # Adds a child `GameObject` to this object
+    # The child will inherit certain attributes of the parent
+    # such as transformation.
     def add_child(child : GameObject)
       @children.push(child)
       if engine = @engine
@@ -26,12 +31,14 @@ module Prism
       child.transform.parent = @transform
     end
 
+    # Adds a `GameComponent` to this object
     def add_component(component : GameComponent)
       component.parent = self
       @components.push(component)
       return self
     end
 
+    # Performs input update logic on this object and it's children
     def input(delta : Float32, input : Input)
       @transform.update
 
@@ -44,6 +51,7 @@ module Prism
       end
     end
 
+    # Performs game update logic on this object and it's children
     def update(delta : Float32)
       0.upto(@components.size - 1) do |i|
         @components[i].update(delta)
@@ -54,6 +62,7 @@ module Prism
       end
     end
 
+    # Performs rendering operations on this object and it's children
     def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
       0.upto(@components.size - 1) do |i|
         @components[i].render(shader, rendering_engine)
@@ -64,16 +73,8 @@ module Prism
       end
     end
 
-    # def add_to_rendering_engine(rendering_engine : RenderingEngine)
-    #   0.upto(@components.size - 1) do |i|
-    #     @components[i].add_to_rendering_engine(rendering_engine)
-    #   end
-
-    #   0.upto(@children.size - 1) do |i|
-    #     @children[i].add_to_rendering_engine(rendering_engine)
-    #   end
-    # end
-
+    # Sets the `CoreEngine` on this object
+    # This allows the object and it's children to interact with the engine
     def engine=(engine : CoreEngine)
       if @engine != engine
         @engine = engine
