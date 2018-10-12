@@ -46,7 +46,11 @@ module Prism
           uniform_name = @resource.uniform_names[i]
           uniform_type = @resource.uniform_types[i]
 
-          if uniform_name.starts_with?("T_")
+          if uniform_type == "sampler2D"
+            sampler_slot : LibGL::Int = rendering_engine.get_sampler_slot(uniform_name)
+            material.get_texture(uniform_name).bind(sampler_slot)
+            set_uniform(uniform_name, sampler_slot)
+          elsif uniform_name.starts_with?("T_")
             # transformations
             if uniform_name == "T_MVP"
               set_uniform(uniform_name, mvp_matrix)
@@ -59,17 +63,16 @@ module Prism
           elsif uniform_name.starts_with?("R_")
             # rendering
             unprefixed_uniform_name = uniform_name[2..-1]
-
-            if uniform_type == "sampler2D"
-              sampler_slot : LibGL::Int = rendering_engine.get_sampler_slot(unprefixed_uniform_name)
-              material.get_texture(unprefixed_uniform_name).bind(sampler_slot)
-              set_uniform(uniform_name, sampler_slot)
-            elsif uniform_type == "vec3"
+            if uniform_type == "vec3"
               set_uniform(uniform_name, rendering_engine.get_vector(unprefixed_uniform_name))
             elsif uniform_type == "float"
               set_uniform(uniform_name, rendering_engine.get_float(unprefixed_uniform_name))
             elsif uniform_type == "DirectionalLight"
               set_uniform_directional_light(uniform_name, rendering_engine.active_light.as(DirectionalLight))
+            elsif uniform_type == "SpotLight"
+              set_uniform_spot_light(uniform_name, rendering_engine.active_light.as(SpotLight))
+            elsif uniform_type == "PointLight"
+              set_uniform_point_light(uniform_name, rendering_engine.active_light.as(PointLight))
             else
               puts "Error: #{uniform_type} is not a supported type in Rendering Engine"
               exit 1
@@ -312,6 +315,21 @@ module Prism
     def set_uniform_directional_light(name : String, directional_light : DirectionalLight)
       set_uniform_base_light(name + ".base", directional_light)
       set_uniform(name + ".direction", directional_light.direction)
+    end
+
+    def set_uniform_point_light(name : String, point_light : PointLight)
+      set_uniform_base_light(name + ".base", point_light)
+      set_uniform(name + ".atten.constant", point_light.constant)
+      set_uniform(name + ".atten.linear", point_light.linear)
+      set_uniform(name + ".atten.exponent", point_light.exponent)
+      set_uniform(name + ".position", point_light.transform.get_transformed_pos)
+      set_uniform(name + ".range", point_light.range)
+    end
+
+    def set_uniform_spot_light(name : String, spot_light : SpotLight)
+      set_uniform_point_light(name + ".pointLight", spot_light)
+      set_uniform(name + ".direction", spot_light.direction)
+      set_uniform(name + ".cutoff", spot_light.cutoff)
     end
   end
 end
