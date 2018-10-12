@@ -2,46 +2,45 @@ require "cryst_glut"
 require "./vector2f"
 
 module Prism
-
   class Input
-    NUM_KEYCODES = 1256
-    NUM_MOUSEBUTTONS = 10
+    NUM_KEYCODES     = 1256
+    NUM_MOUSEBUTTONS =   10
 
-    KEY_ESCAPE = 27
-    KEY_F1 = 1
-    KEY_F2 = 1
-    KEY_F3 = 2
-    KEY_F4 = 3
-    KEY_F5 = 4
-    KEY_F6 = 5
-    KEY_F7 = 6
-    KEY_F8 = 7
-    KEY_F9 = 8
-    KEY_F10 = 9
-    KEY_F11 = 11
-    KEY_F12 = 12
-    KEY_LEFT = 1100
-    KEY_UP = 1101
-    KEY_RIGHT = 1102
-    KEY_DOWN = 1103
-    KEY_PAGE_UP = 104
-    KEY_PAGE_DOWN = 105
-    KEY_HOME = 106
-    KEY_END = 107
-    KEY_INSERT = 108
-    KEY_NUM_LOCK = 109
-    KEY_BACK_SLASH = 47
-    KEY_ASTERISK = 42
-    KEY_MINUS = 45
-    KEY_PLUS = 43
-    KEY_RETURN = 13
-    KEY_SHIFT = 112
-    KEY_LEFT_CTRL = 114
-    KEY_RIGHT_CTRL = 115
-    KEY_W = 119
-    KEY_S = 115
-    KEY_A = 97
-    KEY_D = 100
+    KEY_ESCAPE     =   27
+    KEY_F1         =    1
+    KEY_F2         =    1
+    KEY_F3         =    2
+    KEY_F4         =    3
+    KEY_F5         =    4
+    KEY_F6         =    5
+    KEY_F7         =    6
+    KEY_F8         =    7
+    KEY_F9         =    8
+    KEY_F10        =    9
+    KEY_F11        =   11
+    KEY_F12        =   12
+    KEY_LEFT       = 1100
+    KEY_UP         = 1101
+    KEY_RIGHT      = 1102
+    KEY_DOWN       = 1103
+    KEY_PAGE_UP    =  104
+    KEY_PAGE_DOWN  =  105
+    KEY_HOME       =  106
+    KEY_END        =  107
+    KEY_INSERT     =  108
+    KEY_NUM_LOCK   =  109
+    KEY_BACK_SLASH =   47
+    KEY_ASTERISK   =   42
+    KEY_MINUS      =   45
+    KEY_PLUS       =   43
+    KEY_RETURN     =   13
+    KEY_SHIFT      =  112
+    KEY_LEFT_CTRL  =  114
+    KEY_RIGHT_CTRL =  115
+    KEY_W          =  119
+    KEY_S          =  115
+    KEY_A          =   97
+    KEY_D          =  100
 
     @last_keys = StaticArray(Bool, NUM_KEYCODES).new(false)
     @last_mouse = StaticArray(Bool, NUM_MOUSEBUTTONS).new(false)
@@ -50,7 +49,6 @@ module Prism
     end
 
     def update
-
       0.upto(NUM_KEYCODES - 1) do |i|
         @last_keys[i] = get_key(i)
       end
@@ -58,7 +56,6 @@ module Prism
       0.upto(NUM_MOUSEBUTTONS - 1) do |i|
         @last_mouse[i] = get_mouse(i)
       end
-
     end
 
     # Checks if the key is currently down
@@ -108,7 +105,7 @@ module Prism
     end
 
     # Sets the mouse position within the window
-    def set_mouse_position (position : Vector2f)
+    def set_mouse_position(position : Vector2f)
       @window.set_mouse_position(position.x, position.y)
     end
 
@@ -122,5 +119,4 @@ module Prism
       return Vector2f.new(@window.get_width / 2.0f32, @window.get_height / 2.0f32)
     end
   end
-
 end

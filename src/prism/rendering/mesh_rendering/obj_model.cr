@@ -2,11 +2,8 @@ require "../../core/vector3f"
 require "../../core/vector2f"
 require "./obj_index"
 
-
 module Prism
-
   class OBJModel
-
     @positions : Array(Vector3f)
     @tex_coords : Array(Vector2f)
     @normals : Array(Vector3f)
@@ -38,7 +35,7 @@ module Prism
         elsif tokens[0] === "f"
           # faces
           0.upto(tokens.size - 4) do |i|
-            @indicies.push(parse_obj_index(tokens[1 ]))
+            @indicies.push(parse_obj_index(tokens[1]))
             @indicies.push(parse_obj_index(tokens[2 + i]))
             @indicies.push(parse_obj_index(tokens[3 + i]))
           end
@@ -120,7 +117,7 @@ module Prism
     private def parse_obj_index(token : String) : OBJIndex
       values = token.split("/")
 
-      result =  OBJIndex.new
+      result = OBJIndex.new
       result.vertex_index = values[0].to_i32 - 1
 
       if values.size > 1
@@ -135,7 +132,5 @@ module Prism
 
       return result
     end
-
   end
-
 end

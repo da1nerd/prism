@@ -5,14 +5,11 @@ require "../rendering/rendering_engine"
 require "./game"
 
 module Prism
-
   class CoreEngine
-
     @frametime : Float64
     @rendering_engine : RenderingEngine
 
     def initialize(@width : Int32, @height : Int32, @framerate : Float32, @title : String, @game : Game)
-
       # set up window
       @window = CrystGLUT::Window.new(@width, @height, "TITLE")
       @rendering_engine = RenderingEngine.new(@window)
@@ -46,17 +43,15 @@ module Prism
       @is_running = true
 
       frames = 0
-      frame_counter = 0;
-
+      frame_counter = 0
       @game.init
 
-      last_time = Timer.get_time()
+      last_time = Timer.get_time
       unprocessed_time : Float64 = 0.0
 
       while running = @is_running
-
         should_render = false
-        start_time = Timer.get_time()
+        start_time = Timer.get_time
         passed_time = start_time - last_time # how long the previous frame took
         last_time = start_time
 
@@ -81,24 +76,22 @@ module Prism
           # TODO: update game
 
           # log frame rate
-          if(frame_counter >= 1.0)
+          if (frame_counter >= 1.0)
             puts "fps: #{frames}"
             frames = 0
             frame_counter = 0
           end
-
         end
 
         if should_render
           @game.render(@rendering_engine)
           @window.render
           @rendering_engine.flush
-          frames += 1;
+          frames += 1
         else
           # sleep for 1 millisecond
-          sleep(Time::Span.new(nanoseconds:1000000))
+          sleep(Time::Span.new(nanoseconds: 1000000))
         end
-
       end
       clean_up()
     end

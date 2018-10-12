@@ -2,10 +2,9 @@ require "./texture"
 require "./resource_management/mapped_values"
 
 module Prism
-
   class Material < MappedValues
-
     @texture_map : Hash(String, Texture)
+
     def initialize
       super
       @texture_map = {} of String => Texture
@@ -23,7 +22,5 @@ module Prism
         Texture.new("test.png")
       end
     end
-
   end
-
 end

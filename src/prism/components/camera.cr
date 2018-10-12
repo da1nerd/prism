@@ -4,16 +4,14 @@ require "../core/matrix4f"
 require "./game_component"
 
 module Prism
-
   class Camera < GameComponent
-
     Y_AXIS = Vector3f.new(0, 1, 0)
 
     @mouse_locked = false
     @projection : Matrix4f
 
     def initialize(fov : Float32, aspect : Float32, z_near : Float32, z_far : Float32)
-      @projection = Matrix4f.new().init_perspective(fov, aspect, z_near, z_far)
+      @projection = Matrix4f.new.init_perspective(fov, aspect, z_near, z_far)
     end
 
     def get_view_projection : Matrix4f
@@ -79,14 +77,11 @@ module Prism
         input.set_cursor(false)
         @mouse_locked = true
       end
-
     end
 
     # moves the camera
     def move(direction : Vector3f, amount : Float32)
       self.transform.pos = self.transform.pos + direction * amount
     end
-
   end
-
 end

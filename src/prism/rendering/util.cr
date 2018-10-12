@@ -1,7 +1,5 @@
 module Prism
-
   class Util
-
     # Creates a flattened array of verticies for OpenGL
     def self.flatten_verticies(verticies : Array(Vertex))
       buffer = [] of Float32
@@ -19,7 +17,5 @@ module Prism
 
       return buffer
     end
-
   end
-
 end

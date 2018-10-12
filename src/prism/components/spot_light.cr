@@ -1,9 +1,7 @@
 require "./point_light"
 
 module Prism
-
   class SpotLight < PointLight
-
     getter cutoff
     setter cutoff
 
@@ -15,7 +13,5 @@ module Prism
     def direction
       return self.transform.get_transformed_rot.forward
     end
-
   end
-
 end

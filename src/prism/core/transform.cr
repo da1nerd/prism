@@ -3,9 +3,7 @@ require "matrix"
 require "./matrix4f"
 
 module Prism
-
   class Transform
-
     @parent : Transform?
     @parent_matrix : Matrix4f
 
@@ -20,11 +18,11 @@ module Prism
     getter pos, rot, scale
     setter pos, rot, scale, parent
 
-    def initialize()
+    def initialize
       @pos = Vector3f.new(0.0f32, 0.0f32, 0.0f32)
       @rot = Quaternion.new(0.0f64, 0.0f64, 0.0f64, 1.0f64)
       @scale = Vector3f.new(1.0f32, 1.0f32, 1.0f32)
-      @parent_matrix = Matrix4f.new().init_identity
+      @parent_matrix = Matrix4f.new.init_identity
     end
 
     def update
@@ -33,7 +31,7 @@ module Prism
         @old_rot = @rot
         @old_scale = @scale
       else
-        @old_pos = Vector3f.new(0f32,0f32,0f32).set(@pos) + 1.0f32
+        @old_pos = Vector3f.new(0f32, 0f32, 0f32).set(@pos) + 1.0f32
         @old_rot = Quaternion.new(0f64, 0f64, 0f64, 0f64).set(@rot) * 0.5f64
         @old_scale = Vector3f.new(0f32, 0f32, 0f32).set(@scale) + 1.0f32
       end
@@ -44,7 +42,6 @@ module Prism
     end
 
     def has_changed
-
       if parent = @parent
         return parent.has_changed
       end
@@ -65,9 +62,9 @@ module Prism
     end
 
     def get_transformation : Matrix4f
-      translation_matrix = Matrix4f.new().init_translation(@pos.x, @pos.y, @pos.z)
+      translation_matrix = Matrix4f.new.init_translation(@pos.x, @pos.y, @pos.z)
       rotation_matrix = @rot.to_rotation_matrix
-      scale_matrix = Matrix4f.new().init_scale(@scale.x, @scale.y, @scale.z)
+      scale_matrix = Matrix4f.new.init_scale(@scale.x, @scale.y, @scale.z)
 
       return self.get_parent_matrix * translation_matrix * rotation_matrix * scale_matrix
     end
@@ -97,7 +94,5 @@ module Prism
 
       return @parent_matrix
     end
-
   end
-
 end

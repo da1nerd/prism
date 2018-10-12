@@ -4,9 +4,7 @@ require "./game_object"
 require "../rendering/rendering_engine_protocol"
 
 module Prism
-
   abstract class Game
-
     @root : GameObject = GameObject.new
 
     abstract def init
@@ -28,7 +26,5 @@ module Prism
     def update(delta : Float32)
       @root.update(delta)
     end
-
   end
-
 end

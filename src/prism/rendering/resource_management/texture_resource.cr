@@ -27,7 +27,7 @@ module Prism
     # Returns `true` if there are no more references to this resource
     #
     def remove_reference
-      @ref_count  =- 1
+      @ref_count = -1
       return @ref_count == 0
     end
   end

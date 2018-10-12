@@ -5,9 +5,7 @@ require "../rendering/shader"
 require "../core/transform"
 
 module Prism
-
   class MeshRenderer < GameComponent
-
     def initialize(@mesh : Mesh, @material : Material)
     end
 
@@ -23,5 +21,4 @@ module Prism
     def update(transform : Transform, delta : Float32)
     end
   end
-
 end
