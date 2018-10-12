@@ -7,13 +7,14 @@ module Prism
 
     getter id
 
-    def initialize(@id : LibGL::UInt)
+    def initialize
+      LibGL.gen_textures(1, out @id)
       @ref_count = 1
     end
 
     # garbage collection
+    # TODO: make sure this is getting called
     def finalize
-      # TODO: make sure this is getting called
       puts "cleaning up garbage"
       LibGL.delete_buffers(1, out @id)
     end

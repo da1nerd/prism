@@ -7,22 +7,16 @@ require "./rendering_engine_protocol"
 
 module Prism
   class Shader
-    @program : LibGL::UInt
+    @resource : ShaderResource
     @uniforms : Hash(String, Int32)
     @uniform_names : Array(String)
     @uniform_types : Array(String)
 
     def initialize(file_name : String)
-      @program = LibGL.create_program
+      @resource = ShaderResource.new
       @uniforms = {} of String => Int32
       @uniform_names = [] of String
       @uniform_types = [] of String
-
-      if @program == 0
-        program_error_code = LibGL.get_error
-        puts "Error #{program_error_code}: Shader creation failed. Could not find valid memory location in constructor"
-        exit 1
-      end
 
       vertex_shader_text = load_shader("#{file_name}.vs")
       fragment_shader_text = load_shader("#{file_name}.fs")
@@ -40,7 +34,7 @@ module Prism
 
     # uses the shader
     def bind
-      LibGL.use_program(@program)
+      LibGL.use_program(@resource.program)
     end
 
     def update_uniforms(transform : Transform, material : Material, rendering_engine : RenderingEngineProtocol)
@@ -108,27 +102,27 @@ module Prism
     end
 
     def set_attrib_location(attribute : String, location : LibGL::Int)
-      LibGL.bind_attrib_location(@program, location, attribute)
+      LibGL.bind_attrib_location(@resource.program, location, attribute)
     end
 
     # compiles the shader
     def compile
-      LibGL.link_program(@program)
+      LibGL.link_program(@resource.program)
 
-      LibGL.get_program_iv(@program, LibGL::LINK_STATUS, out link_status)
+      LibGL.get_program_iv(@resource.program, LibGL::LINK_STATUS, out link_status)
       if link_status == LibGL::FALSE
-        LibGL.get_program_info_log(@program, 1024, nil, out link_log)
+        LibGL.get_program_info_log(@resource.program, 1024, nil, out link_log)
         link_log_str = String.new(pointerof(link_log))
         link_error_code = LibGL.get_error
         puts "Error #{link_error_code}: Failed linking shader program: #{link_log_str}"
         exit 1
       end
 
-      LibGL.validate_program(@program)
+      LibGL.validate_program(@resource.program)
 
-      LibGL.get_program_iv(@program, LibGL::VALIDATE_STATUS, out validate_status)
+      LibGL.get_program_iv(@resource.program, LibGL::VALIDATE_STATUS, out validate_status)
       if validate_status == LibGL::FALSE
-        LibGL.get_program_info_log(@program, 1024, nil, out validate_log)
+        LibGL.get_program_info_log(@resource.program, 1024, nil, out validate_log)
         validate_log_str = String.new(pointerof(validate_log))
         validate_error_code = LibGL.get_error
         puts "Error #{validate_error_code}: Failed validating shader program: #{validate_log_str}"
@@ -235,7 +229,7 @@ module Prism
         end
       else
         # add the final uniform
-        uniform_location = LibGL.get_uniform_location(@program, uniform_name)
+        uniform_location = LibGL.get_uniform_location(@resource.program, uniform_name)
         if uniform_location == -1
           uniform_error_code = LibGL.get_error
           puts "Error #{uniform_error_code}: Could not find location for uniform '#{uniform_name}'."
@@ -291,7 +285,7 @@ module Prism
         exit 1
       end
 
-      LibGL.attach_shader(@program, shader)
+      LibGL.attach_shader(@resource.program, shader)
     end
   end
 end
