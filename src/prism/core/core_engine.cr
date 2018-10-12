@@ -9,6 +9,8 @@ module Prism
     @frametime : Float64
     @rendering_engine : RenderingEngine
 
+    getter rendering_engine
+
     def initialize(@width : Int32, @height : Int32, @framerate : Float32, @title : String, @game : Game)
       # set up window
       @window = CrystGLUT::Window.new(@width, @height, "TITLE")
@@ -22,6 +24,7 @@ module Prism
       end
 
       @input = Input.new(@window)
+      @game.engine = self
     end
 
     # Starts the game

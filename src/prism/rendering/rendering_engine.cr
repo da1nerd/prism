@@ -48,9 +48,6 @@ module Prism
     def render(object : GameObject)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
-      @lights.clear
-      object.add_to_rendering_engine(self)
-
       object.render(@forward_ambient, self)
 
       LibGL.enable(LibGL::BLEND)

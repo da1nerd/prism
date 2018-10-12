@@ -13,6 +13,10 @@ module Prism
     def initialize(@x, @y, @z, @w : Float64)
     end
 
+    # def initialize(rot : Matrix4f)
+      # TODO: https://youtu.be/OJt-1qAjY7I?list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&t=965
+    # end
+
     def initialize(axis : Vector3f, angle : Float32)
       sin_half_angle = Math.sin(angle.to_f64 / 2.0f64)
       cos_half_angle = Math.cos(angle.to_f64 / 2.0f64)
@@ -134,7 +138,7 @@ module Prism
 
     # Dot product
     def dot(other : Quaternion)
-      x*other.x + y*other.y + z*other.z
+      x*other.x + y*other.y + z*other.z + w*other.w
     end
 
     def **(other : Quaternion)
@@ -251,6 +255,19 @@ module Prism
     def to_s
       "{X : #{x}; Y : #{y}, Z : #{z}, W: : #{w}}"
     end
+
+    # normalized linear interpolation
+    # TODO: https://youtu.be/OJt-1qAjY7I?list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&t=927
+    def nlerp(dest : Quaternion, lerp_factor : Float64, shortest : Bool) : Quaternion
+
+    end
+
+    # spherical linear interpolation
+    # TODO: https://youtu.be/OJt-1qAjY7I?list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&t=927
+    def slerp(dest : Quaternion, lerp_factor : Float64, shortest : Bool) : Quaternion
+
+    end
+
 
     def self.lerp(qstart, qend : Quaternion, percent : Float64)
       if percent == 0

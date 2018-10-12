@@ -26,5 +26,9 @@ module Prism
     def update(delta : Float32)
       @root.update(delta)
     end
+
+    def engine=(engine : CoreEngine)
+      @root.engine = engine
+    end
   end
 end
