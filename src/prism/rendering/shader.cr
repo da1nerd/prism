@@ -50,7 +50,7 @@ module Prism
             # transformations
             if uniform_name == "T_MVP"
               set_uniform(uniform_name, mvp_matrix)
-            elsif uniform_name == "T_world"
+            elsif uniform_name == "T_model"
               set_uniform(uniform_name, world_matrix)
             else
               puts "Error: #{uniform_name} is not a valid component of Transform"
@@ -68,6 +68,19 @@ module Prism
               set_uniform(uniform_name, rendering_engine.get_vector(unprefixed_uniform_name))
             elsif uniform_type == "float"
               set_uniform(uniform_name, rendering_engine.get_float(unprefixed_uniform_name))
+            elsif uniform_type == "DirectionalLight"
+              set_uniform_directional_light(uniform_name, rendering_engine.active_light.as(DirectionalLight))
+            else
+              puts "Error: #{uniform_type} is not a supported type in Rendering Engine"
+              exit 1
+            end
+          elsif uniform_name.starts_with?("C_")
+            # Camera
+            if uniform_name == "C_eyePos"
+              set_uniform(uniform_name, rendering_engine.main_camera.transform.get_transformed_pos)
+            else
+              puts "Error: #{uniform_name} is not a valid component of Camera"
+              exit 1
             end
           else
             # materials
@@ -75,6 +88,9 @@ module Prism
               set_uniform(uniform_name, material.get_vector(uniform_name))
             elsif uniform_type == "float"
               set_uniform(uniform_name, material.get_float(uniform_name))
+            else
+              puts "Error: #{uniform_type} is not a supported type in Material"
+              exit 1
             end
           end
         end
@@ -286,6 +302,16 @@ module Prism
       end
 
       LibGL.attach_shader(@resource.program, shader)
+    end
+
+    def set_uniform_base_light(name : String, base_light : BaseLight)
+      set_uniform(name + ".color", base_light.color)
+      set_uniform(name + ".intensity", base_light.intensity)
+    end
+
+    def set_uniform_directional_light(name : String, directional_light : DirectionalLight)
+      set_uniform_base_light(name + ".base", directional_light)
+      set_uniform(name + ".direction", directional_light.direction)
     end
   end
 end
