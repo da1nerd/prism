@@ -5,7 +5,7 @@ module Prism
     def initialize(color : Vector3f, intensity : Float32)
       super(color, intensity)
 
-      self.shader = ForwardDirectional.instance
+      self.shader = Shader.new("forward-directional")
     end
 
     def direction

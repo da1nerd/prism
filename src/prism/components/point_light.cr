@@ -18,7 +18,7 @@ module Prism
 
       @range = (-b + Math.sqrt(b * b - 4.0f32 * a * c)) / (2.0f32 * a)
 
-      self.shader = ForwardPoint.instance
+      self.shader = Shader.new("forward-point")
     end
 
     def constant
