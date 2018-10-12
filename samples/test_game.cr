@@ -55,7 +55,7 @@ class TestGame < Prism::Game
     plane_object.transform.pos.set(0, -1, 5)
 
     directional_light_object = GameObject.new()
-    directional_light = DirectionalLight.new(Vector3f.new(0,0,1), 0.4)
+    directional_light = DirectionalLight.new(Vector3f.new(0.2,0.2,1), 0.6)
     directional_light_object.add_component(directional_light)
 
     point_light_object = GameObject.new()
@@ -93,7 +93,7 @@ class TestGame < Prism::Game
     add_object(test_mesh3)
 
     test_mesh3.transform.pos.set(5,5,5)
-    test_mesh3.transform.rot.set(Quaternion.new(Vector3f.new(0,1,0), Prism.to_rad(-70)))
+    test_mesh3.transform.rot.set(Quaternion.new(Vector3f.new(0,1,0), Prism.to_rad(20)))
 
     add_object(GameObject.new().add_component(MeshRenderer.new(Mesh.new("monkey3.obj"), material2)))
 
