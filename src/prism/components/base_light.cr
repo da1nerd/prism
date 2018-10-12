@@ -4,6 +4,7 @@ require "../rendering/shader"
 require "../rendering/rendering_engine_protocol"
 
 module Prism
+  # Fundamental light component
   class BaseLight < GameComponent
     getter color, intensity, shader
     setter color, intensity, shader

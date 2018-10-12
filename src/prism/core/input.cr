@@ -2,6 +2,7 @@ require "cryst_glut"
 require "./vector2f"
 
 module Prism
+  # Manages user input to the engine
   class Input
     NUM_KEYCODES     = 1256
     NUM_MOUSEBUTTONS =   10

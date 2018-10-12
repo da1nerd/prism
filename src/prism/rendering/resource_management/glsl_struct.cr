@@ -1,5 +1,5 @@
 module Prism
-  # A glsl uniform struct
+  # Represents a struct in GLSL
   struct GLSLStruct
     getter name, properties
 

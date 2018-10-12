@@ -1,5 +1,4 @@
 require "lib_gl"
-require "./util"
 require "./vertex"
 require "./resource_management/mesh_resource"
 
@@ -71,7 +70,7 @@ module Prism
       @resource.size = indicies.size
 
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @resource.vbo)
-      LibGL.buffer_data(LibGL::ARRAY_BUFFER, verticies.size * Vertex::SIZE * sizeof(Float32), Util.flatten_verticies(verticies), LibGL::STATIC_DRAW)
+      LibGL.buffer_data(LibGL::ARRAY_BUFFER, verticies.size * Vertex::SIZE * sizeof(Float32), Vertex.flatten(verticies), LibGL::STATIC_DRAW)
 
       LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @resource.ibo)
       LibGL.buffer_data(LibGL::ELEMENT_ARRAY_BUFFER, indicies.size * Vertex::SIZE * sizeof(Float32), indicies, LibGL::STATIC_DRAW)

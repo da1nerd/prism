@@ -1,6 +1,7 @@
 require "../../core/vector3f"
 
 module Prism
+  # Gives the ability safely set and retrive values on a class
   abstract class MappedValues
     @vector3f_map : Hash(String, Vector3f)
     @float32_map : Hash(String, Float32)
