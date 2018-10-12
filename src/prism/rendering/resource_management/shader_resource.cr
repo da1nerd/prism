@@ -1,28 +1,28 @@
 require "lib_gl"
 
 module Prism
-  class MeshResource
-    @vbo : LibGL::UInt
-    @ibo : LibGL::UInt
-    @size : Int32
+  class ShaderResource
+    @program : LibGL::UInt
     @ref_count : Int32
 
-    getter vbo, ibo, size
-    setter size
+    getter program
 
     def initialize
-      LibGL.gen_buffers(1, out @vbo)
-      LibGL.gen_buffers(1, out @ibo)
-      @size = 0
+      @program = LibGL.create_program
       @ref_count = 1
+
+      if @program == 0
+        program_error_code = LibGL.get_error
+        puts "Error #{program_error_code}: Shader creation failed. Could not find valid memory location in constructor"
+        exit 1
+      end
     end
 
     # garbage collection
     # TODO: make sure this is getting called
     def finalize
       puts "cleaning up garbage"
-      LibGL.delete_buffers(1, out @vbo)
-      LibGL.delete_buffers(1, out @ibo)
+      LibGL.delete_buffers(1, out @program)
     end
 
     # Adds a reference to this resource

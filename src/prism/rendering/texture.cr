@@ -13,7 +13,7 @@ module Prism
         @resource = @loaded_textures[file_name]
         @resource.add_reference
       else
-        @resource = TextureResource.new(load_texture(file_name))
+        @resource = load_texture(file_name)
         @loaded_textures[file_name] = @resource
       end
     end
@@ -46,7 +46,7 @@ module Prism
     # Loads a texture
     #
     # Returns the gl buffer id
-    private def load_texture(file_name : String) : LibGL::UInt
+    private def load_texture(file_name : String) : TextureResource
       ext = File.extname(file_name)
 
       # read texture data
@@ -54,8 +54,8 @@ module Prism
       data = LibTools.load_png(path, out width, out height, out num_channels)
 
       # create texture
-      LibGL.gen_textures(1, out id)
-      LibGL.bind_texture(LibGL::TEXTURE_2D, id)
+      resource = TextureResource.new
+      LibGL.bind_texture(LibGL::TEXTURE_2D, resource.id)
 
       # set the texture wrapping/filtering options
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_WRAP_S, LibGL::REPEAT)
@@ -71,7 +71,7 @@ module Prism
         puts "Error: Failed to load texture data from #{path}"
         exit 1
       end
-      return id
+      return resource
     end
   end
 end
