@@ -6,22 +6,20 @@ require "../core/transform"
 require "./rendering_engine_protocol"
 
 module Prism
-
   class Shader
-
     @program : LibGL::UInt
     @uniforms : Hash(String, Int32)
     @uniform_names : Array(String)
     @uniform_types : Array(String)
 
     def initialize(file_name : String)
-      @program = LibGL.create_program()
+      @program = LibGL.create_program
       @uniforms = {} of String => Int32
       @uniform_names = [] of String
       @uniform_types = [] of String
 
       if @program == 0
-        program_error_code = LibGL.get_error()
+        program_error_code = LibGL.get_error
         puts "Error #{program_error_code}: Shader creation failed. Could not find valid memory location in constructor"
         exit 1
       end
@@ -85,28 +83,27 @@ module Prism
               set_uniform(uniform_name, material.get_float(uniform_name))
             end
           end
-
         end
       end
     end
 
     # Sets an integer uniform variable value
-    def set_uniform( name : String, value : LibGL::Int)
+    def set_uniform(name : String, value : LibGL::Int)
       LibGL.uniform_1i(@uniforms[name], value)
     end
 
     # Sets a float uniform variable value
-    def set_uniform( name : String, value : LibGL::Float)
+    def set_uniform(name : String, value : LibGL::Float)
       LibGL.uniform_1f(@uniforms[name], value)
     end
 
     # Sets a 3 dimensional float vector value to a uniform variable
-    def set_uniform( name : String, value : Vector3f)
+    def set_uniform(name : String, value : Vector3f)
       LibGL.uniform_3f(@uniforms[name], value.x, value.y, value.z)
     end
 
     # Sets a 4 dimensional matrix float value to a uniform variable
-    def set_uniform( name : String, value : Matrix4f)
+    def set_uniform(name : String, value : Matrix4f)
       LibGL.uniform_matrix_4fv(@uniforms[name], 1, LibGL::TRUE, value.as_array)
     end
 
@@ -122,7 +119,7 @@ module Prism
       if link_status == LibGL::FALSE
         LibGL.get_program_info_log(@program, 1024, nil, out link_log)
         link_log_str = String.new(pointerof(link_log))
-        link_error_code = LibGL.get_error()
+        link_error_code = LibGL.get_error
         puts "Error #{link_error_code}: Failed linking shader program: #{link_log_str}"
         exit 1
       end
@@ -133,7 +130,7 @@ module Prism
       if validate_status == LibGL::FALSE
         LibGL.get_program_info_log(@program, 1024, nil, out validate_log)
         validate_log_str = String.new(pointerof(validate_log))
-        validate_error_code = LibGL.get_error()
+        validate_error_code = LibGL.get_error
         puts "Error #{validate_error_code}: Failed validating shader program: #{validate_log_str}"
         exit 1
       end
@@ -143,7 +140,6 @@ module Prism
     end
 
     private def load_shader(file_name : String) : String
-
       include_directive = "#include"
 
       path = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", file_name)
@@ -167,11 +163,11 @@ module Prism
     end
 
     private def add_geometry_shader(text : String)
-        add_program(text, LibGL::GEOMETRY_SHADER)
+      add_program(text, LibGL::GEOMETRY_SHADER)
     end
 
     private def add_fragment_shader(text : String)
-        add_program(text, LibGL::FRAGMENT_SHADER)
+      add_program(text, LibGL::FRAGMENT_SHADER)
     end
 
     # Parses the shader text for attribute delcarations and automatically adds them
@@ -239,17 +235,14 @@ module Prism
         end
       else
         # add the final uniform
-        uniform_location = LibGL.get_uniform_location(@program, uniform_name);
-
+        uniform_location = LibGL.get_uniform_location(@program, uniform_name)
         if uniform_location == -1
-          uniform_error_code = LibGL.get_error()
+          uniform_error_code = LibGL.get_error
           puts "Error #{uniform_error_code}: Could not find location for uniform '#{uniform_name}'."
           exit 1
         end
 
         @uniforms[uniform_name] = uniform_location
-        @uniform_names.push(uniform_name)
-        @uniform_types.push(uniform_type)
       end
     end
 
@@ -266,6 +259,8 @@ module Prism
         uniform_type = matches[0][1]
         uniform_name = matches[0][2]
 
+        @uniform_names.push(uniform_name)
+        @uniform_types.push(uniform_type)
         self.add_uniform(uniform_name, uniform_type, structs)
 
         start_location = shader_text.index(/\b#{keyword}\b/, end_location)
@@ -275,7 +270,7 @@ module Prism
     private def add_program(text : String, type : LibGL::UInt)
       shader = LibGL.create_shader(type)
       if shader == 0
-        shader_error_code = LibGL.get_error()
+        shader_error_code = LibGL.get_error
         puts "Error #{shader_error_code}: Shader creation failed. Could not find valid memory location when adding shader"
         exit 1
       end
@@ -291,14 +286,12 @@ module Prism
       if compile_status == LibGL::FALSE
         LibGL.get_shader_info_log(shader, 1024, nil, out compile_log)
         compile_log_str = String.new(pointerof(compile_log))
-        compile_error_code = LibGL.get_error()
+        compile_error_code = LibGL.get_error
         puts "Error #{compile_error_code}: Failed compiling shader '#{text}': #{compile_log_str}"
         exit 1
       end
 
       LibGL.attach_shader(@program, shader)
     end
-
   end
-
 end

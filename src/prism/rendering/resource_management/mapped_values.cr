@@ -1,7 +1,6 @@
 require "../../core/vector3f"
 
 module Prism
-
   abstract class MappedValues
     @vector3f_map : Hash(String, Vector3f)
     @float32_map : Hash(String, Float32)
@@ -35,5 +34,4 @@ module Prism
       end
     end
   end
-
 end

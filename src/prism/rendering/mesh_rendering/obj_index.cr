@@ -1,7 +1,6 @@
 module Prism
-
   class OBJIndex
-    BASE = 17i32
+    BASE       = 17i32
     MULTIPLIER = 31i32
 
     @vertex_index : Int32
@@ -40,7 +39,5 @@ module Prism
 
       return result
     end
-
   end
-
 end

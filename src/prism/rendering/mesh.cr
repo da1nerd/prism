@@ -4,9 +4,7 @@ require "./vertex"
 require "./resource_management/mesh_resource"
 
 module Prism
-
   class Mesh
-
     @loaded_models = {} of String => MeshResource
     @resource : MeshResource
     @file_name : String?
@@ -17,7 +15,7 @@ module Prism
         @resource = @loaded_models[file_name]
         @resource.add_reference
       else
-        @resource = MeshResource.new()
+        @resource = MeshResource.new
         @loaded_models[file_name] = @resource
       end
       load_mesh(file_name)
@@ -28,7 +26,7 @@ module Prism
     end
 
     def initialize(verticies : Array(Vertex), indicies : Array(LibGL::Int), calc_normals : Bool)
-      @resource = MeshResource.new()
+      @resource = MeshResource.new
       add_verticies(verticies, indicies, calc_normals)
     end
 
@@ -66,17 +64,17 @@ module Prism
     end
 
     private def add_verticies(verticies : Array(Vertex), indicies : Array(LibGL::Int), calc_normals : Bool)
-        if calc_normals
-          calc_normals(verticies, indicies)
-        end
+      if calc_normals
+        calc_normals(verticies, indicies)
+      end
 
-        @resource.size = indicies.size
+      @resource.size = indicies.size
 
-        LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @resource.vbo)
-        LibGL.buffer_data(LibGL::ARRAY_BUFFER, verticies.size * Vertex::SIZE * sizeof(Float32), Util.flatten_verticies(verticies), LibGL::STATIC_DRAW)
+      LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @resource.vbo)
+      LibGL.buffer_data(LibGL::ARRAY_BUFFER, verticies.size * Vertex::SIZE * sizeof(Float32), Util.flatten_verticies(verticies), LibGL::STATIC_DRAW)
 
-        LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @resource.ibo)
-        LibGL.buffer_data(LibGL::ELEMENT_ARRAY_BUFFER, indicies.size * Vertex::SIZE * sizeof(Float32), indicies, LibGL::STATIC_DRAW)
+      LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @resource.ibo)
+      LibGL.buffer_data(LibGL::ELEMENT_ARRAY_BUFFER, indicies.size * Vertex::SIZE * sizeof(Float32), indicies, LibGL::STATIC_DRAW)
     end
 
     def draw
@@ -109,10 +107,9 @@ module Prism
     private def calc_normals(verticies : Array(Vertex), indicies : Array(LibGL::Int))
       i = 0
       while i < indicies.size
-        i0 = indicies[i];
-        i1 = indicies[i + 1];
-        i2 = indicies[i + 2];
-
+        i0 = indicies[i]
+        i1 = indicies[i + 1]
+        i2 = indicies[i + 2]
         v1 = Vector3f.new(verticies[i1].pos - verticies[i0].pos)
         v2 = Vector3f.new(verticies[i2].pos - verticies[i0].pos)
 
@@ -131,9 +128,6 @@ module Prism
 
         i += 1
       end
-
     end
-
   end
-
 end

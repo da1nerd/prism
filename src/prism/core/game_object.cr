@@ -4,19 +4,17 @@ require "../rendering/rendering_engine"
 require "./input"
 
 module Prism
-
   class GameObject
-
     @children : Array(GameObject)
     @components : Array(GameComponent)
     @transform : Transform
 
     getter transform
 
-    def initialize()
+    def initialize
       @children = [] of GameObject
       @components = [] of GameComponent
-      @transform = Transform.new()
+      @transform = Transform.new
     end
 
     def add_child(child : GameObject)
@@ -71,7 +69,5 @@ module Prism
         @children[i].add_to_rendering_engine(rendering_engine)
       end
     end
-
   end
-
 end

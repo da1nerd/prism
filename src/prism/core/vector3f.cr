@@ -2,9 +2,7 @@ require "./math"
 require "./quanternion"
 
 module Prism
-
   class Vector3f
-
     getter x, y, z
 
     def initialize(@x : Float32, @y : Float32, @z : Float32)
@@ -51,7 +49,7 @@ module Prism
 
     # Rotates the vector by some angle
     def rotate(axis : Vector3f, angle : Float32) : Vector3f
-      return self.rotate(Quaternion.new().init_rotation(axis, angle))
+      return self.rotate(Quaternion.new.init_rotation(axis, angle))
     end
 
     def rotate(rotation : Quaternion) : Vector3f
@@ -148,7 +146,5 @@ module Prism
       self.set(r.x, r.y, r.z)
       self
     end
-
   end
-
 end

@@ -3,7 +3,6 @@ require "../../core/vector2f"
 
 module Prism
   class IndexedModel
-
     @positions : Array(Vector3f)
     @tex_coords : Array(Vector2f)
     @normals : Array(Vector3f)
@@ -19,13 +18,12 @@ module Prism
       @indicies = [] of Int32
     end
 
-    def calc_normals()
+    def calc_normals
       i = 0
       while i < @indicies.size
-        i0 = @indicies[i];
-        i1 = @indicies[i + 1];
-        i2 = @indicies[i + 2];
-
+        i0 = @indicies[i]
+        i1 = @indicies[i + 1]
+        i2 = @indicies[i + 2]
         v1 = Vector3f.new(@positions[i1] - @positions[i0])
         v2 = Vector3f.new(@positions[i2] - @positions[i0])
 
@@ -41,8 +39,6 @@ module Prism
       0.upto(@normals.size - 1) do |i|
         @normals[i] = @normals[i].normalized
       end
-
     end
   end
-
 end

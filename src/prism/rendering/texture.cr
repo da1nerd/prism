@@ -2,9 +2,7 @@ require "lib_gl"
 require "./resource_management/texture_resource"
 
 module Prism
-
   class Texture
-
     @loaded_textures = {} of String => TextureResource
     @resource : TextureResource
     @file_name : String?
@@ -42,7 +40,7 @@ module Prism
         puts "Error: Sampler slot #{sampler_slot} is out of bounds"
       end
       LibGL.active_texture(LibGL::TEXTURE0 + sampler_slot)
-      LibGL.bind_texture(LibGL::TEXTURE_2D, @resource.id);
+      LibGL.bind_texture(LibGL::TEXTURE_2D, @resource.id)
     end
 
     # Loads a texture
@@ -75,7 +73,5 @@ module Prism
       end
       return id
     end
-
   end
-
 end

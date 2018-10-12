@@ -1,9 +1,7 @@
 require "./base_light"
 
 module Prism
-
   class PointLight < BaseLight
-
     COLOR_DEPTH = 256.0f32
 
     @range : Float32
@@ -47,5 +45,4 @@ module Prism
       @attenuation.z = exponent
     end
   end
-
 end

@@ -1,7 +1,5 @@
 module Prism
-
   class Timer
-
     private SECOND = 1_000.0f64
 
     # Returns time in milliseconds
@@ -25,5 +23,4 @@ module Prism
 
     # TODO: provide the time in nanoseconds. Make sure all platforms support this
   end
-
 end

@@ -1,9 +1,7 @@
 require "./math"
 
 module Prism
-
   class Vector2f
-
     getter x, y : Float32
 
     def initialize(@x : Float32, @y : Float32)
@@ -107,7 +105,5 @@ module Prism
       self.set(r.x, r.y)
       self
     end
-
   end
-
 end

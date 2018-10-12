@@ -3,7 +3,6 @@ require "./shader"
 require "./material"
 
 module Prism
-
   class ForwardPoint < Shader
     @@instance : ForwardPoint?
 
@@ -16,7 +15,6 @@ module Prism
     end
 
     def update_uniforms(transform : Transform, material : Material, rendering_engine : RenderingEngineProtocol)
-
       world_matrix = transform.get_transformation
       projected_matrix = rendering_engine.main_camera.get_view_projection * world_matrix
 
@@ -30,15 +28,14 @@ module Prism
       set_uniform("eyePos", rendering_engine.main_camera.transform.get_transformed_pos)
 
       set_uniform_point_light("pointLight", rendering_engine.active_light.as(PointLight))
-
     end
 
-    def set_uniform_base_light( name : String, base_light : BaseLight)
+    def set_uniform_base_light(name : String, base_light : BaseLight)
       set_uniform(name + ".color", base_light.color)
       set_uniform(name + ".intensity", base_light.intensity)
     end
 
-    def set_uniform_point_light( name : String, point_light : PointLight)
+    def set_uniform_point_light(name : String, point_light : PointLight)
       set_uniform_base_light(name + ".base", point_light)
       set_uniform(name + ".atten.constant", point_light.constant)
       set_uniform(name + ".atten.linear", point_light.linear)
@@ -46,7 +43,5 @@ module Prism
       set_uniform(name + ".position", point_light.transform.get_transformed_pos)
       set_uniform(name + ".range", point_light.range)
     end
-
   end
-
 end

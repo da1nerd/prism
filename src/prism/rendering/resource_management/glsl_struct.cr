@@ -1,12 +1,10 @@
 module Prism
-
   # A glsl uniform struct
   struct GLSLStruct
     getter name, properties
 
     def initialize(@name : String, @properties : Array(GLSLProperty))
     end
-
   end
 
   # A property of a `GLSLStruct`

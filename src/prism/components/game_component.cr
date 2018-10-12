@@ -3,9 +3,7 @@ require "../rendering/shader"
 require "../rendering/rendering_engine_protocol"
 
 module Prism
-
   abstract class GameComponent
-
     setter parent
 
     @parent : GameObject = GameObject.new
@@ -26,5 +24,4 @@ module Prism
       @parent.transform
     end
   end
-
 end

@@ -14,13 +14,13 @@ module Prism
     end
 
     def initialize(axis : Vector3f, angle : Float32)
-        sin_half_angle = Math.sin(angle.to_f64 / 2.0f64)
-        cos_half_angle = Math.cos(angle.to_f64 / 2.0f64)
+      sin_half_angle = Math.sin(angle.to_f64 / 2.0f64)
+      cos_half_angle = Math.cos(angle.to_f64 / 2.0f64)
 
-        @x = axis.x.to_f64 * sin_half_angle
-        @y = axis.y.to_f64 * sin_half_angle
-        @z = axis.z.to_f64 * sin_half_angle
-        @w = cos_half_angle
+      @x = axis.x.to_f64 * sin_half_angle
+      @y = axis.y.to_f64 * sin_half_angle
+      @z = axis.z.to_f64 * sin_half_angle
+      @w = cos_half_angle
     end
 
     def values
@@ -54,7 +54,7 @@ module Prism
       up = Vector3f.new((2.0f64 * (@x*@y + @w*@z)).to_f32, (1.0f64 - 2.0f64 * (@x*@x + @z*@z)).to_f32, (2.0f64 * (@y*@z - @w*@x)).to_f32)
       right = Vector3f.new((1.0f64 - 2.0f64 * (@y*@y + @z*@z)).to_f32, (2.0f64 * (@x*@y - @w*@z)).to_f32, (2.0f64 * (@x*@z + @w*@y)).to_f32)
 
-      return Matrix4f.new().init_rotation(forward, up, right)
+      return Matrix4f.new.init_rotation(forward, up, right)
     end
 
     def forward

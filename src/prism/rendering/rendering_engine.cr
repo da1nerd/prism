@@ -5,7 +5,6 @@ require "./rendering_engine_protocol"
 require "./resource_management/mapped_values"
 
 module Prism
-
   class RenderingEngine < MappedValues
     include RenderingEngineProtocol
 
@@ -61,7 +60,6 @@ module Prism
       0.upto(@lights.size - 1) do |i|
         light = @lights[i]
         if shader = light.shader
-
           @active_light = light
 
           object.render(shader, self)
@@ -91,7 +89,7 @@ module Prism
     end
 
     def flush
-      LibGL.flush()
+      LibGL.flush
     end
 
     # Returns which version of OpenGL is available
@@ -102,7 +100,5 @@ module Prism
     def get_sampler_slot(sampler_name : String) : LibGL::Int
       @sampler_map[sampler_name]
     end
-
   end
-
 end

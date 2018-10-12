@@ -3,7 +3,6 @@ require "./shader"
 require "./material"
 
 module Prism
-
   class ForwardAmbient < Shader
     @@instance : ForwardAmbient?
 
@@ -19,5 +18,4 @@ module Prism
       super
     end
   end
-
 end
