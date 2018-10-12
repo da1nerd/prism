@@ -1,6 +1,6 @@
 uniform vec3 C_eyePos;
 uniform float specularIntensity;
-uniform float specularExponent;
+uniform float specularPower;
 
 struct BaseLight
 {
@@ -52,7 +52,7 @@ vec4 calcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPos)
 
     float specularFactor = dot(halfDirection, normal);
     // float specularFactor = dot(directionToEye, reflectDirection);
-    specularFactor = pow(specularFactor, specularExponent);
+    specularFactor = pow(specularFactor, specularPower);
 
     if(specularFactor > 0)
     {
