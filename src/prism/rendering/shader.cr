@@ -7,29 +7,29 @@ require "./rendering_engine_protocol"
 
 module Prism
   class Shader
+    @loaded_shaders = {} of String => ShaderResource
     @resource : ShaderResource
-    @uniforms : Hash(String, Int32)
-    @uniform_names : Array(String)
-    @uniform_types : Array(String)
 
-    def initialize(file_name : String)
-      @resource = ShaderResource.new
-      @uniforms = {} of String => Int32
-      @uniform_names = [] of String
-      @uniform_types = [] of String
+    def initialize(@file_name : String)
+      if @loaded_shaders.has_key?(@file_name)
+        @resource = @loaded_shaders[@file_name]
+        @resource.add_reference
+      else
+        @resource = ShaderResource.new
 
-      vertex_shader_text = load_shader("#{file_name}.vs")
-      fragment_shader_text = load_shader("#{file_name}.fs")
+        vertex_shader_text = load_shader("#{@file_name}.vs")
+        fragment_shader_text = load_shader("#{@file_name}.fs")
 
-      add_vertex_shader(vertex_shader_text)
-      add_fragment_shader(fragment_shader_text)
+        add_vertex_shader(vertex_shader_text)
+        add_fragment_shader(fragment_shader_text)
 
-      add_all_attributes(vertex_shader_text)
+        add_all_attributes(vertex_shader_text)
 
-      compile
+        compile
 
-      add_all_uniforms(vertex_shader_text)
-      add_all_uniforms(fragment_shader_text)
+        add_all_uniforms(vertex_shader_text)
+        add_all_uniforms(fragment_shader_text)
+      end
     end
 
     # uses the shader
@@ -41,10 +41,10 @@ module Prism
       world_matrix = transform.get_transformation
       mvp_matrix = rendering_engine.main_camera.get_view_projection * world_matrix
 
-      if @uniform_names.size > 0
-        0.upto(@uniform_names.size - 1) do |i|
-          uniform_name = @uniform_names[i]
-          uniform_type = @uniform_types[i]
+      if @resource.uniform_names.size > 0
+        0.upto(@resource.uniform_names.size - 1) do |i|
+          uniform_name = @resource.uniform_names[i]
+          uniform_type = @resource.uniform_types[i]
 
           if uniform_name.starts_with?("T_")
             # transformations
@@ -83,22 +83,22 @@ module Prism
 
     # Sets an integer uniform variable value
     def set_uniform(name : String, value : LibGL::Int)
-      LibGL.uniform_1i(@uniforms[name], value)
+      LibGL.uniform_1i(@resource.uniforms[name], value)
     end
 
     # Sets a float uniform variable value
     def set_uniform(name : String, value : LibGL::Float)
-      LibGL.uniform_1f(@uniforms[name], value)
+      LibGL.uniform_1f(@resource.uniforms[name], value)
     end
 
     # Sets a 3 dimensional float vector value to a uniform variable
     def set_uniform(name : String, value : Vector3f)
-      LibGL.uniform_3f(@uniforms[name], value.x, value.y, value.z)
+      LibGL.uniform_3f(@resource.uniforms[name], value.x, value.y, value.z)
     end
 
     # Sets a 4 dimensional matrix float value to a uniform variable
     def set_uniform(name : String, value : Matrix4f)
-      LibGL.uniform_matrix_4fv(@uniforms[name], 1, LibGL::TRUE, value.as_array)
+      LibGL.uniform_matrix_4fv(@resource.uniforms[name], 1, LibGL::TRUE, value.as_array)
     end
 
     def set_attrib_location(attribute : String, location : LibGL::Int)
@@ -236,7 +236,7 @@ module Prism
           exit 1
         end
 
-        @uniforms[uniform_name] = uniform_location
+        @resource.uniforms[uniform_name] = uniform_location
       end
     end
 
@@ -253,8 +253,8 @@ module Prism
         uniform_type = matches[0][1]
         uniform_name = matches[0][2]
 
-        @uniform_names.push(uniform_name)
-        @uniform_types.push(uniform_type)
+        @resource.uniform_names.push(uniform_name)
+        @resource.uniform_types.push(uniform_type)
         self.add_uniform(uniform_name, uniform_type, structs)
 
         start_location = shader_text.index(/\b#{keyword}\b/, end_location)

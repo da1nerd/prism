@@ -8,16 +8,14 @@ module Prism
   class RenderingEngine < MappedValues
     include RenderingEngineProtocol
 
+    @sampler_map : Hash(String, LibGL::Int)
+    @lights : Array(BaseLight)
+    @active_light : BaseLight?
+    @forward_ambient : Shader
     @main_camera : Camera?
-    @ambient_light : Vector3f
 
     getter active_light
     setter main_camera, active_light
-
-    @lights : Array(BaseLight)
-    @active_light : BaseLight?
-
-    @sampler_map : Hash(String, LibGL::Int)
 
     def initialize(window : CrystGLUT::Window)
       super()
@@ -26,7 +24,9 @@ module Prism
       @sampler_map = {} of String => LibGL::Int
       @sampler_map["diffuse"] = 0
 
-      add_vector("ambient", Vector3f.new(0.1f32, 0.1f32, 0.1f32))
+      add_vector("ambient", Vector3f.new(0.2f32, 0.2f32, 0.2f32))
+
+      @forward_ambient = Shader.new("forward-ambient")
 
       LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
 
@@ -38,8 +38,6 @@ module Prism
       LibGL.enable(LibGL::DEPTH_CLAMP)
 
       LibGL.enable(LibGL::TEXTURE_2D)
-
-      @ambient_light = Vector3f.new(0.1f32, 0.1f32, 0.1f32)
     end
 
     def render(object : GameObject)
@@ -48,9 +46,7 @@ module Prism
       @lights.clear
       object.add_to_rendering_engine(self)
 
-      forward_ambient = ForwardAmbient.instance
-
-      object.render(forward_ambient, self)
+      object.render(@forward_ambient, self)
 
       LibGL.enable(LibGL::BLEND)
       LibGL.blend_func(LibGL::ONE, LibGL::ONE)

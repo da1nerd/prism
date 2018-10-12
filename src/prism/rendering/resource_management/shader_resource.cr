@@ -4,12 +4,18 @@ module Prism
   class ShaderResource
     @program : LibGL::UInt
     @ref_count : Int32
+    @uniforms : Hash(String, Int32)
+    @uniform_names : Array(String)
+    @uniform_types : Array(String)
 
-    getter program
+    getter program, uniforms, uniform_names, uniform_types
 
     def initialize
       @program = LibGL.create_program
       @ref_count = 1
+      @uniforms = {} of String => Int32
+      @uniform_names = [] of String
+      @uniform_types = [] of String
 
       if @program == 0
         program_error_code = LibGL.get_error
