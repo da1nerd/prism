@@ -74,8 +74,7 @@ module Prism
             elsif uniform_type == "PointLight"
               set_uniform_point_light(uniform_name, rendering_engine.active_light.as(PointLight))
             else
-              puts "Error: #{uniform_type} is not a supported type in Rendering Engine"
-              exit 1
+              rendering_engine.update_uniform_struct(transform, material, self, uniform_name, uniform_type)
             end
           elsif uniform_name.starts_with?("C_")
             # Camera
