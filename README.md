@@ -1,11 +1,8 @@
-# prism
+# Prism
 
-A cross between a game engine and a UI toolkit.
-This is mostly a thought experiment and it may turn out to be nothing.
+A 3D game engine written in Crystal!
 
-Once I get far enough along I'll re-organize all-the-things so it's a modular engine instead of just a hacky-not-usable-library.
-
-I hope this will be usable on Windows some day. But that depends on [Crystal](https://github.com/crystal-lang/crystal/wiki/Platform-Support) which is still in beta.
+This project was largely inspired by ["The Benny Box"](https://www.youtube.com/channel/UCnlpv-hhcsAtEHKR2y2fW4Q) and his [3D Game Engine Tutorial](https://www.youtube.com/watch?v=ss3AnSxJ2X8&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&index=1). Thanks for all the good tutorials Benny!
 
 ## Installation
 
@@ -22,15 +19,21 @@ dependencies:
 ```crystal
 require "prism"
 ```
-For now you can't really use it because it's still under development. But you can run the sample application.
+
+> TODO: write some usage example here.
+
+For now you can run the same application in this repo.
 
 ```bash
 make start
 ```
 
+> NOTE: You might need to manually make the c lib `cd src/prism/lib && cmake . && make`.
+> I guess the shard `postinstall` script only runs if you are installing this as a dependency (annoying).
+
 ## Development
 
-TODO: Write development instructions here.
+TODO: Write some half-decent development instructions here.
 
 - install cmake
 - install freeglut
