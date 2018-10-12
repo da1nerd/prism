@@ -58,6 +58,7 @@ module Prism
       return Vector3f.new(w.x.to_f32, w.y.to_f32, w.z.to_f32)
     end
 
+    # Linear interpolation
     def lerp(dest : Vector3f, lerp_factor : Float32) : Vector3f
       return ((dest - self) * lerp_factor) + self
     end

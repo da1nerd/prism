@@ -1,6 +1,5 @@
 require "../core/transform"
 require "../rendering/shader"
-require "../rendering/rendering_engine_protocol"
 
 module Prism
   abstract class GameComponent
@@ -17,7 +16,7 @@ module Prism
     def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
     end
 
-    def add_to_rendering_engine(rendering_engine : RenderingEngineProtocol)
+    def add_to_engine(engine : CoreEngine)
     end
 
     def transform : Transform

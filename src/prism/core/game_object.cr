@@ -8,6 +8,7 @@ module Prism
     @children : Array(GameObject)
     @components : Array(GameComponent)
     @transform : Transform
+    @engine : CoreEngine?
 
     getter transform
 
@@ -19,6 +20,9 @@ module Prism
 
     def add_child(child : GameObject)
       @children.push(child)
+      if engine = @engine
+        child.engine = engine
+      end
       child.transform.parent = @transform
     end
 
@@ -60,13 +64,27 @@ module Prism
       end
     end
 
-    def add_to_rendering_engine(rendering_engine : RenderingEngine)
-      0.upto(@components.size - 1) do |i|
-        @components[i].add_to_rendering_engine(rendering_engine)
-      end
+    # def add_to_rendering_engine(rendering_engine : RenderingEngine)
+    #   0.upto(@components.size - 1) do |i|
+    #     @components[i].add_to_rendering_engine(rendering_engine)
+    #   end
 
-      0.upto(@children.size - 1) do |i|
-        @children[i].add_to_rendering_engine(rendering_engine)
+    #   0.upto(@children.size - 1) do |i|
+    #     @children[i].add_to_rendering_engine(rendering_engine)
+    #   end
+    # end
+
+    def engine=(engine : CoreEngine)
+      if @engine != engine
+        @engine = engine
+
+        0.upto(@components.size - 1) do |i|
+          @components[i].add_to_engine(engine)
+        end
+  
+        0.upto(@children.size - 1) do |i|
+          @children[i].engine = engine
+        end
       end
     end
   end

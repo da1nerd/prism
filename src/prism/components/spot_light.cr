@@ -5,7 +5,7 @@ module Prism
     getter cutoff
     setter cutoff
 
-    def initialize(color : Vector3f, intensity : Float32, attenuation : Vector3f, @cutoff : Float32)
+    def initialize(color : Vector3f, intensity : Float32, attenuation : Attenuation, @cutoff : Float32)
       super(color, intensity, attenuation)
       self.shader = Shader.new("forward-spot")
     end
