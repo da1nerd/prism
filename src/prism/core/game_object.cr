@@ -38,39 +38,64 @@ module Prism
       return self
     end
 
-    # Performs input update logic on this object and it's children
+    # Performs input update logic on this object's children
+    def input_all(delta : Float32, input : Input)
+      input(delta, input)
+
+      0.upto(@children.size - 1) do |i|
+        @children[i].input_all(delta, input)
+      end
+    end
+
+    # Performs game update logic on this object's children
+    def update_all(delta : Float32)
+      update(delta)
+
+      0.upto(@children.size - 1) do |i|
+        @children[i].update_all(delta)
+      end
+    end
+
+    # Performs rendering operations on this object's children
+    def render_all(shader : Shader, rendering_engine : RenderingEngineProtocol)
+      render(shader, rendering_engine)
+
+      0.upto(@children.size - 1) do |i|
+        @children[i].render_all(shader, rendering_engine)
+      end
+    end
+
+    # Performs input update logic on this object
     def input(delta : Float32, input : Input)
       @transform.update
 
       0.upto(@components.size - 1) do |i|
         @components[i].input(delta, input)
       end
-
-      0.upto(@children.size - 1) do |i|
-        @children[i].input(delta, input)
-      end
     end
 
-    # Performs game update logic on this object and it's children
+    # Performs game update logic on this object
     def update(delta : Float32)
       0.upto(@components.size - 1) do |i|
         @components[i].update(delta)
       end
-
-      0.upto(@children.size - 1) do |i|
-        @children[i].update(delta)
-      end
     end
 
-    # Performs rendering operations on this object and it's children
+    # Performs rendering operations on this object
     def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
       0.upto(@components.size - 1) do |i|
         @components[i].render(shader, rendering_engine)
       end
+    end
 
-      0.upto(@children.size - 1) do |i|
-        @children[i].render(shader, rendering_engine)
+    # Returns an array of all attached objects including it's self
+    def get_all_attached : Array(GameObject)
+      result = [] of GameObject
+      @children.each do |c|
+        result.concat(c.get_all_attached)
       end
+      result.push(self)
+      return result
     end
 
     # Sets the `CoreEngine` on this object
