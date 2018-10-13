@@ -42,6 +42,15 @@ module Prism
       @rot = (Quaternion.new(axis, angle) * @rot).normalize
     end
 
+    # Creates a transformation to look at a point
+    def look_at(point : Vector3f, up : Vector3f)
+      @rot = get_look_at_direction(point, up)
+    end
+
+    def get_look_at_direction(point : Vector3f, up : Vector3f) : Quaternion
+      return Quaternion.new(Matrix4f.new.init_rotation((point - @pos).normalized, up))
+    end
+
     def has_changed
       if parent = @parent
         return parent.has_changed
