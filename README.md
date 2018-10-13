@@ -59,19 +59,6 @@ I'm using this as a learning exercise by following along with [this tutorial](ht
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
-### Features
-
-- [x] load models
-- [x] load shaders
-- [x] manipulate camera (awsd for movement, click mouse to capture and rotate, ESC to release mouse)
-- [x] load textures
-- [x] basic mouse capture
-- [x] ambient lighting
-- [x] directional lighting
-- [x] specular reflection
-- [x] point lights
-- [x] spot lights
-
 ## Contributors
 
 - [neutrinog](https://github.com/neutrinog) Joel Lonbeck - creator, maintainer
