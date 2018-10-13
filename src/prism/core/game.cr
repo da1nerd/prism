@@ -12,7 +12,11 @@ module Prism
     abstract def init
 
     def input(delta : Float32, input : Input)
-      @root.input(delta, input)
+      @root.input_all(delta, input)
+    end
+
+    def update(delta : Float32)
+      @root.update_all(delta)
     end
 
     # Renders the game's scene graph
@@ -23,10 +27,6 @@ module Prism
     # Adds an object to the game's scene graph
     def add_object(object : GameObject)
       @root.add_child(object)
-    end
-
-    def update(delta : Float32)
-      @root.update(delta)
     end
 
     def engine=(engine : CoreEngine)

@@ -48,7 +48,7 @@ module Prism
     def render(object : GameObject)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
-      object.render(@forward_ambient, self)
+      object.render_all(@forward_ambient, self)
 
       LibGL.enable(LibGL::BLEND)
       LibGL.blend_func(LibGL::ONE, LibGL::ONE)
@@ -60,7 +60,7 @@ module Prism
         if shader = light.shader
           @active_light = light
 
-          object.render(shader, self)
+          object.render_all(shader, self)
         end
       end
 
