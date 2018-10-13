@@ -27,20 +27,42 @@ module Prism
       @w = cos_half_angle
     end
 
-    def initialize(rot Matrix4f)
-      trace = rot.[](0, 0) + rot.[](1,1) + rot.[](2,2)
+    def initialize(rot : Matrix4f)
+      trace = (rot.[](0, 0) + rot.[](1,1) + rot.[](2,2)).to_f64
 
       if trace > 0
-        s = 0.5f32 / Math.sqrt(trace + 1.0)
-        m_w = 0.25 / s
-        m_x = (rot.[](1, 2) - rot.[](2, 1)) * s;
-        m_y = (rot.[](2, 0) - rot.[](0, 2)) * s;
-        m_z = (rot.[](0, 1) - rot.[](1, 0)) * s;
+        s = 0.5f64 / Math.sqrt(trace + 1.0f64)
+        @w = 0.25f64 / s
+        @x = (rot.[](1, 2) - rot.[](2, 1)).to_f64 * s;
+        @y = (rot.[](2, 0) - rot.[](0, 2)).to_f64 * s;
+        @z = (rot.[](0, 1) - rot.[](1, 0)).to_f64 * s;
       else
-        # TODO: finish this
+        if rot.[](0, 0) > rot.[](1, 1) && rot.[](0, 0) > rot.[](2, 2)
+          s = 2.0f64 * Math.sqrt(1.0 + rot.[](0, 0) - rot.[](1, 1) - rot.[](2, 2)).to_f64;
+          @w = (rot.[](1, 2) - rot.[](2, 1)).to_f64 / s;
+          @x = 0.25f64 * s;
+          @y = (rot.[](1, 0) + rot.[](0, 1)).to_f64 / s;
+          @z = (rot.[](2, 0) + rot.[](0, 2)).to_f64 / s;
+        elsif rot.[](1, 1) > rot.[](2, 2)
+          s = 2.0f64 * Math.sqrt(1.0 + rot.[](1, 1) - rot.[](0, 0) - rot.[](2, 2)).to_f64;
+          @w = (rot.[](2, 0) - rot.[](0, 2)).to_f64 / s;
+          @x = (rot.[](1, 0) + rot.[](0, 1)).to_f64 / s;
+          @y = 0.25f64 * s;
+          @z = (rot.[](2, 1) + rot.[](1, 2)).to_f64 / s;
+        else
+          s = 2.0f64 * Math.sqrt(1.0 + rot.[](2, 2) - rot.[](0, 0) - rot.[](1, 1)).to_f64;
+          @w = (rot.[](0, 1) - rot.[](1, 0) ).to_f64 / s;
+          @x = (rot.[](2, 0) + rot.[](0, 2) ).to_f64 / s;
+          @y = (rot.[](1, 2) + rot.[](2, 1) ).to_f64 / s;
+          @z = 0.25f64 * s;
+        end
       end
 
-      # TODO: finish this
+      length = Math.sqrt(@x * @x + @y * @y + @z * @z + @w * @w);
+      @x /= length;
+      @y /= length;
+      @z /= length;
+      @w /= length;
     end
 
     def values
@@ -282,7 +304,7 @@ module Prism
     end
 
     # spherical linear interpolation
-    # TODO: https://youtu.be/OJt-1qAjY7I?list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&t=927
+    # This gives a guaranteed linear movement whereas `nlerp` does not
     def slerp(dest : Quaternion, lerp_factor : Float64, shortest : Bool) : Quaternion
       epsilon = 1e3f32
 

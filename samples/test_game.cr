@@ -1,5 +1,6 @@
 require "lib_gl"
 require "../src/prism"
+require "./look_at_component.cr"
 
 include Prism
 
@@ -80,7 +81,7 @@ class TestGame < Prism::Game
 
     test_mesh1 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
     test_mesh2 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
-    test_mesh3 = GameObject.new().add_component(MeshRenderer.new(temp_mesh, material))
+    test_mesh3 = GameObject.new().add_component(LookAtComponent.new).add_component(MeshRenderer.new(temp_mesh, material))
 
     test_mesh1.transform.pos.set(0f32, 2f32, 0f32)
     test_mesh1.transform.rot = Quaternion.new(Vector3f.new(0f32, 1f32, 0f32), 0.4f32)
