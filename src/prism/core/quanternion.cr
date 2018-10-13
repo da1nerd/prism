@@ -294,7 +294,10 @@ module Prism
       "{X : #{x}; Y : #{y}, Z : #{z}, W: : #{w}}"
     end
 
-    # normalized linear interpolation
+    # Normalized linear interpolation.
+    #
+    # This is technically cheaper than `slerp` however it's usually negligable. 
+    # For the most part you can choose whichever one looks best
     def nlerp(dest : Quaternion, lerp_factor : Float64, shortest : Bool) : Quaternion
       corrected_dest = dest.clone
       if shortest && self.dot(dest) < 0
@@ -303,8 +306,11 @@ module Prism
       return ((corrected_dest - self) * lerp_factor + self).normalize
     end
 
-    # spherical linear interpolation
-    # This gives a guaranteed linear movement whereas `nlerp` does not
+    # Spherical linear interpolation.
+    #
+    # This gives a guaranteed linear movement whereas `nlerp` does not.
+    # This is technically more expensive than `nlerp` however it's usually negligable. 
+    # For the most part you can choose whichever one looks best
     def slerp(dest : Quaternion, lerp_factor : Float64, shortest : Bool) : Quaternion
       epsilon = 1e3f32
 
