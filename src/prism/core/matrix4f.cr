@@ -20,6 +20,11 @@ module Prism
       return @m.clone
     end
 
+    # Retrieves the element at the given row and column indexes.
+    def [](row : Int, column : Int)
+      @m.[](row, column)
+    end
+
     def as_array
       @m.to_a
     end

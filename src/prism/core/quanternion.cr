@@ -27,6 +27,22 @@ module Prism
       @w = cos_half_angle
     end
 
+    def initialize(rot Matrix4f)
+      trace = rot.[](0, 0) + rot.[](1,1) + rot.[](2,2)
+
+      if trace > 0
+        s = 0.5f32 / Math.sqrt(trace + 1.0)
+        m_w = 0.25 / s
+        m_x = (rot.[](1, 2) - rot.[](2, 1)) * s;
+        m_y = (rot.[](2, 0) - rot.[](0, 2)) * s;
+        m_z = (rot.[](0, 1) - rot.[](1, 0)) * s;
+      else
+        # TODO: finish this
+      end
+
+      # TODO: finish this
+    end
+
     def values
       {@x, @y, @z, @w}
     end
@@ -257,15 +273,39 @@ module Prism
     end
 
     # normalized linear interpolation
-    # TODO: https://youtu.be/OJt-1qAjY7I?list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&t=927
     def nlerp(dest : Quaternion, lerp_factor : Float64, shortest : Bool) : Quaternion
-
+      corrected_dest = dest.clone
+      if shortest && self.dot(dest) < 0
+        corrected_dest = Quaternion.new(-dest.x, -dest.y, -dest.z, -dest.w)
+      end
+      return ((corrected_dest - self) * lerp_factor + self).normalize
     end
 
     # spherical linear interpolation
     # TODO: https://youtu.be/OJt-1qAjY7I?list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&t=927
     def slerp(dest : Quaternion, lerp_factor : Float64, shortest : Bool) : Quaternion
+      epsilon = 1e3f32
 
+      cos = self.dot(dest)
+      corrected_dest = dest.clone
+
+      if shortest && cos < 0
+        cos = -cos
+        corrected_dest = Quaternion.new(-dest.x, -dest.y, -dest.z, -dest.w)
+      end
+
+      if cos.abs >= 1 - epsilon
+        return nlerp(corrected_dest, lerp_factor, false)
+      end
+
+      sin = Math.sqrt(1.0f64 - cos * cos)
+      angle = Math.atan2(sin, cos)
+      inv_sin = 1.0f64 / sin
+
+      src_factor = Math.sin((1.0f64 - lerp_factor) - angle) * inv_sin
+      dest_factor = Math.sin(lerp_factor * angle) * inv_sin
+
+      return self * src_factor + (corrected_dest * dest_factor)
     end
 
 
