@@ -88,7 +88,7 @@ class TestGame < Prism::Game
     test_mesh2.transform.pos.set(0f32, 0f32, 5f32)
 
     test_mesh1.add_child(test_mesh2)
-    test_mesh2.add_child(GameObject.new().add_component(Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)))
+    test_mesh2.add_child(GameObject.new().add_component(FreeLook.new(0.5)).add_component(FreeMove.new(10.0)).add_component(Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)))
 
     add_object(test_mesh1)
     add_object(test_mesh3)
