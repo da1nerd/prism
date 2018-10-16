@@ -14,7 +14,7 @@ module Prism
     end
 
     # def initialize(rot : Matrix4f)
-      # TODO: https://youtu.be/OJt-1qAjY7I?list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&t=965
+    # TODO: https://youtu.be/OJt-1qAjY7I?list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&t=965
     # end
 
     def initialize(axis : Vector3f, angle : Float32)
@@ -28,41 +28,41 @@ module Prism
     end
 
     def initialize(rot : Matrix4f)
-      trace = (rot.[](0, 0) + rot.[](1,1) + rot.[](2,2)).to_f64
+      trace = (rot.[](0, 0) + rot.[](1, 1) + rot.[](2, 2)).to_f64
 
       if trace > 0
         s = 0.5f64 / Math.sqrt(trace + 1.0f64)
         @w = 0.25f64 / s
-        @x = (rot.[](1, 2) - rot.[](2, 1)).to_f64 * s;
-        @y = (rot.[](2, 0) - rot.[](0, 2)).to_f64 * s;
-        @z = (rot.[](0, 1) - rot.[](1, 0)).to_f64 * s;
+        @x = (rot.[](1, 2) - rot.[](2, 1)).to_f64 * s
+        @y = (rot.[](2, 0) - rot.[](0, 2)).to_f64 * s
+        @z = (rot.[](0, 1) - rot.[](1, 0)).to_f64 * s
       else
         if rot.[](0, 0) > rot.[](1, 1) && rot.[](0, 0) > rot.[](2, 2)
-          s = 2.0f64 * Math.sqrt(1.0 + rot.[](0, 0) - rot.[](1, 1) - rot.[](2, 2)).to_f64;
-          @w = (rot.[](1, 2) - rot.[](2, 1)).to_f64 / s;
-          @x = 0.25f64 * s;
-          @y = (rot.[](1, 0) + rot.[](0, 1)).to_f64 / s;
-          @z = (rot.[](2, 0) + rot.[](0, 2)).to_f64 / s;
+          s = 2.0f64 * Math.sqrt(1.0 + rot.[](0, 0) - rot.[](1, 1) - rot.[](2, 2)).to_f64
+          @w = (rot.[](1, 2) - rot.[](2, 1)).to_f64 / s
+          @x = 0.25f64 * s
+          @y = (rot.[](1, 0) + rot.[](0, 1)).to_f64 / s
+          @z = (rot.[](2, 0) + rot.[](0, 2)).to_f64 / s
         elsif rot.[](1, 1) > rot.[](2, 2)
-          s = 2.0f64 * Math.sqrt(1.0 + rot.[](1, 1) - rot.[](0, 0) - rot.[](2, 2)).to_f64;
-          @w = (rot.[](2, 0) - rot.[](0, 2)).to_f64 / s;
-          @x = (rot.[](1, 0) + rot.[](0, 1)).to_f64 / s;
-          @y = 0.25f64 * s;
-          @z = (rot.[](2, 1) + rot.[](1, 2)).to_f64 / s;
+          s = 2.0f64 * Math.sqrt(1.0 + rot.[](1, 1) - rot.[](0, 0) - rot.[](2, 2)).to_f64
+          @w = (rot.[](2, 0) - rot.[](0, 2)).to_f64 / s
+          @x = (rot.[](1, 0) + rot.[](0, 1)).to_f64 / s
+          @y = 0.25f64 * s
+          @z = (rot.[](2, 1) + rot.[](1, 2)).to_f64 / s
         else
-          s = 2.0f64 * Math.sqrt(1.0 + rot.[](2, 2) - rot.[](0, 0) - rot.[](1, 1)).to_f64;
-          @w = (rot.[](0, 1) - rot.[](1, 0) ).to_f64 / s;
-          @x = (rot.[](2, 0) + rot.[](0, 2) ).to_f64 / s;
-          @y = (rot.[](1, 2) + rot.[](2, 1) ).to_f64 / s;
-          @z = 0.25f64 * s;
+          s = 2.0f64 * Math.sqrt(1.0 + rot.[](2, 2) - rot.[](0, 0) - rot.[](1, 1)).to_f64
+          @w = (rot.[](0, 1) - rot.[](1, 0)).to_f64 / s
+          @x = (rot.[](2, 0) + rot.[](0, 2)).to_f64 / s
+          @y = (rot.[](1, 2) + rot.[](2, 1)).to_f64 / s
+          @z = 0.25f64 * s
         end
       end
 
-      length = Math.sqrt(@x * @x + @y * @y + @z * @z + @w * @w);
-      @x /= length;
-      @y /= length;
-      @z /= length;
-      @w /= length;
+      length = Math.sqrt(@x * @x + @y * @y + @z * @z + @w * @w)
+      @x /= length
+      @y /= length
+      @z /= length
+      @w /= length
     end
 
     def values
@@ -296,7 +296,7 @@ module Prism
 
     # Normalized linear interpolation.
     #
-    # This is technically cheaper than `slerp` however it's usually negligable. 
+    # This is technically cheaper than `slerp` however it's usually negligable.
     # For the most part you can choose whichever one looks best
     def nlerp(dest : Quaternion, lerp_factor : Float64, shortest : Bool) : Quaternion
       corrected_dest = dest.clone
@@ -309,7 +309,7 @@ module Prism
     # Spherical linear interpolation.
     #
     # This gives a guaranteed linear movement whereas `nlerp` does not.
-    # This is technically more expensive than `nlerp` however it's usually negligable. 
+    # This is technically more expensive than `nlerp` however it's usually negligable.
     # For the most part you can choose whichever one looks best
     def slerp(dest : Quaternion, lerp_factor : Float64, shortest : Bool) : Quaternion
       epsilon = 1e3f32
@@ -335,7 +335,6 @@ module Prism
 
       return self * src_factor + (corrected_dest * dest_factor)
     end
-
 
     def self.lerp(qstart, qend : Quaternion, percent : Float64)
       if percent == 0

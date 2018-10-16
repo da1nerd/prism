@@ -37,7 +37,7 @@ module Prism
     # Retrieves a pixel's color value
     # Gives the pixel color found at *x* and *y*, (horizontal axis, vertical axis)
     def pixel(x : Int32, y : Int32) : Color
-      offset = (x + y * @width) * @num_channels 
+      offset = (x + y * @width) * @num_channels
       r = @pixels[offset]
       g = @pixels[offset + 1]
       b = @pixels[offset + 2]
@@ -46,7 +46,7 @@ module Prism
 
     # Sets a pixel value
     def set_pixel(x : Int32, y : Int32, value : UInt8)
-        @pixels[x + y * @width] = value
+      @pixels[x + y * @width] = value
     end
 
     # Loads a bitmap
@@ -63,7 +63,7 @@ module Prism
       if data
         size = @width * @height * @num_channels
         0.upto(size - 1) do |i|
-            @pixels.push(data[i])
+          @pixels.push(data[i])
         end
 
         # TODO: free image data from stbi. see LibTools.
