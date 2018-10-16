@@ -1,5 +1,5 @@
 require "../src/prism/**"
-require "./test_game"
+require "./game"
 require "lib_gl"
 
 #  Example creating a window

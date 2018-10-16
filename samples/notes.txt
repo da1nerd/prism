@@ -1,0 +1,4 @@
+- add a default camera
+- add some form of primitives (rectangles, spheres, etc.)
+- non-prespective views (orthongonal views)
+- automatic shader selection
