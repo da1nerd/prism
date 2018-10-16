@@ -6,6 +6,9 @@ module Prism
     @@loaded_textures = {} of String => TextureResource
     @resource : TextureResource
     @file_name : String
+    @width: LibGL::Int = 0
+    @height: LibGL::Int = 0
+    @pixels = [] of UInt8
 
     def initialize(@file_name : String)
       if @@loaded_textures.has_key?(@file_name)
@@ -40,13 +43,6 @@ module Prism
       LibGL.bind_texture(LibGL::TEXTURE_2D, @resource.id)
     end
 
-    def pixels
-      # LibGL.bind_texture(LibGL::TEXTURE_2D, @resource.id)
-      # pixels = [] of LibGL::UNSIGNED_BYTE
-      # LibGL.get_tex_image(LibGL::TEXTURE_2D, 0, LibGL::RGBA8, LibGL::UNSIGNED_BYTE, pixels)
-      # puts pixels.size
-    end
-
     # Loads a texture
     #
     # Returns the gl buffer id
@@ -55,7 +51,7 @@ module Prism
 
       # read texture data
       path = File.join(File.dirname(PROGRAM_NAME), "/res/textures/", file_name)
-      data = LibTools.load_png(path, out width, out height, out num_channels)
+      data = LibTools.load_png(path, out @width, out @height, out num_channels)
 
       # create texture
       resource = TextureResource.new
@@ -68,15 +64,10 @@ module Prism
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MAG_FILTER, LibGL::LINEAR)
 
       if data
-        LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGBA8, width, height, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
+        LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGBA8, @width, @height, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
         LibGL.generate_mipmap(LibGL::TEXTURE_2D)
         # TODO: free image data from stbi. see LibTools.
         # e.g. stbi_image_free(data)
-
-        # TODO: we should probably do this as needed instead of every time
-        # pixels = [] of LibGL::UInt
-        # LibGL.get_tex_image(LibGL::TEXTURE_2D, 0, LibGL::RGBA8, LibGL::UNSIGNED_BYTE, pixels)
-        # puts pixels
       else
         puts "Error: Failed to load texture data from #{path}"
         exit 1
