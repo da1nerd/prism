@@ -14,7 +14,7 @@ class TestGame < Prism::Game
   def init
 
     level = Bitmap.new("level0.png").flip_y
-    
+
     vertices = [] of Vertex
     indices = [] of LibGL::Int
 
@@ -22,7 +22,7 @@ class TestGame < Prism::Game
     0.upto(level.width - 1) do |i|
       0.upto(level.height - 1) do |j|
 
-        if level.pixel(i,j).white?
+        if level.pixel(i, j).black?
           next
         end
 
@@ -43,6 +43,80 @@ class TestGame < Prism::Game
         vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, j * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
         vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
         vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+
+        # generate ceiling
+        indices.push(vertices.size + 0)
+        indices.push(vertices.size + 1)
+        indices.push(vertices.size + 2)
+        indices.push(vertices.size + 0)
+        indices.push(vertices.size + 2)
+        indices.push(vertices.size + 3)
+
+        vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
+        vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
+        vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
+        vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+
+        # generate walls
+
+        if level.pixel(i, j - 1).black?
+          indices.push(vertices.size + 0)
+          indices.push(vertices.size + 1)
+          indices.push(vertices.size + 2)
+          indices.push(vertices.size + 0)
+          indices.push(vertices.size + 2)
+          indices.push(vertices.size + 3)
+
+          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, 0, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
+          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, j * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
+          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
+          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+
+        end
+
+        if level.pixel(i, j + 1).black?
+          indices.push(vertices.size + 2)
+          indices.push(vertices.size + 1)
+          indices.push(vertices.size + 0)
+          indices.push(vertices.size + 3)
+          indices.push(vertices.size + 2)
+          indices.push(vertices.size + 0)
+
+          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
+          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
+          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
+          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+        end
+
+        if level.pixel(i - 1, j).black?
+          indices.push(vertices.size + 2)
+          indices.push(vertices.size + 1)
+          indices.push(vertices.size + 0)
+          indices.push(vertices.size + 3)
+          indices.push(vertices.size + 2)
+          indices.push(vertices.size + 0)
+
+          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, 0, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
+          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
+          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
+          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+
+        end
+
+        if level.pixel(i + 1, j).black?
+          indices.push(vertices.size + 0)
+          indices.push(vertices.size + 1)
+          indices.push(vertices.size + 2)
+          indices.push(vertices.size + 0)
+          indices.push(vertices.size + 2)
+          indices.push(vertices.size + 3)
+
+          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
+          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
+          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
+          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+
+        end
       end
     end
 
