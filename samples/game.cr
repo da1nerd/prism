@@ -13,19 +13,8 @@ class TestGame < Prism::Game
 
   def init
 
-    level = Bitmap.new("level0.png")
-    0.upto(level.width - 1) do |i|
-      row = [] of Int32
-      0.upto(level.height - 1) do |j|
-        if level.pixel(i, j).white?
-          row.push(1)
-        else
-          row.push(0)
-        end
-      end
-      puts row
-    end
-
+    level = Bitmap.new("level0.png").flip_y
+    
     vertices = [] of Vertex
     indices = [] of LibGL::Int
 
