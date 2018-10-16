@@ -107,7 +107,7 @@ module Prism
         0.upto(@components.size - 1) do |i|
           @components[i].add_to_engine(engine)
         end
-  
+
         0.upto(@children.size - 1) do |i|
           @children[i].engine = engine
         end

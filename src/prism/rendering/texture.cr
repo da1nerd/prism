@@ -6,8 +6,8 @@ module Prism
     @@loaded_textures = {} of String => TextureResource
     @resource : TextureResource
     @file_name : String
-    @width: LibGL::Int = 0
-    @height: LibGL::Int = 0
+    @width : LibGL::Int = 0
+    @height : LibGL::Int = 0
     @pixels = [] of UInt8
 
     def initialize(@file_name : String)
