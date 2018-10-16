@@ -3,26 +3,24 @@ require "./resource_management/texture_resource"
 
 module Prism
   class Texture
-    @loaded_textures = {} of String => TextureResource
+    @@loaded_textures = {} of String => TextureResource
     @resource : TextureResource
     @file_name : String
 
     def initialize(@file_name : String)
-      if @loaded_textures.has_key?(@file_name)
-        @resource = @loaded_textures[@file_name]
+      if @@loaded_textures.has_key?(@file_name)
+        @resource = @@loaded_textures[@file_name]
         @resource.add_reference
       else
         @resource = load_texture(@file_name)
-        @loaded_textures[@file_name] = @resource
+        @@loaded_textures[@file_name] = @resource
       end
     end
 
     # garbage collection
     def finalize
-      # TODO: make sure this is getting called
-      puts "cleaning up garbage"
       if @resource.remove_reference
-        @loaded_textures.delete(@file_name)
+        @@loaded_textures.delete(@file_name)
       end
     end
 
@@ -40,6 +38,13 @@ module Prism
       end
       LibGL.active_texture(LibGL::TEXTURE0 + sampler_slot)
       LibGL.bind_texture(LibGL::TEXTURE_2D, @resource.id)
+    end
+
+    def pixels
+      # LibGL.bind_texture(LibGL::TEXTURE_2D, @resource.id)
+      # pixels = [] of LibGL::UNSIGNED_BYTE
+      # LibGL.get_tex_image(LibGL::TEXTURE_2D, 0, LibGL::RGBA8, LibGL::UNSIGNED_BYTE, pixels)
+      # puts pixels.size
     end
 
     # Loads a texture
@@ -66,6 +71,12 @@ module Prism
         LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGBA8, width, height, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
         LibGL.generate_mipmap(LibGL::TEXTURE_2D)
         # TODO: free image data from stbi. see LibTools.
+        # e.g. stbi_image_free(data)
+
+        # TODO: we should probably do this as needed instead of every time
+        # pixels = [] of LibGL::UInt
+        # LibGL.get_tex_image(LibGL::TEXTURE_2D, 0, LibGL::RGBA8, LibGL::UNSIGNED_BYTE, pixels)
+        # puts pixels
       else
         puts "Error: Failed to load texture data from #{path}"
         exit 1

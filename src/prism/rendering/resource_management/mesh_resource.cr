@@ -23,7 +23,7 @@ module Prism
     # garbage collection
     # TODO: make sure this is getting called
     def finalize
-      puts "cleaning up garbage"
+      puts "cleaning up mesh resource garbage"
       LibGL.delete_buffers(1, out @vbo)
       LibGL.delete_buffers(1, out @ibo)
     end

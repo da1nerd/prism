@@ -7,12 +7,12 @@ require "./rendering_engine_protocol"
 
 module Prism
   class Shader
-    @loaded_shaders = {} of String => ShaderResource
+    @@loaded_shaders = {} of String => ShaderResource
     @resource : ShaderResource
 
     def initialize(@file_name : String)
-      if @loaded_shaders.has_key?(@file_name)
-        @resource = @loaded_shaders[@file_name]
+      if @@loaded_shaders.has_key?(@file_name)
+        @resource = @@loaded_shaders[@file_name]
         @resource.add_reference
       else
         @resource = ShaderResource.new
@@ -29,6 +29,15 @@ module Prism
 
         add_all_uniforms(vertex_shader_text)
         add_all_uniforms(fragment_shader_text)
+
+        @@loaded_shaders[@file_name] = @resource
+      end
+    end
+
+    # garbage collection
+    def finalize
+      if @resource.remove_reference
+        @@loaded_shaders.delete(@file_name)
       end
     end
 

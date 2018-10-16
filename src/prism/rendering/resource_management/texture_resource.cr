@@ -18,7 +18,7 @@ module Prism
     # garbage collection
     # TODO: make sure this is getting called
     def finalize
-      puts "cleaning up garbage"
+      puts "cleaning up texture resource garbage"
       LibGL.delete_buffers(1, out @id)
     end
   end

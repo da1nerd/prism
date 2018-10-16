@@ -4,18 +4,18 @@ require "./resource_management/mesh_resource"
 
 module Prism
   class Mesh
-    @loaded_models = {} of String => MeshResource
+    @@loaded_models = {} of String => MeshResource
     @resource : MeshResource
     @file_name : String?
 
     def initialize(file_name : String)
       @file_name = file_name
-      if @loaded_models.has_key?(file_name)
-        @resource = @loaded_models[file_name]
+      if @@loaded_models.has_key?(file_name)
+        @resource = @@loaded_models[file_name]
         @resource.add_reference
       else
         @resource = MeshResource.new
-        @loaded_models[file_name] = @resource
+        @@loaded_models[file_name] = @resource
       end
       load_mesh(file_name)
     end
@@ -31,10 +31,8 @@ module Prism
 
     # garbage collection
     def finalize
-      # TODO: make sure this is getting called
-      puts "cleaning up garbage"
       if @resource.remove_reference && @file_name != nil
-        @loaded_models.delete(@file_name)
+        @@loaded_models.delete(@file_name)
       end
     end
 
