@@ -30,6 +30,43 @@ module Prism
       end
     end
 
+    # Flips the x-axis
+    def flip_x
+      temp = @pixels.clone
+      0.upto(@width - 1) do |i|
+        0.upto(@height - 1) do |j|
+          original_offset = ((@width - i - 1) + j * @width) * @num_channels
+          offset = (i + j * @width) * @num_channels
+          
+          # copy channels
+          0.upto(@num_channels - 1) do |c|
+            temp[offset + c] = @pixels[original_offset + c]
+          end
+        end
+      end
+      @pixels = temp
+      self
+    end
+
+    # flips the y-axis
+    def flip_y
+      temp = @pixels.clone
+      0.upto(@width - 1) do |i|
+        0.upto(@height - 1) do |j|
+          original_offset = (i + (@height - j - 1) * @width) * @num_channels
+          offset = (i + j * @width) * @num_channels
+
+          # copy channels
+          0.upto(@num_channels - 1) do |c|
+            temp[offset + c] = @pixels[original_offset + c]
+          end
+        end
+      end
+      @pixels = temp
+      self
+    end
+
+    # Return all the pixels
     def pixels
       @pixels
     end
@@ -45,8 +82,11 @@ module Prism
     end
 
     # Sets a pixel value
-    def set_pixel(x : Int32, y : Int32, value : UInt8)
-      @pixels[x + y * @width] = value
+    def set_pixel(x : Int32, y : Int32, color : Color)
+      offset = (x + y * @width) * @num_channels
+      @pixels[offset] = color.red
+      @pixels[offset + 1] = color.green
+      @pixels[offset + 2] = color.blue
     end
 
     # Loads a bitmap
