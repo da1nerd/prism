@@ -24,7 +24,7 @@ module Prism
       @sampler_map = {} of String => LibGL::Int
       @sampler_map["diffuse"] = 0
 
-      add_vector("ambient", Vector3f.new(0.1f32, 0.1f32, 0.1f32))
+      add_vector("ambient", Vector3f.new(0.7f32, 0.7f32, 0.7f32))
 
       @forward_ambient = Shader.new("forward-ambient")
 

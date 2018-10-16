@@ -6,13 +6,13 @@ module Prism
     def initialize(@red : UInt8, @green : UInt8, @blue : UInt8)
     end
 
-    # Checks if the color is white
-    def white?
+    # Checks if the color is black
+    def black?
       return red == 0 && green == 0 && blue == 0
     end
 
-    # Checks if the color is black
-    def black?
+    # Checks if the color is white
+    def white?
       return red == 255 && green == 255 && blue == 255
     end
 
