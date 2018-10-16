@@ -30,7 +30,7 @@ module Prism
     # garbage collection
     # TODO: make sure this is getting called
     def finalize
-      puts "cleaning up garbage"
+      puts "cleaning up shader resource garbage"
       LibGL.delete_buffers(1, out @program)
     end
   end
