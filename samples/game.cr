@@ -30,9 +30,10 @@ class TestGame < Prism::Game
           next
         end
 
-        # red : 32, green : 80
-        puts NUM_TEX_EXP
-        puts NUM_TEXTURES
+        # Textures are assigned by the level color.
+        # Choose a texture from the texture collection (position 0 starts in bottom right corner and moves up)
+        # and multiply it's position by the total number of textures e.g. to access texture 2 in a 16 texture block
+        # set the appropriate color value to 2*16 or 32
 
         # calculate floor texture coordinates based on the level's green channel
         tex_x : UInt8 = level.pixel(i, j).green / NUM_TEXTURES # tex row
