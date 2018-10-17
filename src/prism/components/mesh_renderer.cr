@@ -15,11 +15,5 @@ module Prism
       shader.update_uniforms(self.transform, @material, rendering_engine)
       @mesh.draw
     end
-
-    def input(transform : Transform, delta : Float32)
-    end
-
-    def update(transform : Transform, delta : Float32)
-    end
   end
 end
