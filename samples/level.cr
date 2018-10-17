@@ -64,7 +64,7 @@ class Level < GameComponent
     ]
   end
 
-  private def add_verticies(vertices : Array(Prism::Vertex), i : Int32, j : Int32, x : Bool, y : Bool, z : Bool, offset : Float32, tex_coords : Array(Float32))
+  private def add_verticies(vertices : Array(Prism::Vertex), i : Int32, j : Int32, offset : Int32, x : Bool, y : Bool, z : Bool, tex_coords : Array(Float32))
     x_higher, x_lower, y_higher, y_lower = tex_coords
     if x && z
       vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, offset * SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
@@ -81,6 +81,9 @@ class Level < GameComponent
       vertices.push(Vertex.new(Vector3f.new(offset * SPOT_WIDTH, i * SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
       vertices.push(Vertex.new(Vector3f.new(offset * SPOT_WIDTH, (i + 1) * SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
       vertices.push(Vertex.new(Vector3f.new(offset * SPOT_WIDTH, (i + 1) * SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+    else
+      puts "Error: Invalid plane used in level generator"
+      exit 1
     end
   end
 
@@ -99,33 +102,33 @@ class Level < GameComponent
 
         # generate floor
         add_face(indices, vertices.size, true)
-        add_verticies(vertices, i, j, true, false, true, 0f32, tex_coords.to_a)
+        add_verticies(vertices, i, j, 0, true, false, true, tex_coords.to_a)
 
         # generate ceiling
         add_face(indices, vertices.size, false)
-        add_verticies(vertices, i, j, true, false, true, 1f32, tex_coords.to_a)
+        add_verticies(vertices, i, j, 1, true, false, true, tex_coords.to_a)
 
         # generate walls
         tex_coords = calc_tex_coords(@level.pixel(i, j).red) # wall textures follow the red channel
 
         if @level.pixel(i, j - 1).black?
           add_face(indices, vertices.size, false)
-          add_verticies(vertices, i, 0, true, true, false, j.to_f32, tex_coords.to_a)
+          add_verticies(vertices, i, 0, j, true, true, false, tex_coords.to_a)
         end
 
         if @level.pixel(i, j + 1).black?
           add_face(indices, vertices.size, true)
-          add_verticies(vertices, i, 0, true, true, false, (j + 1).to_f32, tex_coords.to_a)
+          add_verticies(vertices, i, 0, (j + 1), true, true, false, tex_coords.to_a)
         end
 
         if @level.pixel(i - 1, j).black?
           add_face(indices, vertices.size, true)
-          add_verticies(vertices, 0, j, false, true, true, i.to_f32, tex_coords.to_a)
+          add_verticies(vertices, 0, j, i, false, true, true, tex_coords.to_a)
         end
 
         if @level.pixel(i + 1, j).black?
           add_face(indices, vertices.size, false)
-          add_verticies(vertices, 0, j, false, true, true, (i + 1).to_f32, tex_coords.to_a)
+          add_verticies(vertices, 0, j, (i + 1), false, true, true, tex_coords.to_a)
         end
       end
     end
