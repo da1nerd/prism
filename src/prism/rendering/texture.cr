@@ -64,7 +64,7 @@ module Prism
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MAG_FILTER, LibGL::LINEAR)
 
       if data
-        LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGBA8, @width, @height, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
+        LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGB, @width, @height, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
         LibGL.generate_mipmap(LibGL::TEXTURE_2D)
         # TODO: free image data from stbi. see LibTools.
         # e.g. stbi_image_free(data)

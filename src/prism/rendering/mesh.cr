@@ -3,6 +3,8 @@ require "./vertex"
 require "./resource_management/mesh_resource"
 
 module Prism
+  # Manages the state of a model mesh
+  # Meshes give the shapes which can be covered in `Material`s.
   class Mesh
     @@loaded_models = {} of String => MeshResource
     @resource : MeshResource

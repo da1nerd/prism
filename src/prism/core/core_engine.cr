@@ -12,8 +12,7 @@ module Prism
     getter rendering_engine
 
     def initialize(@width : Int32, @height : Int32, @framerate : Float32, @title : String, @game : Game)
-      # set up window
-      @window = CrystGLUT::Window.new(@width, @height, "TITLE")
+      @window = CrystGLUT::Window.new(@width, @height, @title)
       @rendering_engine = RenderingEngine.new(@window)
 
       @is_running = false
@@ -41,7 +40,6 @@ module Prism
 
     # Main game loop
     private def run
-      # TRICKY: for some reason glut is triggering the display function twice
       return if @is_running
       @is_running = true
 
@@ -71,12 +69,8 @@ module Prism
           end
 
           @game.input(@frametime.to_f32, @input)
-          # @rendering_engine.input(@frametime.to_f32, @input) # temporary hack
           @input.update
-
           @game.update(@frametime.to_f32)
-
-          # TODO: update game
 
           # log frame rate
           if (frame_counter >= 1.0)

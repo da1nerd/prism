@@ -11,10 +11,12 @@ module Prism
 
     abstract def init
 
+    # Gives input state to the game
     def input(delta : Float32, input : Input)
       @root.input_all(delta, input)
     end
 
+    # Requests the game to update state
     def update(delta : Float32)
       @root.update_all(delta)
     end
@@ -29,6 +31,7 @@ module Prism
       @root.add_child(object)
     end
 
+    # Registers the engine with the game
     def engine=(engine : CoreEngine)
       @root.engine = engine
     end
