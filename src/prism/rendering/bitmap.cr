@@ -2,6 +2,7 @@ require "lib_gl"
 require "./resource_management/bitmap_resource"
 
 module Prism
+  # Represents a loaded bitmap
   class Bitmap
     @@loaded_bitmaps = {} of String => BitmapResource
     @resource : BitmapResource
@@ -105,6 +106,8 @@ module Prism
         0.upto(size - 1) do |i|
           @pixels.push(data[i])
         end
+        
+        # TODO: if opengl can take our pixel array as input we can free this bitmap data and let texture inherit from bitmap.
 
         # TODO: free image data from stbi. see LibTools.
         # e.g. stbi_image_free(data)

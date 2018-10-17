@@ -18,7 +18,7 @@ module Prism
       if @texture_map.has_key?(name)
         @texture_map[name]
       else
-        # TODO: return a default texture
+        # TODO: return a better default texture
         Texture.new("test.png")
       end
     end

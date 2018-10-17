@@ -4,6 +4,8 @@ require "./look_at_component.cr"
 
 include Prism
 
+#  https://www.youtube.com/watch?v=UNymtDnkk4c&index=6&list=PLEETnX-uPtBV7jIbAZNCulZM1cGxJRGYs
+
 class TestGame < Prism::Game
   SPOT_WIDTH = 1f32
   SPOT_LENGTH = 1f32
@@ -151,7 +153,7 @@ class TestGame < Prism::Game
 
     mesh = Mesh.new(vertices, indices, true);
     material = Material.new()
-    material.add_texture("diffuse", Texture.new("bricks.jpg"))
+    material.add_texture("diffuse", Texture.new("WolfCollection2.png"))
     material.add_float("specularIntensity", 1)
     material.add_float("specularPower", 8)
 

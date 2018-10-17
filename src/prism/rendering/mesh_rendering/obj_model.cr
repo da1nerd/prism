@@ -4,7 +4,7 @@ require "./obj_index"
 
 module Prism
   # Represents an OBJ model.
-  # Loads and parses an OBJ model
+  # This class can load and parses OBJ models
   class OBJModel
     @positions : Array(Vector3f)
     @tex_coords : Array(Vector2f)
