@@ -38,7 +38,7 @@ module Prism
         0.upto(@height - 1) do |j|
           original_offset = ((@width - i - 1) + j * @width) * @num_channels
           offset = (i + j * @width) * @num_channels
-          
+
           # copy channels
           0.upto(@num_channels - 1) do |c|
             temp[offset + c] = @pixels[original_offset + c]
@@ -106,7 +106,7 @@ module Prism
         0.upto(size - 1) do |i|
           @pixels.push(data[i])
         end
-        
+
         # TODO: if opengl can take our pixel array as input we can free this bitmap data and let texture inherit from bitmap.
 
         # TODO: free image data from stbi. see LibTools.

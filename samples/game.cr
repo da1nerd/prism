@@ -23,7 +23,6 @@ class TestGame < Prism::Game
     add_object(directional_light_object)
 
     cam = Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)
-    # cam.transform.pos = Vector3f.new(-1, -1, 1)
     camera = GameObject.new().add_component(FreeLook.new(0.5)).add_component(FreeMove.new(10.0)).add_component(cam)
     camera.transform.pos = Vector3f.new(level.width/2f32, 5, 0)
     add_object(camera)
