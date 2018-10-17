@@ -10,6 +10,8 @@ class TestGame < Prism::Game
   SPOT_WIDTH = 1f32
   SPOT_LENGTH = 1f32
   SPOT_HEIGHT = 1f32
+  NUM_TEX_EXP = 4
+  NUM_TEXTURES = 2^NUM_TEX_EXP
 
   @level : Bitmap?
 
@@ -28,10 +30,15 @@ class TestGame < Prism::Game
           next
         end
 
-        x_higher = 1f32
-        x_lower = 0f32
-        y_higher = 1f32
-        y_lower = 0f32
+        # calculate floor texture coordinates based on the level's green channel
+        tex_x : UInt8 = level.pixel(i, j).green / NUM_TEXTURES
+        tex_y : UInt8 = tex_x % NUM_TEX_EXP
+        tex_x /= NUM_TEX_EXP
+
+        x_higher = 1 - tex_x.to_f32 / NUM_TEX_EXP
+        x_lower = x_higher - 1f32 / NUM_TEX_EXP
+        y_lower = 1 - tex_y.to_f32 / NUM_TEX_EXP
+        y_higher = y_lower - 1f32 / NUM_TEX_EXP
 
         # generate floor
         indices.push(vertices.size + 2)
@@ -60,6 +67,16 @@ class TestGame < Prism::Game
         vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
 
         # generate walls
+
+        # calculate texture coordinates based on the level's green channel
+        tex_x = level.pixel(i, j).red / NUM_TEXTURES
+        tex_y = tex_x % NUM_TEX_EXP
+        tex_x /= NUM_TEX_EXP
+
+        x_higher = 1 - tex_x.to_f32 / NUM_TEX_EXP
+        x_lower = x_higher - 1f32 / NUM_TEX_EXP
+        y_lower = 1 - tex_y.to_f32 / NUM_TEX_EXP
+        y_higher = y_lower - 1f32 / NUM_TEX_EXP
 
         if level.pixel(i, j - 1).black?
           indices.push(vertices.size + 0)
