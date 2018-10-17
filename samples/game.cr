@@ -11,7 +11,7 @@ class TestGame < Prism::Game
   SPOT_LENGTH = 1f32
   SPOT_HEIGHT = 1f32
   NUM_TEX_EXP = 4
-  NUM_TEXTURES = 2^NUM_TEX_EXP
+  NUM_TEXTURES = 2**NUM_TEX_EXP
 
   @level : Bitmap?
 
@@ -30,15 +30,23 @@ class TestGame < Prism::Game
           next
         end
 
+        # red : 32, green : 80
+        puts NUM_TEX_EXP
+        puts NUM_TEXTURES
+
         # calculate floor texture coordinates based on the level's green channel
-        tex_x : UInt8 = level.pixel(i, j).green / NUM_TEXTURES
-        tex_y : UInt8 = tex_x % NUM_TEX_EXP
+        tex_x : UInt8 = level.pixel(i, j).green / NUM_TEXTURES # tex row
+        tex_y : UInt8 = tex_x % NUM_TEX_EXP # tex column
         tex_x /= NUM_TEX_EXP
+
+        puts "#{tex_x}x#{tex_y}"
 
         x_higher = 1 - tex_x.to_f32 / NUM_TEX_EXP
         x_lower = x_higher - 1f32 / NUM_TEX_EXP
         y_lower = 1 - tex_y.to_f32 / NUM_TEX_EXP
         y_higher = y_lower - 1f32 / NUM_TEX_EXP
+
+        # puts "xh #{x_higher} xl #{x_lower} yl #{y_lower} yh #{y_higher}"
 
         # generate floor
         indices.push(vertices.size + 2)
@@ -170,7 +178,7 @@ class TestGame < Prism::Game
 
     mesh = Mesh.new(vertices, indices, true);
     material = Material.new()
-    material.add_texture("diffuse", Texture.new("WolfCollection2.png"))
+    material.add_texture("diffuse", Texture.new("WolfCollection.png"))
     material.add_float("specularIntensity", 1)
     material.add_float("specularPower", 8)
 
