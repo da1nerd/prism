@@ -6,6 +6,9 @@ all: samples
 start: samples
 	./bin/samples/game
 
+format:
+	@crystal tool format ./src
+
 lib: src/prism/lib
 	cd ${TOOLS_DIR} && cmake . && make
 
