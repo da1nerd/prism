@@ -24,7 +24,7 @@ class TestGame < Prism::Game
 
     cam = Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)
     camera = GameObject.new().add_component(FreeLook.new(0.5)).add_component(FreeMove.new(10.0)).add_component(cam)
-    camera.transform.pos = Vector3f.new(level.width/2f32, 5, 0)
+    camera.transform.pos = Vector3f.new(level.width/2f32, 0.5f32, 5)
     add_object(camera)
   end
 end

@@ -46,7 +46,7 @@ class Level < GameComponent
   # Choose a texture from the texture collection (position 0 starts in bottom right corner and moves up)
   # and multiply it's position by the total number of textures e.g. to access texture 2 in a 16 texture block
   # set the appropriate color value to 2*16 or 32
-  private def calc_tex_coords(color_channel : UInt8) : Tuple(Float32, Float32, Float32, Float32)
+  private def calc_tex_coords(color_channel : UInt8) : StaticArray(Float32, 4)
     tex_x : UInt8 = color_channel / NUM_TEXTURES # tex row
     tex_y : UInt8 = tex_x % NUM_TEX_EXP          # tex column
     tex_x /= NUM_TEX_EXP
@@ -56,12 +56,32 @@ class Level < GameComponent
     y_lower = 1 - tex_y.to_f32 / NUM_TEX_EXP
     y_higher = y_lower - 1f32 / NUM_TEX_EXP
 
-    return {
+    return StaticArray[
       x_higher,
       x_lower,
       y_higher,
-      y_lower,
-    }
+      y_lower
+    ]
+  end
+
+  private def add_verticies(vertices : Array(Prism::Vertex), i : Int32, j : Int32, x : Bool, y : Bool, z : Bool, offset : Float32, tex_coords : Array(Float32))
+    x_higher, x_lower, y_higher, y_lower = tex_coords
+    if x && z
+      vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, offset * SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
+      vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, offset * SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
+      vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, offset * SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
+      vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, offset * SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+    elsif x && y
+      vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, j * SPOT_HEIGHT, offset * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
+      vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, j * SPOT_HEIGHT, offset * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
+      vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, (j + 1) * SPOT_HEIGHT, offset * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
+      vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, (j + 1) * SPOT_HEIGHT, offset * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+    elsif y && z
+      vertices.push(Vertex.new(Vector3f.new(offset * SPOT_WIDTH, i * SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
+      vertices.push(Vertex.new(Vector3f.new(offset * SPOT_WIDTH, i * SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
+      vertices.push(Vertex.new(Vector3f.new(offset * SPOT_WIDTH, (i + 1) * SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
+      vertices.push(Vertex.new(Vector3f.new(offset * SPOT_WIDTH, (i + 1) * SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+    end
   end
 
   def generate_level
@@ -75,80 +95,37 @@ class Level < GameComponent
           next
         end
 
-        # tex_x : UInt8 = @level.pixel(i, j).green / NUM_TEXTURES # tex row
-        # tex_y : UInt8 = tex_x % NUM_TEX_EXP # tex column
-        # tex_x /= NUM_TEX_EXP
-
-        # x_higher = 1 - tex_x.to_f32 / NUM_TEX_EXP
-        # x_lower = x_higher - 1f32 / NUM_TEX_EXP
-        # y_lower = 1 - tex_y.to_f32 / NUM_TEX_EXP
-        # y_higher = y_lower - 1f32 / NUM_TEX_EXP
-
-        x_higher, x_lower, y_higher, y_lower = calc_tex_coords(@level.pixel(i, j).green)
+        tex_coords = calc_tex_coords(@level.pixel(i, j).green) # floor and ceiling textures follow the green channel
 
         # generate floor
         add_face(indices, vertices.size, true)
-
-        vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, 0, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
-        vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, j * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
-        vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
-        vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+        add_verticies(vertices, i, j, true, false, true, 0f32, tex_coords.to_a)
 
         # generate ceiling
         add_face(indices, vertices.size, false)
-
-        vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
-        vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
-        vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
-        vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+        add_verticies(vertices, i, j, true, false, true, 1f32, tex_coords.to_a)
 
         # generate walls
-
-        # calculate texture coordinates based on the level's red channel
-        x_higher, x_lower, y_higher, y_lower = calc_tex_coords(@level.pixel(i, j).red)
-        # tex_x = @level.pixel(i, j).red / NUM_TEXTURES
-        # tex_y = tex_x % NUM_TEX_EXP
-        # tex_x /= NUM_TEX_EXP
-
-        # x_higher = 1 - tex_x.to_f32 / NUM_TEX_EXP
-        # x_lower = x_higher - 1f32 / NUM_TEX_EXP
-        # y_lower = 1 - tex_y.to_f32 / NUM_TEX_EXP
-        # y_higher = y_lower - 1f32 / NUM_TEX_EXP
+        tex_coords = calc_tex_coords(@level.pixel(i, j).red) # wall textures follow the red channel
 
         if @level.pixel(i, j - 1).black?
           add_face(indices, vertices.size, false)
-
-          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, 0, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
-          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, j * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
-          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
-          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+          add_verticies(vertices, i, 0, true, true, false, j.to_f32, tex_coords.to_a)
         end
 
         if @level.pixel(i, j + 1).black?
           add_face(indices, vertices.size, true)
-
-          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
-          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
-          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
-          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+          add_verticies(vertices, i, 0, true, true, false, (j + 1).to_f32, tex_coords.to_a)
         end
 
         if @level.pixel(i - 1, j).black?
           add_face(indices, vertices.size, true)
-
-          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, 0, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
-          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
-          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
-          vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+          add_verticies(vertices, 0, j, false, true, true, i.to_f32, tex_coords.to_a)
         end
 
         if @level.pixel(i + 1, j).black?
           add_face(indices, vertices.size, false)
-
-          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
-          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, 0, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_lower)))
-          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, (j + 1) * SPOT_LENGTH), Vector2f.new(x_higher, y_higher)))
-          vertices.push(Vertex.new(Vector3f.new((i + 1) * SPOT_WIDTH, SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_higher)))
+          add_verticies(vertices, 0, j, false, true, true, (i + 1).to_f32, tex_coords.to_a)
         end
       end
     end
