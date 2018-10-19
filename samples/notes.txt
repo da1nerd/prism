@@ -5,3 +5,7 @@
 - make ambient light a component
 - texture manipulation (translation, rotation, scale)
 - more control over textures (filtering, formatting) without going into the game engine.
+- Options class/system, some place to read values that the player chooses
+- commonly used vector constants (zero vector, 1 vector, pointing along an axis, etc.)
+- better window integration in the game engine.
+- centralized "level" or "scene" class that holds the data the game is using.
