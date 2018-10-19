@@ -51,6 +51,7 @@ module Prism
       return Quaternion.new(Matrix4f.new.init_rotation((point - @pos).normalized, up))
     end
 
+    # Checks if the transformation higher up the tree has changed
     def has_changed
       if parent = @parent
         return parent.has_changed
@@ -71,6 +72,7 @@ module Prism
       return false
     end
 
+    # Returns the transformation as affected by the parent
     def get_transformation : Matrix4f
       translation_matrix = Matrix4f.new.init_translation(@pos.x, @pos.y, @pos.z)
       rotation_matrix = @rot.to_rotation_matrix
@@ -79,10 +81,12 @@ module Prism
       return self.get_parent_matrix * translation_matrix * rotation_matrix * scale_matrix
     end
 
+    # Returns the the position after it has been transformed by it's parent
     def get_transformed_pos : Vector3f
       return self.get_parent_matrix.transform(@pos)
     end
 
+    # Returns the rotation after it has been transformed by it's parent
     def get_transformed_rot : Quaternion
       parent_rotation = Quaternion.new(0f64, 0f64, 0f64, 1f64)
 
@@ -95,6 +99,7 @@ module Prism
       return parent_rotation * @rot
     end
 
+    # Returns the parent transformation matrix
     private def get_parent_matrix : Matrix4f
       if parent = @parent
         if parent.has_changed
