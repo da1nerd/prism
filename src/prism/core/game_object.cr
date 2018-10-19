@@ -23,12 +23,17 @@ module Prism
     # Adds a child `GameObject` to this object
     # The child will inherit certain attributes of the parent
     # such as transformation.
-    def add_child(child : GameObject)
+    def add_object(child : GameObject)
       @children.push(child)
       if engine = @engine
         child.engine = engine
       end
       child.transform.parent = @transform
+    end
+    
+    # Alias for add_object
+    def add_child(child : GameObject)
+      add_object(child)
     end
 
     # Adds a `GameComponent` to this object
