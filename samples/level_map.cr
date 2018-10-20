@@ -1,4 +1,5 @@
 require "../src/prism"
+require "./obstacle.cr"
 
 include Prism
 
@@ -12,10 +13,10 @@ class LevelMap < GameComponent
   @mesh : Mesh?
   @level : Bitmap
   @material : Material
-  @walls : Array(Vector2f)
+  @walls : Array(Obstacle)
 
   def initialize(levelName : String, textureName : String)
-    @walls = [] of Vector2f
+    @walls = [] of Obstacle
     @level = Bitmap.new(levelName).flip_y
     @material = Material.new
     @material.add_texture("diffuse", Texture.new(textureName))
@@ -97,7 +98,7 @@ class LevelMap < GameComponent
     0.upto(@level.width - 1) do |i|
       0.upto(@level.height - 1) do |j|
         if @level.pixel(i, j).black?
-          @walls.push(Vector2f.new(i.to_f32, j.to_f32))
+          @walls.push(Obstacle.new(Vector3f.new(i.to_f32, 0, j.to_f32), Vector3f.new(SPOT_WIDTH, SPOT_HEIGHT, SPOT_LENGTH)))
           next
         end
 
@@ -172,46 +173,7 @@ class LevelMap < GameComponent
     end
   end
 
-  # Checks if a collision occured and stops movement along the appropriate axis.
-  def check_collision(old_pos : Vector3f, new_pos : Vector3f, object_width : Float32, object_length : Float32) : Vector3f
-    collision_vector = Vector2f.new(1, 1)
-    movement_vector = new_pos - old_pos
-
-    if movement_vector.length > 0
-        block_size = Vector2f.new(SPOT_WIDTH, SPOT_LENGTH)
-        object_size = Vector2f.new(object_width, object_length)
-
-        0.upto(@walls.size - 1) do |i|
-          collision_vector = collision_vector * rect_collide(old_pos.xz, new_pos.xz, object_size, block_size * @walls[i], block_size)
-        end
-    end
-
-    return Vector3f.new(collision_vector.x, 0, collision_vector.y)
+  def obstacles : Array(Obstacle)
+    @walls
   end
-
-  private def rect_collide(old_pos : Vector2f, new_pos : Vector2f, player_size : Vector2f, obj_pos : Vector2f, obj_size : Vector2f) : Vector2f
-    result = Vector2f.new(0, 0)
-
-    # x axis
-    # players right edge < objects left edge || players left edge > object's right edge
-    x_can_move = new_pos.x + player_size.x < obj_pos.x || new_pos.x - player_size.x > obj_pos.x + obj_size.x * obj_size.x
-    y_can_move = old_pos.y + player_size.y < obj_pos.y || old_pos.y - player_size.y > obj_pos.y + obj_size.y * obj_size.y
-    if x_can_move || y_can_move
-      result.x = 1f32
-    end
-
-
-    distance_to_right_edge = obj_pos.x - (old_pos.x + player_size.x)
-    distance_to_left_edge = (old_pos.x - player_size.x) - (obj_pos.x + obj_size.x * obj_size.x)
-
-    # y axis
-    x_can_move = old_pos.x + player_size.x < obj_pos.x || old_pos.x - player_size.x > obj_pos.x + obj_size.x * obj_size.x
-    y_can_move = new_pos.y + player_size.y < obj_pos.y || new_pos.y - player_size.y > obj_pos.y + obj_size.y * obj_size.y
-    if x_can_move || y_can_move
-      result.y = 1f32
-    end
-
-    return result
-  end
-
 end

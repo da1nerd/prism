@@ -10,7 +10,7 @@ class Player < GameObject
     DEFAULT_HEIGHT = 0.4375f32
     PLAYER_SIZE = 0.2f32
 
-    def initialize(position : Vector2f, level : LevelMap, height : Float32 = DEFAULT_HEIGHT)
+    def initialize(position : Vector2f, level : Level, height : Float32 = DEFAULT_HEIGHT)
         super()
         @look = FreeLook.new(MOUSE_SENSITIVITY)
         @move = CollideMove.new(MOVEMENT_SPEED, level)

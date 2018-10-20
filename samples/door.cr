@@ -53,6 +53,11 @@ class Door < GameComponent
         end
     end
 
+    # Returns the door as an obstacle
+    def as_obstacle : Obstacle
+        Obstacle.new(self.transform.pos, Vector3f.new(LENGTH, HEIGHT, WIDTH))
+    end
+
     def input(delta : Float32, input : Input)
     end
 
