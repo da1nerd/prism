@@ -8,7 +8,7 @@ class Player < GameObject
     MOUSE_SENSITIVITY = 0.4375f32
     MOVEMENT_SPEED = 5f32
     DEFAULT_HEIGHT = 0.5f32
-    PLAYER_SIZE = 0.3f32
+    PLAYER_SIZE = 0.2f32
 
     def initialize(position : Vector2f, level : LevelMap, height : Float32 = DEFAULT_HEIGHT)
         super()
@@ -30,13 +30,4 @@ class Player < GameObject
         # self.add_object(camera)
         self.transform.pos = Vector3f.new(position.x, height, position.y)
     end
-
-    # returns the player's next movement
-    # def movement
-    #     @move.movement
-    # end
-
-    # def movement=(vector : Vector3f)
-    #     @move.movement = vector
-    # end
 end

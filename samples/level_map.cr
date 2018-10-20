@@ -192,20 +192,17 @@ class LevelMap < GameComponent
   private def rect_collide(old_pos : Vector2f, new_pos : Vector2f, player_size : Vector2f, obj_pos : Vector2f, obj_size : Vector2f) : Vector2f
     result = Vector2f.new(0, 0)
 
-  
-    player_right_edge = new_pos.x + player_size.x
-    player_left_edge = new_pos.x - player_size.x
-
-    object_right_edge = obj_pos.x + obj_size.x * obj_size.x
-    object_left_edge = obj_pos.x
-
     # x axis
     # players right edge < objects left edge || players left edge > object's right edge
-    x_can_move = player_right_edge < object_left_edge || player_left_edge > object_right_edge
+    x_can_move = new_pos.x + player_size.x < obj_pos.x || new_pos.x - player_size.x > obj_pos.x + obj_size.x * obj_size.x
     y_can_move = old_pos.y + player_size.y < obj_pos.y || old_pos.y - player_size.y > obj_pos.y + obj_size.y * obj_size.y
     if x_can_move || y_can_move
       result.x = 1f32
     end
+
+
+    distance_to_right_edge = obj_pos.x - (old_pos.x + player_size.x)
+    distance_to_left_edge = (old_pos.x - player_size.x) - (obj_pos.x + obj_size.x * obj_size.x)
 
     # y axis
     x_can_move = old_pos.x + player_size.x < obj_pos.x || old_pos.x - player_size.x > obj_pos.x + obj_size.x * obj_size.x

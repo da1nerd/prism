@@ -1,15 +1,15 @@
 require "lib_gl"
 require "../src/prism"
 require "./look_at_component.cr"
-require "./level.cr"
+require "./level1.cr"
 
 include Prism
 
 class TestGame < Prism::Game
-  @level : Level?
+  @level : Level1?
 
   def init
-    level = Level.new("level0.png", "WolfCollection.png")
+    level = Level1.new()
     @level = level
     add_object(level)
 

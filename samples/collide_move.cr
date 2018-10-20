@@ -34,7 +34,7 @@ class CollideMove < GameComponent
             mov_amt = @speed * delta
 
             old_pos = self.transform.pos
-            new_pos = old_pos + @movement
+            new_pos = old_pos + @movement * mov_amt
 
             collision_vector = @level.check_collision(old_pos, new_pos, Player::PLAYER_SIZE, Player::PLAYER_SIZE)
             @movement *= collision_vector
