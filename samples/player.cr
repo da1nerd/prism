@@ -7,7 +7,7 @@ require "./collide_move.cr"
 class Player < GameObject
     MOUSE_SENSITIVITY = 0.4375f32
     MOVEMENT_SPEED = 5f32
-    DEFAULT_HEIGHT = 0.5f32
+    DEFAULT_HEIGHT = 0.4375f32
     PLAYER_SIZE = 0.2f32
 
     def initialize(position : Vector2f, level : LevelMap, height : Float32 = DEFAULT_HEIGHT)

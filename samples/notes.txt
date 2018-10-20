@@ -9,3 +9,6 @@
 - commonly used vector constants (zero vector, 1 vector, pointing along an axis, etc.)
 - better window integration in the game engine.
 - centralized "level" or "scene" class that holds the data the game is using.
+
+- make easier way to generate mesh
+- have a nice way of generating texture coordinates
