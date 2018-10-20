@@ -1,24 +1,42 @@
 require "../src/prism"
 require "./position_mask.cr"
+require "./position_lock.cr"
+require "./collide_move.cr"
 
 # Represents a player in the game
 class Player < GameObject
     MOUSE_SENSITIVITY = 0.4375f32
     MOVEMENT_SPEED = 5f32
     DEFAULT_HEIGHT = 0.5f32
+    PLAYER_SIZE = 0.3f32
 
-    def initialize(position : Vector2f, height : Float32 = DEFAULT_HEIGHT)
+    def initialize(position : Vector2f, level : LevelMap, height : Float32 = DEFAULT_HEIGHT)
         super()
         @look = FreeLook.new(MOUSE_SENSITIVITY)
-        @move = FreeMove.new(MOVEMENT_SPEED)
+        @move = CollideMove.new(MOVEMENT_SPEED, level)
         # TODO: make better way to get window dimensions
         @cam = Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)
         @position_mask = PositionMask.new(Vector3f.new(1f32, 0f32, 1f32))
+        @position_lock = PositionLock.new(Vector3f.new(0, height, 0))
 
-        camera = GameObject.new().add_component(@look).add_component(@move).add_component(@cam)
-        camera.add_component(@position_mask)
+        self.add_component(@look)
+        self.add_component(@cam)
+        self.add_component(@move)
 
-        self.add_object(camera)
+        # camera = GameObject.new().add_component(@look).add_component(@move).add_component(@cam)
+        self.add_component(@position_mask)
+        self.add_component(@position_lock)
+
+        # self.add_object(camera)
         self.transform.pos = Vector3f.new(position.x, height, position.y)
     end
+
+    # returns the player's next movement
+    # def movement
+    #     @move.movement
+    # end
+
+    # def movement=(vector : Vector3f)
+    #     @move.movement = vector
+    # end
 end

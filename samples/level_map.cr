@@ -168,4 +168,51 @@ class LevelMap < GameComponent
       exit 1
     end
   end
+
+  # Checks if a collision occured and stops movement along the appropriate axis.
+  def check_collision(old_pos : Vector3f, new_pos : Vector3f, object_width : Float32, object_length : Float32) : Vector3f
+    collision_vector = Vector2f.new(1, 1)
+    movement_vector = new_pos - old_pos
+
+    if movement_vector.length > 0
+        block_size = Vector2f.new(SPOT_WIDTH, SPOT_LENGTH)
+        object_size = Vector2f.new(object_width, object_length)
+
+        old_pos2 = old_pos.xz
+        new_pos2 = new_pos.xz
+
+        0.upto(@level.width - 1) do |i|
+          0.upto(@level.height - 1) do |j|
+            if @level.pixel(i, j).black?
+              collision_vector = rect_collide(old_pos2, new_pos2, object_size, block_size * Vector2f.new(i.to_f32, j.to_f32), block_size)
+            end
+          end
+        end
+    end
+
+    return Vector3f.new(collision_vector.x, 0, collision_vector.y)
+  end
+
+  private def rect_collide(old_pos : Vector2f, new_pos : Vector2f, player_size : Vector2f, obj_pos : Vector2f, obj_size : Vector2f) : Vector2f
+    result = Vector2f.new(0, 0)
+
+    # x axis
+    x_can_move = new_pos.x + player_size.x < obj_pos.x || new_pos.x - player_size.x > obj_pos.x + obj_size.x * obj_size.x
+    y_can_move = old_pos.y + player_size.y < obj_pos.y || old_pos.y - player_size.y > obj_pos.y + obj_size.y * obj_size.y
+    if x_can_move || y_can_move
+      result.x = 1f32
+    end
+
+    # y axis
+    x_can_move = old_pos.x + player_size.x < obj_pos.x || old_pos.x - player_size.x > obj_pos.x + obj_size.x * obj_size.x
+    y_can_move = new_pos.y + player_size.y < obj_pos.y || new_pos.y - player_size.y > obj_pos.y + obj_size.y * obj_size.y
+    if x_can_move || y_can_move
+      result.y = 1f32
+    end
+    if result.x == 0 || result.y == 0
+      puts "#{result.x}x#{result.y}"
+    end
+    return result
+  end
+
 end

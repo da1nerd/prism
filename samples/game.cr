@@ -1,23 +1,17 @@
 require "lib_gl"
 require "../src/prism"
 require "./look_at_component.cr"
-require "./level_map.cr"
-require "./player.cr"
+require "./level.cr"
 
 include Prism
 
 class TestGame < Prism::Game
-  @level : LevelMap?
+  @level : Level?
 
   def init
-    level = LevelMap.new("level0.png", "WolfCollection.png")
+    level = Level.new("level0.png", "WolfCollection.png")
     @level = level
-
-    level1 = GameObject.new().add_component(level)
-    add_object(level1)
-
-    player = Player.new(Vector2f.new(7, 7))
-    add_object(player)
+    add_object(level)
 
     # TODO: move lighting into level
     directional_light_object = GameObject.new()
