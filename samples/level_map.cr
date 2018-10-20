@@ -12,8 +12,10 @@ class LevelMap < GameComponent
   @mesh : Mesh?
   @level : Bitmap
   @material : Material
+  @walls : Array(Vector2f)
 
   def initialize(levelName : String, textureName : String)
+    @walls = [] of Vector2f
     @level = Bitmap.new(levelName).flip_y
     @material = Material.new
     @material.add_texture("diffuse", Texture.new(textureName))
@@ -95,6 +97,7 @@ class LevelMap < GameComponent
     0.upto(@level.width - 1) do |i|
       0.upto(@level.height - 1) do |j|
         if @level.pixel(i, j).black?
+          @walls.push(Vector2f.new(i.to_f32, j.to_f32))
           next
         end
 
@@ -178,15 +181,8 @@ class LevelMap < GameComponent
         block_size = Vector2f.new(SPOT_WIDTH, SPOT_LENGTH)
         object_size = Vector2f.new(object_width, object_length)
 
-        old_pos2 = old_pos.xz
-        new_pos2 = new_pos.xz
-
-        0.upto(@level.width - 1) do |i|
-          0.upto(@level.height - 1) do |j|
-            if @level.pixel(i, j).black?
-              collision_vector = rect_collide(old_pos2, new_pos2, object_size, block_size * Vector2f.new(i.to_f32, j.to_f32), block_size)
-            end
-          end
+        0.upto(@walls.size - 1) do |i|
+          collision_vector = collision_vector * rect_collide(old_pos.xz, new_pos.xz, object_size, block_size * @walls[i], block_size)
         end
     end
 
@@ -196,8 +192,16 @@ class LevelMap < GameComponent
   private def rect_collide(old_pos : Vector2f, new_pos : Vector2f, player_size : Vector2f, obj_pos : Vector2f, obj_size : Vector2f) : Vector2f
     result = Vector2f.new(0, 0)
 
+  
+    player_right_edge = new_pos.x + player_size.x
+    player_left_edge = new_pos.x - player_size.x
+
+    object_right_edge = obj_pos.x + obj_size.x * obj_size.x
+    object_left_edge = obj_pos.x
+
     # x axis
-    x_can_move = new_pos.x + player_size.x < obj_pos.x || new_pos.x - player_size.x > obj_pos.x + obj_size.x * obj_size.x
+    # players right edge < objects left edge || players left edge > object's right edge
+    x_can_move = player_right_edge < object_left_edge || player_left_edge > object_right_edge
     y_can_move = old_pos.y + player_size.y < obj_pos.y || old_pos.y - player_size.y > obj_pos.y + obj_size.y * obj_size.y
     if x_can_move || y_can_move
       result.x = 1f32
@@ -209,9 +213,7 @@ class LevelMap < GameComponent
     if x_can_move || y_can_move
       result.y = 1f32
     end
-    if result.x == 0 || result.y == 0
-      puts "#{result.x}x#{result.y}"
-    end
+
     return result
   end
 
