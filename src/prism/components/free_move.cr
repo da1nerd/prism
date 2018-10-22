@@ -2,7 +2,6 @@ require "./game_component.cr"
 
 module Prism
   class FreeMove < GameComponent
-
     getter movement
     setter movement
 
