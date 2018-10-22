@@ -20,18 +20,7 @@ class Level1 < Level
         player = Player.new(Vector2f.new(7, 7), self)
         self.add_object(player)
 
-        material = Material.new
-        material.add_texture("diffuse", Texture.new("WolfCollection.png"))
-        material.add_float("specularIntensity", 1)
-        material.add_float("specularPower", 8)
-        door = Door.new(material)
-        door_obj = GameObject.new.add_component(door)
-        door_obj.transform.pos = Vector3f.new(8, 0, 7)
-
-        self.add_object(door_obj)
-        
         @obstacles = @map.obstacles.dup()
-        @obstacles.push(door.as_obstacle)
     end
 
     def obstacles
