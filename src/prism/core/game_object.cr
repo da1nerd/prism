@@ -30,7 +30,7 @@ module Prism
       end
       child.transform.parent = @transform
     end
-    
+
     # Alias for add_object
     def add_child(child : GameObject)
       add_object(child)
