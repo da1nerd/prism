@@ -1,5 +1,6 @@
 require "../src/prism"
 require "./obstacle.cr"
+require "./door.cr"
 
 include Prism
 
@@ -14,8 +15,12 @@ class LevelMap < GameComponent
   @level : Bitmap
   @material : Material
   @walls : Array(Obstacle)
+  @objects : Array(GameObject)
+
+  getter objects
 
   def initialize(levelName : String, textureName : String)
+    @objects = [] of GameObject
     @walls = [] of Obstacle
     @level = Bitmap.new(levelName).flip_y
     @material = Material.new
@@ -90,6 +95,36 @@ class LevelMap < GameComponent
     end
   end
 
+  private def add_door(x : Int32, y : Int32)
+    door = GameObject.new().add_component(Door.new(@material))
+
+    # detect axis
+    x_door = @level.pixel(x, y - 1).black? && @level.pixel(x, y + 1).black?
+    y_door = @level.pixel(x - 1, y).black? && @level.pixel(x + 1, y).black?
+
+    if !(x_door ^ y_door)
+      puts "Error: Level generation has failed! You placed a door in an invalid location at #{x}, #{y}"
+      exit 1
+    end
+
+    if y_door
+      door.transform.pos = Vector3f.new(x.to_f32, 0, y.to_f32 + SPOT_LENGTH / 2f32)
+    end
+
+    if x_door
+      door.transform.pos = Vector3f.new(x + SPOT_WIDTH / 2f32, 0, y.to_f32 + 1)
+      door.transform.rot = Quaternion.new(Vector3f.new(0, 1, 0), Prism.to_rad(90f32))
+    end
+
+    @objects.push(door)
+  end
+
+  private def add_special(blue_value : UInt8, x : Int32, y : Int32)
+    if blue_value == 16
+      add_door(x, y)
+    end
+  end
+
   def generate_level
     vertices = [] of Vertex
     indices = [] of LibGL::Int
@@ -103,6 +138,8 @@ class LevelMap < GameComponent
         end
 
         tex_coords = calc_tex_coords(@level.pixel(i, j).green) # floor and ceiling textures follow the green channel
+
+        add_special(@level.pixel(i, j).blue, i, j)
 
         # generate floor
         add_face(indices, vertices.size, true)

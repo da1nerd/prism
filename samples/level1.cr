@@ -13,6 +13,10 @@ class Level1 < Level
         @map = LevelMap.new("level0.png", "WolfCollection.png")
         self.add_component(@map)
 
+        0.upto(@map.objects.size - 1) do |i|
+            self.add_object(@map.objects[i])
+        end
+
         player = Player.new(Vector2f.new(7, 7), self)
         self.add_object(player)
 
