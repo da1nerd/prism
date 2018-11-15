@@ -38,6 +38,7 @@ module Prism
     KEY_SHIFT      =  112
     KEY_LEFT_CTRL  =  114
     KEY_RIGHT_CTRL =  115
+    KEY_E          =  101
     KEY_W          =  119
     KEY_S          =  115
     KEY_A          =   97
@@ -57,6 +58,9 @@ module Prism
       0.upto(NUM_MOUSEBUTTONS - 1) do |i|
         @last_mouse[i] = get_mouse(i)
       end
+
+      # debug pressed keys.
+      # puts @window.get_keys_down
     end
 
     # Checks if the key is currently down

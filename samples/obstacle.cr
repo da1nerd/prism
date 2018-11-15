@@ -1,5 +1,4 @@
-class Obstacle
-    getter position, size
-    def initialize(@position : Vector3f, @size : Vector3f)
-    end
+module Obstacle
+    abstract def position : Vector3f
+    abstract def size : Vector3f
 end

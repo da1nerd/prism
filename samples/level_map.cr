@@ -1,6 +1,7 @@
 require "../src/prism"
 require "./obstacle.cr"
 require "./door.cr"
+require "./wall.cr"
 
 include Prism
 
@@ -10,18 +11,19 @@ class LevelMap < GameComponent
   SPOT_HEIGHT  = 1f32
   NUM_TEX_EXP  =    4
   NUM_TEXTURES = 2**NUM_TEX_EXP
+  DOOR_OPEN_MOVEMENT_AMOUNT = 0.9f32
 
   @mesh : Mesh?
   @level : Bitmap
   @material : Material
-  @walls : Array(Obstacle)
+  @obstacles : Array(Obstacle)
   @objects : Array(GameObject)
 
   getter objects
 
   def initialize(levelName : String, textureName : String)
     @objects = [] of GameObject
-    @walls = [] of Obstacle
+    @obstacles = [] of Obstacle
     @level = Bitmap.new(levelName).flip_y
     @material = Material.new
     @material.add_texture("diffuse", Texture.new(textureName))
@@ -30,6 +32,7 @@ class LevelMap < GameComponent
     generate_level
   end
 
+  # Add a face on the level such as a wall or ceiling.
   private def add_face(indices : Array(Int32), start_location : Int32, direction : Bool)
     if direction
       indices.push(start_location + 2)
@@ -96,8 +99,6 @@ class LevelMap < GameComponent
   end
 
   private def add_door(x : Int32, y : Int32)
-    door = GameObject.new().add_component(Door.new(@material))
-
     # detect axis
     x_door = @level.pixel(x, y - 1).black? && @level.pixel(x, y + 1).black?
     y_door = @level.pixel(x - 1, y).black? && @level.pixel(x + 1, y).black?
@@ -106,6 +107,18 @@ class LevelMap < GameComponent
       puts "Error: Level generation has failed! You placed a door in an invalid location at #{x}, #{y}"
       exit 1
     end
+
+    open_movement = Vector3f.new(0, 0, 0)
+    if y_door
+      open_movement = Vector3f.new(DOOR_OPEN_MOVEMENT_AMOUNT, 0, 0)
+    end
+
+    if x_door
+      open_movement = Vector3f.new(0, 0, DOOR_OPEN_MOVEMENT_AMOUNT)
+    end
+
+    door_component = Door.new(@material, open_movement)
+    door = GameObject.new().add_component(door_component)
 
     if y_door
       door.transform.pos = Vector3f.new(x.to_f32, 0, y.to_f32 + SPOT_LENGTH / 2f32)
@@ -117,6 +130,7 @@ class LevelMap < GameComponent
     end
 
     @objects.push(door)
+    @obstacles.push(door_component)
   end
 
   private def add_special(blue_value : UInt8, x : Int32, y : Int32)
@@ -133,7 +147,7 @@ class LevelMap < GameComponent
     0.upto(@level.width - 1) do |i|
       0.upto(@level.height - 1) do |j|
         if @level.pixel(i, j).black?
-          @walls.push(Obstacle.new(Vector3f.new(i.to_f32, 0, j.to_f32), Vector3f.new(SPOT_WIDTH, SPOT_HEIGHT, SPOT_LENGTH)))
+          @obstacles.push(Wall.new(Vector3f.new(i.to_f32, 0, j.to_f32), Vector3f.new(SPOT_WIDTH, SPOT_HEIGHT, SPOT_LENGTH)))
           next
         end
 
@@ -211,6 +225,6 @@ class LevelMap < GameComponent
   end
 
   def obstacles : Array(Obstacle)
-    @walls
+    @obstacles
   end
 end
