@@ -221,7 +221,6 @@ class LevelMap < GameComponent
 
   def input(delta : Float32, input : Input)
     if input.get_key_down(Input::KEY_E)
-      puts "pressing key key"
       0.upto(@doors.size - 1) do |i|
         if (@doors[i].transform.pos - @player.transform.pos).length < DOOR_OPEN_DISTANCE
           @doors[i].open

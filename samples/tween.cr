@@ -22,7 +22,7 @@ class Tween
     def get_step : Float32
         return 0f32 unless @frame > 0
         return 1f32 unless @frame < @total_frames
-        return @total_frames.to_f32 / @frame.to_f32
+        return @frame.to_f32 / @total_frames.to_f32
     end
 
     # Sets the tween progress back to the beginning
