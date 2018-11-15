@@ -13,8 +13,8 @@ class CollisionDetector
             object_size = Vector2f.new(object_width, object_length)
 
             0.upto(@obstacles.size - 1) do |i|
-            obstacle = @obstacles[i]
-            collision_vector = collision_vector * rect_collide(old_pos.xz, new_pos.xz, object_size, obstacle.position.xz, obstacle.size.xz)
+                obstacle = @obstacles[i]
+                collision_vector = collision_vector * rect_collide(old_pos.xz, new_pos.xz, object_size, obstacle.position.xz, obstacle.size.xz)
             end
         end
 
@@ -30,7 +30,7 @@ class CollisionDetector
         x_can_move = new_pos.x + player_size.x < obj_pos.x || new_pos.x - player_size.x > obj_pos.x + obj_size.x * obj_size.x
         y_can_move = old_pos.y + player_size.y < obj_pos.y || old_pos.y - player_size.y > obj_pos.y + obj_size.y * obj_size.y
         if x_can_move || y_can_move
-        result.x = 1f32
+            result.x = 1f32
         end
 
         distance_to_right_edge = obj_pos.x - (old_pos.x + player_size.x)
@@ -40,7 +40,7 @@ class CollisionDetector
         x_can_move = old_pos.x + player_size.x < obj_pos.x || old_pos.x - player_size.x > obj_pos.x + obj_size.x * obj_size.x
         y_can_move = new_pos.y + player_size.y < obj_pos.y || new_pos.y - player_size.y > obj_pos.y + obj_size.y * obj_size.y
         if x_can_move || y_can_move
-        result.y = 1f32
+            result.y = 1f32
         end
 
         return result

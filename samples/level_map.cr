@@ -122,7 +122,7 @@ class LevelMap < GameComponent
     end
 
     if x_door
-      open_movement = Vector3f.new(0, 0, DOOR_OPEN_MOVEMENT_AMOUNT)
+      open_movement = Vector3f.new(0, 0, -DOOR_OPEN_MOVEMENT_AMOUNT)
     end
 
     door_component = Door.new(@material, open_movement)

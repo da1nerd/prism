@@ -11,7 +11,8 @@ class Door < GameComponent
     LENGTH = 1f32
     WIDTH = 0.125f32
     HEIGHT = 1f32
-    TIME_TO_OPEN = 1f32
+    TIME_TO_OPEN = 0.5f32
+    CLOSE_DELAY = 2.0f32
     SIZE = Vector3f.new(LENGTH, HEIGHT, WIDTH)
 
     @@mesh : Mesh?
@@ -68,11 +69,13 @@ class Door < GameComponent
     end
 
     def position
-        self.transform.pos
+        # TODO: the position is wrong on rotated doors
+        self.transform.get_transformed_pos
     end
 
     def size
-        SIZE
+        # TODO: cache this
+        SIZE.rotate(self.transform.get_transformed_rot)
     end
 
     # Returns or generates the door tween
@@ -118,7 +121,7 @@ class Door < GameComponent
     def open
         return if @is_opening || @is_closing
         reset_tween
-        
+        # TODO: auto close the door
         @is_opening = self.transform.pos == self.get_close_position
         @is_closing = self.transform.pos == self.get_open_position
     end
