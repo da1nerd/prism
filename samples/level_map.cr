@@ -13,7 +13,7 @@ class LevelMap < GameComponent
   NUM_TEX_EXP               =    4
   NUM_TEXTURES              = 2**NUM_TEX_EXP
   DOOR_OPEN_MOVEMENT_AMOUNT = 0.9f32
-  DOOR_OPEN_DISTANCE = 1f32
+  DOOR_OPEN_DISTANCE = 2.5f32
 
   @mesh : Mesh?
   @level : Bitmap

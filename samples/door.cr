@@ -114,10 +114,13 @@ class Door < GameComponent
     end
 
     # Opens the door
+    # Toggles the door being opened and closed
     def open
-        return if @is_opening
+        return if @is_opening || @is_closing
         reset_tween
-        @is_opening = true
+        
+        @is_opening = self.transform.pos == self.get_close_position
+        @is_closing = self.transform.pos == self.get_open_position
     end
 
     def input(delta : Float32, input : Input)
@@ -127,12 +130,13 @@ class Door < GameComponent
         close_position = self.get_close_position
         open_position = self.get_open_position
 
-        if @is_opening
+        if @is_opening || @is_closing
             tween = get_tween(delta, TIME_TO_OPEN)
             lerp_factor = tween.step
-            self.transform.pos = self.transform.pos.lerp(open_position, lerp_factor)
+            self.transform.pos = self.transform.pos.lerp(@is_opening ? open_position : close_position, lerp_factor)
             if lerp_factor == 1
                 @is_opening = false
+                @is_closing = false
             end
         end
     end
