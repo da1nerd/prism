@@ -1,13 +1,14 @@
 require "../src/prism"
+require "./collision_detector.cr"
 
 # Custom movement component that provides hacky collision detection.
 class CollideMove < GameComponent
 
-    def initialize(speed : Float32, level : Level)
-        initialize(speed, level, Input::KEY_W, Input::KEY_S, Input::KEY_A, Input::KEY_D)
+    def initialize(speed : Float32, detector : CollisionDetector)
+        initialize(speed, detector, Input::KEY_W, Input::KEY_S, Input::KEY_A, Input::KEY_D)
     end
 
-    def initialize(@speed : Float32, @level : Level, @forward_key : Int32, @back_key : Int32, @left_key : Int32, @right_key : Int32)
+    def initialize(@speed : Float32, @detector : CollisionDetector, @forward_key : Int32, @back_key : Int32, @left_key : Int32, @right_key : Int32)
         @movement = Vector3f.new(0, 0, 0)
     end
 
@@ -36,7 +37,7 @@ class CollideMove < GameComponent
             old_pos = self.transform.pos
             new_pos = old_pos + @movement * mov_amt
 
-            collision_vector = @level.check_collision(old_pos, new_pos, Player::PLAYER_SIZE, Player::PLAYER_SIZE)
+            collision_vector = @detector.check_collision(old_pos, new_pos, Player::PLAYER_SIZE, Player::PLAYER_SIZE)
             @movement *= collision_vector
             move(@movement, mov_amt)
         end

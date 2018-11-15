@@ -75,12 +75,6 @@ class Door < GameComponent
         SIZE
     end
 
-    # Returns the door as an obstacle
-    # TODO: perhaps game objects should have this as an empty method or maybe an abstract method.
-    # def as_obstacle : Obstacle
-    #     Obstacle.new(self.transform.pos, Vector3f.new(LENGTH, HEIGHT, WIDTH))
-    # end
-
     # Returns or generates the door tween
     private def get_tween(delta : Float32, key_frame_time : Float32) : Tween
         if tween = @tween

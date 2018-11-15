@@ -2,6 +2,7 @@ require "../src/prism"
 require "./obstacle.cr"
 require "./door.cr"
 require "./wall.cr"
+require "./collision_detector.cr"
 
 include Prism
 
@@ -29,6 +30,9 @@ class LevelMap < GameComponent
     @material.add_texture("diffuse", Texture.new(textureName))
     @material.add_float("specularIntensity", 1)
     @material.add_float("specularPower", 8)
+
+    @player = Player.new(Vector2f.new(7, 7), CollisionDetector.new(@obstacles))
+    @objects.push(@player)
     generate_level
   end
 
@@ -211,6 +215,9 @@ class LevelMap < GameComponent
   end
 
   def input(transform : Transform, delta : Float32)
+  end
+
+  def door_input(transform : Transform, delta : Float32, player : Player)
   end
 
   def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
