@@ -7,22 +7,25 @@ require "./collision_detector.cr"
 include Prism
 
 class LevelMap < GameComponent
-  SPOT_WIDTH   = 1f32
-  SPOT_LENGTH  = 1f32
-  SPOT_HEIGHT  = 1f32
-  NUM_TEX_EXP  =    4
-  NUM_TEXTURES = 2**NUM_TEX_EXP
+  SPOT_WIDTH                = 1f32
+  SPOT_LENGTH               = 1f32
+  SPOT_HEIGHT               = 1f32
+  NUM_TEX_EXP               =    4
+  NUM_TEXTURES              = 2**NUM_TEX_EXP
   DOOR_OPEN_MOVEMENT_AMOUNT = 0.9f32
+  DOOR_OPEN_DISTANCE = 1f32
 
   @mesh : Mesh?
   @level : Bitmap
   @material : Material
   @obstacles : Array(Obstacle)
   @objects : Array(GameObject)
+  @doors : Array(Door)
 
   getter objects
 
   def initialize(levelName : String, textureName : String)
+    @doors = [] of Door
     @objects = [] of GameObject
     @obstacles = [] of Obstacle
     @level = Bitmap.new(levelName).flip_y
@@ -31,9 +34,10 @@ class LevelMap < GameComponent
     @material.add_float("specularIntensity", 1)
     @material.add_float("specularPower", 8)
 
+    # TODO: orient the player based on the level data
     @player = Player.new(Vector2f.new(7, 7), CollisionDetector.new(@obstacles))
     @objects.push(@player)
-    generate_level
+    self.generate_level
   end
 
   # Add a face on the level such as a wall or ceiling.
@@ -75,7 +79,7 @@ class LevelMap < GameComponent
       x_higher,
       x_lower,
       y_higher,
-      y_lower
+      y_lower,
     ]
   end
 
@@ -122,7 +126,7 @@ class LevelMap < GameComponent
     end
 
     door_component = Door.new(@material, open_movement)
-    door = GameObject.new().add_component(door_component)
+    door = GameObject.new.add_component(door_component)
 
     if y_door
       door.transform.pos = Vector3f.new(x.to_f32, 0, y.to_f32 + SPOT_LENGTH / 2f32)
@@ -135,6 +139,7 @@ class LevelMap < GameComponent
 
     @objects.push(door)
     @obstacles.push(door_component)
+    @doors.push(door_component)
   end
 
   private def add_special(blue_value : UInt8, x : Int32, y : Int32)
@@ -214,10 +219,15 @@ class LevelMap < GameComponent
   def update(transform : Transform, delta : Float32)
   end
 
-  def input(transform : Transform, delta : Float32)
-  end
-
-  def door_input(transform : Transform, delta : Float32, player : Player)
+  def input(delta : Float32, input : Input)
+    if input.get_key_down(Input::KEY_E)
+      puts "pressing key key"
+      0.upto(@doors.size - 1) do |i|
+        if (@doors[i].transform.pos - @player.transform.pos).length < DOOR_OPEN_DISTANCE
+          @doors[i].open
+        end
+      end
+    end
   end
 
   def render(shader : Shader, rendering_engine : RenderingEngineProtocol)

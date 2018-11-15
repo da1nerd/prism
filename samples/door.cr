@@ -121,10 +121,6 @@ class Door < GameComponent
     end
 
     def input(delta : Float32, input : Input)
-        # just open all the doors for now
-        if input.get_key_down(Input::KEY_E)
-            self.open
-        end
     end
 
     def update(delta : Float32)
