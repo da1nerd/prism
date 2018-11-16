@@ -4,6 +4,7 @@ require "./quanternion"
 module Prism
   class Vector3f
     getter x, y, z
+    setter x, y, z
 
     def initialize(@x : Float32, @y : Float32, @z : Float32)
     end

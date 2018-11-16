@@ -1,4 +1,5 @@
 require "../src/prism"
+require "./obstacle.cr"
 
 include Prism
 
@@ -11,8 +12,9 @@ enum MonsterState
 end
 
 class Monster < GameComponent
+    include Obstacle
 
-    SCALE = 0.7f32
+    SCALE = 0.55f32
     SIZE_Y = SCALE
     SIZE_X = SIZE_Y / (1.95 * 2)
     START = 0f32
@@ -25,6 +27,8 @@ class Monster < GameComponent
     TEX_MIN_X = -(1 - OFFSET_X)
     TEX_MAX_Y = 1 - OFFSET_Y
     TEX_MIN_Y = - OFFSET_Y
+
+    SIZE = Vector3f.new(0.1, 0.1, 0.1)
 
     @@mesh : Mesh?
     @material : Material
@@ -42,10 +46,10 @@ class Monster < GameComponent
             # create new mesh
 
             verticies = [
-                Vertex.new(Vector3f.new(-SIZE_X, START, START), Vector2f.new(TEX_MAX_X, TEX_MAX_Y)),
-                Vertex.new(Vector3f.new(-SIZE_X, SIZE_Y, START), Vector2f.new(TEX_MAX_X, TEX_MIN_Y)),
-                Vertex.new(Vector3f.new(SIZE_X, SIZE_Y, START), Vector2f.new(TEX_MIN_X, TEX_MIN_Y)),
-                Vertex.new(Vector3f.new(SIZE_X, START, START), Vector2f.new(TEX_MIN_X, TEX_MAX_Y))
+                Vertex.new(Vector3f.new(SIZE_X, START, START), Vector2f.new(TEX_MAX_X, TEX_MAX_Y)),
+                Vertex.new(Vector3f.new(SIZE_X, SIZE_Y, START), Vector2f.new(TEX_MAX_X, TEX_MIN_Y)),
+                Vertex.new(Vector3f.new(-SIZE_X, SIZE_Y, START), Vector2f.new(TEX_MIN_X, TEX_MIN_Y)),
+                Vertex.new(Vector3f.new(-SIZE_X, START, START), Vector2f.new(TEX_MIN_X, TEX_MAX_Y))
             ]
             indicies = [
                 0, 1, 2,
@@ -53,6 +57,14 @@ class Monster < GameComponent
             ]
             @@mesh = Mesh.new(verticies, indicies, true)
         end
+    end
+
+    def position
+        self.transform.pos
+    end
+
+    def size
+        SIZE.rotate(self.transform.get_transformed_rot)
     end
 
     private def idle_update(delta : Float32)

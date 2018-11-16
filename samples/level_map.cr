@@ -4,7 +4,7 @@ require "./door.cr"
 require "./wall.cr"
 require "./collision_detector.cr"
 require "./monster.cr"
-require "./look_at_component.cr"
+require "./monster_look.cr"
 
 include Prism
 
@@ -45,10 +45,10 @@ class LevelMap < GameComponent
     self.generate_level
 
     monster_component = Monster.new()
-    monster = GameObject.new.add_component(monster_component)
-    # monster.add_component(LookAtComponent.new)
+    monster = GameObject.new.add_component(MonsterLook.new).add_component(monster_component)
     monster.transform.pos = Vector3f.new(8, 0, 8)
     @objects.push(monster)
+    @obstacles.push(monster_component)
   end
 
   # Add a face on the level such as a wall or ceiling.
