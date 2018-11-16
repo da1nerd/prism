@@ -70,12 +70,10 @@ class Door < GameComponent
     end
 
     def position
-        # TODO: the position is wrong on rotated doors
         self.transform.pos
     end
 
     def size
-        # TODO: cache this
         SIZE.rotate(self.transform.rot)
     end
 

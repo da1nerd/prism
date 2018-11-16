@@ -122,7 +122,7 @@ class LevelMap < GameComponent
     end
 
     if x_door
-      open_movement = Vector3f.new(0, 0, -DOOR_OPEN_MOVEMENT_AMOUNT)
+      open_movement = Vector3f.new(0, 0, DOOR_OPEN_MOVEMENT_AMOUNT)
     end
 
     door_component = Door.new(@material, open_movement)
@@ -133,8 +133,8 @@ class LevelMap < GameComponent
     end
 
     if x_door
-      door.transform.pos = Vector3f.new(x + SPOT_WIDTH / 2f32, 0, y.to_f32 + 1)
-      door.transform.rot = Quaternion.new(Vector3f.new(0, 1, 0), Prism.to_rad(90f32))
+      door.transform.pos = Vector3f.new(x + SPOT_WIDTH / 2f32, 0, y.to_f32)
+      door.transform.rot = Quaternion.new(Vector3f.new(0, 1, 0), Prism.to_rad(-90f32))
     end
 
     @objects.push(door)
