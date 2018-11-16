@@ -8,6 +8,7 @@ class Door < GameComponent
     include Obstacle
 
     # NOTE: add top and bottom face if you need hight less than 1
+    START = 0f32
     LENGTH = 1f32
     WIDTH = 0.125f32
     HEIGHT = 1f32
@@ -31,25 +32,25 @@ class Door < GameComponent
             # create new mesh
 
             verticies = [
-                Vertex.new(Vector3f.new(0, 0, 0), Vector2f.new(0.5, 1)),
-                Vertex.new(Vector3f.new(0, HEIGHT, 0), Vector2f.new(0.5, 0.75)),
-                Vertex.new(Vector3f.new(LENGTH, HEIGHT, 0), Vector2f.new(0.75, 0.75)),
-                Vertex.new(Vector3f.new(LENGTH, 0, 0), Vector2f.new(0.75, 1)),
+                Vertex.new(Vector3f.new(START, START, START), Vector2f.new(0.5, 1)),
+                Vertex.new(Vector3f.new(START, HEIGHT, START), Vector2f.new(0.5, 0.75)),
+                Vertex.new(Vector3f.new(LENGTH, HEIGHT, START), Vector2f.new(0.75, 0.75)),
+                Vertex.new(Vector3f.new(LENGTH, START, START), Vector2f.new(0.75, 1)),
 
-                Vertex.new(Vector3f.new(0, 0, 0), Vector2f.new(0.73, 1)),
-                Vertex.new(Vector3f.new(0, HEIGHT, 0), Vector2f.new(0.73, 0.75)),
-                Vertex.new(Vector3f.new(0, HEIGHT, WIDTH), Vector2f.new(0.75, 0.75)),
-                Vertex.new(Vector3f.new(0, 0, WIDTH), Vector2f.new(0.75, 1)),
+                Vertex.new(Vector3f.new(START, START, START), Vector2f.new(0.73, 1)),
+                Vertex.new(Vector3f.new(START, HEIGHT, START), Vector2f.new(0.73, 0.75)),
+                Vertex.new(Vector3f.new(START, HEIGHT, WIDTH), Vector2f.new(0.75, 0.75)),
+                Vertex.new(Vector3f.new(START, START, WIDTH), Vector2f.new(0.75, 1)),
 
-                Vertex.new(Vector3f.new(0, 0, WIDTH), Vector2f.new(0.5, 1)),
-                Vertex.new(Vector3f.new(0, HEIGHT, WIDTH), Vector2f.new(0.5, 0.75)),
+                Vertex.new(Vector3f.new(START, START, WIDTH), Vector2f.new(0.5, 1)),
+                Vertex.new(Vector3f.new(START, HEIGHT, WIDTH), Vector2f.new(0.5, 0.75)),
                 Vertex.new(Vector3f.new(LENGTH, HEIGHT, WIDTH), Vector2f.new(0.75, 0.75)),
-                Vertex.new(Vector3f.new(LENGTH, 0, WIDTH), Vector2f.new(0.75, 1)),
+                Vertex.new(Vector3f.new(LENGTH, START, WIDTH), Vector2f.new(0.75, 1)),
 
-                Vertex.new(Vector3f.new(LENGTH, 0, 0), Vector2f.new(0.73, 1)),
-                Vertex.new(Vector3f.new(LENGTH, HEIGHT, 0), Vector2f.new(0.73, 0.75)),
+                Vertex.new(Vector3f.new(LENGTH, START, START), Vector2f.new(0.73, 1)),
+                Vertex.new(Vector3f.new(LENGTH, HEIGHT, START), Vector2f.new(0.73, 0.75)),
                 Vertex.new(Vector3f.new(LENGTH, HEIGHT, WIDTH), Vector2f.new(0.75, 0.75)),
-                Vertex.new(Vector3f.new(LENGTH, 0, WIDTH), Vector2f.new(0.75, 1))
+                Vertex.new(Vector3f.new(LENGTH, START, WIDTH), Vector2f.new(0.75, 1))
             ]
             indicies = [
                 0, 1, 2,
@@ -70,12 +71,12 @@ class Door < GameComponent
 
     def position
         # TODO: the position is wrong on rotated doors
-        self.transform.get_transformed_pos
+        self.transform.pos
     end
 
     def size
         # TODO: cache this
-        SIZE.rotate(self.transform.get_transformed_rot)
+        SIZE.rotate(self.transform.rot)
     end
 
     # Returns or generates the door tween

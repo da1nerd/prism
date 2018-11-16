@@ -7,7 +7,7 @@ require "./collision_detector.cr"
 # Represents a player in the game
 class Player < GameObject
     MOUSE_SENSITIVITY = 0.4375f32
-    MOVEMENT_SPEED = 5f32
+    MOVEMENT_SPEED = 6f32
     DEFAULT_HEIGHT = 0.4375f32
     PLAYER_SIZE = 0.2f32
 
