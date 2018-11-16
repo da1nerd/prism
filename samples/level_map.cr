@@ -26,11 +26,12 @@ class LevelMap < GameComponent
 
   getter objects
 
-  def initialize(levelName : String, wall_texture_name : String)
+  def initialize(level_name : String, wall_texture_name : String)
     @doors = [] of Door
     @objects = [] of GameObject
     @obstacles = [] of Obstacle
-    @level = Bitmap.new(levelName).flip_y
+    level_path = File.join("/res/bitmaps/", level_name)
+    @level = Bitmap.new(level_path).flip_y
 
     @wall_material = Material.new
     @wall_material.add_texture("diffuse", Texture.new(wall_texture_name))
