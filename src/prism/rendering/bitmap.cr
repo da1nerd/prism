@@ -33,10 +33,6 @@ module Prism
     def multiply_alpha! : Bitmap
       return self if @num_channels != 4
 
-      if @file_name == "/res/textures/SSWVA1.png"
-        puts @file_name
-      end
-
       0.upto(@width - 1) do |i|
         0.upto(@height - 1) do |j|
           offset = ((@width - i - 1) + j * @width) * @num_channels
