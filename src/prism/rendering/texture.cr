@@ -42,25 +42,24 @@ module Prism
     end
 
     # Loads a texture
-    #
-    # Returns the gl buffer id
     private def load_texture(file_name : String) : TextureResource
       ext = File.extname(file_name)
 
       # read texture data
-      bitmap = Bitmap.new(File.join("/res/textures/", file_name)).multiply_alpha!
+      bitmap = Bitmap.new(File.join("/res/textures/", file_name))
   
       # create texture
       resource = TextureResource.new
       LibGL.bind_texture(LibGL::TEXTURE_2D, resource.id)
 
-      # set the texture wrapping/filtering options
+      # wrapping options
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_WRAP_S, LibGL::REPEAT)
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_WRAP_T, LibGL::REPEAT)
-      LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MIN_FILTER, LibGL::NEAREST) # LibGL::LINEAR is better for higher quality images
+
+      # filtering options
+      LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MIN_FILTER, LibGL::NEAREST) # NOTE: LibGL::LINEAR is better for higher quality images
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MAG_FILTER, LibGL::NEAREST)
 
-      # TODO: I may need to pre multiply RGB with the alpha in order for the blending in the rendering engine to work. (LibGL.blend_func(LibGL::ONE, LibGL::ONE_MINUS_SRC_ALPHA))
       format  = bitmap.alpha? ? LibGL::RGBA : LibGL::RGB
       LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, format, bitmap.width, bitmap.height, 0, format, LibGL::UNSIGNED_BYTE, bitmap.pixels)
       LibGL.generate_mipmap(LibGL::TEXTURE_2D)

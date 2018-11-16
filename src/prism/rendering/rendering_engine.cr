@@ -55,6 +55,7 @@ module Prism
       LibGL.blend_equation(LibGL::FUNC_ADD)
       LibGL.blend_func(LibGL::ONE, LibGL::ONE_MINUS_SRC_ALPHA)
       # LibGL.blend_func(LibGL::SRC_ALPHA, LibGL::ONE_MINUS_SRC_ALPHA)
+
       LibGL.depth_mask(LibGL::FALSE)
       LibGL.depth_func(LibGL::EQUAL)
 
