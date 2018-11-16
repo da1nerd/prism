@@ -7,7 +7,6 @@ include Prism
 class Door < GameComponent
     include Obstacle
 
-    # NOTE: add top and bottom face if you need hight less than 1
     START = 0f32
     LENGTH = 1f32
     WIDTH = 0.125f32
@@ -20,17 +19,23 @@ class Door < GameComponent
 
     @material : Material
     @is_opening : Bool
+    @is_closing : Bool
     @close_position : Vector3f?
     @open_position: Vector3f?
     @open_movement : Vector3f
     @tween : Tween?
+    @time_opened : Float32
 
     def initialize(@material, @open_movement)
         @is_opening = false
+        @is_closing = false
+        @time_opened = 0
 
         if @@mesh == nil
             # create new mesh
 
+
+            # NOTE: add top and bottom face if you need hight less than 1
             verticies = [
                 Vertex.new(Vector3f.new(START, START, START), Vector2f.new(0.5, 1)),
                 Vertex.new(Vector3f.new(START, HEIGHT, START), Vector2f.new(0.5, 0.75)),
@@ -116,13 +121,12 @@ class Door < GameComponent
     end
 
     # Opens the door
-    # Toggles the door being opened and closed
     def open
         return if @is_opening || @is_closing
         reset_tween
-        # TODO: auto close the door
-        @is_opening = self.transform.pos == self.get_close_position
-        @is_closing = self.transform.pos == self.get_open_position
+        @is_opening = true
+        @is_closing = false
+        @time_opened = 0
     end
 
     def input(delta : Float32, input : Input)
@@ -132,13 +136,24 @@ class Door < GameComponent
         close_position = self.get_close_position
         open_position = self.get_open_position
 
-        if @is_opening || @is_closing
+        if @is_opening
             tween = get_tween(delta, TIME_TO_OPEN)
             lerp_factor = tween.step
-            self.transform.pos = self.transform.pos.lerp(@is_opening ? open_position : close_position, lerp_factor)
+            self.transform.pos = self.transform.pos.lerp(open_position, lerp_factor)
             if lerp_factor == 1
+                reset_tween
                 @is_opening = false
-                @is_closing = false
+                @is_closing = true
+            end
+        elsif @is_closing
+            @time_opened += delta
+            if @time_opened >= CLOSE_DELAY
+                tween = get_tween(delta, TIME_TO_OPEN)
+                lerp_factor = tween.step
+                self.transform.pos = self.transform.pos.lerp(close_position, lerp_factor)
+                if lerp_factor == 1
+                    @is_closing = false
+                end
             end
         end
     end
