@@ -1,14 +1,12 @@
 require "lib_gl"
 require "./resource_management/texture_resource"
+require "./bitmap.cr"
 
 module Prism
   class Texture
     @@loaded_textures = {} of String => TextureResource
     @resource : TextureResource
     @file_name : String
-    @width : LibGL::Int = 0
-    @height : LibGL::Int = 0
-    @pixels = [] of UInt8
 
     def initialize(@file_name : String)
       if @@loaded_textures.has_key?(@file_name)
@@ -50,9 +48,8 @@ module Prism
       ext = File.extname(file_name)
 
       # read texture data
-      path = File.join(File.dirname(PROGRAM_NAME), "/res/textures/", file_name)
-      data = LibTools.load_png(path, out @width, out @height, out num_channels)
-
+      bitmap = Bitmap.new(File.join("/res/textures/", file_name))
+  
       # create texture
       resource = TextureResource.new
       LibGL.bind_texture(LibGL::TEXTURE_2D, resource.id)
@@ -63,17 +60,10 @@ module Prism
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MIN_FILTER, LibGL::NEAREST) # LibGL::LINEAR is better for higher quality images
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MAG_FILTER, LibGL::NEAREST)
 
-      if data
-        # TODO: I may need to pre multiply RGB with the alpha in order for the blending in the rendering engine to work. (LibGL.blend_func(LibGL::ONE, LibGL::ONE_MINUS_SRC_ALPHA))
-        format  = num_channels == 4 ? LibGL::RGBA : LibGL::RGB
-        LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, format, @width, @height, 0, format, LibGL::UNSIGNED_BYTE, data)
-        LibGL.generate_mipmap(LibGL::TEXTURE_2D)
-        # TODO: free image data from stbi. see LibTools.
-        # e.g. stbi_image_free(data)
-      else
-        puts "Error: Failed to load texture data from #{path}"
-        exit 1
-      end
+      # TODO: I may need to pre multiply RGB with the alpha in order for the blending in the rendering engine to work. (LibGL.blend_func(LibGL::ONE, LibGL::ONE_MINUS_SRC_ALPHA))
+      format  = bitmap.alpha? ? LibGL::RGBA : LibGL::RGB
+      LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, format, bitmap.width, bitmap.height, 0, format, LibGL::UNSIGNED_BYTE, bitmap.pixels)
+      LibGL.generate_mipmap(LibGL::TEXTURE_2D)
       return resource
     end
   end

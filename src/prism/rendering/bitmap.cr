@@ -24,6 +24,11 @@ module Prism
       end
     end
 
+    # Checks if the bitmap has an alpha channel
+    def alpha?
+        return @num_channels == 4
+    end
+
     # garbage collection
     def finalize
       if @resource.remove_reference
@@ -95,7 +100,7 @@ module Prism
       ext = File.extname(file_name)
 
       # read bitmap data
-      path = File.join(File.dirname(PROGRAM_NAME), "/res/bitmaps/", file_name)
+      path = File.join(File.dirname(PROGRAM_NAME), file_name)
       data = LibTools.load_png(path, out @width, out @height, out @num_channels)
 
       # create bitmap
