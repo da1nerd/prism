@@ -15,6 +15,9 @@ lib: src/prism/lib
 samples: lib directories
 	@crystal build samples/main.cr -o $(BIN_DIR)/game
 
+release: lib directories
+	@crystal build samples/main.cr -o $(BIN_DIR)/game --release
+
 directories:
 	@mkdir -p $(BIN_DIR)
 	@cp -r samples/res $(BIN_DIR)
