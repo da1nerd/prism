@@ -4,6 +4,7 @@ require "./door.cr"
 require "./wall.cr"
 require "./collision_detector.cr"
 require "./monster.cr"
+require "./look_at_component.cr"
 
 include Prism
 
@@ -45,6 +46,7 @@ class LevelMap < GameComponent
 
     monster_component = Monster.new()
     monster = GameObject.new.add_component(monster_component)
+    # monster.add_component(LookAtComponent.new)
     monster.transform.pos = Vector3f.new(8, 0, 8)
     @objects.push(monster)
   end

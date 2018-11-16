@@ -2,6 +2,14 @@ require "../src/prism"
 
 include Prism
 
+enum MonsterState
+    Idle
+    Chase
+    Attack
+    Dying
+    Dead
+end
+
 class Monster < GameComponent
 
     SCALE = 0.7f32
@@ -20,9 +28,11 @@ class Monster < GameComponent
 
     @@mesh : Mesh?
     @material : Material
+    @state : MonsterState
 
     # TODO: receive material as parameter
     def initialize()
+        @state = MonsterState::Idle
         @material = Material.new
         @material.add_texture("diffuse", Texture.new("SSWVA1.png"))
         @material.add_float("specularIntensity", 1)
@@ -45,7 +55,39 @@ class Monster < GameComponent
         end
     end
 
+    private def idle_update(delta : Float32)
+        
+    end
+
+    private def chase_update(delta : Float32)
+
+    end
+
+    private def attack_update(delta : Float32)
+
+    end
+
+    private def dying_update(delta : Float32)
+
+    end
+
+    private def dead_update(delta : Float32)
+
+    end
+
     def update(delta : Float32)
+        case @state
+        when MonsterState::Idle
+            idle_update(delta)
+        when MonsterState::Chase
+            chase_update(delta)
+        when MonsterState::Attack
+            attack_update(delta)
+        when MonsterState::Dying
+            dying_update(delta)
+        when MonsterState::Dead
+            dead_update(delta)
+        end
 
     end
 
