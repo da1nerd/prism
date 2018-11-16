@@ -3,6 +3,7 @@ require "./obstacle.cr"
 require "./door.cr"
 require "./wall.cr"
 require "./collision_detector.cr"
+require "./monster.cr"
 
 include Prism
 
@@ -17,22 +18,34 @@ class LevelMap < GameComponent
 
   @mesh : Mesh?
   @level : Bitmap
-  @material : Material
+  @wall_material : Material
+  # @monster_material : Material
   @obstacles : Array(Obstacle)
   @objects : Array(GameObject)
   @doors : Array(Door)
 
   getter objects
 
-  def initialize(levelName : String, textureName : String)
+  def initialize(levelName : String, wall_texture_name : String)
     @doors = [] of Door
     @objects = [] of GameObject
     @obstacles = [] of Obstacle
     @level = Bitmap.new(levelName).flip_y
-    @material = Material.new
-    @material.add_texture("diffuse", Texture.new(textureName))
-    @material.add_float("specularIntensity", 1)
-    @material.add_float("specularPower", 8)
+
+    @wall_material = Material.new
+    @wall_material.add_texture("diffuse", Texture.new(wall_texture_name))
+    @wall_material.add_float("specularIntensity", 1)
+    @wall_material.add_float("specularPower", 8)
+
+    # @monster_material = Material.new
+    # @monster_material.add_texture("diffuse", Texture.new(textureName))
+    # @monster_material.add_float("specularIntensity", 1)
+    # @monster_material.add_float("specularPower", 8)
+
+    monster_component = Monster.new()
+    monster = GameObject.new.add_component(monster_component)
+    monster.transform.pos = Vector3f.new(8, 0, 8)
+    @objects.push(monster)
 
     # TODO: orient the player based on the level data
     @player = Player.new(Vector2f.new(7, 7), CollisionDetector.new(@obstacles))
@@ -125,7 +138,7 @@ class LevelMap < GameComponent
       open_movement = Vector3f.new(0, 0, DOOR_OPEN_MOVEMENT_AMOUNT)
     end
 
-    door_component = Door.new(@material, open_movement)
+    door_component = Door.new(@wall_material, open_movement)
     door = GameObject.new.add_component(door_component)
 
     if y_door
@@ -232,7 +245,7 @@ class LevelMap < GameComponent
   def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
     if mesh = @mesh
       shader.bind
-      shader.update_uniforms(self.transform, @material, rendering_engine)
+      shader.update_uniforms(self.transform, @wall_material, rendering_engine)
       mesh.draw
     else
       puts "Error: The level mesh has not been created"

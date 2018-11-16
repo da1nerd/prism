@@ -13,3 +13,4 @@
 - make easier way to generate mesh
 - have a nice way of generating texture coordinates
 - make all time based on seconds instead of milliseconds
+- transparency support

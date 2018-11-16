@@ -11,7 +11,7 @@ class Door < GameComponent
     LENGTH = 1f32
     WIDTH = 0.125f32
     HEIGHT = 1f32
-    TIME_TO_OPEN = 0.5f32
+    TIME_TO_OPEN = 1f32
     CLOSE_DELAY = 2.0f32
     SIZE = Vector3f.new(LENGTH, HEIGHT, WIDTH)
 
