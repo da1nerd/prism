@@ -48,7 +48,7 @@ module Prism
       ext = File.extname(file_name)
 
       # read texture data
-      bitmap = Bitmap.new(File.join("/res/textures/", file_name))
+      bitmap = Bitmap.new(File.join("/res/textures/", file_name)).multiply_alpha!
   
       # create texture
       resource = TextureResource.new

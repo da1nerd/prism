@@ -29,6 +29,28 @@ module Prism
         return @num_channels == 4
     end
 
+    # Pre-multiplies the RGB values with the alpha
+    def multiply_alpha! : Bitmap
+      return self if @num_channels != 4
+
+      if @file_name == "/res/textures/SSWVA1.png"
+        puts @file_name
+      end
+
+      0.upto(@width - 1) do |i|
+        0.upto(@height - 1) do |j|
+          offset = ((@width - i - 1) + j * @width) * @num_channels
+
+          # multiply color channels by the alpha channel
+          alpha = @pixels[offset + @num_channels - 1].to_f32 / 255f32
+          0.upto(@num_channels - 2) do |c|
+            @pixels[offset + c] = (@pixels[offset + c].to_f32 * alpha).floor.to_u8
+          end
+        end
+      end
+      self
+    end
+
     # garbage collection
     def finalize
       if @resource.remove_reference
@@ -84,7 +106,12 @@ module Prism
       r = @pixels[offset]
       g = @pixels[offset + 1]
       b = @pixels[offset + 2]
-      return Color.new(r, g, b)
+      if alpha?
+        a = @pixels[offset + 3]
+        return Color.new(r, g, b, a)
+      else
+        return Color.new(r, g, b)
+      end
     end
 
     # Sets a pixel value
@@ -93,6 +120,7 @@ module Prism
       @pixels[offset] = color.red
       @pixels[offset + 1] = color.green
       @pixels[offset + 2] = color.blue
+      @pixels[offset + 3] = color.alpha
     end
 
     # Loads a bitmap
