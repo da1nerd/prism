@@ -6,16 +6,17 @@ class Monster < GameComponent
 
     SCALE = 0.7f32
     SIZE_Y = SCALE
-    SIZE_X = SIZE_Y / (1.9310344827 * 2)
+    SIZE_X = SIZE_Y / (1.95 * 2)
     START = 0f32
 
-    OFFSET_X = 0.05f32
-    OFFSET_Y = 0.01f32
+    # offsets trim spacing around the texture
+    OFFSET_X = 0.0f32
+    OFFSET_Y = 0.0f32
 
     TEX_MAX_X = -OFFSET_X
     TEX_MIN_X = -(1 - OFFSET_X)
-    TEX_MAX_Y = -OFFSET_Y
-    TEX_MIN_Y = 1 - OFFSET_Y
+    TEX_MAX_Y = 1 - OFFSET_Y
+    TEX_MIN_Y = - OFFSET_Y
 
     @@mesh : Mesh?
     @material : Material
