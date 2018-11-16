@@ -60,11 +60,13 @@ module Prism
       # set the texture wrapping/filtering options
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_WRAP_S, LibGL::REPEAT)
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_WRAP_T, LibGL::REPEAT)
-      LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MIN_FILTER, LibGL::LINEAR)
-      LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MAG_FILTER, LibGL::LINEAR)
+      LibGL.tex_parameter_f(LibGL::TEXTURE_2D, LibGL::TEXTURE_MIN_FILTER, LibGL::NEAREST) # LibGL::LINEAR is better for higher quality images
+      LibGL.tex_parameter_f(LibGL::TEXTURE_2D, LibGL::TEXTURE_MAG_FILTER, LibGL::NEAREST)
 
       if data
-        LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, LibGL::RGB, @width, @height, 0, LibGL::RGB, LibGL::UNSIGNED_BYTE, data)
+        # TODO: use RBGA if image has alpha
+        format  = num_channels == 4 ? LibGL::RGBA : LibGL::RGB
+        LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, format, @width, @height, 0, format, LibGL::UNSIGNED_BYTE, data)
         LibGL.generate_mipmap(LibGL::TEXTURE_2D)
         # TODO: free image data from stbi. see LibTools.
         # e.g. stbi_image_free(data)
