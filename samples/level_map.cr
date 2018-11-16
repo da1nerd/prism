@@ -38,20 +38,15 @@ class LevelMap < GameComponent
     @wall_material.add_float("specularIntensity", 1)
     @wall_material.add_float("specularPower", 8)
 
-    # @monster_material = Material.new
-    # @monster_material.add_texture("diffuse", Texture.new(textureName))
-    # @monster_material.add_float("specularIntensity", 1)
-    # @monster_material.add_float("specularPower", 8)
+    # TODO: orient the player based on the level data
+    @player = Player.new(Vector2f.new(7, 7), CollisionDetector.new(@obstacles))
+    @objects.push(@player)
+    self.generate_level
 
     monster_component = Monster.new()
     monster = GameObject.new.add_component(monster_component)
     monster.transform.pos = Vector3f.new(8, 0, 8)
     @objects.push(monster)
-
-    # TODO: orient the player based on the level data
-    @player = Player.new(Vector2f.new(7, 7), CollisionDetector.new(@obstacles))
-    @objects.push(@player)
-    self.generate_level
   end
 
   # Add a face on the level such as a wall or ceiling.

@@ -7,5 +7,10 @@ uniform sampler2D diffuse;
 
 void main()
 {
-  gl_FragColor = texture2D(diffuse, texCoord0.xy) * vec4(R_ambient, 1);
+  vec4 color = texture2D(diffuse, texCoord0.xy) * vec4(R_ambient, 1);
+  // discards transparent pixels
+  if (color.a == 0.0) {
+    discard;
+  }
+  gl_FragColor = color;
 }
