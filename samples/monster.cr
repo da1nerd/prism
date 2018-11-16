@@ -28,15 +28,21 @@ class Monster < GameComponent
     TEX_MAX_Y = 1 - OFFSET_Y
     TEX_MIN_Y = - OFFSET_Y
 
-    SIZE = Vector3f.new(0.1, 0.1, 0.1)
+    WIDTH = 0.2f32
+    HEIGHT = 0.2f32
+    SIZE = Vector3f.new(WIDTH, HEIGHT, 0.1)
+
+    MOVE_SPEED = 1f32
+    MOVEMENT_STOP_DISTANCE = 0.5f32
 
     @@mesh : Mesh?
     @material : Material
     @state : MonsterState
+    @rendering_engine : RenderingEngineProtocol?
 
     # TODO: receive material as parameter
     def initialize()
-        @state = MonsterState::Idle
+        @state = MonsterState::Chase
         @material = Material.new
         @material.add_texture("diffuse", Texture.new("SSWVA1.png"))
         @material.add_float("specularIntensity", 1)
@@ -71,8 +77,14 @@ class Monster < GameComponent
         
     end
 
-    private def chase_update(delta : Float32)
-
+    private def chase_update(delta : Float32, orientation : Vector3f, distance : Float32)
+        if distance > MOVEMENT_STOP_DISTANCE
+            old_pos = transform.pos
+            new_pos = self.transform.pos + orientation * -MOVE_SPEED * delta
+            
+            # collision_vector = 
+            self.transform.pos = new_pos
+        end
     end
 
     private def attack_update(delta : Float32)
@@ -88,22 +100,30 @@ class Monster < GameComponent
     end
 
     def update(delta : Float32)
-        case @state
-        when MonsterState::Idle
-            idle_update(delta)
-        when MonsterState::Chase
-            chase_update(delta)
-        when MonsterState::Attack
-            attack_update(delta)
-        when MonsterState::Dying
-            dying_update(delta)
-        when MonsterState::Dead
-            dead_update(delta)
-        end
+        if rendering_engine = @rendering_engine
+            camera_pos = rendering_engine.main_camera.transform.get_transformed_pos;
+            camera_pos.y = 0f32
+            direction_to_camera = transform.pos - camera_pos
+            distance = direction_to_camera.length
+            orientation = direction_to_camera / distance
 
+            case @state
+            when MonsterState::Idle
+                idle_update(delta)
+            when MonsterState::Chase
+                chase_update(delta, orientation, distance)
+            when MonsterState::Attack
+                attack_update(delta)
+            when MonsterState::Dying
+                dying_update(delta)
+            when MonsterState::Dead
+                dead_update(delta)
+            end
+        end
     end
 
     def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
+        @rendering_engine = rendering_engine
         if mesh = @@mesh
             shader.bind
             shader.update_uniforms(self.transform, @material, rendering_engine)

@@ -48,7 +48,7 @@ class LevelMap < GameComponent
     monster = GameObject.new.add_component(MonsterLook.new).add_component(monster_component)
     monster.transform.pos = Vector3f.new(8, 0, 8)
     @objects.push(monster)
-    @obstacles.push(monster_component)
+    # @obstacles.push(monster_component)
   end
 
   # Add a face on the level such as a wall or ceiling.
