@@ -281,15 +281,12 @@ class LevelMap < GameComponent
 
     0.upto(@collision_pos_start.size - 1) do |i|
       collision_vector = self.line_intersect(line_start, line_end, @collision_pos_start[i], @collision_pos_end[i])
-      if cv = collision_vector
-        if ni = nearest_intersection
-          if (ni - line_start).length > (cv - line_start).length
-            nearest_intersection = cv
-          end
-        else
-          nearest_intersection = cv
-        end
-      end
+      nearest_intersection = self.find_nearest_vector(nearest_intersection, collision_vector, line_start)
+    end
+
+    0.upto(@doors.size - 1) do |i|
+      collision_vector = self.line_intersect(line_start, line_end, @doors[i].position.xz, @doors[i].size.xz)
+      nearest_intersection = self.find_nearest_vector(nearest_intersection, collision_vector, line_start)
     end
 
     return nearest_intersection
