@@ -14,3 +14,6 @@
 - have a nice way of generating texture coordinates
 - make all time based on seconds instead of milliseconds
 - transparency support
+- physics engine (including support for collisions)
+- sprite support (mostly done with orthongonal views)
+- good way to compare vectors

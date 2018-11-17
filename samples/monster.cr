@@ -32,7 +32,7 @@ class Monster < GameComponent
     HEIGHT = 0.2f32
     SIZE = Vector3f.new(WIDTH, HEIGHT, 0.1)
 
-    MOVE_SPEED = 1f32
+    MOVE_SPEED = 1.5f32
     MOVEMENT_STOP_DISTANCE = 0.5f32
 
     @@mesh : Mesh?
