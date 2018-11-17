@@ -41,7 +41,7 @@ class Monster < GameComponent
     @rendering_engine : RenderingEngineProtocol?
 
     # TODO: receive material as parameter
-    def initialize()
+    def initialize(@detector : CollisionDetector)
         @state = MonsterState::Chase
         @material = Material.new
         @material.add_texture("diffuse", Texture.new("SSWVA1.png"))
@@ -79,11 +79,16 @@ class Monster < GameComponent
 
     private def chase_update(delta : Float32, orientation : Vector3f, distance : Float32)
         if distance > MOVEMENT_STOP_DISTANCE
+            move_amount = -MOVE_SPEED * delta
             old_pos = transform.pos
-            new_pos = self.transform.pos + orientation * -MOVE_SPEED * delta
+            new_pos = self.transform.pos + orientation * move_amount
             
-            # collision_vector = 
-            self.transform.pos = new_pos
+            collision_vector = @detector.check_collision(old_pos, new_pos, Monster::WIDTH, Monster::HEIGHT)
+            
+            movement_vector = collision_vector * orientation
+            if movement_vector.length > 0
+                self.transform.pos = old_pos + movement_vector * move_amount
+            end
         end
     end
 

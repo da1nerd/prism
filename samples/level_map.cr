@@ -39,12 +39,14 @@ class LevelMap < GameComponent
     @wall_material.add_float("specularIntensity", 1)
     @wall_material.add_float("specularPower", 8)
 
+    collision_detector = CollisionDetector.new(@obstacles)
+
     # TODO: orient the player based on the level data
-    @player = Player.new(Vector2f.new(7, 7), CollisionDetector.new(@obstacles))
+    @player = Player.new(Vector2f.new(7, 7), collision_detector)
     @objects.push(@player)
     self.generate_level
 
-    monster_component = Monster.new()
+    monster_component = Monster.new(collision_detector)
     monster = GameObject.new.add_component(MonsterLook.new).add_component(monster_component)
     monster.transform.pos = Vector3f.new(8, 0, 8)
     @objects.push(monster)
