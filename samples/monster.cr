@@ -34,6 +34,7 @@ class Monster < GameComponent
 
     MOVE_SPEED = 1.5f32
     MOVEMENT_STOP_DISTANCE = 0.5f32
+    SHOOT_DISTANCE = 1000f32
 
     @@mesh : Mesh?
     @material : Material
@@ -42,7 +43,7 @@ class Monster < GameComponent
 
     # TODO: receive material as parameter
     def initialize(@detector : CollisionDetector, @level : LevelMap)
-        @state = MonsterState::Chase
+        @state = MonsterState::Attack
         @material = Material.new
         @material.add_texture("diffuse", Texture.new("SSWVA1.png"))
         @material.add_float("specularIntensity", 1)
@@ -96,8 +97,19 @@ class Monster < GameComponent
         end
     end
 
-    private def attack_update(delta : Float32)
+    private def attack_update(delta : Float32, orientation : Vector3f, distance : Float32)
+        line_start : Vector2f = transform.pos.xz
+        cast_direction : Vector2f = orientation.xz
+        line_end : Vector2f = line_start + cast_direction * SHOOT_DISTANCE
 
+        collision_vector = @level.check_intersections(line_start, line_end)
+        if(collision_vector == nil)
+            puts "We've missed everything"
+        else
+            puts "We hit something"
+        end
+
+        @state = MonsterState::Chase
     end
 
     private def dying_update(delta : Float32)
@@ -122,7 +134,7 @@ class Monster < GameComponent
             when MonsterState::Chase
                 chase_update(delta, orientation, distance)
             when MonsterState::Attack
-                attack_update(delta)
+                attack_update(delta, orientation, distance)
             when MonsterState::Dying
                 dying_update(delta)
             when MonsterState::Dead

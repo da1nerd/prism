@@ -24,6 +24,8 @@ class LevelMap < GameComponent
   @obstacles : Array(Obstacle)
   @objects : Array(GameObject)
   @doors : Array(Door)
+  @collision_pos_start : Array(Vector2f)
+  @collision_pos_end : Array(Vector2f)
 
   getter objects
 
@@ -31,6 +33,9 @@ class LevelMap < GameComponent
     @doors = [] of Door
     @objects = [] of GameObject
     @obstacles = [] of Obstacle
+    @collision_pos_start = [] of Vector2f
+    @collision_pos_end = [] of Vector2f
+
     level_path = File.join("/res/bitmaps/", level_name)
     @level = Bitmap.new(level_path).flip_y
 
@@ -189,21 +194,29 @@ class LevelMap < GameComponent
         tex_coords = calc_tex_coords(@level.pixel(i, j).red) # wall textures follow the red channel
 
         if @level.pixel(i, j - 1).black?
+          @collision_pos_start.push(Vector2f.new(i * SPOT_WIDTH, j * SPOT_LENGTH))
+          @collision_pos_end.push(Vector2f.new((i + 1) * SPOT_WIDTH, j * SPOT_LENGTH))
           add_face(indices, vertices.size, false)
           add_verticies(vertices, i, 0, j, true, true, false, tex_coords.to_a)
         end
 
         if @level.pixel(i, j + 1).black?
+          @collision_pos_start.push(Vector2f.new(i * SPOT_WIDTH, (j + 1) * SPOT_LENGTH))
+          @collision_pos_end.push(Vector2f.new((i + 1) * SPOT_WIDTH, (j + 1) * SPOT_LENGTH))
           add_face(indices, vertices.size, true)
           add_verticies(vertices, i, 0, (j + 1), true, true, false, tex_coords.to_a)
         end
 
         if @level.pixel(i - 1, j).black?
+          @collision_pos_start.push(Vector2f.new(i * SPOT_WIDTH, j * SPOT_LENGTH))
+          @collision_pos_end.push(Vector2f.new(i * SPOT_WIDTH, (j + 1) * SPOT_LENGTH))
           add_face(indices, vertices.size, true)
           add_verticies(vertices, 0, j, i, false, true, true, tex_coords.to_a)
         end
 
         if @level.pixel(i + 1, j).black?
+          @collision_pos_start.push(Vector2f.new((i + 1) * SPOT_WIDTH, j * SPOT_LENGTH))
+          @collision_pos_end.push(Vector2f.new((i + 1) * SPOT_WIDTH, (j + 1) * SPOT_LENGTH))
           add_face(indices, vertices.size, false)
           add_verticies(vertices, 0, j, (i + 1), false, true, true, tex_coords.to_a)
         end
@@ -260,5 +273,47 @@ class LevelMap < GameComponent
 
   def obstacles : Array(Obstacle)
     @obstacles
+  end
+
+  # Finds the nearest intersection to the start of the line
+  def check_intersections(line_start : Vector2f, line_end : Vector2f) : Vector2f?
+    nearest_intersection : Vector2f? = nil
+
+    0.upto(@collision_pos_start.size - 1) do |i|
+      collision_vector = self.line_intersect(line_start, line_end, @collision_pos_start[i], @collision_pos_end[i])
+      if cv = collision_vector
+        if ni = nearest_intersection
+          if (ni - line_start).length < (cv - line_start).length
+            nearest_intersection = cv
+          end
+        else
+          nearest_intersection = cv
+        end
+      end
+    end
+
+    return nearest_intersection
+  end
+
+  # Returns the point at which two lines intersect
+  private def line_intersect(line_start1 : Vector2f, line_end1 : Vector2f, line_start2 : Vector2f, line_end2 : Vector2f) : Vector2f?
+    line1 = line_end1 - line_start1
+    line2 = line_end2 - line_start2
+    
+    cross = line1.cross(line2)
+
+    # parallel lines never intersect
+    return nil if cross == 0
+
+    distance_between_lines = line_start2 - line_start1
+
+    a : Float32 = distance_between_lines.cross(line2) / cross
+    b : Float32 = distance_between_lines.cross(line1) / cross
+
+    if 0 < a && a < 1 && 0 < b && b < 1
+      return line_start1 + (line1 * a)
+    end
+
+    return nil
   end
 end
