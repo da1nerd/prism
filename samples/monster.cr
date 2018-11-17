@@ -34,12 +34,15 @@ class Monster < GameComponent
 
     MOVE_SPEED = 1.5f32
     MOVEMENT_STOP_DISTANCE = 0.5f32
+
     SHOOT_DISTANCE = 1000f32
+    SHOT_ANGLE = 10f32
 
     @@mesh : Mesh?
     @material : Material
     @state : MonsterState
     @rendering_engine : RenderingEngineProtocol?
+    @rand : Random
 
     # TODO: receive material as parameter
     def initialize(@detector : CollisionDetector, @level : LevelMap)
@@ -48,6 +51,7 @@ class Monster < GameComponent
         @material.add_texture("diffuse", Texture.new("SSWVA1.png"))
         @material.add_float("specularIntensity", 1)
         @material.add_float("specularPower", 8)
+        @rand = Random.new
 
         if @@mesh == nil
             # create new mesh
@@ -98,18 +102,31 @@ class Monster < GameComponent
     end
 
     private def attack_update(delta : Float32, orientation : Vector3f, distance : Float32)
-        line_start : Vector2f = transform.pos.xz
-        cast_direction : Vector2f = orientation.xz
-        line_end : Vector2f = line_start + cast_direction * SHOOT_DISTANCE
+        if rendering_engine = @rendering_engine
+            line_start : Vector2f = transform.pos.xz
+            cast_direction : Vector2f = (orientation.xz * -1f32).rotate((@rand.next_float.to_f32 - 0.5) * SHOT_ANGLE)
+            line_end : Vector2f = line_start + cast_direction * SHOOT_DISTANCE
 
-        collision_vector = @level.check_intersections(line_start, line_end)
-        if(collision_vector == nil)
-            puts "We've missed everything"
-        else
-            puts "We hit something"
+            collision_vector = @level.check_intersections(line_start, line_end)
+
+            player_intersect_vector = @level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
+
+            if pv = player_intersect_vector
+                if cv = collision_vector
+                    if (player_intersect_vector - line_start).length < (collision_vector - line_start).length
+                        puts "We've just shot the player"
+                    else
+                        puts "We hit something"
+                    end
+                else
+                    puts "We've hit the player"
+                end
+            elsif cv = collision_vector
+                puts "We hit something"
+            end
+            
+            # @state = MonsterState::Chase
         end
-
-        @state = MonsterState::Chase
     end
 
     private def dying_update(delta : Float32)

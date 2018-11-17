@@ -29,7 +29,8 @@ module Prism
       return Vector2f.new(@x / length, @y / length)
     end
 
-    # Rotates the vector by some angle
+    # Rotates the vector by some angle in degrees
+    # TODO ths should be in radians
     def rotate(angle : Float32) : Vector2f
       rad : Float32 = Prism.to_rad(angle)
       cos : Float32 = Math.cos(rad)

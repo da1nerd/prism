@@ -283,7 +283,7 @@ class LevelMap < GameComponent
       collision_vector = self.line_intersect(line_start, line_end, @collision_pos_start[i], @collision_pos_end[i])
       if cv = collision_vector
         if ni = nearest_intersection
-          if (ni - line_start).length < (cv - line_start).length
+          if (ni - line_start).length > (cv - line_start).length
             nearest_intersection = cv
           end
         else
@@ -316,4 +316,39 @@ class LevelMap < GameComponent
 
     return nil
   end
+
+  def find_nearest_vector(a_vect : Vector2f?, b_vect : Vector2f?, position_relative_to : Vector2f) : Vector2f?
+    if b = b_vect
+      if a = a_vect
+        if (a - position_relative_to).length > (b - position_relative_to).length
+          return b
+        else
+          return a
+        end
+      else
+        return b_vect
+      end
+    else
+      return a_vect
+    end
+  end
+
+  def line_intersect_rect(line_start : Vector2f, line_end : Vector2f, rect_pos : Vector2f, rect_size : Vector2f) : Vector2f?
+    result : Vector2f? = nil
+
+    collision_vector = self.line_intersect(line_start, line_end, rect_pos, Vector2f.new(rect_pos.x + rect_size.y, rect_pos.y))
+    result = self.find_nearest_vector(result, collision_vector, line_start)
+
+    collision_vector = self.line_intersect(line_start, line_end, rect_pos, Vector2f.new(rect_pos.x, rect_pos.y + rect_size.y))
+    result = self.find_nearest_vector(result, collision_vector, line_start)
+
+    collision_vector = self.line_intersect(line_start, line_end, Vector2f.new(rect_pos.x, rect_pos.y + rect_size.y), rect_pos + rect_size)
+    result = self.find_nearest_vector(result, collision_vector, line_start)
+
+    collision_vector = self.line_intersect(line_start, line_end, Vector2f.new(rect_pos.x + rect_size.x, rect_pos.y), rect_pos + rect_size)
+    result = self.find_nearest_vector(result, collision_vector, line_start)
+
+    return result
+  end
+
 end
