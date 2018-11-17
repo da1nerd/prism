@@ -46,7 +46,7 @@ class LevelMap < GameComponent
     @objects.push(@player)
     self.generate_level
 
-    monster_component = Monster.new(collision_detector)
+    monster_component = Monster.new(collision_detector, self)
     monster = GameObject.new.add_component(MonsterLook.new).add_component(monster_component)
     monster.transform.pos = Vector3f.new(8, 0, 8)
     @objects.push(monster)
@@ -232,13 +232,18 @@ class LevelMap < GameComponent
   def update(transform : Transform, delta : Float32)
   end
 
+  # Opens doors near the position
+  def open_doors(position : Vector3f)
+    0.upto(@doors.size - 1) do |i|
+      if (@doors[i].transform.pos - position).length < DOOR_OPEN_DISTANCE
+        @doors[i].open
+      end
+    end
+  end
+
   def input(delta : Float32, input : Input)
     if input.get_key_down(Input::KEY_E)
-      0.upto(@doors.size - 1) do |i|
-        if (@doors[i].transform.pos - @player.transform.pos).length < DOOR_OPEN_DISTANCE
-          @doors[i].open
-        end
-      end
+      self.open_doors(@player.transform.pos)
     end
   end
 

@@ -41,7 +41,7 @@ class Monster < GameComponent
     @rendering_engine : RenderingEngineProtocol?
 
     # TODO: receive material as parameter
-    def initialize(@detector : CollisionDetector)
+    def initialize(@detector : CollisionDetector, @level : LevelMap)
         @state = MonsterState::Chase
         @material = Material.new
         @material.add_texture("diffuse", Texture.new("SSWVA1.png"))
@@ -88,6 +88,10 @@ class Monster < GameComponent
             movement_vector = collision_vector * orientation
             if movement_vector.length > 0
                 self.transform.pos = old_pos + movement_vector * move_amount
+            end
+
+            if (movement_vector - orientation).length != 0
+                @level.open_doors(transform.pos)
             end
         end
     end
