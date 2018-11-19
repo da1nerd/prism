@@ -53,7 +53,7 @@ class LevelMap < GameComponent
 
     monster_component = Monster.new(collision_detector, self)
     monster = GameObject.new.add_component(MonsterLook.new).add_component(monster_component)
-    monster.transform.pos = Vector3f.new(8, 0, 8)
+    monster.transform.pos = Vector3f.new(12, 0, 12)
     @objects.push(monster)
     # @obstacles.push(monster_component)
   end
@@ -285,7 +285,7 @@ class LevelMap < GameComponent
     end
 
     0.upto(@doors.size - 1) do |i|
-      collision_vector = self.line_intersect(line_start, line_end, @doors[i].position.xz, @doors[i].size.xz)
+      collision_vector = self.line_intersect_rect(line_start, line_end, @doors[i].position.xz, @doors[i].size.xz)
       nearest_intersection = self.find_nearest_vector(nearest_intersection, collision_vector, line_start)
     end
 
