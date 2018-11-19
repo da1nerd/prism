@@ -38,6 +38,7 @@ class Monster < GameComponent
     SHOOT_DISTANCE = 1000f32
     SHOT_ANGLE = 10f32
     ATTACK_CHANCE = 1.8f32
+    MAX_HEALTH = 100
 
     @@mesh : Mesh?
     @material : Material
@@ -47,6 +48,7 @@ class Monster < GameComponent
     @can_look : Bool
     @can_attack : Bool
     @monster_clock : Float32
+    @health : Int32
 
     # TODO: receive material as parameter
     def initialize(@detector : CollisionDetector, @level : LevelMap)
@@ -54,6 +56,7 @@ class Monster < GameComponent
         @monster_clock = 0
         @can_look = false
         @can_attack = false
+        @health = MAX_HEALTH
         @material = Material.new
         @material.add_texture("diffuse", Texture.new("SSWVA1.png"))
         @material.add_float("specularIntensity", 1)
@@ -83,6 +86,20 @@ class Monster < GameComponent
 
     def size
         SIZE.rotate(self.transform.get_transformed_rot)
+    end
+
+    # Adds damage to the monster
+    def damage(amount : Int32)
+        if @state == MonsterState::Idle
+            @state = MonsterState::Chase
+        end
+
+        @health -= amount
+        puts @health
+
+        if @health <= 0
+            @state = MonsterState::Dying
+        end
     end
 
     # Checks if the monster can react to things.
@@ -212,11 +229,11 @@ class Monster < GameComponent
     end
 
     private def dying_update(delta : Float32)
-
+        @state = MonsterState::Dead
     end
 
     private def dead_update(delta : Float32)
-
+        puts "We're dead"
     end
 
     def update(delta : Float32)
