@@ -20,12 +20,12 @@ class LevelMap < GameComponent
   @mesh : Mesh?
   @level : Bitmap
   @wall_material : Material
-  # @monster_material : Material
   @obstacles : Array(Obstacle)
   @objects : Array(GameObject)
   @doors : Array(Door)
   @collision_pos_start : Array(Vector2f)
   @collision_pos_end : Array(Vector2f)
+  @monsters : Array(Monster)
 
   getter objects
 
@@ -33,6 +33,7 @@ class LevelMap < GameComponent
     @doors = [] of Door
     @objects = [] of GameObject
     @obstacles = [] of Obstacle
+    @monsters = [] of Monster
     @collision_pos_start = [] of Vector2f
     @collision_pos_end = [] of Vector2f
 
@@ -51,10 +52,12 @@ class LevelMap < GameComponent
     @objects.push(@player)
     self.generate_level
 
+    # TODO: monster should be a came object with components handled internally
     monster_component = Monster.new(collision_detector, self)
     monster = GameObject.new.add_component(MonsterLook.new).add_component(monster_component)
     monster.transform.pos = Vector3f.new(12, 0, 12)
     @objects.push(monster)
+    @monsters.push(monster_component)
     # @obstacles.push(monster_component)
   end
 
@@ -257,6 +260,10 @@ class LevelMap < GameComponent
   def input(delta : Float32, input : Input)
     if input.get_key_down(Input::KEY_E)
       self.open_doors(@player.transform.pos)
+
+      0.upto(@monsters.size - 1) do |i|
+        @monsters[i].damage(30)
+      end
     end
   end
 
