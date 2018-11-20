@@ -49,11 +49,13 @@ class LevelMap < GameComponent
 
     # TODO: orient the player based on the level data
     @player = Player.new(Vector2f.new(7, 7), collision_detector)
+    @player.set_level(self)
     @objects.push(@player)
     self.generate_level
 
-    # TODO: monster should be a came object with components handled internally
-    monster_component = Monster.new(collision_detector, self)
+    # TODO: monster should be a game object with components handled internally
+    monster_component = Monster.new(collision_detector)
+    monster_component.set_level(self)
     monster = GameObject.new.add_component(MonsterLook.new).add_component(monster_component)
     monster.transform.pos = Vector3f.new(12, 0, 12)
     @objects.push(monster)
@@ -257,16 +259,6 @@ class LevelMap < GameComponent
     end
   end
 
-  def input(delta : Float32, input : Input)
-    if input.get_key_down(Input::KEY_E)
-      self.open_doors(@player.transform.pos)
-
-      0.upto(@monsters.size - 1) do |i|
-        @monsters[i].damage(30)
-      end
-    end
-  end
-
   def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
     if mesh = @mesh
       shader.bind
@@ -283,7 +275,7 @@ class LevelMap < GameComponent
   end
 
   # Finds the nearest intersection to the start of the line
-  def check_intersections(line_start : Vector2f, line_end : Vector2f) : Vector2f?
+  def check_intersections(line_start : Vector2f, line_end : Vector2f, hurt_monsters : Bool) : Vector2f?
     nearest_intersection : Vector2f? = nil
 
     0.upto(@collision_pos_start.size - 1) do |i|
@@ -294,6 +286,33 @@ class LevelMap < GameComponent
     0.upto(@doors.size - 1) do |i|
       collision_vector = self.line_intersect_rect(line_start, line_end, @doors[i].position.xz, @doors[i].size.xz)
       nearest_intersection = self.find_nearest_vector(nearest_intersection, collision_vector, line_start)
+    end
+
+    # This is super hack (like much of this game)
+    if hurt_monsters
+      nearest_monster_intersect : Vector2f? = nil
+      nearest_monster : Monster? = nil
+
+      0.upto(@monsters.size - 1) do |i|
+        collision_vector = self.line_intersect_rect(line_start, line_end, @monsters[i].position.xz, @monsters[i].size.xz)
+        nearest_monster_intersect = self.find_nearest_vector(nearest_monster_intersect, collision_vector, line_start)
+        if nearest_monster_intersect == collision_vector
+          nearest_monster = @monsters[i]
+        end
+      end
+
+      if nm = nearest_monster
+        if nmi = nearest_monster_intersect
+          if ni = nearest_intersection
+            if (nmi - line_start).length < (ni - line_start).length
+              nearest_monster.damage(@player.get_damage)
+            end
+          else
+            nearest_monster.damage(@player.get_damage)
+          end
+        end
+      end
+
     end
 
     return nearest_intersection

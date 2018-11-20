@@ -10,9 +10,16 @@ class Player < GameObject
     MOVEMENT_SPEED = 6f32
     DEFAULT_HEIGHT = 0.4375f32
     PLAYER_SIZE = 0.2f32
+    SHOOT_DISTANCE = 1000f32
+    DAMAGE_MIN = 20
+    DAMAGE_MAX = 60
+
+    @level : LevelMap?
+    @rand : Random
 
     def initialize(position : Vector2f, detector : CollisionDetector, height : Float32 = DEFAULT_HEIGHT)
         super()
+        @rand = Random.new
         @look = FreeLook.new(MOUSE_SENSITIVITY)
         @move = CollideMove.new(MOVEMENT_SPEED, detector)
         # TODO: make better way to get window dimensions
@@ -28,5 +35,39 @@ class Player < GameObject
         self.add_component(@position_lock)
 
         self.transform.pos = Vector3f.new(position.x, height, position.y)
+    end
+
+    # Returns the damage given by the player gun
+    def get_damage
+        return @rand.rand(DAMAGE_MAX - DAMAGE_MIN) + DAMAGE_MIN
+    end
+
+    def set_level(@level : LevelMap)
+    end
+
+    private def get_level
+        if level = @level
+            return level
+        else
+            puts "The level was not set on the player"
+            exit 1
+        end
+    end
+
+    def input(delta : Float32, input : Input)
+        super
+        if input.get_key_down(Input::KEY_E)
+            self.get_level.open_doors(self.transform.pos)
+        end
+
+        if @look.mouse_locked
+            if input.get_mouse_down(0)
+                line_start = self.transform.pos.xz
+                cast_direction = transform.rot.forward.xz.normalized
+                line_end = line_start + (cast_direction * SHOOT_DISTANCE)
+                puts "pow!"
+                self.get_level.check_intersections(line_start, line_end, true)
+            end
+        end
     end
 end

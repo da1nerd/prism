@@ -29,8 +29,9 @@ class Monster < GameComponent
     TEX_MIN_Y = - OFFSET_Y
 
     WIDTH = 0.2f32
-    HEIGHT = 0.2f32
-    SIZE = Vector3f.new(WIDTH, HEIGHT, 0.1)
+    HEIGHT = SCALE
+    LENGTH = 0.2f32
+    SIZE = Vector3f.new(WIDTH, HEIGHT, LENGTH)
 
     MOVE_SPEED = 1.5f32
     MOVEMENT_STOP_DISTANCE = 0.5f32
@@ -49,9 +50,10 @@ class Monster < GameComponent
     @can_attack : Bool
     @monster_clock : Float32
     @health : Int32
+    @level : LevelMap?
 
     # TODO: receive material as parameter
-    def initialize(@detector : CollisionDetector, @level : LevelMap)
+    def initialize(@detector : CollisionDetector)
         @state = MonsterState::Idle
         @monster_clock = 0
         @can_look = false
@@ -80,8 +82,20 @@ class Monster < GameComponent
         end
     end
 
+    def set_level(@level : LevelMap)
+    end
+
+    private def get_level
+        if level = @level
+            return level
+        else
+            puts "The level was not set on the monster"
+            exit 1
+        end
+    end
+
     def position
-        self.transform.pos
+        self.transform.get_transformed_pos
     end
 
     def size
@@ -116,9 +130,9 @@ class Monster < GameComponent
             cast_direction : Vector2f = (orientation.xz * -1f32).rotate((@rand.next_float.to_f32 - 0.5) * SHOT_ANGLE)
             line_end : Vector2f = line_start + cast_direction * SHOOT_DISTANCE
 
-            collision_vector = @level.check_intersections(line_start, line_end)
+            collision_vector = self.get_level.check_intersections(line_start, line_end)
 
-            player_intersect_vector = @level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
+            player_intersect_vector = self.get_level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
 
             if pv = player_intersect_vector
                 if cv = collision_vector
@@ -142,9 +156,9 @@ class Monster < GameComponent
                 cast_direction : Vector2f = (orientation.xz * -1f32)#.rotate((@rand.next_float.to_f32 - 0.5) * SHOT_ANGLE)
                 line_end : Vector2f = line_start + cast_direction * SHOOT_DISTANCE
 
-                collision_vector = @level.check_intersections(line_start, line_end)
+                collision_vector = self.get_level.check_intersections(line_start, line_end, false)
 
-                player_intersect_vector = @level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
+                player_intersect_vector = self.get_level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
 
                 if pv = player_intersect_vector
                     if cv = collision_vector
@@ -178,7 +192,7 @@ class Monster < GameComponent
             old_pos = transform.pos
             new_pos = self.transform.pos + orientation * move_amount
             
-            collision_vector = @detector.check_collision(old_pos, new_pos, Monster::WIDTH, Monster::HEIGHT)
+            collision_vector = @detector.check_collision(old_pos, new_pos, Monster::WIDTH, Monster::LENGTH)
             
             movement_vector = collision_vector * orientation
             if movement_vector.length > 0
@@ -186,7 +200,7 @@ class Monster < GameComponent
             end
 
             if (movement_vector - orientation).length != 0
-                @level.open_doors(transform.pos)
+                self.get_level.open_doors(transform.pos)
             end
         else
             @state = MonsterState::Attack
@@ -203,9 +217,9 @@ class Monster < GameComponent
                 cast_direction : Vector2f = (orientation.xz * -1f32).rotate((@rand.next_float.to_f32 - 0.5) * SHOT_ANGLE)
                 line_end : Vector2f = line_start + cast_direction * SHOOT_DISTANCE
     
-                collision_vector = @level.check_intersections(line_start, line_end)
+                collision_vector = self.get_level.check_intersections(line_start, line_end, false)
     
-                player_intersect_vector = @level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
+                player_intersect_vector = self.get_level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
     
                 if pv = player_intersect_vector
                     if cv = collision_vector
