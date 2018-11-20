@@ -38,6 +38,14 @@ class Player < Character
         self.add_component(@position_lock)
     end
 
+    def damage!(by : Int32)
+        super
+        puts health
+        if dead?
+            puts "You just died! GAME OVER!"
+        end
+    end
+
     # Returns the damage given by the player gun
     def get_damage
         return @rand.rand(DAMAGE_MAX - DAMAGE_MIN) + DAMAGE_MIN

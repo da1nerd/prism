@@ -28,11 +28,11 @@ abstract class Character < GameObject
 
     # Takes damage
     def damage!(by : Int32)
-        @health -= by
+        @health -= by.abs
     end
 
     # Regains health
     def heal!(by : Int32)
-        @health += by
+        @health += Math.min(by, @max_health)
     end
 end

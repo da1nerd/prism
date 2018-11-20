@@ -63,6 +63,10 @@ class LevelMap < GameComponent
     # @obstacles.push(monster_component)
   end
 
+  def damage_player(by : Int32)
+    @player.damage!(by)
+  end
+
   # Add a face on the level such as a wall or ceiling.
   private def add_face(indices : Array(Int32), start_location : Int32, direction : Bool)
     if direction

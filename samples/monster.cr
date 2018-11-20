@@ -40,6 +40,8 @@ class Monster < GameComponent
     SHOT_ANGLE = 10f32
     ATTACK_CHANCE = 1.8f32
     MAX_HEALTH = 100
+    DAMAGE_MIN = 5
+    DAMAGE_MAX = 30
 
     @@mesh : Mesh?
     @material : Material
@@ -83,6 +85,11 @@ class Monster < GameComponent
     end
 
     def set_level(@level : LevelMap)
+    end
+
+    # Returns the damage given by the monster's gun
+    def get_damage
+        return @rand.rand(DAMAGE_MAX - DAMAGE_MIN) + DAMAGE_MIN
     end
 
     private def get_level
@@ -163,13 +170,13 @@ class Monster < GameComponent
                 if pv = player_intersect_vector
                     if cv = collision_vector
                         if (player_intersect_vector - line_start).length < (collision_vector - line_start).length
-                            puts "We've seen the player"
+                            # puts "We've seen the player"
                             @state = MonsterState::Chase
                         else
                             # puts "We hit something"
                         end
                     else
-                        puts "We've seen the player"
+                        # puts "We've seen the player"
                         @state = MonsterState::Chase
                     end
                 elsif cv = collision_vector
@@ -224,15 +231,13 @@ class Monster < GameComponent
                 if pv = player_intersect_vector
                     if cv = collision_vector
                         if (player_intersect_vector - line_start).length < (collision_vector - line_start).length
-                            puts "We've just shot the player"
-                        else
-                            puts "We hit something"
+                            # puts "We've just shot the player"
+                            self.get_level.damage_player(self.get_damage)
                         end
                     else
-                        puts "We've just shot the player"
+                        # puts "We've just shot the player"
+                        self.get_level.damage_player(self.get_damage)
                     end
-                elsif cv = collision_vector
-                    puts "We hit something"
                 end
 
                 @can_attack = false
@@ -247,7 +252,7 @@ class Monster < GameComponent
     end
 
     private def dead_update(delta : Float32)
-        puts "We're dead"
+        puts "Monster is dead"
     end
 
     def update(delta : Float32)
