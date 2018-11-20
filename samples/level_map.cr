@@ -53,14 +53,11 @@ class LevelMap < GameComponent
     @objects.push(@player)
     self.generate_level
 
-    # TODO: monster should be a game object with components handled internally
-    monster_component = Monster.new(collision_detector)
-    monster_component.set_level(self)
-    monster = GameObject.new.add_component(MonsterLook.new).add_component(monster_component)
+    monster = Monster.new(collision_detector)
+    monster.set_level(self)
     monster.transform.pos = Vector3f.new(12, 0, 12)
     @objects.push(monster)
-    @monsters.push(monster_component)
-    # @obstacles.push(monster_component)
+    @monsters.push(monster)
   end
 
   def damage_player(by : Int32)
@@ -309,10 +306,10 @@ class LevelMap < GameComponent
         if nmi = nearest_monster_intersect
           if ni = nearest_intersection
             if (nmi - line_start).length < (ni - line_start).length
-              nearest_monster.damage(@player.get_damage)
+              nearest_monster.damage!(@player.get_damage)
             end
           else
-            nearest_monster.damage(@player.get_damage)
+            nearest_monster.damage!(@player.get_damage)
           end
         end
       end

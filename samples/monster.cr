@@ -1,5 +1,7 @@
 require "../src/prism"
 require "./obstacle.cr"
+require "./character.cr"
+require "./monster_look.cr"
 
 include Prism
 
@@ -11,7 +13,7 @@ enum MonsterState
     Dead
 end
 
-class Monster < GameComponent
+class Monster < Character
     include Obstacle
 
     SCALE = 0.55f32
@@ -51,25 +53,27 @@ class Monster < GameComponent
     @can_look : Bool
     @can_attack : Bool
     @monster_clock : Float32
-    @health : Int32
+    # @health : Int32
     @level : LevelMap?
 
     # TODO: receive material as parameter
     def initialize(@detector : CollisionDetector)
+        @material = Material.new
+        super(Vector3f.new(0, 0, 0), MAX_HEALTH)
+
         @state = MonsterState::Idle
         @monster_clock = 0
         @can_look = false
         @can_attack = false
-        @health = MAX_HEALTH
-        @material = Material.new
+        @rand = Random.new
+
+        self.add_component(MonsterLook.new)
+        
+        # Build the monster mesh
         @material.add_texture("diffuse", Texture.new("SSWVA1.png"))
         @material.add_float("specularIntensity", 1)
         @material.add_float("specularPower", 8)
-        @rand = Random.new
-
         if @@mesh == nil
-            # create new mesh
-
             verticies = [
                 Vertex.new(Vector3f.new(SIZE_X, START, START), Vector2f.new(TEX_MIN_X, TEX_MAX_Y)),
                 Vertex.new(Vector3f.new(SIZE_X, SIZE_Y, START), Vector2f.new(TEX_MIN_X, TEX_MIN_Y)),
@@ -81,6 +85,10 @@ class Monster < GameComponent
                 0, 2, 3
             ]
             @@mesh = Mesh.new(verticies, indicies, true)
+        end
+        
+        if mesh = @@mesh
+            self.add_component(MeshRenderer.new(mesh, @material))
         end
     end
 
@@ -110,16 +118,13 @@ class Monster < GameComponent
     end
 
     # Adds damage to the monster
-    def damage(amount : Int32)
-        if @state == MonsterState::Idle
-            @state = MonsterState::Chase
-        end
+    def damage!(by : Int32)
+        super(by)
 
-        @health -= amount
-        puts @health
-
-        if @health <= 0
+        if dead?
             @state = MonsterState::Dying
+        elsif @state == MonsterState::Idle
+            @state = MonsterState::Chase
         end
     end
 
@@ -172,15 +177,11 @@ class Monster < GameComponent
                         if (player_intersect_vector - line_start).length < (collision_vector - line_start).length
                             # puts "We've seen the player"
                             @state = MonsterState::Chase
-                        else
-                            # puts "We hit something"
                         end
                     else
                         # puts "We've seen the player"
                         @state = MonsterState::Chase
                     end
-                elsif cv = collision_vector
-                    # puts "We hit something"
                 end
                 
                 @can_look = false
@@ -256,6 +257,7 @@ class Monster < GameComponent
     end
 
     def update(delta : Float32)
+        super
         @monster_clock += delta
         if rendering_engine = @rendering_engine
             camera_pos = rendering_engine.main_camera.transform.get_transformed_pos;
@@ -280,14 +282,7 @@ class Monster < GameComponent
     end
 
     def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
+        super
         @rendering_engine = rendering_engine
-        if mesh = @@mesh
-            shader.bind
-            shader.update_uniforms(self.transform, @material, rendering_engine)
-            mesh.draw
-        else
-            puts "Error: The monster mesh has not been created"
-            exit 1
-        end
     end
 end
