@@ -56,6 +56,7 @@ class Monster < Character
     @monster_clock : Float32
     # @health : Int32
     @level : LevelMap?
+    @death_time : Float32 = 0
 
     # TODO: receive material as parameter
     def initialize(@detector : CollisionDetector)
@@ -301,11 +302,37 @@ class Monster < Character
     end
 
     private def dying_update(delta : Float32)
-        @state = MonsterState::Dead
+        time_decimals : Float32 = @monster_clock - @monster_clock.to_i32
+
+        if @death_time == 0
+            @death_time = @monster_clock
+        end
+
+        time1 = 0.1f32
+        time2 = 0.3f32
+        time3 = 0.45f32
+        time4 = 0.6f32
+    
+        if @monster_clock < @death_time + time1
+            @material.add_texture("diffuse", @@animations[8])
+            transform.scale = Vector3f.new(1, 0.96428571, 1)
+        elsif @monster_clock < @death_time + time2
+            @material.add_texture("diffuse", @@animations[9])
+            transform.scale = Vector3f.new(1.7, 0.9, 1)
+        elsif @monster_clock < @death_time + time3
+            @material.add_texture("diffuse", @@animations[10])
+            transform.scale = Vector3f.new(1.7, 0.9, 1)
+        elsif @monster_clock < @death_time + time4
+            @material.add_texture("diffuse", @@animations[11])
+            transform.scale = Vector3f.new(1.7, 0.5, 1)
+        else
+            @state = MonsterState::Dead
+        end
     end
 
     private def dead_update(delta : Float32)
-        puts "Monster is dead"
+        @material.add_texture("diffuse", @@animations[12])
+        transform.scale = Vector3f.new(1.75862068965517, 0.285714285714, 1)
     end
 
     def update(delta : Float32)

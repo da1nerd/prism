@@ -74,7 +74,6 @@ class Player < Character
                 line_start = self.transform.pos.xz
                 cast_direction = transform.rot.forward.xz.normalized
                 line_end = line_start + (cast_direction * SHOOT_DISTANCE)
-                puts "pow!"
                 self.get_level.check_intersections(line_start, line_end, true)
             end
         end
