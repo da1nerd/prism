@@ -46,6 +46,7 @@ class Monster < Character
     DAMAGE_MAX = 30
 
     @@mesh : Mesh?
+    @@animations = [] of Texture
     @material : Material
     @state : MonsterState
     @rendering_engine : RenderingEngineProtocol?
@@ -60,19 +61,35 @@ class Monster < Character
     def initialize(@detector : CollisionDetector)
         @material = Material.new
         super(Vector3f.new(0, 0, 0), MAX_HEALTH)
-
-        @state = MonsterState::Idle
-        @monster_clock = 0
-        @can_look = false
-        @can_attack = false
-        @rand = Random.new
-
-        self.add_component(MonsterLook.new)
         
+        if @@animations.size == 0
+            @@animations = [] of Texture
+
+            # walking
+            @@animations.push(Texture.new("SSWVA1.png"))
+            @@animations.push(Texture.new("SSWVB1.png"))
+            @@animations.push(Texture.new("SSWVC1.png"))
+            @@animations.push(Texture.new("SSWVD1.png"))
+
+            # firing
+            @@animations.push(Texture.new("SSWVE0.png"))
+            @@animations.push(Texture.new("SSWVF0.png"))
+            @@animations.push(Texture.new("SSWVG0.png"))
+
+            # pain
+            @@animations.push(Texture.new("SSWVH0.png"))
+
+            # dying
+            @@animations.push(Texture.new("SSWVI0.png"))
+            @@animations.push(Texture.new("SSWVJ0.png"))
+            @@animations.push(Texture.new("SSWVK0.png"))
+            @@animations.push(Texture.new("SSWVL0.png"))
+
+            # death
+            @@animations.push(Texture.new("SSWVM0.png"))
+        end
+
         # Build the monster mesh
-        @material.add_texture("diffuse", Texture.new("SSWVA1.png"))
-        @material.add_float("specularIntensity", 1)
-        @material.add_float("specularPower", 8)
         if @@mesh == nil
             verticies = [
                 Vertex.new(Vector3f.new(SIZE_X, START, START), Vector2f.new(TEX_MIN_X, TEX_MAX_Y)),
@@ -87,6 +104,17 @@ class Monster < Character
             @@mesh = Mesh.new(verticies, indicies, true)
         end
         
+        @state = MonsterState::Idle
+        @monster_clock = 0
+        @can_look = false
+        @can_attack = false
+        @rand = Random.new
+        
+        @material.add_texture("diffuse", @@animations[0])
+        @material.add_float("specularIntensity", 1)
+        @material.add_float("specularPower", 8)
+
+        self.add_component(MonsterLook.new)
         if mesh = @@mesh
             self.add_component(MeshRenderer.new(mesh, @material))
         end
@@ -160,36 +188,52 @@ class Monster < Character
     end
 
     private def idle_update(delta : Float32, orientation : Vector3f, distance : Float32)
+        time_decimals : Float32 = @monster_clock - @monster_clock.to_i32
         if rendering_engine = @rendering_engine
-            if self.can_react
+            if time_decimals < 0.5
                 @can_look = true
-            elsif @can_look
-                line_start : Vector2f = transform.pos.xz
-                cast_direction : Vector2f = (orientation.xz * -1f32)#.rotate((@rand.next_float.to_f32 - 0.5) * SHOT_ANGLE)
-                line_end : Vector2f = line_start + cast_direction * SHOOT_DISTANCE
+                @material.add_texture("diffuse", @@animations[0])
+            else
+                @material.add_texture("diffuse", @@animations[1])
+                if @can_look
+                    line_start : Vector2f = transform.pos.xz
+                    cast_direction : Vector2f = (orientation.xz * -1f32)#.rotate((@rand.next_float.to_f32 - 0.5) * SHOT_ANGLE)
+                    line_end : Vector2f = line_start + cast_direction * SHOOT_DISTANCE
 
-                collision_vector = self.get_level.check_intersections(line_start, line_end, false)
+                    collision_vector = self.get_level.check_intersections(line_start, line_end, false)
 
-                player_intersect_vector = self.get_level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
+                    player_intersect_vector = self.get_level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
 
-                if pv = player_intersect_vector
-                    if cv = collision_vector
-                        if (player_intersect_vector - line_start).length < (collision_vector - line_start).length
+                    if pv = player_intersect_vector
+                        if cv = collision_vector
+                            if (player_intersect_vector - line_start).length < (collision_vector - line_start).length
+                                # puts "We've seen the player"
+                                @state = MonsterState::Chase
+                            end
+                        else
                             # puts "We've seen the player"
                             @state = MonsterState::Chase
                         end
-                    else
-                        # puts "We've seen the player"
-                        @state = MonsterState::Chase
                     end
+                    
+                    @can_look = false
                 end
-                
-                @can_look = false
             end
         end
     end
 
     private def chase_update(delta : Float32, orientation : Vector3f, distance : Float32)
+        time_decimals : Float32 = @monster_clock - @monster_clock.to_i32
+        if time_decimals < 0.25
+            @material.add_texture("diffuse", @@animations[0])
+        elsif time_decimals < 0.5
+            @material.add_texture("diffuse", @@animations[1])
+        elsif time_decimals < 0.75
+            @material.add_texture("diffuse", @@animations[2])
+        else
+            @material.add_texture("diffuse", @@animations[3])
+        end
+        
         # TRICKY: multiply attack chance by delta to make it frame independent.
         if @rand.next_float < ATTACK_CHANCE * delta
             @state = MonsterState::Attack
@@ -218,33 +262,41 @@ class Monster < Character
     private def attack_update(delta : Float32, orientation : Vector3f, distance : Float32)
         if rendering_engine = @rendering_engine
 
-            if self.can_react
-                @can_attack = true
-            elsif @can_attack
-                line_start : Vector2f = transform.pos.xz
-                cast_direction : Vector2f = (orientation.xz * -1f32).rotate((@rand.next_float.to_f32 - 0.5) * SHOT_ANGLE)
-                line_end : Vector2f = line_start + cast_direction * SHOOT_DISTANCE
-    
-                collision_vector = self.get_level.check_intersections(line_start, line_end, false)
-    
-                player_intersect_vector = self.get_level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
-    
-                if pv = player_intersect_vector
-                    if cv = collision_vector
-                        if (player_intersect_vector - line_start).length < (collision_vector - line_start).length
+            time_decimals : Float32 = @monster_clock - @monster_clock.to_i32
+
+            if time_decimals < 0.25
+                @material.add_texture("diffuse", @@animations[4])
+            elsif time_decimals < 0.5
+                @material.add_texture("diffuse", @@animations[5])
+            elsif time_decimals < 0.75
+                @material.add_texture("diffuse", @@animations[6])
+                if @can_attack
+                    line_start : Vector2f = transform.pos.xz
+                    cast_direction : Vector2f = (orientation.xz * -1f32).rotate((@rand.next_float.to_f32 - 0.5) * SHOT_ANGLE)
+                    line_end : Vector2f = line_start + cast_direction * SHOOT_DISTANCE
+        
+                    collision_vector = self.get_level.check_intersections(line_start, line_end, false)
+        
+                    player_intersect_vector = self.get_level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
+        
+                    if pv = player_intersect_vector
+                        if cv = collision_vector
+                            if (player_intersect_vector - line_start).length < (collision_vector - line_start).length
+                                # puts "We've just shot the player"
+                                self.get_level.damage_player(self.get_damage)
+                            end
+                        else
                             # puts "We've just shot the player"
                             self.get_level.damage_player(self.get_damage)
                         end
-                    else
-                        # puts "We've just shot the player"
-                        self.get_level.damage_player(self.get_damage)
                     end
+                    @can_attack = false
                 end
-
-                @can_attack = false
+            elsif @can_attack == false
+                @material.add_texture("diffuse", @@animations[5])
+                @state = MonsterState::Chase
+                @can_attack = true
             end
-
-            @state = MonsterState::Chase
         end
     end
 
