@@ -5,6 +5,8 @@ module Prism
     Y_AXIS = Vector3f.new(0, 1, 0)
     @mouse_locked = false
 
+    getter mouse_locked
+
     def initialize(sensitivity : Float32)
       initialize(sensitivity, Input::KEY_ESCAPE)
     end
