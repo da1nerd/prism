@@ -3,9 +3,11 @@ require "./position_mask.cr"
 require "./position_lock.cr"
 require "./collide_move.cr"
 require "./collision_detector.cr"
+require "./character.cr"
 
 # Represents a player in the game
-class Player < GameObject
+class Player < Character
+
     MOUSE_SENSITIVITY = 0.4375f32
     MOVEMENT_SPEED = 6f32
     DEFAULT_HEIGHT = 0.4375f32
@@ -13,12 +15,14 @@ class Player < GameObject
     SHOOT_DISTANCE = 1000f32
     DAMAGE_MIN = 20
     DAMAGE_MAX = 60
+    MAX_HEALTH = 100
 
     @level : LevelMap?
     @rand : Random
 
     def initialize(position : Vector2f, detector : CollisionDetector, height : Float32 = DEFAULT_HEIGHT)
-        super()
+        super(Vector3f.new(position.x, height, position.y), MAX_HEALTH)
+
         @rand = Random.new
         @look = FreeLook.new(MOUSE_SENSITIVITY)
         @move = CollideMove.new(MOVEMENT_SPEED, detector)
@@ -30,11 +34,8 @@ class Player < GameObject
         self.add_component(@look)
         self.add_component(@cam)
         self.add_component(@move)
-
         self.add_component(@position_mask)
         self.add_component(@position_lock)
-
-        self.transform.pos = Vector3f.new(position.x, height, position.y)
     end
 
     # Returns the damage given by the player gun
