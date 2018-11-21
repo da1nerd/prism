@@ -4,6 +4,7 @@ require "./position_lock.cr"
 require "./collide_move.cr"
 require "./collision_detector.cr"
 require "./character.cr"
+require "./gun.cr"
 
 # Represents a player in the game
 class Player < Character
@@ -30,7 +31,12 @@ class Player < Character
         @cam = Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)
         @position_mask = PositionMask.new(Vector3f.new(1f32, 0f32, 1f32))
         @position_lock = PositionLock.new(Vector3f.new(0, height, 0))
+        @gun = Gun.new
 
+        gun_obj = GameObject.new.add_component(@gun)
+        gun_obj.transform.pos = Vector3f.new(7, 0, 7)
+
+        self.add_object(gun_obj)
         self.add_component(@look)
         self.add_component(@cam)
         self.add_component(@move)
