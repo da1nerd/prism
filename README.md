@@ -43,6 +43,8 @@ make start
 
 TODO: Write some half-decent development instructions here.
 
+There is some temporary c code that needs to get compiled with the engine. My top priority is to get all c compilation outta here so we can enjoy pure crystal code! In the mean time you'll need to install cmake first.
+
 - install cmake
 - install freeglut
 - install opengl
