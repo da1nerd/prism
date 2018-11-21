@@ -9,6 +9,22 @@ require "./gun.cr"
 # Represents a player in the game
 class Player < Character
 
+    # gun stuff
+    # SCALE = 0.55f32
+    # SIZE_Y = SCALE
+    # SIZE_X = SIZE_Y / (1.0379747 * 2)
+    # START = 0f32
+
+    # offsets trim spacing around the texture
+    # OFFSET_X = 0.0f32
+    # OFFSET_Y = 0.0f32
+
+    # TEX_MAX_X = -OFFSET_X
+    # TEX_MIN_X = -(1 - OFFSET_X)
+    # TEX_MAX_Y = 1 - OFFSET_Y
+    # TEX_MIN_Y = - OFFSET_Y
+    # end gun stuff
+
     MOUSE_SENSITIVITY = 0.4375f32
     MOVEMENT_SPEED = 6f32
     DEFAULT_HEIGHT = 0.4375f32
@@ -20,9 +36,28 @@ class Player < Character
 
     @level : LevelMap?
     @rand : Random
+    # @gun_mesh : Mesh
+    # @gun_material : Material
 
     def initialize(position : Vector2f, detector : CollisionDetector, height : Float32 = DEFAULT_HEIGHT)
         super(Vector3f.new(position.x, height, position.y), MAX_HEALTH)
+
+        # create gun
+        # verticies = [
+        #     Vertex.new(Vector3f.new(SIZE_X, START, START), Vector2f.new(TEX_MIN_X, TEX_MAX_Y)),
+        #     Vertex.new(Vector3f.new(SIZE_X, SIZE_Y, START), Vector2f.new(TEX_MIN_X, TEX_MIN_Y)),
+        #     Vertex.new(Vector3f.new(-SIZE_X, SIZE_Y, START), Vector2f.new(TEX_MAX_X, TEX_MIN_Y)),
+        #     Vertex.new(Vector3f.new(-SIZE_X, START, START), Vector2f.new(TEX_MAX_X, TEX_MAX_Y))
+        # ]
+        # indicies = [
+        #     0, 1, 2,
+        #     0, 2, 3
+        # ]
+        # @gun_mesh = Mesh.new(verticies, indicies, true)
+        # @gun_material = Material.new()
+        # @gun_material.add_texture("diffuse", Texture.new("PISGB0.png"))
+        # @gun_material.add_float("specularIntensity", 1)
+        # @gun_material.add_float("specularPower", 8)
 
         @rand = Random.new
         @look = FreeLook.new(MOUSE_SENSITIVITY)
@@ -31,12 +66,16 @@ class Player < Character
         @cam = Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32)
         @position_mask = PositionMask.new(Vector3f.new(1f32, 0f32, 1f32))
         @position_lock = PositionLock.new(Vector3f.new(0, height, 0))
+
         @gun = Gun.new
+        # @gun.transform.pos
+        # gun_obj = GameObject.new.add_component(@gun)
+        @gun.transform.pos = Vector3f.new(0, 0, 0.1)
+        # @gun.transform.look_at(self.transform.pos, @cam.transform.rot.up)
+        # @gun.transform.rotate(@cam.transform.rot.up, 180)
+        self.add_object(@gun)
 
-        gun_obj = GameObject.new.add_component(@gun)
-        gun_obj.transform.pos = Vector3f.new(7, 0, 7)
-
-        self.add_object(gun_obj)
+        # self.add_component(MeshRenderer.new(@gun_mesh, @gun_material))
         self.add_component(@look)
         self.add_component(@cam)
         self.add_component(@move)
