@@ -73,7 +73,7 @@ class Player < Character
     def input(delta : Float32, input : Input)
         super
         if input.get_key_down(Input::KEY_E)
-            self.get_level.open_doors(self.transform.pos)
+            self.get_level.open_doors(self.transform.pos, true)
         end
 
         if @look.mouse_locked

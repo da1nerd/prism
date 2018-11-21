@@ -30,10 +30,11 @@ class LevelMap < GameComponent
   @monsters : Array(Monster)
   @medkits : Array(MedKit)
   @medkits_to_remove : Array(MedKit)
+  @exit_points : Array(Vector2f)
 
   getter objects
 
-  def initialize(level_name : String, wall_texture_name : String)
+  def initialize(level_name : String, wall_texture_name : String, @game : TestGame)
     @doors = [] of Door
     @objects = [] of GameObject
     @obstacles = [] of Obstacle
@@ -42,6 +43,7 @@ class LevelMap < GameComponent
     @medkits_to_remove = [] of MedKit
     @collision_pos_start = [] of Vector2f
     @collision_pos_end = [] of Vector2f
+    @exit_points = [] of Vector2f
 
     level_path = File.join("/res/bitmaps/", level_name)
     @level = Bitmap.new(level_path).flip_y
@@ -194,6 +196,8 @@ class LevelMap < GameComponent
       # medkit.set_level(self)
       @medkits.push(medkit)
       @objects.push(medkit)
+    when 97
+      @exit_points.push(Vector2f.new(x_coord, z_coord))
     end
   end
 
@@ -288,10 +292,18 @@ class LevelMap < GameComponent
   end
 
   # Opens doors near the position
-  def open_doors(position : Vector3f)
+  def open_doors(position : Vector3f, try_exit_level : Bool = false)
     0.upto(@doors.size - 1) do |i|
       if (@doors[i].transform.pos - position).length < DOOR_OPEN_DISTANCE
         @doors[i].open
+      end
+    end
+
+    if try_exit_level
+      0.upto(@exit_points.size - 1) do |i|
+        if (@exit_points[i] - position.xz).length < DOOR_OPEN_DISTANCE
+          @game.load_next_level
+        end
       end
     end
   end
