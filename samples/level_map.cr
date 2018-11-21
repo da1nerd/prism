@@ -281,6 +281,7 @@ class LevelMap < GameComponent
   def update(delta : Float32)
     0.upto(@medkits_to_remove.size - 1) do |i|
       medkit = @medkits_to_remove[i]
+      @parent.remove_child(medkit)
       @objects.delete(medkit)
       @medkits.delete(medkit)
     end

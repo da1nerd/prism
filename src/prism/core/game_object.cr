@@ -31,9 +31,27 @@ module Prism
       child.transform.parent = @transform
     end
 
+    # Removes a `GameObject` from this object
+    def remove_object(child : GameObject)
+      @children.delete(child)
+      child.transform.parent = nil
+    end
+
     # Alias for add_object
     def add_child(child : GameObject)
       add_object(child)
+    end
+
+    # Alias for remove_object
+    def remove_child(child : GameObject)
+      remove_object(child)
+    end
+
+    # Removes a `GameComponent` from this object
+    def remove_component(component : GameComponent)
+      component.parent = GameObject.new
+      @components.delete(component)
+      return self
     end
 
     # Adds a `GameComponent` to this object

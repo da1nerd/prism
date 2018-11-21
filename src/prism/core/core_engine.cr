@@ -74,7 +74,7 @@ module Prism
 
           # log frame rate
           if (frame_counter >= 1.0)
-            puts "fps: #{frames}"
+            # puts "fps: #{frames}"
             frames = 0
             frame_counter = 0
           end
