@@ -4,7 +4,9 @@ A 3D game engine written in Crystal!
 
 This project was largely inspired by ["The Benny Box"](https://www.youtube.com/channel/UCnlpv-hhcsAtEHKR2y2fW4Q) and his [3D Game Engine Tutorial](https://www.youtube.com/watch?v=ss3AnSxJ2X8&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&index=1). Thanks for all the good tutorials Benny!
 
-![](./samples/sample.png "Sample 3D Scene")
+This is a demo of the game that was hacked together in the samples directory. Don't take any best practice tips from the game code. It's simply a rushed proof of concept.
+
+[![Game demo](./samples/game_thumbnail.png)](https://youtu.be/-IyXs2Dqs2o)
 
 
 ## Installation
