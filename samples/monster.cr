@@ -16,9 +16,9 @@ end
 class Monster < Character
     include Obstacle
 
-    SCALE = 0.55f32
+    SCALE = 0.7f32
     SIZE_Y = SCALE
-    SIZE_X = SIZE_Y / (1.95 * 2)
+    SIZE_X = SIZE_Y / (1.93103 * 2)
     START = 0f32
 
     # offsets trim spacing around the texture
@@ -35,12 +35,12 @@ class Monster < Character
     LENGTH = 0.2f32
     SIZE = Vector3f.new(WIDTH, HEIGHT, LENGTH)
 
-    MOVE_SPEED = 1.5f32
-    MOVEMENT_STOP_DISTANCE = 0.5f32
+    MOVE_SPEED = 1f32
+    MOVEMENT_STOP_DISTANCE = 1.5f32
 
     SHOOT_DISTANCE = 1000f32
     SHOT_ANGLE = 10f32
-    ATTACK_CHANCE = 1.8f32
+    ATTACK_CHANCE = 0.5f32
     MAX_HEALTH = 100
     DAMAGE_MIN = 5
     DAMAGE_MAX = 30
@@ -164,30 +164,6 @@ class Monster < Character
         return time < 0.5
     end
 
-    # Checks if the monster can see the player
-    private def can_see_player
-        if rendering_engine = @rendering_engine
-            line_start : Vector2f = transform.pos.xz
-            cast_direction : Vector2f = (orientation.xz * -1f32).rotate((@rand.next_float.to_f32 - 0.5) * SHOT_ANGLE)
-            line_end : Vector2f = line_start + cast_direction * SHOOT_DISTANCE
-
-            collision_vector = self.get_level.check_intersections(line_start, line_end)
-
-            player_intersect_vector = self.get_level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
-
-            if pv = player_intersect_vector
-                if cv = collision_vector
-                    if (player_intersect_vector - line_start).length < (collision_vector - line_start).length
-                        return true
-                    end
-                else
-                    return true
-                end
-            end
-        end
-        return false
-    end
-
     private def idle_update(delta : Float32, orientation : Vector3f, distance : Float32)
         time_decimals : Float32 = @monster_clock - @monster_clock.to_i32
         if rendering_engine = @rendering_engine
@@ -203,7 +179,7 @@ class Monster < Character
 
                     collision_vector = self.get_level.check_intersections(line_start, line_end, false)
 
-                    player_intersect_vector = self.get_level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
+                    player_intersect_vector = rendering_engine.main_camera.transform.get_transformed_pos.xz#self.get_level.line_intersect_rect(line_start, line_end, rendering_engine.main_camera.transform.get_transformed_pos.xz, Vector2f.new(Player::PLAYER_SIZE, Player::PLAYER_SIZE))
 
                     if pv = player_intersect_vector
                         if cv = collision_vector

@@ -3,12 +3,12 @@ require "./watch_camera.cr"
 
 class MedKit < GameObject
 
-    PICKUP_DISTANCE = 0.5f32
+    PICKUP_DISTANCE = 0.75f32
     HEAL_AMOUNT = 25
 
-    SCALE = 0.525f32
+    SCALE = 0.25f32
     SIZE_Y = SCALE
-    SIZE_X = SIZE_Y / (1.0379747 * 2)
+    SIZE_X = SIZE_Y / (0.67857 * 2.5)
     START = 0f32
 
     # offsets trim spacing around the texture
