@@ -91,7 +91,7 @@ module Prism
       return @x == r.x && @y == r.y
     end
 
-    def to_string
+    def to_s
       return "(#{@x}, #{@y})"
     end
 
