@@ -4,7 +4,7 @@ abstract class Character < GameObject
     @max_health : Int32
     @health : Int32
 
-    getter health
+    getter health, max_health
 
     def initialize(position : Vector3f, @max_health : Int32)
         super()
@@ -33,6 +33,9 @@ abstract class Character < GameObject
 
     # Regains health
     def heal!(by : Int32)
-        @health += Math.min(by, @max_health)
+        @health += by
+        if @health > @max_health
+            @health = @max_health
+        end
     end
 end

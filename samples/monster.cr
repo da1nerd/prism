@@ -1,7 +1,7 @@
 require "../src/prism"
 require "./obstacle.cr"
 require "./character.cr"
-require "./monster_look.cr"
+require "./watch_camera.cr"
 
 include Prism
 
@@ -115,7 +115,7 @@ class Monster < Character
         @material.add_float("specularIntensity", 1)
         @material.add_float("specularPower", 8)
 
-        self.add_component(MonsterLook.new)
+        self.add_component(WatchCamera.new)
         if mesh = @@mesh
             self.add_component(MeshRenderer.new(mesh, @material))
         end

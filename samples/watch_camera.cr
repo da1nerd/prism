@@ -2,7 +2,8 @@ require "../src/prism"
 
 include Prism
 
-class MonsterLook < GameComponent
+# Causes the parent object to follow the main camera
+class WatchCamera < GameComponent
     @rendering_engine : RenderingEngineProtocol?
 
     def update(delta : Float32)

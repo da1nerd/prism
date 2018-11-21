@@ -4,7 +4,8 @@ require "./door.cr"
 require "./wall.cr"
 require "./collision_detector.cr"
 require "./monster.cr"
-require "./monster_look.cr"
+require "./player.cr"
+require "./medkit.cr"
 
 include Prism
 
@@ -18,6 +19,7 @@ class LevelMap < GameComponent
   DOOR_OPEN_DISTANCE = 2.5f32
 
   @mesh : Mesh?
+  @player : Player?
   @level : Bitmap
   @wall_material : Material
   @obstacles : Array(Obstacle)
@@ -26,6 +28,8 @@ class LevelMap < GameComponent
   @collision_pos_start : Array(Vector2f)
   @collision_pos_end : Array(Vector2f)
   @monsters : Array(Monster)
+  @medkits : Array(MedKit)
+  @medkits_to_remove : Array(MedKit)
 
   getter objects
 
@@ -34,6 +38,8 @@ class LevelMap < GameComponent
     @objects = [] of GameObject
     @obstacles = [] of Obstacle
     @monsters = [] of Monster
+    @medkits = [] of MedKit
+    @medkits_to_remove = [] of MedKit
     @collision_pos_start = [] of Vector2f
     @collision_pos_end = [] of Vector2f
 
@@ -45,23 +51,21 @@ class LevelMap < GameComponent
     @wall_material.add_float("specularIntensity", 1)
     @wall_material.add_float("specularPower", 8)
 
-    collision_detector = CollisionDetector.new(@obstacles)
-
-    # TODO: orient the player based on the level data
-    @player = Player.new(Vector2f.new(7, 7), collision_detector)
-    @player.set_level(self)
-    @objects.push(@player)
+    @collision_detector = CollisionDetector.new(@obstacles)
     self.generate_level
-
-    monster = Monster.new(collision_detector)
-    monster.set_level(self)
-    monster.transform.pos = Vector3f.new(12, 0, 12)
-    @objects.push(monster)
-    @monsters.push(monster)
   end
 
   def damage_player(by : Int32)
-    @player.damage!(by)
+    get_player.damage!(by)
+  end
+
+  def get_player
+    if player = @player
+      player
+    else
+      puts "Error! You did not add a player to the level"
+      exit 1
+    end
   end
 
   # Add a face on the level such as a wall or ceiling.
@@ -167,9 +171,35 @@ class LevelMap < GameComponent
   end
 
   private def add_special(blue_value : UInt8, x : Int32, y : Int32)
-    if blue_value == 16
+    # adjust the coordinates for the characters
+    x_coord : Float32 = (x + 0.5f32) * SPOT_WIDTH
+    z_coord : Float32 = (y + 0.5f32) * SPOT_LENGTH
+
+    case blue_value
+    when 16
       add_door(x, y)
+    when 1
+      player = Player.new(Vector2f.new(x_coord, z_coord), @collision_detector)
+      player.set_level(self)
+      @objects.push(player)
+      @player = player
+    when 128
+      monster = Monster.new(@collision_detector)
+      monster.set_level(self)
+      monster.transform.pos = Vector3f.new(x_coord, 0, z_coord)
+      @objects.push(monster)
+      @monsters.push(monster)
+    when 192
+      medkit = MedKit.new(Vector2f.new(x_coord, z_coord), self)
+      # medkit.set_level(self)
+      @medkits.push(medkit)
+      @objects.push(medkit)
     end
+  end
+
+  # Removes a medkit from the level
+  def remove_medkit(medkit : MedKit)
+    @medkits_to_remove.push(medkit)
   end
 
   def generate_level
@@ -248,7 +278,12 @@ class LevelMap < GameComponent
     end
   end
 
-  def update(transform : Transform, delta : Float32)
+  def update(delta : Float32)
+    0.upto(@medkits_to_remove.size - 1) do |i|
+      medkit = @medkits_to_remove[i]
+      @objects.delete(medkit)
+      @medkits.delete(medkit)
+    end
   end
 
   # Opens doors near the position
@@ -306,10 +341,10 @@ class LevelMap < GameComponent
         if nmi = nearest_monster_intersect
           if ni = nearest_intersection
             if (nmi - line_start).length < (ni - line_start).length
-              nearest_monster.damage!(@player.get_damage)
+              nearest_monster.damage!(get_player.get_damage)
             end
           else
-            nearest_monster.damage!(@player.get_damage)
+            nearest_monster.damage!(get_player.get_damage)
           end
         end
       end
