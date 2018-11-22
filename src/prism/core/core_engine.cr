@@ -1,5 +1,4 @@
 require "cryst_glut"
-require "./timer"
 require "./input"
 require "../rendering/rendering_engine"
 require "./game"
@@ -47,12 +46,12 @@ module Prism
       frame_counter = 0
       @game.init
 
-      last_time = Timer.get_time
+      last_time = Time.now.to_unix_f
       unprocessed_time : Float64 = 0.0
 
       while running = @is_running
         should_render = false
-        start_time = Timer.get_time
+        start_time = Time.now.to_unix_f
         passed_time = start_time - last_time # how long the previous frame took
         last_time = start_time
 

@@ -213,6 +213,7 @@ class LevelMap < GameComponent
     # build level texture
     0.upto(@level.width - 1) do |i|
       0.upto(@level.height - 1) do |j|
+        # make walls obstacles
         if @level.pixel(i, j).black?
           @obstacles.push(Wall.new(Vector3f.new(i.to_f32, 0, j.to_f32), Vector3f.new(SPOT_WIDTH, SPOT_HEIGHT, SPOT_LENGTH)))
           next

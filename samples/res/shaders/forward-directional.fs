@@ -10,5 +10,10 @@ uniform DirectionalLight R_directionalLight;
 
 void main()
 {
-  gl_FragColor = texture2D(diffuse, texCoord0.xy) * calcDirectionalLight(R_directionalLight, normalize(normal0), worldPos0);
+  vec4 color = texture2D(diffuse, texCoord0.xy) * calcDirectionalLight(R_directionalLight, normalize(normal0), worldPos0);
+  // discards transparent pixels
+  if (color.a <= 0.0) {
+    discard;
+  }
+  gl_FragColor = color;
 }

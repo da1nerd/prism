@@ -1,5 +1,4 @@
 require "../core/vector3f"
-require "../core/timer"
 require "../core/matrix4f"
 require "./game_component"
 
