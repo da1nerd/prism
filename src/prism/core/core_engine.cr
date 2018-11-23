@@ -46,12 +46,12 @@ module Prism
       frame_counter = 0
       @game.init
 
-      last_time = Time.now.to_unix_f
+      last_time = Time.monotonic.total_seconds
       unprocessed_time : Float64 = 0.0
 
       while running = @is_running
         should_render = false
-        start_time = Time.now.to_unix_f
+        start_time = Time.monotonic.total_seconds
         passed_time = start_time - last_time # how long the previous frame took
         last_time = start_time
 
