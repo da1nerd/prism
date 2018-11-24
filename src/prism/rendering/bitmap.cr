@@ -120,31 +120,28 @@ module Prism
       @pixels[offset + 3] = color.alpha
     end
 
-    # Scales a 16 bit number to an 8 bit number preserving the relative size within the available bits
-    def self.scale_u16_to_u8(val : UInt16) : UInt8
-      return ((val.to_f32 / UInt16::MAX.to_f32) * UInt8::MAX.to_f32).to_u8
-    end
-
     # Loads a bitmap
     private def load_bitmap(file_name : String) : BitmapResource
       ext = File.extname(file_name)
 
       # read bitmap data
       path = File.join(File.dirname(PROGRAM_NAME), file_name)
-      puts "loading #{path}"
       canvas = StumpyPNG.read(path)
       # data = LibTools.load_png(path, out @width, out @height, out @num_channels)
       # create bitmap
       resource = BitmapResource.new
 
       # if data
-      (0...canvas.width).each do |x|
-        (0...canvas.height).each do |y|
-          color = canvas.get(x, y)
-          @pixels.push(Bitmap.scale_u16_to_u8(color.r))
-          @pixels.push(Bitmap.scale_u16_to_u8(color.g))
-          @pixels.push(Bitmap.scale_u16_to_u8(color.b))
-          @pixels.push(Bitmap.scale_u16_to_u8(color.a))
+      @num_channels = 4
+      @width = canvas.width
+      @height = canvas.height
+      (0...canvas.height).each do |y|
+        (0...canvas.width).each do |x|
+          color = canvas.get(x, y).to_rgba
+          @pixels.push(color[0])
+          @pixels.push(color[1])
+          @pixels.push(color[2])
+          @pixels.push(color[3])
         end
       end
 
