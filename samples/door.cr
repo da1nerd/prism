@@ -34,23 +34,25 @@ class Door < GameComponent
         if @@mesh == nil
             # create new mesh
 
+            spritemap = Spritemap.new(4, 4)
+            face = spritemap.get(2, 3)
 
             # NOTE: add top and bottom face if you need hight less than 1
             verticies = [
-                Vertex.new(Vector3f.new(START, START, START), Vector2f.new(0.5, 1)),
-                Vertex.new(Vector3f.new(START, HEIGHT, START), Vector2f.new(0.5, 0.75)),
-                Vertex.new(Vector3f.new(LENGTH, HEIGHT, START), Vector2f.new(0.75, 0.75)),
-                Vertex.new(Vector3f.new(LENGTH, START, START), Vector2f.new(0.75, 1)),
+                Vertex.new(Vector3f.new(START, START, START), face[0]),
+                Vertex.new(Vector3f.new(START, HEIGHT, START), face[1]),
+                Vertex.new(Vector3f.new(LENGTH, HEIGHT, START), face[2]),
+                Vertex.new(Vector3f.new(LENGTH, START, START), face[3]),
 
                 Vertex.new(Vector3f.new(START, START, START), Vector2f.new(0.73, 1)),
                 Vertex.new(Vector3f.new(START, HEIGHT, START), Vector2f.new(0.73, 0.75)),
                 Vertex.new(Vector3f.new(START, HEIGHT, WIDTH), Vector2f.new(0.75, 0.75)),
                 Vertex.new(Vector3f.new(START, START, WIDTH), Vector2f.new(0.75, 1)),
 
-                Vertex.new(Vector3f.new(START, START, WIDTH), Vector2f.new(0.5, 1)),
-                Vertex.new(Vector3f.new(START, HEIGHT, WIDTH), Vector2f.new(0.5, 0.75)),
-                Vertex.new(Vector3f.new(LENGTH, HEIGHT, WIDTH), Vector2f.new(0.75, 0.75)),
-                Vertex.new(Vector3f.new(LENGTH, START, WIDTH), Vector2f.new(0.75, 1)),
+                Vertex.new(Vector3f.new(START, START, WIDTH), face[0]),
+                Vertex.new(Vector3f.new(START, HEIGHT, WIDTH), face[1]),
+                Vertex.new(Vector3f.new(LENGTH, HEIGHT, WIDTH), face[2]),
+                Vertex.new(Vector3f.new(LENGTH, START, WIDTH), face[3]),
 
                 Vertex.new(Vector3f.new(LENGTH, START, START), Vector2f.new(0.73, 1)),
                 Vertex.new(Vector3f.new(LENGTH, HEIGHT, START), Vector2f.new(0.73, 0.75)),
