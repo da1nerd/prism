@@ -8,33 +8,20 @@ module Prism
         def initialize(@width : UInt8, @height : UInt8)
         end
 
-        # Returns the four vertices for the sprite.
-        # Verticies begin in the bottom left corner and proceed clockwise.
-        def get(x : UInt8, y : UInt8) : StaticArray(Vector2f, 4)
+        # Returns the corners of the sprite.
+        #
+        # Each corner is labeled accordingly: top_left, top_right, bottom_right, bottom_left
+        def get(x : UInt8, y : UInt8) : NamedTuple(bottom_left: Vector2f, bottom_right: Vector2f, top_right: Vector2f, top_left: Vector2f)
             left = (x.to_f32) / @width.to_f32
             right = (x.to_f32 + 1) / @width.to_f32
             top = (y.to_f32) / @height.to_f32
             bottom = (y.to_f32 + 1) / @height.to_f32
-            StaticArray[
-                Vector2f.new(left, bottom),
-                Vector2f.new(left, top),
-                Vector2f.new(right, top),
-                Vector2f.new(right, bottom)
-            ]
-        end
-
-        # Same as `get` except returns the verticies in counter-clockwise order
-        def get_cc(x : UInt8, y : UInt8) : StaticArray(Vector2f, 4)
-            left = (x.to_f32) / @width.to_f32
-            right = (x.to_f32 + 1) / @width.to_f32
-            top = (y.to_f32) / @height.to_f32
-            bottom = (y.to_f32 + 1) / @height.to_f32
-            StaticArray[
-                Vector2f.new(left, bottom),
-                Vector2f.new(right, bottom),
-                Vector2f.new(right, top),
-                Vector2f.new(left, top)
-            ]
+            {
+                bottom_left: Vector2f.new(left, bottom),
+                bottom_right: Vector2f.new(right, bottom),
+                top_right: Vector2f.new(right, top),
+                top_left: Vector2f.new(left, top)
+            }
         end
     end
 end
