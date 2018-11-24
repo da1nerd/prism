@@ -1,4 +1,5 @@
 require "lib_gl"
+require "stumpy_png"
 require "./resource_management/bitmap_resource"
 
 module Prism
@@ -119,31 +120,47 @@ module Prism
       @pixels[offset + 3] = color.alpha
     end
 
+    # Scales a 16 bit number to an 8 bit number preserving the relative size within the available bits
+    def self.scale_u16_to_u8(val : UInt16) : UInt8
+      return ((val.to_f32 / UInt16::MAX.to_f32) * UInt8::MAX.to_f32).to_u8
+    end
+
     # Loads a bitmap
     private def load_bitmap(file_name : String) : BitmapResource
       ext = File.extname(file_name)
 
       # read bitmap data
       path = File.join(File.dirname(PROGRAM_NAME), file_name)
-      data = LibTools.load_png(path, out @width, out @height, out @num_channels)
-
+      puts "loading #{path}"
+      canvas = StumpyPNG.read(path)
+      # data = LibTools.load_png(path, out @width, out @height, out @num_channels)
       # create bitmap
       resource = BitmapResource.new
 
-      if data
-        size = @width * @height * @num_channels
-        0.upto(size - 1) do |i|
-          @pixels.push(data[i])
+      # if data
+      (0...canvas.width).each do |x|
+        (0...canvas.height).each do |y|
+          color = canvas.get(x, y)
+          @pixels.push(Bitmap.scale_u16_to_u8(color.r))
+          @pixels.push(Bitmap.scale_u16_to_u8(color.g))
+          @pixels.push(Bitmap.scale_u16_to_u8(color.b))
+          @pixels.push(Bitmap.scale_u16_to_u8(color.a))
         end
+      end
+
+      # size = @canvas.width * @canvas.height# @width * @height * @num_channels
+      # 0.upto(size - 1) do |i|
+      #   @pixels.push(data[i])
+      # end
 
         # TODO: if opengl can take our pixel array as input we can free this bitmap data and let texture inherit from bitmap.
 
         # TODO: free image data from stbi. see LibTools.
         # e.g. stbi_image_free(data)
-      else
-        puts "Error: Failed to load bitmap data from #{path}"
-        exit 1
-      end
+      # else
+      #   puts "Error: Failed to load bitmap data from #{path}"
+      #   exit 1
+      # end
       return resource
     end
   end

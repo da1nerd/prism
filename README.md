@@ -45,10 +45,10 @@ TODO: Write some half-decent development instructions here.
 
 There is some temporary c code that needs to get compiled with the engine. My top priority is to get all c compilation outta here so we can enjoy pure crystal code! In the mean time you'll need to install cmake first.
 
-- install cmake
-- install freeglut
-- install opengl
-- install crystal
+- install [cmake](https://cmake.org)
+- install freeglut `sudo apt install freeglut3 freeglut3-dev`
+- install opengl `sudo apt install mesa-common-dev`
+- install [crystal](https://crystal-lang.org/)
 
 Supporting libraires I've built/forked-and-modified for this project:
 
