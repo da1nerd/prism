@@ -22,7 +22,4 @@ dependencies:
     github: stumpycr/stumpy_png
     version: "~> 4.4.1"
 
-scripts:
-  postinstall: cd src/prism/lib && cmake . && make
-
 license: MIT

@@ -9,13 +9,10 @@ start: samples
 format:
 	@crystal tool format ./src
 
-lib: src/prism/lib
-	cd ${TOOLS_DIR} && cmake . && make
-
-samples: lib directories
+samples: directories
 	@crystal build samples/main.cr -o $(BIN_DIR)/game
 
-release: lib directories
+release: directories
 	@crystal build samples/main.cr -o $(BIN_DIR)/game --release
 
 directories:

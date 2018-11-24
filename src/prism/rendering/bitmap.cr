@@ -3,7 +3,10 @@ require "stumpy_png"
 require "./resource_management/bitmap_resource"
 
 module Prism
-  # Represents a loaded bitmap
+
+  # Provides a resource wrapper around the image loading library.
+  # This keeps the image loading abstracted from the engine thus enabling
+  # it to be easily changed in the future.
   class Bitmap
     @@loaded_bitmaps = {} of String => BitmapResource
     @resource : BitmapResource
@@ -127,11 +130,10 @@ module Prism
       # read bitmap data
       path = File.join(File.dirname(PROGRAM_NAME), file_name)
       canvas = StumpyPNG.read(path)
-      # data = LibTools.load_png(path, out @width, out @height, out @num_channels)
+
       # create bitmap
       resource = BitmapResource.new
 
-      # if data
       @num_channels = 4
       @width = canvas.width
       @height = canvas.height
@@ -144,20 +146,6 @@ module Prism
           @pixels.push(color[3])
         end
       end
-
-      # size = @canvas.width * @canvas.height# @width * @height * @num_channels
-      # 0.upto(size - 1) do |i|
-      #   @pixels.push(data[i])
-      # end
-
-        # TODO: if opengl can take our pixel array as input we can free this bitmap data and let texture inherit from bitmap.
-
-        # TODO: free image data from stbi. see LibTools.
-        # e.g. stbi_image_free(data)
-      # else
-      #   puts "Error: Failed to load bitmap data from #{path}"
-      #   exit 1
-      # end
       return resource
     end
   end
