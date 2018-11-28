@@ -21,5 +21,8 @@ dependencies:
   stumpy_png:
     github: stumpycr/stumpy_png
     version: "~> 4.4.1"
+  crystglfw:
+    github: calebuharrison/CrystGLFW
+    branch: master
 
 license: MIT

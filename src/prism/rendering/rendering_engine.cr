@@ -17,7 +17,7 @@ module Prism
     getter active_light
     setter main_camera, active_light
 
-    def initialize(window : CrystGLUT::Window)
+    def initialize
       super()
 
       @lights = [] of BaseLight

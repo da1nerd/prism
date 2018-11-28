@@ -8,10 +8,10 @@ module Prism
     getter mouse_locked
 
     def initialize(sensitivity : Float32)
-      initialize(sensitivity, Input::KEY_ESCAPE)
+      initialize(sensitivity, Input::Key::Escape)
     end
 
-    def initialize(@sensitivity : Float32, @unlock_mouse_key : Int32)
+    def initialize(@sensitivity : Float32, @unlock_mouse_key : Input::Key)
     end
 
     def input(delta : Float32, input : Input)
@@ -43,7 +43,7 @@ module Prism
       end
 
       # lock the cursor
-      if input.get_mouse_down(0)
+      if input.get_mouse_pressed(Input::MouseButton::Left)
         input.set_mouse_position(center_position)
         input.set_cursor(false)
         @mouse_locked = true

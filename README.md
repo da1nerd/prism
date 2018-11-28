@@ -22,6 +22,17 @@ dependencies:
     github: neutrinog/prism
 ```
 
+Install GLFW on your system
+
+
+```bash
+# on linux
+sudo apt-get install libglfw3-dev
+
+# on macOS
+brew install glfw3
+```
+
 ## Usage
 
 ```crystal

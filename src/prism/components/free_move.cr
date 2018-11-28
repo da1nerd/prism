@@ -6,10 +6,10 @@ module Prism
     setter movement
 
     def initialize(speed : Float32)
-      initialize(speed, Input::KEY_W, Input::KEY_S, Input::KEY_A, Input::KEY_D)
+      initialize(speed, Input::Key::W, Input::Key::S, Input::Key::A, Input::Key::D)
     end
 
-    def initialize(@speed : Float32, @forward_key : Int32, @back_key : Int32, @left_key : Int32, @right_key : Int32)
+    def initialize(@speed : Float32, @forward_key : Input::Key, @back_key : Input::Key, @left_key : Input::Key, @right_key : Input::Key)
       @movement = Vector3f.new(0, 0, 0)
     end
 

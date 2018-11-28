@@ -1,4 +1,5 @@
 require "cryst_glut"
+require "crystglfw"
 require "./input"
 require "../rendering/rendering_engine"
 require "./game"
@@ -11,24 +12,25 @@ module Prism
     getter rendering_engine
 
     def initialize(@width : Int32, @height : Int32, @framerate : Float32, @title : String, @game : Game)
-      @window = CrystGLUT::Window.new(@width, @height, @title)
-      @rendering_engine = RenderingEngine.new(@window)
+      # @window = CrystGLUT::Window.new(@width, @height, @title)
+      @rendering_engine = RenderingEngine.new
 
       @is_running = false
       @frametime = 1.0f64 / @framerate.to_f64
 
-      @window.on_display do
-        run()
-      end
-
-      @input = Input.new(@window)
+      # @window.on_display do
+      #   run()
+      # end
       @game.engine = self
     end
 
     # Starts the game
+    # So long as the game is running this method will not return.
     def start
       return if running = @is_running == true
-      @window.open
+      CrystGLFW.run do
+        self.run
+      end
     end
 
     # Stops the game
@@ -41,6 +43,15 @@ module Prism
     private def run
       return if @is_running
       @is_running = true
+
+      window = CrystGLFW::Window.new(title: @title, width: @width, height: @height)
+      input = Input.new(window)
+
+      window.on_resize do |event|
+        puts "window resized to #{event.size}"
+      end
+
+      window.make_context_current
 
       frames = 0
       frame_counter = 0
@@ -63,12 +74,14 @@ module Prism
 
           unprocessed_time -= @frametime
 
-          if @window.is_close_requested
+          CrystGLFW.wait_events
+
+          if window.should_close?
             stop()
           end
 
-          @game.input(@frametime.to_f32, @input)
-          @input.update
+          @game.input(@frametime.to_f32, input)
+          input.update
           @game.update(@frametime.to_f32)
 
           # log frame rate
@@ -81,7 +94,8 @@ module Prism
 
         if should_render
           @game.render(@rendering_engine)
-          @window.render
+          # @window.render
+          window.swap_buffers
           @rendering_engine.flush
           frames += 1
         else
@@ -89,12 +103,14 @@ module Prism
           sleep(Time::Span.new(nanoseconds: 1000000))
         end
       end
-      clean_up()
+
+      window.destroy
+      # clean_up()
     end
 
     # Cleans up after the game quits
-    private def clean_up
-      @window.dispose
-    end
+    # private def clean_up
+    #   @window.dispose
+    # end
   end
 end
