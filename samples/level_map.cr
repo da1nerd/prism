@@ -113,7 +113,7 @@ class LevelMap < GameComponent
     ]
   end
 
-  private def add_verticies(vertices : Array(Prism::Vertex), i : Int32, j : Int32, offset : Int32, x : Bool, y : Bool, z : Bool, tex_coords : Array(Float32))
+  private def add_verticies(vertices : Array(Vertex), i : Int32, j : Int32, offset : Int32, x : Bool, y : Bool, z : Bool, tex_coords : Array(Float32))
     x_higher, x_lower, y_higher, y_lower = tex_coords
     if x && z
       vertices.push(Vertex.new(Vector3f.new(i * SPOT_WIDTH, offset * SPOT_HEIGHT, j * SPOT_LENGTH), Vector2f.new(x_lower, y_lower)))
