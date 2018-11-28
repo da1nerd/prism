@@ -5,10 +5,10 @@ require "./collision_detector.cr"
 class CollideMove < GameComponent
 
     def initialize(speed : Float32, detector : CollisionDetector)
-        initialize(speed, detector, Input::KEY_W, Input::KEY_S, Input::KEY_A, Input::KEY_D)
+        initialize(speed, detector, Input::Key::W, Input::Key::S, Input::Key::A, Input::Key::D)
     end
 
-    def initialize(@speed : Float32, @detector : CollisionDetector, @forward_key : Int32, @back_key : Int32, @left_key : Int32, @right_key : Int32)
+    def initialize(@speed : Float32, @detector : CollisionDetector, @forward_key : Input::Key, @back_key : Input::Key, @left_key : Input::Key, @right_key : Input::Key)
         @movement = Vector3f.new(0, 0, 0)
     end
 

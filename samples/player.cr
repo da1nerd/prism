@@ -72,12 +72,12 @@ class Player < Character
 
     def input(delta : Float32, input : Input)
         super
-        if input.get_key_down(Input::KEY_E)
+        if input.get_key_pressed(Input::Key::E)
             self.get_level.open_doors(self.transform.pos, true)
         end
 
         if @look.mouse_locked
-            if input.get_mouse_down(0)
+            if input.get_mouse_pressed(Input::MouseButton::Left)
                 line_start = self.transform.pos.xz
                 cast_direction = transform.rot.forward.xz.normalized
                 line_end = line_start + (cast_direction * SHOOT_DISTANCE)
