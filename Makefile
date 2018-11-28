@@ -1,5 +1,4 @@
 BIN_DIR=bin/samples
-TOOLS_DIR=src/prism/lib
 
 all: samples
 
@@ -28,4 +27,3 @@ test:
 clean:
 	@rm -rf bin
 	@rm -rf docs
-	cd ${TOOLS_DIR} && cmake . && make clean

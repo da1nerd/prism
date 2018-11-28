@@ -2,50 +2,18 @@ require "crystglfw"
 require "./vector2f"
 
 module Prism
-  # Manages user input to the engine
 
+  # Provides an abstraction over window input so that the engine can easily read input state
   class Input
     NUM_KEYCODES     = 1024
     NUM_MOUSEBUTTONS =   15
 
-    KEY_ESCAPE     =   27
-    KEY_F1         =    1
-    KEY_F2         =    1
-    KEY_F3         =    2
-    KEY_F4         =    3
-    KEY_F5         =    4
-    KEY_F6         =    5
-    KEY_F7         =    6
-    KEY_F8         =    7
-    KEY_F9         =    8
-    KEY_F10        =    9
-    KEY_F11        =   11
-    KEY_F12        =   12
-    KEY_LEFT       = 1100
-    KEY_UP         = 1101
-    KEY_RIGHT      = 1102
-    KEY_DOWN       = 1103
-    KEY_PAGE_UP    =  104
-    KEY_PAGE_DOWN  =  105
-    KEY_HOME       =  106
-    KEY_END        =  107
-    KEY_INSERT     =  108
-    KEY_NUM_LOCK   =  109
-    KEY_BACK_SLASH =   47
-    KEY_ASTERISK   =   42
-    KEY_MINUS      =   45
-    KEY_PLUS       =   43
-    KEY_RETURN     =   13
-    KEY_SHIFT      =  112
-    KEY_LEFT_CTRL  =  114
-    KEY_RIGHT_CTRL =  115
-    KEY_E          =  101
-    KEY_W          =  119
-    KEY_S          =  115
-    KEY_A          =   97
-    KEY_D          =  100
-
+    # Keys enum.
+    # This is an alias of [CrystalGLFW::Key](https://calebuharrison.gitbooks.io/crystglfw-guide/content/deep-dive/keys.html)
     alias Key = CrystGLFW::Key
+
+    # Mouse buttons enum.
+    # This is an alias of [CrystalGLFW::Key](https://calebuharrison.gitbooks.io/crystglfw-guide/content/deep-dive/mouse-buttons.html)
     alias MouseButton = CrystGLFW::MouseButton
 
     @last_keys = StaticArray(Bool, NUM_KEYCODES).new(false)
@@ -54,6 +22,7 @@ module Prism
     def initialize(@window : CrystGLFW::Window)
     end
 
+    # Processes the window input during each update tick
     def update
       # TODO: this code is ugly and should probably be simplified
 
