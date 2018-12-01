@@ -11,7 +11,7 @@ module Prism
     @sampler_map : Hash(String, LibGL::Int)
     @lights : Array(BaseLight)
     @active_light : BaseLight?
-    @forward_ambient : Shader
+    @forward_ambient : Shader?
     @main_camera : Camera?
 
     getter active_light
@@ -23,10 +23,6 @@ module Prism
       @lights = [] of BaseLight
       @sampler_map = {} of String => LibGL::Int
       @sampler_map["diffuse"] = 0
-
-      add_vector("ambient", Vector3f.new(0.7f32, 0.7f32, 0.7f32))
-
-      @forward_ambient = Shader.new("forward-ambient")
 
       LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
       LibGL.front_face(LibGL::CW)
@@ -48,7 +44,7 @@ module Prism
     def render(object : GameObject)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
-      object.render_all(@forward_ambient, self)
+      object.render_all(self.ambient_light, self)
 
       LibGL.enable(LibGL::BLEND)
       LibGL.blend_equation(LibGL::FUNC_ADD)
@@ -85,6 +81,17 @@ module Prism
       else
         puts "Error: No camera has been set."
         exit 1
+      end
+    end
+
+    def ambient_light : Shader
+      if shader = @forward_ambient
+        return shader
+      else
+        add_vector("ambient", Vector3f.new(0.7f32, 0.7f32, 0.7f32))
+        shader = Shader.new("forward-ambient")
+        @forward_ambient = shader
+        return shader
       end
     end
 
