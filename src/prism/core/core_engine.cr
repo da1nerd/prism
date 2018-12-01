@@ -1,4 +1,3 @@
-require "cryst_glut"
 require "crystglfw"
 require "./input"
 require "../rendering/rendering_engine"
