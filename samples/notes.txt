@@ -17,3 +17,4 @@
 - physics engine (including support for collisions)
 - sprite support (mostly done with orthongonal views)
 - good way to compare vectors
+- allow custom ambient light

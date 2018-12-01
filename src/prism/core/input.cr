@@ -16,8 +16,9 @@ module Prism
     # This is an alias of [CrystalGLFW::Key](https://calebuharrison.gitbooks.io/crystglfw-guide/content/deep-dive/mouse-buttons.html)
     alias MouseButton = CrystGLFW::MouseButton
 
-    @last_keys = StaticArray(Bool, NUM_KEYCODES).new(false)
+    # @last_keys = StaticArray(Bool, NUM_KEYCODES).new(false)
     @last_mouse = StaticArray(Bool, NUM_MOUSEBUTTONS).new(false)
+    @last_keys = {} of Key => Bool
     
     def initialize(@window : CrystGLFW::Window)
     end
@@ -26,13 +27,8 @@ module Prism
     def update
       # TODO: this code is ugly and should probably be simplified
 
-      0.upto(NUM_KEYCODES - 1) do |i|
-        key = Input::Key.from_value?(i)
-        if k = key
-          @last_keys[i] = get_key(k)
-        else
-          @last_keys[i] = false
-        end
+      Key.each do |k|
+        @last_keys[k] = self.get_key(k)
       end
 
       0.upto(NUM_MOUSEBUTTONS - 1) do |i|
@@ -43,37 +39,45 @@ module Prism
           @last_mouse[i] = false
         end
       end
+
+      active_keys = get_keys
+      if active_keys.size > 0
+        puts "Pressed keys: #{active_keys}"
+      end
     end
 
     # Checks if the key is currently down
     def get_key(key_code : Key) : Bool
-      return @window.key_pressed?(key_code)
+      # TRICKY: for some reason these two keys are invalid
+      return false if key_code === Key::Unknown || key_code === Key::ModShift || key_code === Key::ModAlt || key_code === Key::ModSuper || key_code === Key::ModControl
+      return @window.key_pressed?(key_code.as(CrystGLFW::Key))
     end
 
     # Checks if the key was pressed in this frame
     def get_key_pressed(key_code : Key) : Bool
-      return get_key(key_code) && !@last_keys[key_code.value]
+      return get_key(key_code) && !@last_keys[key_code]
     end
 
     # Returns an array of keys that are currently pressed
-    # def get_keys : Array(Key)
-    #   keys = [] of Key
-    #   @window.get_keys_down.each do |key|
-    #     if get_key_pressed(key)
-    #       keys.push(key)
-    #     end
-    #   end
-    #   return keys
-    # end
+    def get_keys : Array(Key)
+      keys = [] of Key
+      @last_keys.keys.each do |k|
+        if @last_keys[k]
+          keys.push(k)
+        end
+      end
+      return keys
+    end
 
     # Checks if the key was released in this frame
     def get_key_released(key_code : Key) : Bool
-      return !get_key(key_code) && @last_keys[key_code.value]
+      # TODO: check that looking up the key from last keys is not null
+      return !get_key(key_code) && @last_keys[key_code]
     end
 
     # Check if the mouse button is currently down
     def get_mouse(mouse_button : MouseButton) : Bool
-      return @window.mouse_button_pressed?(mouse_button)
+      return @window.mouse_button_pressed?(mouse_button.as(CrystGLFW::MouseButton))
     end
 
     # Checks if the mouse button was pressed in this frame

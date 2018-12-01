@@ -74,7 +74,7 @@ module Prism
 
           unprocessed_time -= @frametime
 
-          CrystGLFW.wait_events
+          CrystGLFW.poll_events
 
           if window.should_close?
             stop()
