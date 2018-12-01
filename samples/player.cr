@@ -11,8 +11,8 @@ class Player < Character
 
     GUN_OFFSET = -0.0775f32
 
-    MOUSE_SENSITIVITY = 0.4375f32
-    MOVEMENT_SPEED = 6f32
+    MOUSE_SENSITIVITY = 0.1375f32
+    MOVEMENT_SPEED = 4f32
     DEFAULT_HEIGHT = 0.4375f32
     PLAYER_SIZE = 0.2f32
     SHOOT_DISTANCE = 1000f32
@@ -22,6 +22,8 @@ class Player < Character
 
     @level : LevelMap?
     @rand : Random
+    @window_height : Int32 = 1;
+    @window_width : Int32 = 1
 
     def initialize(position : Vector2f, detector : CollisionDetector, height : Float32 = DEFAULT_HEIGHT)
         super(Vector3f.new(position.x, height, position.y), MAX_HEALTH)
@@ -30,7 +32,8 @@ class Player < Character
         @look = FreeLook.new(MOUSE_SENSITIVITY)
         @move = CollideMove.new(MOVEMENT_SPEED, detector)
         # TODO: make better way to get window dimensions
-        @cam = Camera.new(Prism.to_rad(65.0f32), 800f32/600f32, 0.01f32, 1000.0f32)
+        aspect = @window_width.to_f32 / @window_height.to_f32
+        @cam = Camera.new(Prism.to_rad(65.0f32), aspect, 0.01f32, 1000.0f32)
         @position_mask = PositionMask.new(Vector3f.new(1f32, 0f32, 1f32))
         @position_lock = PositionLock.new(Vector3f.new(0, height, 0))
 
@@ -74,6 +77,12 @@ class Player < Character
         super
         if input.get_key_pressed(Input::Key::E)
             self.get_level.open_doors(self.transform.pos, true)
+        end
+
+        size = input.window_size
+        if @window_height != size[:height] || @window_width != size[:width]
+            @window_height, @window_width = size[:height], size[:width]
+            @cam.aspect = @window_width.to_f32 / @window_height.to_f32
         end
 
         if @look.mouse_locked

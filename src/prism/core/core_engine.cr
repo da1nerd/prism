@@ -57,10 +57,6 @@ module Prism
       input = Input.new(window)
       @rendering_engine = RenderingEngine.new
 
-      window.on_resize do |event|
-        puts "window resized to #{event.size}"
-      end
-
       frames = 0
       frame_counter = 0
       @game.init
@@ -101,6 +97,7 @@ module Prism
         end
 
         if should_render
+          LibGL.viewport(0, 0, window.size[:width], window.size[:height])
           @game.render(rendering_engine)
           # @window.render
           window.swap_buffers

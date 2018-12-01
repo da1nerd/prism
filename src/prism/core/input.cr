@@ -58,7 +58,7 @@ module Prism
     end
 
     # Returns the size of the window
-    def get_dimensions : NamedTuple(height: Int32, width: Int32)
+    def window_size : NamedTuple(height: Int32, width: Int32)
       @window.size
     end
 
