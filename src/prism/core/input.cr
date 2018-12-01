@@ -2,7 +2,6 @@ require "crystglfw"
 require "./vector2f"
 
 module Prism
-
   # Provides an abstraction over window input so that the engine can easily read input state
   class Input
     NUM_KEYCODES     = 1024
@@ -20,7 +19,7 @@ module Prism
     # @last_mouse = StaticArray(Bool, NUM_MOUSEBUTTONS).new(false)
     @last_mouse = {} of MouseButton => Bool
     @last_keys = {} of Key => Bool
-    
+
     def initialize(@window : CrystGLFW::Window)
     end
 

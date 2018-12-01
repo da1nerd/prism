@@ -33,6 +33,16 @@ sudo apt-get install libglfw3-dev
 brew install glfw3
 ```
 
+Install OpenGL
+
+```bash
+# on linux
+install opengl `sudo apt install mesa-common-dev`
+
+# on mac
+# TODO: give install instructions
+```
+
 ## Usage
 
 ```crystal
@@ -47,29 +57,7 @@ For now you can run the same application in this repo.
 make start
 ```
 
-> NOTE: You might need to manually make the c lib `cd src/prism/lib && cmake . && make`.
-> I guess the shard `postinstall` script only runs if you are installing this as a dependency (annoying).
-
-## Development
-
-TODO: Write some half-decent development instructions here.
-
-There is some temporary c code that needs to get compiled with the engine. My top priority is to get all c compilation outta here so we can enjoy pure crystal code! In the mean time you'll need to install cmake first.
-
-- install [cmake](https://cmake.org)
-- install freeglut `sudo apt install freeglut3 freeglut3-dev`
-- install opengl `sudo apt install mesa-common-dev`
-- install [crystal](https://crystal-lang.org/)
-
-Supporting libraires I've built/forked-and-modified for this project:
-
-- [CrystGLUT](https://github.com/neutrinog/cryst_glut) - an OpenGL context toolkit that leverages [Freeglut](http://freeglut.sourceforge.net/).
-- [LibGLUT](https://github.com/neutrinog/lib_glut) - [Freeglut](http://freeglut.sourceforge.net/) bindings for Crystal with some custom bindings of my own to support passing closure from Crystal to C.
-- [LibGL](https://github.com/neutrinog/cryst_glut) - OpenGL bindings for Crystal.
-
 ## Contributing
-
-I'm using this as a learning exercise by following along with [this tutorial](https://www.youtube.com/watch?v=ss3AnSxJ2X8&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&index=1). But if you are super interested send me a message so we can coordinate maybe?
 
 1. Fork it (<https://github.com/neutrinog/prism/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)

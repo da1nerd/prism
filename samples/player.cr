@@ -38,7 +38,7 @@ class Player < Character
         @position_lock = PositionLock.new(Vector3f.new(0, height, 0))
 
         @gun = Gun.new
-        @gun.transform.pos = Vector3f.new(0, GUN_OFFSET, 0.1)
+        @gun.transform.pos = Vector3f.new(-0.008, GUN_OFFSET, 0.1)
 
         self.add_object(@gun)
         self.add_component(@look)

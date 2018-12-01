@@ -3,7 +3,6 @@ require "stumpy_png"
 require "./resource_management/bitmap_resource"
 
 module Prism
-
   # Provides a resource wrapper around the image loading library.
   # This keeps the image loading abstracted from the engine thus enabling
   # it to be easily changed in the future.
@@ -30,7 +29,7 @@ module Prism
 
     # Checks if the bitmap has an alpha channel
     def alpha?
-        return @num_channels == 4
+      return @num_channels == 4
     end
 
     # Pre-multiplies the RGB values with the alpha
