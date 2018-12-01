@@ -17,7 +17,8 @@ module Prism
     alias MouseButton = CrystGLFW::MouseButton
 
     # @last_keys = StaticArray(Bool, NUM_KEYCODES).new(false)
-    @last_mouse = StaticArray(Bool, NUM_MOUSEBUTTONS).new(false)
+    # @last_mouse = StaticArray(Bool, NUM_MOUSEBUTTONS).new(false)
+    @last_mouse = {} of MouseButton => Bool
     @last_keys = {} of Key => Bool
     
     def initialize(@window : CrystGLFW::Window)
@@ -25,19 +26,13 @@ module Prism
 
     # Processes the window input during each update tick
     def update
-      # TODO: this code is ugly and should probably be simplified
 
       Key.each do |k|
         @last_keys[k] = self.get_key(k)
       end
 
-      0.upto(NUM_MOUSEBUTTONS - 1) do |i|
-        mouse = Input::MouseButton.from_value?(i)
-        if m = mouse
-          @last_mouse[i] = get_mouse(m)
-        else
-          @last_mouse[i] = false
-        end
+      MouseButton.each do |b|
+        @last_mouse[b] = self.get_mouse(b)
       end
 
       active_keys = get_keys
@@ -82,12 +77,12 @@ module Prism
 
     # Checks if the mouse button was pressed in this frame
     def get_mouse_pressed(mouse_button : MouseButton) : Bool
-      return get_mouse(mouse_button) && !@last_mouse[mouse_button.value]
+      return get_mouse(mouse_button) && !@last_mouse[mouse_button]
     end
 
     # Checks if the mouse button was released in this frame
     def get_mouse_released(mouse_button : MouseButton) : Bool
-      return !get_mouse(mouse_button) && @last_mouse[mouse_button.value]
+      return !get_mouse(mouse_button) && @last_mouse[mouse_button]
     end
 
     # Returns the position of the mouse
