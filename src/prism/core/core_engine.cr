@@ -7,13 +7,11 @@ require "./game"
 module Prism
   class CoreEngine
     @frametime : Float64
-    @rendering_engine : RenderingEngine
-
-    getter rendering_engine
+    @rendering_engine : RenderingEngine?
 
     def initialize(@width : Int32, @height : Int32, @framerate : Float32, @title : String, @game : Game)
       # @window = CrystGLUT::Window.new(@width, @height, @title)
-      @rendering_engine = RenderingEngine.new
+      # @rendering_engine = RenderingEngine.new
 
       @is_running = false
       @frametime = 1.0f64 / @framerate.to_f64
@@ -22,6 +20,15 @@ module Prism
       #   run()
       # end
       @game.engine = self
+    end
+
+    def rendering_engine : RenderingEngine
+      if engine = @rendering_engine
+        return engine
+      else
+        puts "Rendering engine not initialized"
+        exit 1
+      end
     end
 
     # Starts the game
@@ -45,13 +52,14 @@ module Prism
       @is_running = true
 
       window = CrystGLFW::Window.new(title: @title, width: @width, height: @height)
+      window.make_context_current
+
       input = Input.new(window)
+      @rendering_engine = RenderingEngine.new
 
       window.on_resize do |event|
         puts "window resized to #{event.size}"
       end
-
-      window.make_context_current
 
       frames = 0
       frame_counter = 0
@@ -93,10 +101,10 @@ module Prism
         end
 
         if should_render
-          @game.render(@rendering_engine)
+          @game.render(rendering_engine)
           # @window.render
           window.swap_buffers
-          @rendering_engine.flush
+          rendering_engine.flush
           frames += 1
         else
           # sleep for 1 millisecond
