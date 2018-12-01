@@ -26,24 +26,17 @@ module Prism
 
     # Processes the window input during each update tick
     def update
-
       Key.each do |k|
         @last_keys[k] = self.get_key(k)
       end
-
       MouseButton.each do |b|
         @last_mouse[b] = self.get_mouse(b)
-      end
-
-      active_keys = get_keys
-      if active_keys.size > 0
-        puts "Pressed keys: #{active_keys}"
       end
     end
 
     # Checks if the key is currently down
     def get_key(key_code : Key) : Bool
-      # TRICKY: for some reason these two keys are invalid
+      # TRICKY: for some reason these keys are invalid
       return false if key_code === Key::Unknown || key_code === Key::ModShift || key_code === Key::ModAlt || key_code === Key::ModSuper || key_code === Key::ModControl
       return @window.key_pressed?(key_code.as(CrystGLFW::Key))
     end
@@ -62,6 +55,11 @@ module Prism
         end
       end
       return keys
+    end
+
+    # Returns the size of the window
+    def get_dimensions : NamedTuple(height: Int32, width: Int32)
+      @window.size
     end
 
     # Checks if the key was released in this frame
