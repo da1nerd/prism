@@ -6,6 +6,13 @@ require "./collision_detector.cr"
 require "./character.cr"
 require "./gun.cr"
 
+enum PlayerState
+    Idle
+    Walk
+    Attack
+    Hurt
+end
+
 # Represents a player in the game
 class Player < Character
 
@@ -22,12 +29,16 @@ class Player < Character
 
     @level : LevelMap?
     @rand : Random
-    @window_height : Int32 = 1;
+    @window_height : Int32 = 1
     @window_width : Int32 = 1
+    @player_clock : Float32
+    @state : PlayerState
+    @gun : Gun
 
     def initialize(position : Vector2f, detector : CollisionDetector, height : Float32 = DEFAULT_HEIGHT)
         super(Vector3f.new(position.x, height, position.y), MAX_HEALTH)
-
+        @state = PlayerState::Idle
+        @player_clock = 0
         @rand = Random.new
         @look = FreeLook.new(MOUSE_SENSITIVITY)
         @move = CollideMove.new(MOVEMENT_SPEED, detector)
@@ -38,7 +49,7 @@ class Player < Character
         @position_lock = PositionLock.new(Vector3f.new(0, height, 0))
 
         @gun = Gun.new
-        @gun.transform.pos = Vector3f.new(-0.008, GUN_OFFSET, 0.1)
+        @gun.transform.pos = Vector3f.new(0, GUN_OFFSET, 0.1)
 
         self.add_object(@gun)
         self.add_component(@look)
@@ -87,6 +98,7 @@ class Player < Character
 
         if @look.mouse_locked
             if input.get_mouse_pressed(Input::MouseButton::Left)
+                @gun.fire
                 line_start = self.transform.pos.xz
                 cast_direction = transform.rot.forward.xz.normalized
                 line_end = line_start + (cast_direction * SHOOT_DISTANCE)

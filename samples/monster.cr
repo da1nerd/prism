@@ -157,13 +157,6 @@ class Monster < Character
         end
     end
 
-    # Checks if the monster can react to things.
-    # This is based on the monster clock so it does not think too often and slow down the game.
-    private def can_react
-        time = @monster_clock - @monster_clock.to_i32
-        return time < 0.5
-    end
-
     private def idle_update(delta : Float32, orientation : Vector3f, distance : Float32)
         time_decimals : Float32 = @monster_clock - @monster_clock.to_i32
         if rendering_engine = @rendering_engine

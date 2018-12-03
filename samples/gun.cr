@@ -1,9 +1,14 @@
 require "../src/prism"
 
+enum GunState
+    Idle
+    Fire
+end
+
 class Gun < GameObject
     SCALE = 0.0625f32
     SIZE_Y = SCALE
-    SIZE_X = SIZE_Y / (1.0379747 * 2)
+    SIZE_X = 102f32 * SIZE_Y / (85f32 * 2) # TRICKY: these are the texture dimensions
     START = 0f32
 
     # offsets trim spacing around the texture
@@ -16,10 +21,19 @@ class Gun < GameObject
     TEX_MAX_Y = 1 - OFFSET_Y
 
     @@mesh : Mesh?
-    @@material : Material?
+    @material : Material
+    @@animations = [] of Texture
+    @clock : Float32
+    @state : GunState
+    @fire_start : Float32
 
     def initialize
         super
+        @fire_start = 0
+        @material = Material.new
+        @clock = 0
+        @state = GunState::Idle
+
         # Build the gun mesh
         if @@mesh == nil
             verticies = [
@@ -35,31 +49,56 @@ class Gun < GameObject
             @@mesh = Mesh.new(verticies, indicies, true)
         end
 
-        if @@material == nil
-            material = Material.new()
-            material.add_texture("diffuse", Texture.new("PISGB0.png"))
-            material.add_float("specularIntensity", 1)
-            material.add_float("specularPower", 8)
-            @@material = material
+        if @@animations.size == 0
+            # idle
+            @@animations.push(Texture.new("PISGB0.png"))
+            # fire
+            @@animations.push(Texture.new("PISFA0.png"))
         end
 
+        @material.add_texture("diffuse", @@animations[0])
+        @material.add_float("specularIntensity", 1)
+        @material.add_float("specularPower", 8)
+
         if mesh = @@mesh
-            if material = @@material
-                self.add_component(MeshRenderer.new(mesh, material))
-            end
+            self.add_component(MeshRenderer.new(mesh, @material))
         end
     end
 
-    # def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
-    #     puts "pos #{transform.pos.to_s}"
-    #     # puts "rot #{transform.rot.to_s}"
-    #     # puts "scl #{transform.scale.to_s}"
-    #     if mesh = @@mesh
-    #         if material = @@material
-    #             shader.bind
-    #             shader.update_uniforms(self.transform, material, rendering_engine)
-    #             mesh.draw
-    #         end
-    #     end
-    # end
+    # Starts a fire animation
+    # TODO: the fire method could take a block that will do the actual firing.
+    # This way the gun can control when/if the fire logic is executed.
+    def fire
+        @fire_start = 0;
+        @state = GunState::Fire
+    end
+
+    def idle_update(delta : Float32)
+        @material.add_texture("diffuse", @@animations[0])
+    end
+
+    def fire_update(delta : Float32)
+        if @fire_start == 0
+            @fire_start = @clock
+        end
+
+        fire_period : Float32 = @clock - @fire_start
+
+        if fire_period < 0.1
+            @material.add_texture("diffuse", @@animations[1])
+        else
+            @state = GunState::Idle
+        end
+    end
+
+    def update(delta : Float32)
+        super
+        @clock += delta
+        case @state
+        when GunState::Idle
+            idle_update(delta)
+        when GunState::Fire
+            fire_update(delta)
+        end
+    end
 end
