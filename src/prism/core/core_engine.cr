@@ -9,15 +9,8 @@ module Prism
     @rendering_engine : RenderingEngine?
 
     def initialize(@width : Int32, @height : Int32, @framerate : Float32, @title : String, @game : Game)
-      # @window = CrystGLUT::Window.new(@width, @height, @title)
-      # @rendering_engine = RenderingEngine.new
-
       @is_running = false
       @frametime = 1.0f64 / @framerate.to_f64
-
-      # @window.on_display do
-      #   run()
-      # end
       @game.engine = self
     end
 
@@ -98,7 +91,6 @@ module Prism
         if should_render
           LibGL.viewport(0, 0, window.size[:width], window.size[:height])
           @game.render(rendering_engine)
-          # @window.render
           window.swap_buffers
           rendering_engine.flush
           frames += 1
@@ -109,12 +101,6 @@ module Prism
       end
 
       window.destroy
-      # clean_up()
     end
-
-    # Cleans up after the game quits
-    # private def clean_up
-    #   @window.dispose
-    # end
   end
 end
