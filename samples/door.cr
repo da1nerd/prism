@@ -76,11 +76,11 @@ class Door < GameComponent
         end
     end
 
-    def position
+    def position : Prism::Vector3f
         self.transform.pos
     end
 
-    def size
+    def size : Prism::Vector3f
         SIZE.rotate(self.transform.rot)
     end
 

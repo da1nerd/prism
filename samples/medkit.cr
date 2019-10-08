@@ -32,10 +32,10 @@ class MedKit < GameObject
 
         if @@mesh == nil
             verticies = [
-                Vertex.new(Vector3f.new(SIZE_X, START, START), Vector2f.new(TEX_MIN_X, TEX_MAX_Y)),
-                Vertex.new(Vector3f.new(SIZE_X, SIZE_Y, START), Vector2f.new(TEX_MIN_X, TEX_MIN_Y)),
-                Vertex.new(Vector3f.new(-SIZE_X, SIZE_Y, START), Vector2f.new(TEX_MAX_X, TEX_MIN_Y)),
-                Vertex.new(Vector3f.new(-SIZE_X, START, START), Vector2f.new(TEX_MAX_X, TEX_MAX_Y))
+                Vertex.new(Vector3f.new(SIZE_X.to_f32, START.to_f32, START.to_f32), Vector2f.new(TEX_MIN_X, TEX_MAX_Y)),
+                Vertex.new(Vector3f.new(SIZE_X.to_f32, SIZE_Y.to_f32, START.to_f32), Vector2f.new(TEX_MIN_X, TEX_MIN_Y)),
+                Vertex.new(Vector3f.new(-SIZE_X.to_f32, SIZE_Y.to_f32, START.to_f32), Vector2f.new(TEX_MAX_X, TEX_MIN_Y)),
+                Vertex.new(Vector3f.new(-SIZE_X.to_f32, START.to_f32, START.to_f32), Vector2f.new(TEX_MAX_X, TEX_MAX_Y))
             ]
             indicies = [
                 0, 1, 2,
