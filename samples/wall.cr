@@ -4,8 +4,17 @@ require "./obstacle.cr"
 class Wall
     include Obstacle
 
-    getter position, size
+    @position : Vector3f
+    @size : Vector3f
 
     def initialize(@position : Vector3f, @size : Vector3f)
+    end
+
+    def position : Prism::Vector3f
+        @position
+    end
+
+    def size : Prism::Vector3f
+        @size
     end
 end

@@ -15,9 +15,9 @@ dependencies:
     branch: master
   stumpy_png:
     github: stumpycr/stumpy_png
-    version: "~> 4.4.1"
+    version: "~> 4.5.2"
   crystglfw:
-    github: calebuharrison/CrystGLFW
-    branch: master
+    github: neutrinog/CrystGLFW
+    branch: support-crystal-0.31
 
 license: MIT

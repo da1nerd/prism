@@ -96,9 +96,9 @@ class LevelMap < GameComponent
   # and multiply it's position by the total number of textures e.g. to access texture 2 in a 16 texture block
   # set the appropriate color value to 2*16 or 32
   private def calc_tex_coords(color_channel : UInt8) : StaticArray(Float32, 4)
-    tex_x : UInt8 = color_channel / NUM_TEXTURES # tex row
+    tex_x : UInt8 = color_channel.to_u8 // NUM_TEXTURES # tex row
     tex_y : UInt8 = tex_x % NUM_TEX_EXP          # tex column
-    tex_x /= NUM_TEX_EXP
+    tex_x //= NUM_TEX_EXP
 
     x_higher = 1 - tex_x.to_f32 / NUM_TEX_EXP
     x_lower = x_higher - 1f32 / NUM_TEX_EXP
