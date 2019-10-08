@@ -10,6 +10,7 @@ format:
 
 samples: directories
 	@crystal build samples/main.cr -o $(BIN_DIR)/game
+	@crystal build samples/model/main.cr -o $(BIN_DIR)/model
 
 release: directories
 	@crystal build samples/main.cr -o $(BIN_DIR)/game --release
