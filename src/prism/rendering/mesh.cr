@@ -3,12 +3,22 @@ require "./vertex"
 require "./resource_management/mesh_resource"
 
 module Prism
+
+  struct MeshCache
+    property verticies, indicies, calc_normals
+
+    def initialize(@verticies : Array(Vertex), @indicies : Array(LibGL::Int), @calc_normals : Bool)
+    end
+
+  end
+
   # Manages the state of a model mesh
   # Meshes give the shapes which can be covered in `Material`s.
   class Mesh
     @@loaded_models = {} of String => MeshResource
     @resource : MeshResource
     @file_name : String?
+    @cache : MeshCache?
 
     def initialize(file_name : String)
       @file_name = file_name
@@ -63,6 +73,7 @@ module Prism
     end
 
     private def add_verticies(verticies : Array(Vertex), indicies : Array(LibGL::Int), calc_normals : Bool)
+      @cache = MeshCache.new(verticies, indicies, calc_normals)
       if calc_normals
         calc_normals(verticies, indicies)
       end
@@ -74,6 +85,20 @@ module Prism
 
       LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @resource.ibo)
       LibGL.buffer_data(LibGL::ELEMENT_ARRAY_BUFFER, indicies.size * Vertex::SIZE * sizeof(Float32), indicies, LibGL::STATIC_DRAW)
+    end
+
+    # Reverses the face of the mesh
+    def flip_face
+      if cache = @cache
+        indicies = [] of LibGL::Int
+        0.upto((cache.indicies.size // 3) - 1) do |i|
+            offset = i * 3
+            indicies << cache.indicies[offset + 2]
+            indicies << cache.indicies[offset + 1]
+            indicies << cache.indicies[offset]
+        end
+        self.add_verticies(cache.verticies, indicies, cache.calc_normals)
+      end
     end
 
     def draw
