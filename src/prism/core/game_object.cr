@@ -2,11 +2,14 @@ require "../components/game_component"
 require "./transform"
 require "../rendering/rendering_engine"
 require "./input"
+require "./moveable"
 
 module Prism
   # Represents an object within the scene graph.
   # The screen graph is composed of a tree of `GameObject`s.
   class GameObject
+    include Moveable
+
     @children : Array(GameObject)
     @components : Array(GameComponent)
     @transform : Transform
@@ -137,4 +140,7 @@ module Prism
       end
     end
   end
+
+  # TODO: this will become the new name. Maybe we should call this an Element instead?
+  alias Object = GameObject
 end

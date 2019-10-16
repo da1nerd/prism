@@ -5,6 +5,10 @@ module Prism
     getter movement
     setter movement
 
+    def initialize
+      initialize(4)
+    end
+
     def initialize(speed : Float32)
       initialize(speed, Input::Key::W, Input::Key::S, Input::Key::A, Input::Key::D)
     end

@@ -7,6 +7,10 @@ module Prism
 
     getter mouse_locked
 
+    def initialize
+      initialize(0.1375f32)
+    end
+
     def initialize(sensitivity : Float32)
       initialize(sensitivity, Input::Key::Escape)
     end

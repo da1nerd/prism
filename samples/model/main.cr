@@ -90,9 +90,9 @@ class ModelDemo < Prism::Game
         spot_light_object.transform.rot = Quaternion.new(Vector3f.new(0.0f32, 1.0f32, 0.0f32), Prism.to_rad(90.0f32))
 
         add_object(plane_object)
-        add_object(directional_light_object)
+        # add_object(directional_light_object)
         add_object(point_light_object)
-        add_object(spot_light_object)
+        # add_object(spot_light_object)
 
         test_mesh1 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
         test_mesh2 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
