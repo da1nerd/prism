@@ -9,10 +9,13 @@ module Prism
 
             setter material
 
-            # # puts the material face on the bottom instead of the default top
-            # def flip_face
-            #     @mesh.reverse_indicies
-            # end
+            # puts the material face on the bottom instead of the default top
+            def flip_face
+                if mesh = @mesh
+                    mesh.flip_face
+                    @mesh = mesh
+                end
+            end
 
             def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
                 if mesh = @mesh
