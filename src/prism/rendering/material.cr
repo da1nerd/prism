@@ -4,10 +4,19 @@ require "./resource_management/mapped_values"
 module Prism
   class Material < MappedValues
     @texture_map : Hash(String, Texture)
-
+    
     def initialize
       super
       @texture_map = {} of String => Texture
+    end
+
+    # Creates a material with an initial texture set to default values.
+    def initialize(texture_path : String)
+      super()
+      @texture_map = {} of String => Texture
+      add_texture("diffuse", Texture.new(texture_path))
+      add_float("specularIntensity", 1)
+      add_float("specularPower", 8)
     end
 
     def add_texture(name : String, texture : Texture)

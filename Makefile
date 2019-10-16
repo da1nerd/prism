@@ -5,12 +5,17 @@ all: samples
 start: samples
 	./bin/samples/game
 
+box: directories
+	@crystal build samples/box/main.cr -o $(BIN_DIR)/box
+	./bin/samples/box
+
 format:
 	@crystal tool format ./src
 
 samples: directories
 	@crystal build samples/main.cr -o $(BIN_DIR)/game
 	@crystal build samples/model/main.cr -o $(BIN_DIR)/model
+	@crystal build samples/model-preview/main.cr -o $(BIN_DIR)/model-preview
 
 release: directories
 	@crystal build samples/main.cr -o $(BIN_DIR)/game --release

@@ -6,6 +6,14 @@ module Prism
   class Camera < GameComponent
     @projection : Matrix4f
 
+    # Creates a camera with default values
+    def initialize
+      field_of_view : Float32 = Angle.from_degrees(65)
+      # TODO: get window aspect ratio
+      aspect_ratio : Float32 = 1f32 / 1
+      initialize(field_of_view, aspect_ratio, 0.01f32, 1000f32)
+    end
+
     def initialize(@fov : Float32, @aspect : Float32, @z_near : Float32, @z_far : Float32)
       @projection = Matrix4f.new.init_perspective(@fov, @aspect, @z_near, @z_far)
     end
