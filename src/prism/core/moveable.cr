@@ -6,6 +6,7 @@ module Prism
         def elevate_to(position : Float32)
             # TODO: use parent transformation
             @transform.pos = @transform.rot.up * position
+            self
         end
 
         # Changes the object's elevation by the distance
@@ -15,20 +16,20 @@ module Prism
         end
 
         # Rotates the shape around the x-axis
-        def rotate_x_axis(angle)
-            @transform.rotate(Vector3f.new(1, 0, 0), angle)
+        def rotate_x_axis(angle : Angle)
+            @transform.rotate(Vector3f.new(1, 0, 0), angle.radians)
             self
         end
 
         # Rotates the shape around the y-axis
-        def rotate_y_axis(angle)
-            @transform.rotate(Vector3f.new(0, 1, 0), angle)
+        def rotate_y_axis(angle : Angle)
+            @transform.rotate(Vector3f.new(0, 1, 0), angle.radians)
             self
         end
 
         # Rotates the shape around the z-axis
-        def rotate_z_axis(angle)
-            @transform.rotate(Vector3f.new(0, 0, 1), angle)
+        def rotate_z_axis(angle : Angle)
+            @transform.rotate(Vector3f.new(0, 0, 1), angle.radians)
             self
         end
 

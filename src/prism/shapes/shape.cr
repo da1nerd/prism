@@ -9,10 +9,11 @@ module Prism
 
             setter material
 
-            # puts the material face on the bottom instead of the default top
-            def flip_face
+            # Reverses the face of the shape.
+            # The face is the visible material of the shape
+            def reverse_face
                 if mesh = @mesh
-                    mesh.flip_face
+                    mesh.reverse_face
                     @mesh = mesh
                 end
             end

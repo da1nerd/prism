@@ -9,9 +9,8 @@ module Prism
 
     # Creates a camera with default values
     def initialize
-      field_of_view : Float32 = Angle.from_degrees(65)
-      # TODO: get window aspect ratio
-      aspect_ratio : Float32 = 1f32 / 1
+      field_of_view = Angle.from_degrees(65)
+      aspect_ratio : Float32 = 1f32 / 1f32
       initialize(field_of_view, aspect_ratio, 0.01f32, 1000f32)
     end
 
@@ -29,15 +28,15 @@ module Prism
       end
     end
 
-    def initialize(@fov : Float32, @aspect : Float32, @z_near : Float32, @z_far : Float32)
+    def initialize(@fov : Angle, @aspect : Float32, @z_near : Float32, @z_far : Float32)
       @sync_aspect_ratio = true
-      @projection = Matrix4f.new.init_perspective(@fov, @aspect, @z_near, @z_far)
+      @projection = Matrix4f.new.init_perspective(@fov.radians, @aspect, @z_near, @z_far)
     end
 
     # changes the aspect ratio
     def aspect=(aspect_ratio : Float32)
       @aspect = aspect_ratio
-      @projection = Matrix4f.new.init_perspective(@fov, @aspect, @z_near, @z_far)
+      @projection = Matrix4f.new.init_perspective(@fov.radians, @aspect, @z_near, @z_far)
     end
 
     def get_view_projection : Matrix4f

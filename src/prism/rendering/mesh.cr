@@ -88,7 +88,7 @@ module Prism
     end
 
     # Reverses the face of the mesh
-    def flip_face
+    def reverse_face
       if cache = @cache
         indicies = [] of LibGL::Int
         0.upto((cache.indicies.size // 3) - 1) do |i|
