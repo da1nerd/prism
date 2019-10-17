@@ -8,5 +8,8 @@ module Prism
         def from_degrees(degrees) : Float32
             degrees / 180f32 * Math::PI
         end
+
+        # def from_radians(radians) : Angle
+        # end
     end
 end

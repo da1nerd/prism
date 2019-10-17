@@ -6,7 +6,9 @@ require "../../src/prism/**"
 class MyProgram < Prism::Game
     def init
 
-        # set a default material to be applied to all shapes
+        # TODO: configure ambient light
+
+        # TODO: set a default material to be applied to all shapes
         # set_default_material(Prism::Material.new())
         material = Prism::Material.new("defaultTexture.png")
         brick_material = Prism::Material.new("bricks.png")
@@ -22,44 +24,43 @@ class MyProgram < Prism::Game
         ceiling.elevate_to(5)
 
         # create a north wall that is 5x2
-        northWall = Prism::Shapes::Plain.new(5, 5)
-        northWall.material = material
-        northWall.rotate_x_axis(-Prism::Angle.from_degrees(90)).move_north(5);
+        north_wall = Prism::Shapes::Plain.new(5, 5)
+        north_wall.material = material
+        north_wall.rotate_x_axis(-Prism::Angle.from_degrees(90)).move_north(5);
 
         # create a west wall that is 5x2
-        westWall = Prism::Shapes::Plain.new(5, 5)
-        westWall.material = material
-        westWall.rotate_x_axis(-Prism::Angle.from_degrees(90))
-        westWall.rotate_y_axis(-Prism::Angle.from_degrees(90))
+        west_wall = Prism::Shapes::Plain.new(5, 5)
+        west_wall.material = material
+        west_wall.rotate_x_axis(-Prism::Angle.from_degrees(90))
+        west_wall.rotate_y_axis(-Prism::Angle.from_degrees(90))
 
         # create a floating 1x1x1 box in the middle of the room
         box = Prism::Shapes::Box.new(1)
         box.material = brick_material
-        box.move_north(2)
-        box.move_east(2)
-        box.elevate_by(1)
+        box.move_north(2).move_east(2).elevate_by(1)
 
+        # TODO: get this working
         # create a light with default values
-        sunLight = Prism::Object.new
-        sunLight.add_component(Prism::DirectionalLight.new)
-        sunLight.transform.rot = Prism::Quaternion.new(Prism::Vector3f.new(1f32, 0f32, 0f32), Prism::Angle.from_degrees(-45f32))
+        sun_light = Prism::Object.new
+        sun_light.add_component(Prism::DirectionalLight.new)
+        sun_light.transform.rot = Prism::Quaternion.new(Prism::Vector3f.new(1f32, 0f32, 0f32), Prism::Angle.from_degrees(-45f32))
 
         # creates a moveable camera with sane defaults
         camera = Prism::Object.new
-        cam = Prism::Camera.new
-        camera.add_component(cam)
+        camera.add_component(Prism::Camera.new)
         camera.add_component(Prism::FreeLook.new)
         camera.add_component(Prism::FreeMove.new)
-        camera.move_east(2.5)
-        camera.elevate_by(0.5)
+        camera.move_east(3.5).elevate_by(0.5)
+        # TODO: looking at an object should be simpler
+        camera.transform.look_at(box.transform.pos, camera.transform.rot.up)
 
         # add everything to the scene
         add_object(floor)
         add_object(ceiling)
-        add_object(northWall)
-        add_object(westWall)
+        add_object(north_wall)
+        add_object(west_wall)
         add_object(box)
-        add_object(sunLight)
+        add_object(sun_light)
         add_object(camera)
 
         # allow changing an object's axis as well.
