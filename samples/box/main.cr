@@ -46,7 +46,8 @@ class MyProgram < Prism::Game
 
         # creates a moveable camera with sane defaults
         camera = Prism::Object.new
-        camera.add_component(Prism::Camera.new)
+        cam = Prism::Camera.new
+        camera.add_component(cam)
         camera.add_component(Prism::FreeLook.new)
         camera.add_component(Prism::FreeMove.new)
         camera.move_east(2.5)
