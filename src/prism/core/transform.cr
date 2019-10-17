@@ -42,6 +42,11 @@ module Prism
       @rot = (Quaternion.new(axis, angle) * @rot).normalize
     end
 
+    # Rotates to look at the *object*
+    def look_at(object : GameObject)
+      @rot = get_look_at_direction(object.transform.pos, @rot.up)
+    end
+
     # Rotates to look at the point
     def look_at(point : Vector3f, up : Vector3f)
       @rot = get_look_at_direction(point, up)

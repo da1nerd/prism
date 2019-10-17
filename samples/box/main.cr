@@ -3,7 +3,7 @@ require "../../src/prism/**"
 # This is all wishful thinking.
 # If I could build a game, this is the way I'd like to build it.
 # Hopefully this will give me ideas on how to build the engine.
-class MyProgram < Prism::Game
+class BoxDemo < Prism::Game
     def init
 
         # TODO: configure ambient light
@@ -20,19 +20,19 @@ class MyProgram < Prism::Game
         # creates a 5x5 ceiling
         ceiling = Prism::Shapes::Plain.new(5, 5)
         ceiling.material = material
-        ceiling.flip_face()
+        ceiling.reverse_face()
         ceiling.elevate_to(5)
 
         # create a north wall that is 5x2
         north_wall = Prism::Shapes::Plain.new(5, 5)
         north_wall.material = material
-        north_wall.rotate_x_axis(-Prism::Angle.from_degrees(90)).move_north(5);
+        north_wall.rotate_x_axis(Prism::Angle.from_degrees(-90)).move_north(5);
 
         # create a west wall that is 5x2
         west_wall = Prism::Shapes::Plain.new(5, 5)
         west_wall.material = material
-        west_wall.rotate_x_axis(-Prism::Angle.from_degrees(90))
-        west_wall.rotate_y_axis(-Prism::Angle.from_degrees(90))
+        west_wall.rotate_x_axis(Prism::Angle.from_degrees(-90))
+        west_wall.rotate_y_axis(Prism::Angle.from_degrees(-90))
 
         # create a floating 1x1x1 box in the middle of the room
         box = Prism::Shapes::Box.new(1)
@@ -43,7 +43,7 @@ class MyProgram < Prism::Game
         # create a light with default values
         sun_light = Prism::Object.new
         sun_light.add_component(Prism::DirectionalLight.new)
-        sun_light.transform.rot = Prism::Quaternion.new(Prism::Vector3f.new(1f32, 0f32, 0f32), Prism::Angle.from_degrees(-45f32))
+        sun_light.transform.rot = Prism::Quaternion.new(Prism::Vector3f.new(1f32, 0f32, 0f32), Prism::Angle.from_degrees(-45f32).radians)
 
         # creates a moveable camera with sane defaults
         camera = Prism::Object.new
@@ -51,8 +51,7 @@ class MyProgram < Prism::Game
         camera.add_component(Prism::FreeLook.new)
         camera.add_component(Prism::FreeMove.new)
         camera.move_east(3.5).elevate_by(0.5)
-        # TODO: looking at an object should be simpler
-        camera.transform.look_at(box.transform.pos, camera.transform.rot.up)
+        camera.transform.look_at(box)
 
         # add everything to the scene
         add_object(floor)
@@ -63,10 +62,11 @@ class MyProgram < Prism::Game
         add_object(sun_light)
         add_object(camera)
 
-        # allow changing an object's axis as well.
+        # TODO: allow changing an object's center axis as well.
+        #  You should be able to place the axis at any 3d point.
         # obj.set_axis_position(0, 0, 0) # default position is front right bottom corner.
     end
 end
 
-engine = Prism::CoreEngine.new(800, 600, 60.0, "Box Demo", MyProgram.new)
+engine = Prism::CoreEngine.new(800, 600, 60.0, "Box Demo", BoxDemo.new)
 engine.start
