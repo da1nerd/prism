@@ -44,7 +44,7 @@ class Player < Character
         @move = CollideMove.new(MOVEMENT_SPEED, detector)
         # TODO: make better way to get window dimensions
         aspect = @window_width.to_f32 / @window_height.to_f32
-        @cam = Camera.new(Prism.to_rad(65.0f32), aspect, 0.01f32, 1000.0f32)
+        @cam = Camera.new(Prism::Angle.from_degrees(65.0f32), aspect, 0.01f32, 1000.0f32)
         @position_mask = PositionMask.new(Vector3f.new(1f32, 0f32, 1f32))
         @position_lock = PositionLock.new(Vector3f.new(0, height, 0))
 

@@ -90,9 +90,9 @@ class ModelDemo < Prism::Game
         spot_light_object.transform.rot = Quaternion.new(Vector3f.new(0.0f32, 1.0f32, 0.0f32), Prism.to_rad(90.0f32))
 
         add_object(plane_object)
-        # add_object(directional_light_object)
+        add_object(directional_light_object)
         add_object(point_light_object)
-        # add_object(spot_light_object)
+        add_object(spot_light_object)
 
         test_mesh1 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
         test_mesh2 = GameObject.new().add_component(MeshRenderer.new(mesh2, material))
@@ -103,7 +103,7 @@ class ModelDemo < Prism::Game
         test_mesh2.transform.pos.set(0f32, 0f32, 5f32)
 
         test_mesh1.add_child(test_mesh2)
-        camObj = GameObject.new().add_component(Camera.new(Prism.to_rad(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32))
+        camObj = GameObject.new().add_component(Camera.new(Prism::Angle.from_degrees(70.0f32), 800f32/600f32, 0.01f32, 1000.0f32))
         camObj.add_component(FreeLook.new(0.1375f32))
         camObj.add_component(FreeMove.new(4f32))
         test_mesh2.add_child(camObj)

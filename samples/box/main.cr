@@ -39,11 +39,14 @@ class BoxDemo < Prism::Game
         box.material = brick_material
         box.move_north(2).move_east(2).elevate_by(1)
 
-        # TODO: get this working
+        tiny_box = Prism::Shapes::Box.new(0.5)
+        tiny_box.material = brick_material
+        tiny_box.move_north(3).move_east(3).elevate_by(0.5)
+
         # create a light with default values
         sun_light = Prism::Object.new
         sun_light.add_component(Prism::DirectionalLight.new)
-        sun_light.transform.rot = Prism::Quaternion.new(Prism::Vector3f.new(1f32, 0f32, 0f32), Prism::Angle.from_degrees(-45f32).radians)
+        sun_light.transform.look_at(box)
 
         # creates a moveable camera with sane defaults
         camera = Prism::Object.new
@@ -54,12 +57,13 @@ class BoxDemo < Prism::Game
         camera.transform.look_at(box)
 
         # add everything to the scene
+        add_object(sun_light)
         add_object(floor)
         add_object(ceiling)
         add_object(north_wall)
         add_object(west_wall)
         add_object(box)
-        add_object(sun_light)
+        add_object(tiny_box)
         add_object(camera)
 
         # TODO: allow changing an object's center axis as well.
