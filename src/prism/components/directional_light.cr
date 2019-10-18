@@ -8,7 +8,7 @@ module Prism
 
     # Creates a directional light with default values
     def initialize
-      initialize(Vector3f.new(1,1,1), 0.9)
+      initialize(Vector3f.new(1,1,1), 0.8)
     end
 
     def initialize(color : Vector3f, intensity : Float32)

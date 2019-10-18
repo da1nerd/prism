@@ -1,15 +1,7 @@
 require "../../src/prism/**"
 
-# This is all wishful thinking.
-# If I could build a game, this is the way I'd like to build it.
-# Hopefully this will give me ideas on how to build the engine.
 class BoxDemo < Prism::Game
     def init
-
-        # TODO: configure ambient light
-
-        # TODO: set a default material to be applied to all shapes
-        # set_default_material(Prism::Material.new())
         material = Prism::Material.new("defaultTexture.png")
         brick_material = Prism::Material.new("bricks.png")
 
@@ -39,6 +31,7 @@ class BoxDemo < Prism::Game
         box.material = brick_material
         box.move_north(2).move_east(2).elevate_by(1)
 
+        # create a second smaller box
         tiny_box = Prism::Shapes::Box.new(0.5)
         tiny_box.material = brick_material
         tiny_box.move_north(3).move_east(3).elevate_by(0.5)
@@ -47,6 +40,10 @@ class BoxDemo < Prism::Game
         sun_light = Prism::Object.new
         sun_light.add_component(Prism::DirectionalLight.new)
         sun_light.transform.look_at(box)
+
+        # create some ambient light
+        ambient_light = Prism::Object.new
+        ambient_light.add_component(Prism::AmbientLight.new(Prism::Vector3f.new(0.5, 0.5, 0.5)))
 
         # creates a moveable camera with sane defaults
         camera = Prism::Object.new
@@ -57,6 +54,7 @@ class BoxDemo < Prism::Game
         camera.transform.look_at(box)
 
         # add everything to the scene
+        add_object(ambient_light)
         add_object(sun_light)
         add_object(floor)
         add_object(ceiling)
