@@ -88,7 +88,7 @@ module Prism
       if shader = @forward_ambient
         return shader
       else
-        add_vector("ambient", Vector3f.new(0.7f32, 0.7f32, 0.7f32))
+        add_vector("ambient", Vector3f.new(0.1f32, 0.1f32, 0.1f32))
         shader = Shader.new("forward-ambient")
         @forward_ambient = shader
         return shader
