@@ -84,6 +84,8 @@ module Prism
       end
     end
 
+    # Returns the ambient light
+    # If no light has been specified a default light is created
     def ambient_light : Shader
       if shader = @forward_ambient
         return shader
@@ -93,6 +95,12 @@ module Prism
         @forward_ambient = shader
         return shader
       end
+    end
+
+    # Changes the active ambient light
+    def ambient_light=(ambient_light : AmbientLight)
+      add_vector("ambient", ambient_light.color)
+      @forward_ambient = ambient_light.shader
     end
 
     def flush
