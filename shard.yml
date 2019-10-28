@@ -1,10 +1,10 @@
 name: prism
-version: 0.2.1
+version: 0.3.0
 
 authors:
   - Joel Lonbeck <joel@neutrinographics.com>
 
-crystal: 0.26.0
+crystal: 0.31.1
 
 dependencies:
   lib_gl:
