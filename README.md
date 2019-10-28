@@ -7,10 +7,7 @@ This project was largely inspired by ["The Benny Box"](https://www.youtube.com/c
 This is a work in progress as I follow tutorials and wrap my head around game development.
 
 ## Demo
-[This is a demo game](https://youtu.be/-IyXs2Dqs2o) that I hacked together using another tutorial. The source is under `samples` but be warned the code is quite ugly. This game simply illustrates that the engine actually works even with it's limited feature set.
-
-[![Game demo](./samples/game_thumbnail.png)](https://youtu.be/-IyXs2Dqs2o)
-
+You can view a demo game built with this library at https://github.com/neutrinog/prism-demo.
 
 ## Installation
 
