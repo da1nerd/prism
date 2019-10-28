@@ -11,6 +11,10 @@ class TestGame < Prism::Game
   @wrapper : GameObject = GameObject.new
 
   def init
+    ambient_light = Prism::Object.new
+    ambient_light.add_component(Prism::AmbientLight.new(Prism::Vector3f.new(0.5, 0.5, 0.5)))
+    add_object(ambient_light);
+
     # TODO: move lighting into level
     directional_light_object = GameObject.new()
     directional_light = DirectionalLight.new(Vector3f.new(1,1,1), 0.9)

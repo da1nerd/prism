@@ -1,5 +1,5 @@
 module Prism
-    # TODO: make this a struct and pass this around instead of radian values
+    # Represents an angle value in the engine.
     struct Angle
 
         @angle : Float32
