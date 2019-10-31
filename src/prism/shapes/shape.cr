@@ -2,12 +2,24 @@ require "../core/game_object"
 
 module Prism
     module Shapes
-        abstract class Shape < GameObject
+        class Shape < GameObject
 
             @material : Material?
             @mesh: Mesh?
 
             setter material
+
+            def initialize
+                super
+            end
+
+            def initialize(@mesh)
+                super()
+            end
+
+            def initialize(@mesh, @material)
+                super()
+            end
 
             # Reverses the face of the shape.
             # The face is the visible material of the shape
