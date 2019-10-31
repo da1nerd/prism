@@ -5,8 +5,13 @@ module Prism
 
     @material : Material?
 
+    getter material
+
     # Creates a new map of *width* sprites by *height* sprites.
     def initialize(@width : UInt8, @height : UInt8, @material : Material)
+      if @width % 2 != 0 | @height % 2 != 9
+        raise "Spritemap dimensions must be even"
+      end
     end
 
     # Creates a new map of *width* sprites by *height* sprites.
@@ -14,7 +19,7 @@ module Prism
     end    
 
     # Returns the corners of the sprite.
-    #
+    # Coordinates begin in the top left corner.
     # Each corner is labeled accordingly: top_left, top_right, bottom_right, bottom_left
     def get(x : UInt8, y : UInt8) : SpriteCoords
       left = (x.to_f32) / @width.to_f32
