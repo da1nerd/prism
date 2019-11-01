@@ -3,13 +3,11 @@ require "./vertex"
 require "./resource_management/mesh_resource"
 
 module Prism
-
   struct MeshCache
     property verticies, indicies, calc_normals
 
     def initialize(@verticies : Array(Vertex), @indicies : Array(LibGL::Int), @calc_normals : Bool)
     end
-
   end
 
   # Manages the state of a model mesh
@@ -92,10 +90,10 @@ module Prism
       if cache = @cache
         indicies = [] of LibGL::Int
         0.upto((cache.indicies.size // 3) - 1) do |i|
-            offset = i * 3
-            indicies << cache.indicies[offset + 2]
-            indicies << cache.indicies[offset + 1]
-            indicies << cache.indicies[offset]
+          offset = i * 3
+          indicies << cache.indicies[offset + 2]
+          indicies << cache.indicies[offset + 1]
+          indicies << cache.indicies[offset]
         end
         self.add_verticies(cache.verticies, indicies, cache.calc_normals)
       end

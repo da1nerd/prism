@@ -4,7 +4,6 @@ require "../rendering/shader"
 module Prism
   # Represents an ambient light source.
   class AmbientLight < GameComponent
-
     @shader : Shader
     getter color, shader
 
@@ -17,7 +16,7 @@ module Prism
     end
 
     def add_to_engine(engine : CoreEngine)
-        engine.rendering_engine.ambient_light = self
-      end
+      engine.rendering_engine.ambient_light = self
+    end
   end
 end
