@@ -5,10 +5,9 @@ module Prism
   # Sort of like the sun or moon. The source of the light is
   # not in the scene only the resulting rays.
   class DirectionalLight < BaseLight
-
     # Creates a directional light with default values
     def initialize
-      initialize(Vector3f.new(1,1,1), 0.8)
+      initialize(Vector3f.new(1, 1, 1), 0.8)
     end
 
     def initialize(color : Vector3f, intensity : Float32)
