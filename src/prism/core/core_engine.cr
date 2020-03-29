@@ -76,7 +76,7 @@ module Prism
             stop()
           end
           @game.input(@frametime.to_f32, input)
-          
+
           # @game.update(@frametime.to_f32)
 
           input.update
