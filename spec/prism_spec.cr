@@ -1,7 +1,6 @@
 require "./spec_helper"
 
 describe Prism do
-
   describe Prism::Adapter::GLFW do
     it "runs" do
       # TODO: kill after a moment

@@ -69,5 +69,28 @@ class BoxDemo < Prism::Game
   end
 end
 
-engine = Prism::CoreEngine.new(800, 600, 60.0, "Box Demo", BoxDemo.new)
-engine.start
+# engine = Prism::CoreEngine.new(800, 600, 60.0, "Box Demo", BoxDemo.new)
+# engine.start
+
+class GameEngine < Prism::Core::CoreEngine
+  @scene : GameObject
+
+  def initialize
+    @scene = GameObject.new
+  end
+
+  def startup
+    # TODO: Initialize resources
+  end
+
+  def tick(tick : Prism::Core::Tick, input : Prism::Core::Input)
+    # TODO: update input and transform objects
+  end
+
+  def render
+    # TODO: render the scene graph
+  end
+end
+
+engines = [GameEngine.new]
+Prism::Adapter::GLFW.run("Box Demo", engines)
