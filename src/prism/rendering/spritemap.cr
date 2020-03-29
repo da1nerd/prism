@@ -2,7 +2,6 @@ module Prism
   # Simplifies generating square sprite texture coordinates
   # by mapping the actual coordinates to a grid system.
   class Spritemap
-
     @material : Material?
 
     getter material
@@ -16,23 +15,23 @@ module Prism
 
     # Creates a new map of *width* sprites by *height* sprites.
     def initialize(@width : UInt8, @height : UInt8)
-    end    
+    end
 
-    # Converts an index `index` in the map into a set of coordinates using the grid `width`.
+    # Converts an `index` in the map into a set of coordinates using the grid `width`.
     # Given a grid like this one where `width` is the number of columns.
     # +---------------+
     # | 0 | 1 | 2 | 3 |
     # |---|---|---|---|
-    # | 4 | 5 | 6 | 7 | 
+    # | 4 | 5 | 6 | 7 |
     # |---|---|---|---|
     # | 8 | 9 | 10| 11|
     # |---|---|---|---|
-    # | 12| 13| 14| 15| 
+    # | 12| 13| 14| 15|
     # +---------------+
     def self.get_coordinates(index : UInt8, width : UInt8) : NamedTuple(col: UInt8, row: UInt8)
       {
         col: index % width,
-        row: (index / width).to_u8
+        row: (index / width).to_u8,
       }
     end
 

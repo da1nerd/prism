@@ -23,18 +23,18 @@ module Prism
       end
     end
 
-    # Starts the game
-    # So long as the game is running this method will not return.
+    # Starts the game.
+    # This is a noop if the game is already running.
     def start
+      puts "starting"
       return if running = @is_running == true
       CrystGLFW.run do
         self.run
       end
     end
 
-    # Stops the game
+    # Signals the game to stop after the current cycle
     def stop
-      return if running = @is_running === false
       @is_running = false
     end
 
@@ -75,11 +75,11 @@ module Prism
           if window.should_close?
             stop()
           end
-
           @game.input(@frametime.to_f32, input)
-          input.update
-          @game.update(@frametime.to_f32)
+          
+          # @game.update(@frametime.to_f32)
 
+          input.update
           # log frame rate
           if (frame_counter >= 1.0)
             # puts "fps: #{frames}"

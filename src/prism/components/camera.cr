@@ -9,7 +9,7 @@ module Prism
 
     # Creates a camera with default values
     def initialize
-      field_of_view = Angle.from_degrees(65)
+      field_of_view = Angle.from_degrees(90)
       aspect_ratio : Float32 = 1f32 / 1f32
       initialize(field_of_view, aspect_ratio, 0.01f32, 1000f32)
     end
