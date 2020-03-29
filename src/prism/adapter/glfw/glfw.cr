@@ -12,9 +12,10 @@ module Prism::Adapter::GLFW
     run(title, engines, frame_rate, 800, 600)
   end
 
+  # Starts Prism.
+  # This automatically adds the standard rendering engine
   def run(title : String, engines : Array(Prism::Core::Engine), frame_rate : Float64, width : Int32, height : Int32)
-    # TODO: define engines
-    engines = [] of Prism::Core::Engine
+    engines << Prism::Adapter::GLFW::RenderingEngine.new
     harness = Prism::Core::LoopHarness.new(frame_rate, engines)
     CrystGLFW.run do
       window = GLFW::Window.new(title: title, width: width, height: height)
