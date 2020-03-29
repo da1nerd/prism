@@ -1,6 +1,14 @@
 require "./spec_helper"
 
 describe Prism do
+
+  describe Prism::Adapter::GLFW do
+    it "runs" do
+      # TODO: kill after a moment
+      Prism::Adapter::GLFW.run("Demo", [] of Prism::Core::Engine)
+    end
+  end
+
   describe Prism::Spritemap do
     # This is our sample test grid
     # +---------------+
