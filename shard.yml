@@ -7,6 +7,8 @@ authors:
 crystal: 0.31.1
 
 dependencies:
+  prism-core:
+    github: neutrinog/prism-core
   lib_gl:
     github: calebuharrison/LibGL
     branch: master
