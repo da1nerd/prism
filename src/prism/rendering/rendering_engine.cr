@@ -53,8 +53,7 @@ module Prism
       LibGL.depth_mask(LibGL::FALSE)
       LibGL.depth_func(LibGL::EQUAL)
 
-      0.upto(@lights.size - 1) do |i|
-        light = @lights[i]
+      @lights.each do |light|
         if shader = light.shader
           @active_light = light
 
