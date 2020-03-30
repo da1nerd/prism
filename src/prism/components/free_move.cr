@@ -10,14 +10,14 @@ module Prism
     end
 
     def initialize(speed : Float32)
-      initialize(speed, Input::Key::W, Input::Key::S, Input::Key::A, Input::Key::D)
+      initialize(speed, Window::Key::W, Window::Key::S, Window::Key::A, Window::Key::D)
     end
 
-    def initialize(@speed : Float32, @forward_key : Input::Key, @back_key : Input::Key, @left_key : Input::Key, @right_key : Input::Key)
+    def initialize(@speed : Float32, @forward_key : Window::Key, @back_key : Window::Key, @left_key : Window::Key, @right_key : Window::Key)
       @movement = Vector3f.new(0, 0, 0)
     end
 
-    def input(delta : Float32, input : Input)
+    def input(delta : Float32, input : Core::Input)
       mov_amt = @speed * delta
 
       @movement = Vector3f.new(0, 0, 0)
