@@ -1,4 +1,3 @@
-require "math"
 require "./vector3f"
 
 module Prism
