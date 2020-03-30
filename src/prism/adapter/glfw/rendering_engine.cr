@@ -8,14 +8,12 @@ module Prism::Adapter::GLFW
       if r = @renderer
         r
       else
-        puts "creating new renderer"
         @renderer = Prism::RenderingEngine.new
         @renderer.as(Prism::RenderingEngine)
       end
     end
 
     def startup
-      puts "startup rendering engine"
       self.renderer
     end
 

@@ -3,11 +3,16 @@ require "crystglfw"
 
 module Prism::Adapter::GLFW
   alias Key = CrystGLFW::Key
+  alias MouseButton = CrystGLFW::MouseButton
 
   # A window adapter
   class Window < Prism::Core::Window(CrystGLFW::Key, CrystGLFW::MouseButton)
     def initialize(title : String, width : Int32, height : Int32)
       @window = CrystGLFW::Window.new(title: title, width: width, height: height)
+    end
+
+    def startup
+      @window.make_context_current
     end
 
     def should_close? : Bool
@@ -34,16 +39,20 @@ module Prism::Adapter::GLFW
       @window.mouse_button_pressed?(b)
     end
 
-    def cursor(c : Prism::Core::Cursor)
-      if c.visible
+    def cursor_visible=(visible : Bool)
+      if visible
         @window.cursor.normalize
       else
         @window.cursor.hide
       end
     end
 
-    def cursor : Prism::Core::Cursor
-      Prism::Core::Cursor.new(@window.cursor.position, true)
+    def cursor_position : Prism::Core::Position
+      @window.cursor.position
+    end
+
+    def cursor_position=(position : Prism::Core::Position)
+      @window.cursor.position = position
     end
 
     def swap_buffers

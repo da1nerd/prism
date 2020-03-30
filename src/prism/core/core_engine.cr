@@ -1,5 +1,4 @@
 require "crystglfw"
-require "./input"
 require "../rendering/rendering_engine"
 require "./game"
 

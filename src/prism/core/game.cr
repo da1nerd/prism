@@ -1,5 +1,4 @@
 require "lib_gl"
-require "./input"
 require "./game_object"
 require "../rendering/rendering_engine_protocol"
 
@@ -23,7 +22,6 @@ module Prism
 
     # Renders the game's scene graph
     def render(rendering_engine : RenderingEngineProtocol)
-      puts "rendering the root node"
       rendering_engine.render(@root)
     end
 

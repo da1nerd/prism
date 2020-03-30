@@ -1,6 +1,11 @@
 require "prism-core"
 require "crystglfw"
 
+module Prism
+  # inject the adapter into the top namespace
+  include Adapter::GLFW
+end
+
 module Prism::Adapter::GLFW
   extend self
 
@@ -22,6 +27,7 @@ module Prism::Adapter::GLFW
     harness = Prism::Core::LoopHarness.new(frame_rate, engines)
     CrystGLFW.run do
       window = GLFW::Window.new(title: title, width: width, height: height)
+      window.startup # TODO: this is a temporary hack. The startup method should be called when the harness starts.
 
       harness.on_tick do
         CrystGLFW.poll_events

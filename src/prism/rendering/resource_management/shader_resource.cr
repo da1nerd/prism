@@ -15,7 +15,6 @@ module Prism
     getter program, uniforms, uniform_names, uniform_types
 
     def initialize
-      puts "initializing new shader resource"
       @program = LibGL.create_program
       @uniforms = {} of String => Int32
       @uniform_names = [] of String

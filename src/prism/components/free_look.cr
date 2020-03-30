@@ -1,4 +1,5 @@
 require "./game_component.cr"
+require "prism-core"
 
 module Prism
   class FreeLook < GameComponent
@@ -12,13 +13,13 @@ module Prism
     end
 
     def initialize(sensitivity : Float32)
-      initialize(sensitivity, Input::Key::Escape)
+      initialize(sensitivity, Adapter::GLFW::Window::Key::Escape)
     end
 
-    def initialize(@sensitivity : Float32, @unlock_mouse_key : Input::Key)
+    def initialize(@sensitivity : Float32, @unlock_mouse_key : Adapter::GLFW::Window::Key)
     end
 
-    def input(delta : Float32, input : Input)
+    def input(delta : Float32, input : Core::Input)
       center_position = input.get_center
 
       # un-lock the cursor
@@ -47,7 +48,7 @@ module Prism
       end
 
       # lock the cursor
-      if input.get_mouse_pressed(Input::MouseButton::Left)
+      if input.get_mouse_pressed(Window::MouseButton::Left)
         input.set_mouse_position(center_position)
         input.set_cursor(false)
         @mouse_locked = true

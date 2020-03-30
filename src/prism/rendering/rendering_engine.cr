@@ -41,10 +41,8 @@ module Prism
     end
 
     def render(object : GameObject)
-      puts "rendering object"
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
-      puts "rendering ambient_light"
       object.render_all(self.ambient_light, self)
 
       LibGL.enable(LibGL::BLEND)
@@ -54,7 +52,6 @@ module Prism
       LibGL.depth_mask(LibGL::FALSE)
       LibGL.depth_func(LibGL::EQUAL)
 
-      puts "rendering lights"
       @lights.each do |light|
         if shader = light.shader
           @active_light = light
@@ -91,9 +88,7 @@ module Prism
       if shader = @forward_ambient
         return shader
       else
-        puts "Adding default ambient light..."
         add_vector("ambient", Vector3f.new(0.1f32, 0.1f32, 0.1f32))
-        puts "creating new forward-ambient shader for ambient light"
         shader = Shader.new("forward-ambient")
         @forward_ambient = shader
         return shader
