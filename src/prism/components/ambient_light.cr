@@ -15,8 +15,8 @@ module Prism
       @shader = Shader.new("forward-ambient")
     end
 
-    def add_to_engine(engine : CoreEngine)
-      engine.rendering_engine.ambient_light = self
+    def add_to_engine(engine : RenderingEngine)
+      engine.ambient_light = self
     end
   end
 end

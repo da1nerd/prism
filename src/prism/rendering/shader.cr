@@ -15,8 +15,9 @@ module Prism
         @resource = @@loaded_shaders[@file_name]
         @resource.add_reference
       else
+        puts "creating new shader resource from scratch"
         @resource = ShaderResource.new
-
+        puts "loading shader file"
         vertex_shader_text = load_shader("#{@file_name}.vs")
         fragment_shader_text = load_shader("#{@file_name}.fs")
 
@@ -161,6 +162,7 @@ module Prism
     end
 
     private def load_shader(file_name : String) : String
+      puts "loading shader #{file_name}"
       include_directive = "#include"
 
       path = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", file_name)

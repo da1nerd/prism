@@ -4,7 +4,8 @@ describe Prism do
   describe Prism::Adapter::GLFW do
     it "runs" do
       # TODO: kill after a moment
-      Prism::Adapter::GLFW.run("Demo", [] of Prism::Core::Engine)
+      game = TestGame.new
+      Prism::Adapter::GLFW.run("Demo", game)
     end
   end
 

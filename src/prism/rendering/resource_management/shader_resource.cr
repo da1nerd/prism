@@ -15,6 +15,7 @@ module Prism
     getter program, uniforms, uniform_names, uniform_types
 
     def initialize
+      puts "initializing new shader resource"
       @program = LibGL.create_program
       @uniforms = {} of String => Int32
       @uniform_names = [] of String
@@ -22,7 +23,7 @@ module Prism
 
       if @program == 0
         program_error_code = LibGL.get_error
-        puts "Error #{program_error_code}: Shader creation failed. Could not find valid memory location in constructor"
+        puts "Error #{program_error_code}: Shader program creation failed. Could not find valid memory location in constructor"
         exit 1
       end
     end

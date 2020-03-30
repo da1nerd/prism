@@ -1,5 +1,6 @@
 require "../core/transform"
 require "../rendering/shader"
+require "prism-core"
 
 module Prism
   # The fundamental building block of the game.
@@ -14,7 +15,7 @@ module Prism
 
     @parent : GameObject = GameObject.new
 
-    def input(delta : Float32, input : Input)
+    def input(delta : Float32, input : Prism::Core::Input)
     end
 
     def update(delta : Float32)
@@ -23,7 +24,7 @@ module Prism
     def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
     end
 
-    def add_to_engine(engine : CoreEngine)
+    def add_to_engine(engine : RenderingEngine)
     end
 
     def transform : Transform

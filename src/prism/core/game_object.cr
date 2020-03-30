@@ -1,8 +1,8 @@
 require "../components/game_component"
 require "./transform"
 require "../rendering/rendering_engine"
-require "./input"
 require "./moveable"
+require "prism-core"
 
 module Prism
   # Represents an object within the scene graph.
@@ -13,7 +13,7 @@ module Prism
     @children : Array(GameObject)
     @components : Array(GameComponent)
     @transform : Transform
-    @engine : CoreEngine?
+    @engine : RenderingEngine?
 
     getter transform
 
@@ -65,7 +65,7 @@ module Prism
     end
 
     # Performs input update logic on this object's children
-    def input_all(delta : Float32, input : Input)
+    def input_all(delta : Float32, input : Prism::Core::Input)
       input(delta, input)
 
       0.upto(@children.size - 1) do |i|
@@ -92,7 +92,7 @@ module Prism
     end
 
     # Performs input update logic on this object
-    def input(delta : Float32, input : Input)
+    def input(delta : Float32, input : Prism::Core::Input)
       @transform.update
 
       0.upto(@components.size - 1) do |i|
@@ -126,7 +126,7 @@ module Prism
 
     # Sets the `CoreEngine` on this object
     # This allows the object and it's children to interact with the engine
-    def engine=(engine : CoreEngine)
+    def engine=(engine : RenderingEngine)
       if @engine != engine
         @engine = engine
 

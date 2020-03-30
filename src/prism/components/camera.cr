@@ -47,8 +47,8 @@ module Prism
       @projection * (camera_rotation * camera_translation)
     end
 
-    def add_to_engine(engine : CoreEngine)
-      engine.rendering_engine.add_camera(self)
+    def add_to_engine(engine : RenderingEngine)
+      engine.add_camera(self)
     end
   end
 end

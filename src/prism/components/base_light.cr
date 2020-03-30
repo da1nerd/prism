@@ -14,8 +14,8 @@ module Prism
     def initialize(@color : Vector3f, @intensity : Float32)
     end
 
-    def add_to_engine(engine : CoreEngine)
-      engine.rendering_engine.add_light(self)
+    def add_to_engine(engine : RenderingEngine)
+      engine.add_light(self)
     end
   end
 end
