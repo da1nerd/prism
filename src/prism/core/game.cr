@@ -12,7 +12,7 @@ module Prism
     abstract def init
 
     # Gives input state to the game
-    def input(delta : Float32, input : Input)
+    def input(delta : Float32, input : Prism::Core::Input)
       @root.input_all(delta, input)
     end
 
@@ -23,6 +23,7 @@ module Prism
 
     # Renders the game's scene graph
     def render(rendering_engine : RenderingEngineProtocol)
+      puts "rendering the root node"
       rendering_engine.render(@root)
     end
 
@@ -32,7 +33,7 @@ module Prism
     end
 
     # Registers the engine with the game
-    def engine=(engine : CoreEngine)
+    def engine=(engine : RenderingEngine)
       @root.engine = engine
     end
   end
