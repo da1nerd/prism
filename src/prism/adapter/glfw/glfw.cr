@@ -33,11 +33,6 @@ module Prism::Adapter::GLFW
         CrystGLFW.poll_events
       end
 
-      harness.on_render do
-        # Adjust the viewport to match the window size
-        LibGL.viewport(0, 0, window.size[:width], window.size[:height])
-      end
-
       harness.start(window)
     end
   end

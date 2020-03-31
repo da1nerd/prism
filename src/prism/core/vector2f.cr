@@ -1,8 +1,6 @@
-require "prism-core"
 
 module Prism
   class Vector2f
-    include Prism::Core::Math
     getter x, y : Float32
     setter x, y : Float32
 

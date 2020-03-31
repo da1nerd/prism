@@ -1,9 +1,7 @@
 require "./quanternion"
-require "prism-core"
 
 module Prism
   class Vector3f
-    include Prism::Core::Math
     getter x, y, z
     setter x, y, z
 
