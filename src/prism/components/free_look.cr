@@ -20,7 +20,8 @@ module Prism
     end
 
     def input(delta : Float32, input : Core::Input)
-      center_position = input.get_center
+      center_position = Vector2f.new(input.get_center[:x].to_f32, input.get_center[:y].to_f32)
+      mouse_position = Vector2f.new(input.get_mouse_position[:x].to_f32, input.get_mouse_position[:y].to_f32)
 
       # un-lock the cursor
       if input.get_key(@unlock_mouse_key)
@@ -30,7 +31,7 @@ module Prism
 
       # rotate
       if @mouse_locked
-        delta_pos = input.get_mouse_position - center_position
+        delta_pos = mouse_position - center_position
 
         rot_y = delta_pos.x != 0
         rot_x = delta_pos.y != 0
@@ -43,13 +44,13 @@ module Prism
         end
 
         if rot_y || rot_x
-          input.set_mouse_position(center_position)
+          input.set_mouse_position(input.get_center)
         end
       end
 
       # lock the cursor
       if input.get_mouse_pressed(Window::MouseButton::Left)
-        input.set_mouse_position(center_position)
+        input.set_mouse_position(input.get_center)
         input.set_cursor(false)
         @mouse_locked = true
       end

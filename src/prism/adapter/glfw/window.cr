@@ -27,6 +27,7 @@ module Prism::Adapter::GLFW
     end
 
     def render
+      @window.swap_buffers
     end
 
     def key_pressed?(k : CrystGLFW::Key) : Bool
@@ -53,10 +54,6 @@ module Prism::Adapter::GLFW
 
     def cursor_position=(position : Prism::Core::Position)
       @window.cursor.position = position
-    end
-
-    def swap_buffers
-      @window.swap_buffers
     end
 
     def destroy

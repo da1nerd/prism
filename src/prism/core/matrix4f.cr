@@ -1,10 +1,8 @@
 require "matrix"
-require "prism-core"
 
 module Prism
   # TODO: port another matrix class to here
   class Matrix4f
-    include Prism::Core::Math
     @m : Matrix(Float32)
 
     def initialize
