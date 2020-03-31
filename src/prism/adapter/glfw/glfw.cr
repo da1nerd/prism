@@ -6,6 +6,8 @@ module Prism
   include Adapter::GLFW
 end
 
+# TODO: this should be under a Prism::Context::GLFW namespace
+# since this is setting up the context in which the game will run.
 module Prism::Adapter::GLFW
   extend self
 

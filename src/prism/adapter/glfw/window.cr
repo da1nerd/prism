@@ -1,6 +1,8 @@
 require "prism-core"
 require "crystglfw"
 
+# TODO: this should be in a Prism::Context::GLFW namespace since this is tied
+# directly to the context
 module Prism::Adapter::GLFW
   alias Key = CrystGLFW::Key
   alias MouseButton = CrystGLFW::MouseButton

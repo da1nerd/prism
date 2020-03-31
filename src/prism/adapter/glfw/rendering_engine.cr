@@ -1,5 +1,8 @@
 require "prism-core"
-
+# TODO: this rendering engine should actually be under a GL namespace
+# This is not tied to GLFW. In this way someone could easily reuse this in
+# a different context. There should be an additional rendering engine class that implements the engine.
+# This class should implement that instead of just the core engine directly.
 module Prism::Adapter::GLFW
   class RenderingEngine < Prism::Core::Engine
     @renderer : Prism::RenderingEngine?
@@ -24,13 +27,14 @@ module Prism::Adapter::GLFW
     end
 
     def render
+    end
+
+    def flush
       # Adjust the viewport to match the window size
       if window_size = @window_size
         LibGL.viewport(0, 0, window_size[:width], window_size[:height])
       end
-    end
 
-    def flush
       if renderer = @renderer
         renderer.flush
       end
