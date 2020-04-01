@@ -8,6 +8,7 @@ module Prism
   # Expose the graphics language integer values so keep a clean abstraction.
   alias GraphicsInt = LibGL::Int
 
+  # TODO: this should inherit from Prism::Core::Engine
   class RenderingEngine
     include RenderingEngineProtocol
     include Uniform
