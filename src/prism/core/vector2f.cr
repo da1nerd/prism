@@ -1,4 +1,3 @@
-
 module Prism
   class Vector2f
     getter x, y : Float32

@@ -11,7 +11,7 @@ module Prism
         Vertex.new(Vector3f.new(field_width * 3, 0, field_depth * 3), Vector2f.new(1, 1)),
       ]
 
-      indicies = Array(LibGL::Int){
+      indicies = Array(GraphicsInt){
         0, 1, 2,
         2, 1, 3,
       }

@@ -2,11 +2,15 @@ require "lib_gl"
 require "../components/camera"
 require "../components/base_light"
 require "./rendering_engine_protocol"
-require "./resource_management/mapped_values"
+require "./uniform"
 
 module Prism
-  class RenderingEngine < MappedValues
+  # Expose the graphics language integer values so keep a clean abstraction.
+  alias GraphicsInt = LibGL::Int
+
+  class RenderingEngine
     include RenderingEngineProtocol
+    include Uniform
 
     @sampler_map : Hash(String, LibGL::Int)
     @lights : Array(BaseLight)
@@ -16,6 +20,10 @@ module Prism
 
     getter active_light
     setter main_camera, active_light
+
+    register_uniforms [
+      {name: ambient, type: Vector3f, default: Vector3f.new(0, 0, 0)}
+    ]
 
     def initialize
       super()
@@ -88,7 +96,7 @@ module Prism
       if shader = @forward_ambient
         return shader
       else
-        add_vector("ambient", Vector3f.new(0.1f32, 0.1f32, 0.1f32))
+        self.uniform_ambient = Vector3f.new(0.1f32, 0.1f32, 0.1f32)
         shader = Shader.new("forward-ambient")
         @forward_ambient = shader
         return shader
@@ -97,7 +105,7 @@ module Prism
 
     # Changes the active ambient light
     def ambient_light=(ambient_light : AmbientLight)
-      add_vector("ambient", ambient_light.color)
+      self.uniform_ambient = ambient_light.color
       @forward_ambient = ambient_light.shader
     end
 
