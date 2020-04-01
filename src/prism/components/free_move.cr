@@ -2,8 +2,10 @@ require "./game_component.cr"
 
 module Prism
   class FreeMove < GameComponent
+    # TODO: change to property
     getter movement
     setter movement
+    @position : Vector3f
 
     def initialize
       initialize(4)
@@ -14,31 +16,33 @@ module Prism
     end
 
     def initialize(@speed : Float32, @forward_key : Window::Key, @back_key : Window::Key, @left_key : Window::Key, @right_key : Window::Key)
-      @movement = Vector3f.new(0, 0, 0)
+      @position = Vector3f.new(0, 0, 0)
     end
 
     def input(delta : Float32, input : Core::Input)
       mov_amt = @speed * delta
 
-      @movement = Vector3f.new(0, 0, 0)
+      movement = Vector3f.new(0, 0, 0)
 
       if input.get_key(@forward_key)
-        @movement = get_move(self.transform.rot.forward, mov_amt)
+        movement = movement + calculate_move(self.transform.rot.forward, mov_amt)
       end
       if input.get_key(@back_key)
-        @movement = get_move(self.transform.rot.forward, -mov_amt)
+        movement = movement + calculate_move(self.transform.rot.forward, -mov_amt)
       end
       if input.get_key(@left_key)
-        @movement = get_move(self.transform.rot.left, mov_amt)
+        movement = movement + calculate_move(self.transform.rot.left, mov_amt)
       end
       if input.get_key(@right_key)
-        @movement = get_move(self.transform.rot.right, mov_amt)
+        movement = movement + calculate_move(self.transform.rot.right, mov_amt)
       end
+
+      @position = calculate_position(movement)
     end
 
     def update(delta : Float32)
-      if @movement.length > 0
-        self.transform.pos = @movement
+      if @position.length > 0
+        self.transform.pos = @position
       end
     end
 
@@ -48,8 +52,13 @@ module Prism
     end
 
     # Generates the movement vector
-    def get_move(direction : Vector3f, amount : Float32)
-      return self.transform.pos + direction * amount
+    private def calculate_move(direction : Vector3f, amount : Float32)
+      direction * amount
+    end
+
+    # Generates the position fector
+    private def calculate_position(move : Vector3f) : Vector3f
+      self.transform.pos + move
     end
   end
 end
