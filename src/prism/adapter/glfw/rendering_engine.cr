@@ -1,8 +1,7 @@
 require "prism-core"
-# TODO: this rendering engine should actually be under a GL namespace
-# This is not tied to GLFW. In this way someone could easily reuse this in
-# a different context. There should be an additional rendering engine class that implements the engine.
-# This class should implement that instead of just the core engine directly.
+
+# TODO: this should be merged with the other rendering engine.
+# All of the OpenGL specific code should be inside of the rendering module.
 module Prism::Adapter::GLFW
   class RenderingEngine < Prism::Core::Engine
     @renderer : Prism::RenderingEngine?

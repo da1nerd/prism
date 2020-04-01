@@ -72,9 +72,9 @@ module Prism
             # rendering
             unprefixed_uniform_name = uniform_name[2..-1]
             if uniform_type == "vec3"
-              set_uniform(uniform_name, rendering_engine.get_vector(unprefixed_uniform_name))
-            elsif uniform_type == "float"
-              set_uniform(uniform_name, rendering_engine.get_float(unprefixed_uniform_name))
+              set_uniform(uniform_name, rendering_engine.get_uniform(unprefixed_uniform_name.underscore).as(Vector3f))
+            # elsif uniform_type == "float"
+              # set_uniform(uniform_name, rendering_engine.get_uniform(unprefixed_uniform_name.underscore).as(Float32))
             elsif uniform_type == "DirectionalLight"
               set_uniform_directional_light(uniform_name, rendering_engine.active_light.as(DirectionalLight))
             elsif uniform_type == "SpotLight"
@@ -94,10 +94,10 @@ module Prism
             end
           else
             # materials
-            if uniform_type == "vec3"
-              set_uniform(uniform_name, material.get_vector(uniform_name))
-            elsif uniform_type == "float"
-              set_uniform(uniform_name, material.get_float(uniform_name))
+            # if uniform_type == "vec3"
+            # set_uniform(uniform_name, material.get_uniform(uniform_name).as(Vector3f))
+            if uniform_type == "float"
+              set_uniform(uniform_name, material.get_uniform(uniform_name.underscore).as(Float32))
             else
               puts "Error: #{uniform_type} is not a supported type in Material"
               exit 1

@@ -56,7 +56,7 @@ module Prism
           Vertex.new(Vector3f.new(@size, @size, 0), @texture_coords[:top_left]),
         ]
 
-        indicies = Array(LibGL::Int){
+        indicies = Array(GraphicsInt){
           0, 3, 2,
           0, 2, 1,
 

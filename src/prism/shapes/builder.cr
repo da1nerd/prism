@@ -5,7 +5,7 @@ module Prism
     class Shape::Builder
       @spritemap : Spritemap?
       @verticies : Array(Vertex)
-      @indicies : Array(LibGL::Int)
+      @indicies : Array(GraphicsInt)
 
       def initialize
         initialize(nil)
@@ -14,7 +14,7 @@ module Prism
       def initialize(@spritemap)
         super()
         @verticies = [] of Vertex
-        @indicies = [] of LibGL::Int
+        @indicies = [] of GraphicsInt
       end
 
       def add_point(point : Vector3f)

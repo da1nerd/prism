@@ -8,7 +8,7 @@ module Prism
         Vertex.new(Vector3f.new(width * 3, 0, depth * 3), Vector2f.new(1, 1)),
       ]
 
-      indicies = Array(LibGL::Int){
+      indicies = Array(GraphicsInt){
         0, 1, 2,
         2, 1, 3,
       }
@@ -16,8 +16,8 @@ module Prism
       mesh = Mesh.new(verticies, indicies, true)
       material = Material.new
       material.add_texture("diffuse", Texture.new("defaultTexture.png"))
-      material.add_float("specularIntensity", 1)
-      material.add_float("specularPower", 8)
+      material.uniform_specular_intensity = 1f32
+      material.uniform_specular_power = 8f32
 
       GameObject.new.add_component(MeshRenderer.new(mesh, material))
     end

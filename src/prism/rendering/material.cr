@@ -1,8 +1,15 @@
 require "./texture"
-require "./resource_management/mapped_values"
+require "./uniform"
 
 module Prism
-  class Material < MappedValues
+  class Material
+    include Uniform
+
+    register_uniforms [
+      {name: specular_intensity, type: Float32, default: 0},
+      {name: specular_power, type: Float32, default: 0},
+    ]
+
     @texture_map : Hash(String, Texture)
 
     def initialize
@@ -15,8 +22,8 @@ module Prism
       super()
       @texture_map = {} of String => Texture
       add_texture("diffuse", Texture.new(texture_path))
-      add_float("specularIntensity", 1)
-      add_float("specularPower", 8)
+      self.uniform_specular_intensity = 1f32
+      self.uniform_specular_power = 8f32
     end
 
     def add_texture(name : String, texture : Texture)
