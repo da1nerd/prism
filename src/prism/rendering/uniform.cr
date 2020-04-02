@@ -30,33 +30,51 @@ module Prism::Uniform
 
     def to_uniform
       {% begin %}
-        pp {{ @type.instance.annotation(::Prism::Uniform::Field).stringify }}
-        {% options = @type.annotation(::Prism::Uniform::Serializable::Options) %}
-        {% struct_name = options ? options[:struct] : @type.name  %}
+        # TODO: this should work, but for some reason it's not finding options.
+        # See https://github.com/crystal-lang/crystal/blob/0.33.0/src/json/serialization.cr#L263
+        # It would be nice if we could declare all of the fields to be in the same struct
+        #{% options = @type.annotation(::Prism::Uniform::Serializable::Options) %}
+        #{% glsl_struct_name = options && options[:struct] %}
 
         {% properties = {} of Nil => Nil %}
+        {% types = [] of Nil %}
+        # TODO: support collecting from methods as well
         {% for ivar in @type.instance_vars %}
           {% ann = ivar.annotation(::Prism::Uniform::Field) %}
           {% if ann && !ann[:ignore] && ann[:key] %}
             {%
+              types << ivar.type
+            %}
+            {%
               properties[ivar.id] = {
-                type: ivar.type,
-                key:  ((ann && ann[:key]) || ivar).id.stringify,
+                type:         ivar.type,
+                # TODO: it would be better to check if it is serializable
+                serializable: ivar.type.has_method?("to_uniform"),
+                key:          ((ann && ann[:key]) || ivar).id.stringify,
+                struct:       (ann && ann[:struct]) ? ann[:struct].id.stringify : false,
               }
             %}
           {% end %}
         {% end %}
 
+        uniforms = {} of String => ({% for type, index in types %}{{type}} {% if index < types.size - 1 %} | {% end %}{% end %})
+
         {% for name, value in properties %}
           _{{name}} = @{{name}}
           unless _{{name}}.nil?
-            # puts "#{{{struct_name}}}.#{{{value[:key]}}}"
-            # puts "key: " + {{value[:key]}}
-            # puts "type: {{value[:type]}}"
-            # puts "name: _{{name}}"
-            # puts "value: #{_{{name}}}"
+            {% if value[:serializable] %}
+              # TODO: recurse into _{{name}}
+            {% else %}
+              {% if value[:struct] %}
+                uniforms["#{{{value[:struct]}}}.#{{{value[:key]}}}"] = _{{name}}
+              {% else %}
+                uniforms["#{{{value[:key]}}}"] = _{{name}}
+              {% end %}
+            {% end %}
           end
         {% end %}
+
+        uniforms
       {% end %}
     end
   end

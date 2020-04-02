@@ -4,12 +4,16 @@ module Prism
   # Represents a point light.
   # That is, light that radiates out from a point.
   class PointLight < BaseLight
+    include Uniform::Serializable
     COLOR_DEPTH = 256.0f32
 
+    @[Uniform::Field(struct: "PointLight", key: "range")]
     @range : Float32
+    @[Uniform::Field(struct: "PointLight", key: "atten")]
+    @attenuation : Attenuation
 
-    getter range, attenuation
-    setter range
+    property range
+    getter attenuation
 
     def initialize
       initialize(Vector3f.new(1, 0, 0), 0.5, Attenuation.new(0.0f32, 0.0f32, 1.0f32))
