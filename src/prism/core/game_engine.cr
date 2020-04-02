@@ -1,5 +1,6 @@
 require "lib_gl"
 require "prism-core"
+require "annotation"
 require "./game_object"
 
 module Prism
@@ -10,6 +11,7 @@ module Prism
     @engine : RenderingEngine?
     property engine
 
+    @[Override]
     def startup
       self.init
     end
@@ -18,12 +20,14 @@ module Prism
     abstract def init
 
     # Gives input state to the game
+    @[Override]
     def tick(tick : Prism::Core::Tick, input : Prism::Core::Input)
       @root.input_all(tick.frame_time.to_f32, input)
       @root.update_all(tick.frame_time.to_f32)
     end
 
     # Renders the game's scene graph
+    @[Override]
     def render
       if engine = @engine
         engine.render(@root)
