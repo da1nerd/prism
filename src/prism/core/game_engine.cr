@@ -11,11 +11,10 @@ module Prism
     property engine
 
     def startup
-      # TODO: can we make startup abstract and require the game to implement it?
       self.init
     end
 
-    # deprecated
+    # Games should implement this to start their game logic
     abstract def init
 
     # Gives input state to the game
