@@ -22,7 +22,7 @@ module Prism
     setter main_camera, active_light
 
     register_uniforms [
-      {name: ambient, type: Vector3f, default: Vector3f.new(0, 0, 0)}
+      {name: ambient, type: Vector3f, default: Vector3f.new(0, 0, 0)},
     ]
 
     def initialize
@@ -34,6 +34,7 @@ module Prism
 
     # Prepares the GL environment as the rendering loop is starting up
     def startup
+      puts "start rendering engine"
       LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
       LibGL.front_face(LibGL::CW)
       # Uncomment these lines to enable culling the back face for better performance.

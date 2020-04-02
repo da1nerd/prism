@@ -1,6 +1,6 @@
 require "../../src/prism/**"
 
-class BoxDemo < Prism::Game
+class BoxDemo < Prism::GameEngine
   def init
     material = Prism::Material.new("defaultTexture.png")
     brick_material = Prism::Material.new("bricks.png")
@@ -61,6 +61,7 @@ class BoxDemo < Prism::Game
     add_object(west_wall)
     add_object(box)
     add_object(tiny_box)
+    puts "adding camera"
     add_object(camera)
 
     # TODO: allow changing an object's center axis as well.
