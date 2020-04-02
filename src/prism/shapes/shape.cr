@@ -29,7 +29,7 @@ module Prism
         end
       end
 
-      def render(shader : Shader, rendering_engine : RenderingEngineProtocol)
+      def render(shader : Shader, rendering_engine : RenderingEngine)
         if mesh = @mesh
           if material = @material
             shader.bind
