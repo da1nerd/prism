@@ -40,6 +40,14 @@ class BoxDemo < Prism::GameEngine
     sun_light.add_component(Prism::DirectionalLight.new)
     sun_light.transform.look_at(box)
 
+    point_light = Prism::Object.new
+    point_light.add_component(Prism::PointLight.new)
+    point_light.move_north(2.5).move_east(1.5).elevate_by(1.5)
+
+    spot_light = Prism::Object.new
+    spot_light.add_component(Prism::SpotLight.new)
+    spot_light.move_north(3.5).move_east(2.5).elevate_by(1)
+
     # create some ambient light
     ambient_light = Prism::Object.new
     ambient_light.add_component(Prism::AmbientLight.new(Prism::Vector3f.new(0.5, 0.5, 0.5)))
@@ -55,6 +63,8 @@ class BoxDemo < Prism::GameEngine
     # add everything to the scene
     add_object(ambient_light)
     add_object(sun_light)
+    add_object(point_light)
+    add_object(spot_light)
     add_object(floor)
     add_object(ceiling)
     add_object(north_wall)
