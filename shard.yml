@@ -7,6 +7,8 @@ authors:
 crystal: 0.31.1
 
 dependencies:
+  annotation:
+    github: grottopress/annotation.cr
   prism-core:
     github: neutrinog/prism-core
   lib_gl:

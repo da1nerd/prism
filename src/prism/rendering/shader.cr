@@ -313,6 +313,8 @@ module Prism
       LibGL.attach_shader(@resource.program, shader)
     end
 
+    # TODO: everything below here is deprecated
+
     def set_uniform_base_light(name : String, base_light : BaseLight)
       set_uniform(name + ".color", base_light.color)
       set_uniform(name + ".intensity", base_light.intensity)

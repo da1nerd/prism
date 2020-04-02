@@ -1,4 +1,5 @@
 require "lib_gl"
+require "annotation"
 require "../components/camera"
 require "../components/base_light"
 require "./uniform"
@@ -33,6 +34,7 @@ module Prism
     end
 
     # Prepares the GL environment as the rendering loop is starting up
+    @[Override]
     def startup
       puts "start rendering engine"
       LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
@@ -46,11 +48,13 @@ module Prism
     end
 
     # Keep track of the window size at each tick so we can keep the viewport in sync
+    @[Override]
     def tick(tick : Prism::Core::Tick, input : Prism::Core::Input)
       @window_size = input.window_size
     end
 
     # Flush the GL buffers and resize the viewport to match the window size
+    @[Override]
     def flush
       if window_size = @window_size
         LibGL.viewport(0, 0, window_size[:width], window_size[:height])
