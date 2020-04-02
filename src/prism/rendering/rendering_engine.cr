@@ -1,18 +1,17 @@
 require "lib_gl"
 require "../components/camera"
 require "../components/base_light"
-require "./rendering_engine_protocol"
 require "./uniform"
 
 module Prism
   # Expose the graphics language integer values so keep a clean abstraction.
   alias GraphicsInt = LibGL::Int
 
-  # TODO: this should inherit from Prism::Core::Engine
-  class RenderingEngine
-    include RenderingEngineProtocol
+  # Manages the OpenGL environment and renders game objects
+  class RenderingEngine < Prism::Core::Engine
     include Uniform
 
+    @window_size : Core::Size?
     @sampler_map : Hash(String, LibGL::Int)
     @lights : Array(BaseLight)
     @active_light : BaseLight?
@@ -31,14 +30,32 @@ module Prism
       @lights = [] of BaseLight
       @sampler_map = {} of String => LibGL::Int
       @sampler_map["diffuse"] = 0
+    end
 
+    # Prepares the GL environment as the rendering loop is starting up
+    def startup
       LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
       LibGL.front_face(LibGL::CW)
-      LibGL.cull_face(LibGL::BACK)
-      LibGL.enable(LibGL::CULL_FACE)
+      # Uncomment these lines to enable culling the back face for better performance.
+      # LibGL.cull_face(LibGL::BACK)
+      # LibGL.enable(LibGL::CULL_FACE)
       LibGL.enable(LibGL::DEPTH_TEST)
       LibGL.enable(LibGL::DEPTH_CLAMP)
       LibGL.enable(LibGL::TEXTURE_2D)
+    end
+
+    # Keep track of the window size at each tick so we can keep the viewport in sync
+    def tick(tick : Prism::Core::Tick, input : Prism::Core::Input)
+      @window_size = input.window_size
+    end
+
+    # Flush the GL buffers and resize the viewport to match the window size
+    def flush
+      if window_size = @window_size
+        LibGL.viewport(0, 0, window_size[:width], window_size[:height])
+      end
+
+      LibGL.flush
     end
 
     # Give the programmer a chance to manually handle uniform structs in their GLSL code.
@@ -108,10 +125,6 @@ module Prism
     def ambient_light=(ambient_light : AmbientLight)
       self.uniform_ambient = ambient_light.color
       @forward_ambient = ambient_light.shader
-    end
-
-    def flush
-      LibGL.flush
     end
 
     # Returns which version of OpenGL is available

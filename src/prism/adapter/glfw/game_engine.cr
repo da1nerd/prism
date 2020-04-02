@@ -7,11 +7,11 @@ require "prism-core"
 # rendering engine class. So this probably shouldn't be in adapters either.
 module Prism::Adapter::GLFW
   class GameEngine < Prism::Core::Engine
-    def initialize(@game : Prism::Game, @rendering_engine : Prism::Adapter::GLFW::RenderingEngine)
+    def initialize(@game : Prism::Game, @rendering_engine : Prism::RenderingEngine)
     end
 
     def startup
-      @game.engine = @rendering_engine.renderer
+      @game.engine = @rendering_engine
       @game.init
     end
 
@@ -21,9 +21,7 @@ module Prism::Adapter::GLFW
     end
 
     def render
-      if renderer = @rendering_engine.renderer
-        @game.render(renderer)
-      end
+      @game.render(@rendering_engine)
     end
   end
 end

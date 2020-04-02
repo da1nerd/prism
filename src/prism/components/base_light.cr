@@ -1,7 +1,6 @@
 require "./game_component"
 require "../core/vector3f"
 require "../rendering/shader"
-require "../rendering/rendering_engine_protocol"
 
 module Prism
   # Fundamental light component

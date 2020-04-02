@@ -3,7 +3,6 @@ require "../core/vector3f"
 require "../core/matrix4f"
 require "./material"
 require "../core/transform"
-require "./rendering_engine_protocol"
 
 module Prism
   class Shader
@@ -45,7 +44,7 @@ module Prism
       LibGL.use_program(@resource.program)
     end
 
-    def update_uniforms(transform : Transform, material : Material, rendering_engine : RenderingEngineProtocol)
+    def update_uniforms(transform : Transform, material : Material, rendering_engine : RenderingEngine)
       world_matrix = transform.get_transformation
       mvp_matrix = rendering_engine.main_camera.get_view_projection * world_matrix
 
