@@ -1,30 +1,25 @@
 require "prism-core"
 require "crystglfw"
 
-module Prism
-  # inject the adapter into the top namespace
-  include Adapter::GLFW
-end
-
 # TODO: this should be under a Prism::Context::GLFW namespace
 # since this is setting up the context in which the game will run.
 module Prism::Adapter::GLFW
   extend self
 
-  def run(title : String, game : Prism::Game)
+  def run(title : String, game : Prism::GameEngine)
     run(title, game, frame_rate, 60, 800, 600)
   end
 
-  def run(title : String, game : Prism::Game, frame_rate : Float64 = 60)
+  def run(title : String, game : Prism::GameEngine, frame_rate : Float64 = 60)
     run(title, game, frame_rate, 800, 600)
   end
 
   # Starts Prism.
   # This automatically adds the standard rendering engine
-  def run(title : String, game : Prism::Game, frame_rate : Float64, width : Int32, height : Int32)
+  def run(title : String, game : Prism::GameEngine, frame_rate : Float64, width : Int32, height : Int32)
     rendering_engine = Prism::RenderingEngine.new
-    game_engine = GLFW::GameEngine.new(game, rendering_engine)
-    engines = [game_engine.as(Prism::Core::Engine), rendering_engine]
+    game.engine = rendering_engine
+    engines = [game, rendering_engine]
 
     harness = Prism::Core::LoopHarness.new(frame_rate, engines)
     CrystGLFW.run do
@@ -38,4 +33,9 @@ module Prism::Adapter::GLFW
       harness.start(window)
     end
   end
+end
+
+module Prism
+  # inject the adapter into the top namespace
+  include Adapter::GLFW
 end

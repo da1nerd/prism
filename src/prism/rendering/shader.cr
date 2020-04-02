@@ -72,7 +72,7 @@ module Prism
             unprefixed_uniform_name = uniform_name[2..-1]
             if uniform_type == "vec3"
               set_uniform(uniform_name, rendering_engine.get_uniform(unprefixed_uniform_name.underscore).as(Vector3f))
-            # elsif uniform_type == "float"
+              # elsif uniform_type == "float"
               # set_uniform(uniform_name, rendering_engine.get_uniform(unprefixed_uniform_name.underscore).as(Float32))
             elsif uniform_type == "DirectionalLight"
               set_uniform_directional_light(uniform_name, rendering_engine.active_light.as(DirectionalLight))
