@@ -3,13 +3,16 @@ require "../core/vector3f"
 require "../core/matrix4f"
 require "./material"
 require "../core/transform"
+require "./uniform"
 
 module Prism
   class Shader
     @@loaded_shaders = {} of String => ShaderResource
     @resource : ShaderResource
+    @uniform_map : Uniform::UniformMap
 
     def initialize(@file_name : String)
+      @uniform_map = Uniform::UniformMap.new
       if @@loaded_shaders.has_key?(@file_name)
         @resource = @@loaded_shaders[@file_name]
         @resource.add_reference
@@ -42,6 +45,12 @@ module Prism
     # uses the shader
     def bind
       LibGL.use_program(@resource.program)
+    end
+
+    def bind_new(@uniform_map : Uniform::UniformMap, transform : Transform, material : Material, rendering_engine : RenderingEngine)
+      # TODO: the rendering_engine prop is deprecated and will be removed in the future
+      bind
+      update_uniforms(transform, material, rendering_engine)
     end
 
     def update_uniforms(transform : Transform, material : Material, rendering_engine : RenderingEngine)

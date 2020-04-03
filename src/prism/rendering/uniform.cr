@@ -29,6 +29,8 @@ module Prism::Uniform
   class UniformTypeException < Exception
   end
 
+  alias UniformMap = Hash(String, Int32 | Float32 | Prism::Vector3f | String)
+
   # The `Prism::Uniform::Serializable` module automatically generates methods for Uniform serialization when included.
   #
   # ## Example
@@ -164,7 +166,7 @@ module Prism::Uniform
           {% end %}
         {% end %}
 
-        uniforms = {} of String => ({% for t, i in valid_types %}{{t}}{% if i < valid_types.size - 1 %} | {% end %}{% end %})
+        uniforms = UniformMap.new # of String => ({% for t, i in valid_types %}{{t}}{% if i < valid_types.size - 1 %} | {% end %}{% end %})
 
         {% for name, value in properties %}
 

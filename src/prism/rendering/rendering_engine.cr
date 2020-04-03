@@ -14,8 +14,9 @@ module Prism
 
     @window_size : Core::Size?
     @sampler_map : Hash(String, LibGL::Int)
-    @lights : Array(BaseLight)
-    @active_light : BaseLight?
+    @lights : Array(Light)
+    @active_light : Light?
+    @ambient_light : Light?
     @forward_ambient : Shader?
     @main_camera : Camera?
 
@@ -28,7 +29,7 @@ module Prism
 
     def initialize
       super()
-      @lights = [] of BaseLight
+      @lights = [] of Light
       @sampler_map = {} of String => LibGL::Int
       @sampler_map["diffuse"] = 0
     end
@@ -73,7 +74,7 @@ module Prism
     def render(object : GameObject)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
-      object.render_all(self.ambient_light, self)
+      object.render_all(self.ambient_light.as(Light), self)
 
       LibGL.enable(LibGL::BLEND)
       LibGL.blend_equation(LibGL::FUNC_ADD)
@@ -83,11 +84,11 @@ module Prism
       LibGL.depth_func(LibGL::EQUAL)
 
       @lights.each do |light|
-        if shader = light.shader
+        # if shader = light.shader
           @active_light = light
 
-          object.render_all(shader, self)
-        end
+          object.render_all(light, self)
+        # end
       end
 
       LibGL.depth_func(LibGL::LESS)
@@ -95,7 +96,7 @@ module Prism
       LibGL.disable(LibGL::BLEND)
     end
 
-    def add_light(light : BaseLight)
+    def add_light(light : Light)
       @lights.push(light)
     end
 
@@ -114,19 +115,18 @@ module Prism
 
     # Returns the ambient light
     # If no light has been specified a default light is created
-    def ambient_light : Shader
-      if shader = @forward_ambient
-        return shader
+    def ambient_light : Light
+      if light = @ambient_light
+        return light
       else
-        self.uniform_ambient = Vector3f.new(0.1f32, 0.1f32, 0.1f32)
-        shader = Shader.new("forward-ambient")
-        @forward_ambient = shader
-        return shader
+        ambient = AmbientLight.new
+        ambient.add_to_engine self
+        ambient
       end
     end
 
     # Changes the active ambient light
-    def ambient_light=(ambient_light : AmbientLight)
+    def ambient_light=(@ambient_light : AmbientLight)
       self.uniform_ambient = ambient_light.color
       @forward_ambient = ambient_light.shader
     end
