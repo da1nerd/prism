@@ -39,9 +39,9 @@ module UniformTest
     include Serializable
 
     @[Field(key: "color")]
-    @color : String = "brown"
+    @c : String = "brown"
 
-    @[Field(key: "height")]
+    @[Field]
     @height : Int32 = 72
 
     @[Field(key: "method_test")]
