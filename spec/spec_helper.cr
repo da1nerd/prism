@@ -43,5 +43,10 @@ module UniformTest
 
     @[Field(key: "height")]
     @height : Int32 = 72
+
+    @[Field(key: "method_test")]
+    def test : String
+      "test"
+    end
   end
 end

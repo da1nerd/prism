@@ -40,7 +40,29 @@ module Prism::Uniform
         {% options = @type.annotation(::Prism::Uniform::Serializable::Options) %}
         {% global_struct_name = options && options[:struct] %}
         {% properties = {} of Nil => Nil %}
-        # TODO: support collecting from methods as well
+
+        {% for mdef in @type.methods %}
+          {% ann = mdef.annotation(::Prism::Uniform::Field) %}
+          {% if ann && !ann[:ignore] && ann[:key] %}
+            {%
+              is_serializable = ::Prism::Uniform::Serializable.includers.any? { |t| t == mdef.return_type.id }
+              is_valid = valid_types.any? { |t| t.name == mdef.return_type.id }
+              properties[mdef.name] = {
+                method:       true,
+                type:         mdef.return_type,
+                serializable: is_serializable,
+                valid:        is_valid,
+                key:          (ann && ann[:key]) ? ann[:key].id.stringify : mdef.name,
+                struct:       (ann && ann[:struct]) ? ann[:struct].id.stringify : false,
+              }
+            %}
+            {% if !is_serializable && !is_valid %}
+              # TODO: include file info
+              raise Exception.new("#{{{@type.name}}}.{{mdef.name}} has an invalid uniform type '{{mdef.return_type}}'. Try serialising '{{mdef.return_type}}' or change #{{{@type.name}}}.{{mdef.name}} to one of {{valid_types}}.")
+            {% end %}
+          {% end %}
+        {% end %}
+
         {% for ivar in @type.instance_vars %}
           {% ann = ivar.annotation(::Prism::Uniform::Field) %}
           {% if ann && !ann[:ignore] && ann[:key] %}
@@ -56,18 +78,25 @@ module Prism::Uniform
               }
             %}
             {% if !is_serializable && !is_valid %}
+              # TODO: include file info
               raise Exception.new("#{{{@type.name}}}.{{ivar.id}} has an invalid uniform type '{{ivar.type}}'. Try serialising '{{ivar.type}}' or change #{{{@type.name}}}.{{ivar.id}} to one of {{valid_types}}.")
             {% end %}
           {% end %}
         {% end %}
 
         uniforms = {} of String => ({% for t, i in valid_types %}{{t}}{% if i < valid_types.size - 1 %} | {% end %}{% end %})
+
         {% for name, value in properties %}
-          _{{name}} = @{{name}}
+
+          {% if value[:method] %}
+            _{{name}} = {{name}}
+          {% else %}
+            _{{name}} = @{{name}}
+          {% end %}
+
           unless _{{name}}.nil?
             {% struct_name = global_struct_name ? global_struct_name : value[:struct] %}
             {% uniform_key = struct_name ? struct_name + "." + value[:key] : value[:key] %}
-
             {% if value[:serializable] %}
               _{{name}}_uniforms = _{{name}}.to_uniform
               _{{name}}_uniforms.each do |k, v|
