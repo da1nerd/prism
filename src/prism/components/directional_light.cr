@@ -4,8 +4,9 @@ module Prism
   # Represents an external light source.
   # Sort of like the sun or moon. The source of the light is
   # not in the scene only the resulting rays.
+  @[Uniform::Serializable::Options(struct: "DirectionalLight")]
   class DirectionalLight < BaseLight
-    # include Uniform::Serializable
+    include Uniform::Serializable
 
     # Creates a directional light with default values
     def initialize
@@ -18,8 +19,8 @@ module Prism
       self.shader = Shader.new("forward-directional")
     end
 
-    # @[Uniform::Field(struct: "DirectionalLight", key: "direction")]
-    def direction
+    @[Uniform::Field(key: "direction")]
+    def direction : Prism::Vector3f
       return self.transform.get_transformed_rot.forward
     end
   end

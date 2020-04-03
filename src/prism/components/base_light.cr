@@ -19,6 +19,7 @@ module Prism
     @shader : Shader?
 
     def initialize(@color, @intensity : Float32)
+      to_uniform
     end
 
     def add_to_engine(engine : RenderingEngine)
