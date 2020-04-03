@@ -29,14 +29,13 @@ module Prism::Uniform
     annotation Options
     end
 
+    # The struct option will override the struct type for all fields in the object.
+    # the field key is the key in the glsl code.
+    # if the global struct option is not used you can specifiy structs granularly on each field.
     def to_uniform
       {% begin %}
-        # TODO: this should work, but for some reason it's not finding options.
-        # See https://github.com/crystal-lang/crystal/blob/0.33.0/src/json/serialization.cr#L263
-        # It would be nice if we could declare all of the fields to be in the same struct
-        #{% options = @type.annotation(::Prism::Uniform::Serializable::Options) %}
-        #{% glsl_struct_name = options && options[:struct] %}
-
+        {% options = @type.annotation(::Prism::Uniform::Serializable::Options) %}
+        {% global_struct_name = options && options[:struct] %}
         {% properties = {} of Nil => Nil %}
         {% types = [] of Nil %}
         # TODO: support collecting from methods as well
@@ -49,8 +48,7 @@ module Prism::Uniform
             {%
               properties[ivar.id] = {
                 type:         ivar.type,
-                # TODO: it would be better to check if it is Uniform::Serializable
-                serializable: ivar.type.has_method?("to_uniform"),
+                serializable: ::Prism::Uniform::Serializable.includers.any? { |t| t == ivar.type },
                 key:          ((ann && ann[:key]) || ivar).id.stringify,
                 struct:       (ann && ann[:struct]) ? ann[:struct].id.stringify : false,
               }
@@ -63,17 +61,16 @@ module Prism::Uniform
         {% for name, value in properties %}
           _{{name}} = @{{name}}
           unless _{{name}}.nil?
+            {% struct_name = global_struct_name ? global_struct_name : value[:struct] %}
+            {% uniform_key = struct_name ? struct_name + "." + value[:key] : value[:key] %}
+
             {% if value[:serializable] %}
-              puts {{value[:type]}} # debug
-              # This line breaks when the macro is expanded
-              # _{{name}}_uniforms = _{{name}}.to_uniform
-              # TODO: expand uniforms into *uniforms* Hash
+              _{{name}}_uniforms = _{{name}}.to_uniform
+              _{{name}}_uniforms.each do |k, v|
+                uniforms[{{uniform_key}} + "." + k] = v
+              end
             {% else %}
-              {% if value[:struct] %}
-                uniforms["#{{{value[:struct]}}}.#{{{value[:key]}}}"] = _{{name}}
-              {% else %}
-                uniforms["#{{{value[:key]}}}"] = _{{name}}
-              {% end %}
+              uniforms[{{uniform_key}}] = _{{name}}
             {% end %}
           end
         {% end %}

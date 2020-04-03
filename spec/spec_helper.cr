@@ -11,3 +11,37 @@ class TestGame < Prism::Game
   def init
   end
 end
+
+module UniformTest
+  include Prism::Uniform
+
+  class Parent
+    include Serializable
+
+    @[Field(struct: "Person", key: "name")]
+    @name : String = "Jon"
+
+    @[Field(key: "val")]
+    @val : Int32 = 5
+  end
+
+  class Child < Parent
+    include Serializable
+
+    @[Field(struct: "Person", key: "age")]
+    @age : Int32 = 25
+
+    @[Field(struct: "Person", key: "att")]
+    @att : Attribute = Attribute.new
+  end
+
+  class Attribute
+    include Serializable
+
+    @[Field(key: "color")]
+    @color : String = "brown"
+
+    @[Field(key: "height")]
+    @height : Int32 = 72
+  end
+end

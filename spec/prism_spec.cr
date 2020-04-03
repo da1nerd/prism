@@ -5,7 +5,20 @@ describe Prism do
     it "runs" do
       # TODO: kill after a moment
       game = TestGame.new
-      Prism::Adapter::GLFW.run("Demo", game)
+      # Prism::Adapter::GLFW.run("Demo", game)
+    end
+  end
+
+  describe Prism::Uniform do
+    it "serializes uniforms" do
+      child = UniformTest::Child.new
+      child.to_uniform.should eq({
+        "val"               => 5,
+        "Person.name"       => "Jon",
+        "Person.age"        => 25,
+        "Person.att.color"  => "brown",
+        "Person.att.height" => 72,
+      })
     end
   end
 
