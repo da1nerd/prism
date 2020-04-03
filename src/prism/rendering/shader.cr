@@ -74,7 +74,7 @@ module Prism
             raise Exception.new("Unsupported uniform type #{value.class}")
           end
         else
-          # puts key
+          puts key
         end
       end
 
@@ -108,7 +108,6 @@ module Prism
               # puts uniform_name
               # set_uniform_directional_light(uniform_name, rendering_engine.active_light.as(DirectionalLight))
             elsif uniform_type == "SpotLight"
-              # puts @uniform_map
               # set_uniform_spot_light(uniform_name, rendering_engine.active_light.as(SpotLight))
             elsif uniform_type == "PointLight"
               # TODO: eventually we'll just need todo this. all of the other boilerplate will go away.
