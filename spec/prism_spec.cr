@@ -20,6 +20,13 @@ describe Prism do
         "Person.att.height" => 72,
       })
     end
+
+    it "works" do
+      light = Prism::PointLight.new
+      light.to_uniform.should eq({
+        "key" => "value"
+      })
+    end
   end
 
   describe Prism::Spritemap do

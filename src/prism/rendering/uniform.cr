@@ -32,8 +32,10 @@ module Prism::Uniform
     # The struct option will override the struct type for all fields in the object.
     # the field key is the key in the glsl code.
     # if the global struct option is not used you can specifiy structs granularly on each field.
+    @[Raises]
     def to_uniform
       {% begin %}
+        {% valid_types = [Int32, Float32, Prism::Vector3f, String] %}
         {% options = @type.annotation(::Prism::Uniform::Serializable::Options) %}
         {% global_struct_name = options && options[:struct] %}
         {% properties = {} of Nil => Nil %}
@@ -42,6 +44,9 @@ module Prism::Uniform
         {% for ivar in @type.instance_vars %}
           {% ann = ivar.annotation(::Prism::Uniform::Field) %}
           {% if ann && !ann[:ignore] && ann[:key] %}
+            {% if !valid_types.any? { |t| t == ivar.type } %}
+              raise Exception.new("#{{{@type.name}}}.{{ivar.id}} has an invalid uniform type '{{ivar.type}}'. Try serialising '{{ivar.type}}' or change #{{{@type.name}}}.{{ivar.id}} to one of {{valid_types}}.")
+            {% end %}
             {%
               types << ivar.type
             %}
@@ -56,11 +61,11 @@ module Prism::Uniform
           {% end %}
         {% end %}
 
-        uniforms = {} of String => ({% for type, index in types %}{{type}} {% if index < types.size - 1 %} | {% end %}{% end %})
-
+        uniforms = {} of String => ({% for t, i in valid_types %}{{t}}{% if i < valid_types.size - 1 %} | {% end %}{% end %})
         {% for name, value in properties %}
           _{{name}} = @{{name}}
           unless _{{name}}.nil?
+              puts "{{name}} {{value[:type]}}"
             {% struct_name = global_struct_name ? global_struct_name : value[:struct] %}
             {% uniform_key = struct_name ? struct_name + "." + value[:key] : value[:key] %}
 
@@ -69,8 +74,10 @@ module Prism::Uniform
               _{{name}}_uniforms.each do |k, v|
                 uniforms[{{uniform_key}} + "." + k] = v
               end
-            {% else %}
+            {% elsif valid_types.any? { |t| t == value[:type] } %}
               uniforms[{{uniform_key}}] = _{{name}}
+            {% else %}
+              raise Exception.new("{{name}} has an invalid uniform type {{value[:type]}}.")
             {% end %}
           end
         {% end %}

@@ -18,7 +18,7 @@ module Prism
       self.shader = Shader.new("forward-directional")
     end
 
-    @[Uniform::Field(struct: "DirectionalLight", key: "direction")]
+    # @[Uniform::Field(struct: "DirectionalLight", key: "direction")]
     def direction
       return self.transform.get_transformed_rot.forward
     end
