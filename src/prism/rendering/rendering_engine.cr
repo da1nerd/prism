@@ -85,9 +85,9 @@ module Prism
 
       @lights.each do |light|
         # if shader = light.shader
-          @active_light = light
+        @active_light = light
 
-          object.render_all(light, self)
+        object.render_all(light, self)
         # end
       end
 
