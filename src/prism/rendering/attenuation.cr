@@ -1,6 +1,6 @@
 module Prism
   # Defines the gradual diminishing in strength of something
-  class Attenuation < Vector3f
+  class Attenuation < Prism::Vector3f
     include Uniform::Serializable
 
     def initialize(constant : Float32, linear : Float32, exponent : Float32)

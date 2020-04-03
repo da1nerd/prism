@@ -4,14 +4,13 @@ require "../rendering/shader"
 
 module Prism
   # Fundamental light component
-  @[Uniform::Serializable::Options(struct: "BaseLight")] # TODO: this does not work
   class BaseLight < Light
     include Uniform::Serializable
 
-    @[Uniform::Field(struct: "BaseLight", key: "color")]
+    @[Uniform::Field(key: "color")]
     @color : Vector3f
 
-    @[Uniform::Field(struct: "BaseLight", key: "intensity")]
+    @[Uniform::Field(key: "intensity")]
     @intensity : Float32
 
     property color, intensity

@@ -8,6 +8,9 @@ module Prism
     include Uniform::Serializable
     getter color
 
+    @[Uniform::Field]
+    @color : Vector3f
+
     def initialize
       initialize(Vector3f.new(0.1, 0.1, 0.1))
     end

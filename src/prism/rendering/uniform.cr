@@ -1,3 +1,7 @@
+# TODO: It would be great if we also added a macro to load a shader program file.
+# This would allow us to bundle the shader programs directly into the application.
+# Then we could parse them and perform some validation at compile time to ensure
+# all of the uniforms have been set.
 module Prism::Uniform
   # hi
   # DEPRECATED: use `Uniform::Serializable` instead.
@@ -29,7 +33,7 @@ module Prism::Uniform
   class UniformTypeException < Exception
   end
 
-  alias UniformMap = Hash(String, Int32 | Float32 | Prism::Vector3f | String)
+  alias UniformMap = Hash(String, Int32 | Float32 | Prism::Vector3f | Prism::Matrix4f)
 
   # The `Prism::Uniform::Serializable` module automatically generates methods for Uniform serialization when included.
   #
@@ -111,8 +115,12 @@ module Prism::Uniform
     # Serializes the class to a Uniform object that can be consumed by the `Prism::Shader`.
     @[Raises]
     def to_uniform
+      to_uniform(false)
+    end
+
+    protected def to_uniform(is_sub : Bool)
       {% begin %}
-        {% valid_types = [Int32, Float32, Prism::Vector3f, String] %}
+        {% valid_types = [Int32, Float32, Prism::Vector3f, Prism::Matrix4f] %}
         {% options = @type.annotation(::Prism::Uniform::Serializable::Options) %}
         {% global_struct_name = options && options[:struct] %}
         {% properties = {} of Nil => Nil %}
@@ -128,7 +136,7 @@ module Prism::Uniform
                 type:         mdef.return_type,
                 serializable: is_serializable,
                 valid:        is_valid,
-                key:          (ann && ann[:key]) ? ann[:key].id.stringify : mdef.name,
+                key:          (ann && ann[:key]) ? ann[:key].id.stringify : mdef.name.stringify,
                 struct:       (ann && ann[:struct]) ? ann[:struct].id.stringify : false,
               }
             %}
@@ -146,7 +154,7 @@ module Prism::Uniform
           {% ann = ivar.annotation(::Prism::Uniform::Field) %}
           {% if ann && !ann[:ignore] %}
             {%
-              is_serializable = ::Prism::Uniform::Serializable.includers.any? { |t| t == ivar.type }
+              is_serializable = ::Prism::Uniform::Serializable.includers.any? { |t| t.name == ivar.type.name }
               is_valid = valid_types.any? { |t| t.name == ivar.type.name }
               properties[ivar.id] = {
                 type:         ivar.type,
@@ -179,13 +187,16 @@ module Prism::Uniform
           unless _{{name}}.nil?
             {% struct_name = global_struct_name ? global_struct_name : value[:struct] %}
             {% uniform_key = struct_name ? struct_name + "." + value[:key] : value[:key] %}
+            %struct_key = {{uniform_key}}
+            %short_key = {{value[:key]}}
+            %ukey = is_sub ? %short_key : %struct_key
             {% if value[:serializable] %}
-              _{{name}}_uniforms = _{{name}}.to_uniform
+              _{{name}}_uniforms = _{{name}}.to_uniform(true)
               _{{name}}_uniforms.each do |k, v|
-                uniforms[{{uniform_key}} + "." + k] = v
+                uniforms[%ukey + "." + k] = v
               end
             {% elsif value[:valid] %}
-              uniforms[{{uniform_key}}] = _{{name}}
+              uniforms[%ukey] = _{{name}}
             {% end %}
           end
         {% end %}
