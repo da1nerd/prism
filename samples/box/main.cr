@@ -71,7 +71,6 @@ class BoxDemo < Prism::GameEngine
     add_object(west_wall)
     add_object(box)
     add_object(tiny_box)
-    puts "adding camera"
     add_object(camera)
 
     # TODO: allow changing an object's center axis as well.
