@@ -1,5 +1,6 @@
 module Prism::Uniform
-  # This may be deprecated soon
+  # hi
+  # DEPRECATED: use `Uniform::Serializable` instead.
   # Registers a set of uniforms
   # These uniforms can be accessed by `self.uniform_{{name}}`
   # or by `get_uniform("{{name}}")`
@@ -24,15 +25,88 @@ module Prism::Uniform
   annotation Field
   end
 
+  # This exception is raised when a uniform has an invalid type.
+  class UniformTypeException < Exception
+  end
+
   # The `Prism::Uniform::Serializable` module automatically generates methods for Uniform serialization when included.
+  #
+  # ## Example
+  #
+  # ```
+  # class A
+  #   include Uniform::Serializable
+  #
+  #   @[Uniform::Field]
+  #   @a : String = "a"
+  # end
+  #
+  # class B < A
+  #   include Uniform::Serializable
+  #
+  #   @[Uniform::Field]
+  #   @b : Float32 = 1
+  # end
+  #
+  # my_b = B.new
+  # my_b.to_uniform # => {"a" => "a", "b" => 1.0}
+  # ```
+  #
+  # ### Usage
+  #
+  # Including `Uniform::Serializable` will create a `#to_uniform` method on the current class.
+  # By default, this method will serialize into a uniform object containing the value of every annotated instance variable, the keys being the instance variable name.
+  # Supported primitives are (string, integer, float, Vector3f),
+  # along with objects which include `Uniform::Serializable`.
+  # Union types are not supported.
+  #
+  # To change how individual instance variables are parsed and serialized, the annotation `Uniform::Field`
+  # can be placed on the instance variable. Annotating methods is also allowed.
+  #
+  # ```
+  # class A
+  #   include Uniform::Serializable
+  #
+  #   @[Uniform::Field(key: "attribute")]
+  #   @a : String = "value"
+  # end
+  # ```
+  #
+  # `Uniform::Field` properties:
+  # * **ignore**: if `true` skip this field in serialization.
+  # * **key**: the value of the key in the uniform object (by default the name of the instance variable)
+  # * **struct**: the name of the struct in the uniform object (by default keys are not in a struct)
+  #
+  # ### Class annotation `Uniform::Serializable::Options`
+  #
+  # supported properties:
+  # * **struct**: if provided, this will prefix all field keys with the struct name. This overrides the struct property on all fields.
+  #
+  # ```
+  # @[Uniform::Serializable::Options(struct: "BaseClass")]
+  # class A
+  #   include Uniform::Serializable
+  #   @[Uniform::Field]
+  #   @a : Int32 = 1
+  # end
+  #
+  # c = A.new
+  # c.to_uniform # => {"BaseClass.a" => 1}
+  # ```
   module Serializable
     annotation Options
     end
 
-    # The struct option will override the struct type for all fields in the object.
-    # the field key is the key in the glsl code.
-    # if the global struct option is not used you can specifiy structs granularly on each field.
-    # If a field tries to use an unsupported type this will throw an error
+    private def raise_uniform_parse_error(klass, field, type, valid_types, field_location)
+      message = <<-STRING
+      Invalid uniform configuration!
+      #{klass}.#{field} has an invalid uniform type '#{type}'. Try serialising '#{type}' or change '#{field}' to one of #{valid_types}.
+        from #{field_location[:file]}:#{field_location[:line]}:#{field_location[:column]}.
+      STRING
+      raise UniformTypeException.new(message)
+    end
+
+    # Serializes the class to a Uniform object that can be consumed by the `Prism::Shader`.
     @[Raises]
     def to_uniform
       {% begin %}
@@ -43,7 +117,7 @@ module Prism::Uniform
 
         {% for mdef in @type.methods %}
           {% ann = mdef.annotation(::Prism::Uniform::Field) %}
-          {% if ann && !ann[:ignore] && ann[:key] %}
+          {% if ann && !ann[:ignore] %}
             {%
               is_serializable = ::Prism::Uniform::Serializable.includers.any? { |t| t == mdef.return_type.id }
               is_valid = valid_types.any? { |t| t.name == mdef.return_type.id }
@@ -57,15 +131,18 @@ module Prism::Uniform
               }
             %}
             {% if !is_serializable && !is_valid %}
-              # TODO: include file info
-              raise Exception.new("#{{{@type.name}}}.{{mdef.name}} has an invalid uniform type '{{mdef.return_type}}'. Try serialising '{{mdef.return_type}}' or change #{{{@type.name}}}.{{mdef.name}} to one of {{valid_types}}.")
+              raise_uniform_parse_error("{{@type.name}}", "{{mdef.name}}", "{{mdef.return_type}}", {{valid_types}}, {
+                file: {{mdef.filename}},
+                line: {{mdef.line_number}},
+                column: {{mdef.column_number}}
+              })
             {% end %}
           {% end %}
         {% end %}
 
         {% for ivar in @type.instance_vars %}
           {% ann = ivar.annotation(::Prism::Uniform::Field) %}
-          {% if ann && !ann[:ignore] && ann[:key] %}
+          {% if ann && !ann[:ignore] %}
             {%
               is_serializable = ::Prism::Uniform::Serializable.includers.any? { |t| t == ivar.type }
               is_valid = valid_types.any? { |t| t.name == ivar.type.name }
@@ -78,8 +155,11 @@ module Prism::Uniform
               }
             %}
             {% if !is_serializable && !is_valid %}
-              # TODO: include file info
-              raise Exception.new("#{{{@type.name}}}.{{ivar.id}} has an invalid uniform type '{{ivar.type}}'. Try serialising '{{ivar.type}}' or change #{{{@type.name}}}.{{ivar.id}} to one of {{valid_types}}.")
+              raise_uniform_parse_error("{{@type.name}}", "{{ivar.id}}", "{{ivar.type}}", {{valid_types}}, {
+                file: {{ivar.filename}},
+                line: {{ivar.line_number}},
+                column: {{ivar.column_number}}
+              })
             {% end %}
           {% end %}
         {% end %}

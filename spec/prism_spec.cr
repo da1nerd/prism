@@ -13,8 +13,8 @@ describe Prism do
     it "serializes uniforms" do
       child = UniformTest::Child.new
       child.to_uniform.should eq({
-        "val"                    => 5,
         "Person.name"            => "Jon",
+        "val"                    => 5,
         "Person.age"             => 25,
         "Person.att.color"       => "brown",
         "Person.att.height"      => 72,
