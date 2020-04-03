@@ -5,7 +5,7 @@ module Prism
   # Sort of like the sun or moon. The source of the light is
   # not in the scene only the resulting rays.
   class DirectionalLight < BaseLight
-    include Uniform::Serializable
+    # include Uniform::Serializable
 
     # Creates a directional light with default values
     def initialize
