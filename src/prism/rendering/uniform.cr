@@ -32,6 +32,7 @@ module Prism::Uniform
     # The struct option will override the struct type for all fields in the object.
     # the field key is the key in the glsl code.
     # if the global struct option is not used you can specifiy structs granularly on each field.
+    # If a field tries to use an unsupported type this will throw an error
     @[Raises]
     def to_uniform
       {% begin %}
@@ -39,25 +40,24 @@ module Prism::Uniform
         {% options = @type.annotation(::Prism::Uniform::Serializable::Options) %}
         {% global_struct_name = options && options[:struct] %}
         {% properties = {} of Nil => Nil %}
-        {% types = [] of Nil %}
         # TODO: support collecting from methods as well
         {% for ivar in @type.instance_vars %}
           {% ann = ivar.annotation(::Prism::Uniform::Field) %}
           {% if ann && !ann[:ignore] && ann[:key] %}
-            {% if !valid_types.any? { |t| t == ivar.type } %}
-              raise Exception.new("#{{{@type.name}}}.{{ivar.id}} has an invalid uniform type '{{ivar.type}}'. Try serialising '{{ivar.type}}' or change #{{{@type.name}}}.{{ivar.id}} to one of {{valid_types}}.")
-            {% end %}
             {%
-              types << ivar.type
-            %}
-            {%
+              is_serializable = ::Prism::Uniform::Serializable.includers.any? { |t| t == ivar.type }
+              is_valid = valid_types.any? { |t| t.name == ivar.type.name }
               properties[ivar.id] = {
                 type:         ivar.type,
-                serializable: ::Prism::Uniform::Serializable.includers.any? { |t| t == ivar.type },
+                serializable: is_serializable,
+                valid:        is_valid,
                 key:          ((ann && ann[:key]) || ivar).id.stringify,
                 struct:       (ann && ann[:struct]) ? ann[:struct].id.stringify : false,
               }
             %}
+            {% if !is_serializable && !is_valid %}
+              raise Exception.new("#{{{@type.name}}}.{{ivar.id}} has an invalid uniform type '{{ivar.type}}'. Try serialising '{{ivar.type}}' or change #{{{@type.name}}}.{{ivar.id}} to one of {{valid_types}}.")
+            {% end %}
           {% end %}
         {% end %}
 
@@ -65,7 +65,6 @@ module Prism::Uniform
         {% for name, value in properties %}
           _{{name}} = @{{name}}
           unless _{{name}}.nil?
-              puts "{{name}} {{value[:type]}}"
             {% struct_name = global_struct_name ? global_struct_name : value[:struct] %}
             {% uniform_key = struct_name ? struct_name + "." + value[:key] : value[:key] %}
 
@@ -74,10 +73,8 @@ module Prism::Uniform
               _{{name}}_uniforms.each do |k, v|
                 uniforms[{{uniform_key}} + "." + k] = v
               end
-            {% elsif valid_types.any? { |t| t == value[:type] } %}
+            {% elsif value[:valid] %}
               uniforms[{{uniform_key}}] = _{{name}}
-            {% else %}
-              raise Exception.new("{{name}} has an invalid uniform type {{value[:type]}}.")
             {% end %}
           end
         {% end %}

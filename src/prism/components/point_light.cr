@@ -3,17 +3,15 @@ require "./base_light"
 module Prism
   # Represents a point light.
   # That is, light that radiates out from a point.
+  @[Uniform::Serializable::Options(struct: "PointLight")]
   class PointLight < BaseLight
     include Uniform::Serializable
     COLOR_DEPTH = 256.0f32
 
-    @[Uniform::Field(struct: "PointLight", key: "range")]
+    @[Uniform::Field(key: "range")]
     @range : Float32
-    @[Uniform::Field(struct: "PointLight", key: "atten")]
+    @[Uniform::Field(key: "atten")]
     @attenuation : Attenuation
-
-    @[Uniform::Field(struct: "PointLight", key: "test")]
-    @test : Float64 = 3.0
 
     property range
     getter attenuation
