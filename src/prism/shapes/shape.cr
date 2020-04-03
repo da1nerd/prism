@@ -29,11 +29,10 @@ module Prism
         end
       end
 
-      def render(shader : Shader, rendering_engine : RenderingEngine)
+      def render(light : Light, rendering_engine : RenderingEngine)
         if mesh = @mesh
           if material = @material
-            shader.bind
-            shader.update_uniforms(self.transform, material, rendering_engine)
+            light.bind(self.transform, material)
             mesh.draw
           end
         end

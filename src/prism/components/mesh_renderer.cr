@@ -10,9 +10,8 @@ module Prism
     def initialize(@mesh : Mesh, @material : Material)
     end
 
-    def render(shader : Shader, rendering_engine : RenderingEngine)
-      shader.bind
-      shader.update_uniforms(self.transform, @material, rendering_engine)
+    def render(light : Light, rendering_engine : RenderingEngine)
+      light.bind(self.transform, @material)
       @mesh.draw
     end
   end
