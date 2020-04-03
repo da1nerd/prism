@@ -49,6 +49,7 @@ module Prism
 
     def bind_new(@uniform_map : Uniform::UniformMap, transform : Transform, material : Material, rendering_engine : RenderingEngine)
       # TODO: the rendering_engine prop is deprecated and will be removed in the future
+      # puts @uniform_map
       bind
       update_uniforms(transform, material, rendering_engine)
     end
@@ -56,6 +57,26 @@ module Prism
     def update_uniforms(transform : Transform, material : Material, rendering_engine : RenderingEngine)
       world_matrix = transform.get_transformation
       mvp_matrix = rendering_engine.main_camera.get_view_projection * world_matrix
+
+      @resource.uniforms.each do |key, _|
+        if @uniform_map.has_key? key
+          value = @uniform_map[key]
+          case value.class.name
+          when "Int32"
+            set_uniform(key, value.as(LibGL::Int))
+          when "Float32"
+            set_uniform(key, value.as(LibGL::Float))
+          when "Prism::Vector3f"
+            set_uniform(key, value.as(Prism::Vector3f))
+          when "Prism::Matrix4f"
+            set_uniform(key, value.as(Prism::Matrix4f))
+          else
+            raise Exception.new("Unsupported uniform type #{value.class}")
+          end
+        else
+          # puts key
+        end
+      end
 
       if @resource.uniform_names.size > 0
         0.upto(@resource.uniform_names.size - 1) do |i|
@@ -84,11 +105,30 @@ module Prism
               # elsif uniform_type == "float"
               # set_uniform(uniform_name, rendering_engine.get_uniform(unprefixed_uniform_name.underscore).as(Float32))
             elsif uniform_type == "DirectionalLight"
-              set_uniform_directional_light(uniform_name, rendering_engine.active_light.as(DirectionalLight))
+              # puts uniform_name
+              # set_uniform_directional_light(uniform_name, rendering_engine.active_light.as(DirectionalLight))
             elsif uniform_type == "SpotLight"
-              set_uniform_spot_light(uniform_name, rendering_engine.active_light.as(SpotLight))
+              # puts @uniform_map
+              # set_uniform_spot_light(uniform_name, rendering_engine.active_light.as(SpotLight))
             elsif uniform_type == "PointLight"
-              set_uniform_point_light(uniform_name, rendering_engine.active_light.as(PointLight))
+              # TODO: eventually we'll just need todo this. all of the other boilerplate will go away.
+              # @resource.uniforms.each do |key, _|
+              #   if @uniform_map.has_key? key
+              #     value = @uniform_map[key]
+              #     case value.class.name
+              #     when "Int32"
+              #       set_uniform(key, value.as(LibGL::Int))
+              #     when "Float32"
+              #       set_uniform(key, value.as(LibGL::Float))
+              #     when "Prism::Vector3f"
+              #       set_uniform(key, value.as(Prism::Vector3f))
+              #     when "Prism::Matrix4f"
+              #       set_uniform(key, value.as(Prism::Matrix4f))
+              #     else
+              #       raise Exception.new("Unsupported uniform type #{value.class}")
+              #     end
+              #   end
+              # end
             else
               rendering_engine.update_uniform_struct(transform, material, self, uniform_name, uniform_type)
             end

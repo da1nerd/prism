@@ -19,7 +19,7 @@ module UniformTest
     include Serializable
 
     @[Field(struct: "Person", key: "name")]
-    @name : String = "Jon"
+    @name : Int32 = 1
 
     @[Field(key: "val")]
     @val : Int32 = 5
@@ -39,14 +39,14 @@ module UniformTest
     include Serializable
 
     @[Field(key: "color")]
-    @c : String = "brown"
+    @c : Int32 = 12
 
     @[Field]
     @height : Int32 = 72
 
     @[Field(key: "method_test")]
-    def test : String
-      "test"
+    def test : Float32
+      6.2f32
     end
   end
 end
