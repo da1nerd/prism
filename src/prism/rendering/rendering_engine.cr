@@ -36,7 +36,6 @@ module Prism
     # Prepares the GL environment as the rendering loop is starting up
     @[Override]
     def startup
-      puts "start rendering engine"
       LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
       LibGL.front_face(LibGL::CW)
       # Uncomment these lines to enable culling the back face for better performance.

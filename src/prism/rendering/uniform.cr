@@ -20,6 +20,7 @@ module Prism::Uniform
     end
   end
 
+  # TODO: all of the below should eventually go into the Shader namespace.
   annotation Field
   end
 
@@ -48,7 +49,7 @@ module Prism::Uniform
             {%
               properties[ivar.id] = {
                 type:         ivar.type,
-                # TODO: it would be better to check if it is serializable
+                # TODO: it would be better to check if it is Uniform::Serializable
                 serializable: ivar.type.has_method?("to_uniform"),
                 key:          ((ann && ann[:key]) || ivar).id.stringify,
                 struct:       (ann && ann[:struct]) ? ann[:struct].id.stringify : false,
@@ -63,7 +64,10 @@ module Prism::Uniform
           _{{name}} = @{{name}}
           unless _{{name}}.nil?
             {% if value[:serializable] %}
-              # TODO: recurse into _{{name}}
+              puts {{value[:type]}} # debug
+              # This line breaks when the macro is expanded
+              # _{{name}}_uniforms = _{{name}}.to_uniform
+              # TODO: expand uniforms into *uniforms* Hash
             {% else %}
               {% if value[:struct] %}
                 uniforms["#{{{value[:struct]}}}.#{{{value[:key]}}}"] = _{{name}}
