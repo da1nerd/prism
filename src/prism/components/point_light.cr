@@ -12,6 +12,9 @@ module Prism
     @[Uniform::Field(struct: "PointLight", key: "atten")]
     @attenuation : Attenuation
 
+    @[Uniform::Field(struct: "PointLight", key: "test")]
+    @test : Float64 = 3.0
+
     property range
     getter attenuation
 
