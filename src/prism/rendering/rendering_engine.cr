@@ -31,7 +31,7 @@ module Prism
       super()
       @lights = [] of Light
       @sampler_map = {} of String => LibGL::Int
-      @sampler_map["diffuse"] = 0
+      @sampler_map["diffuse"] = 0 # TODO: what is this?
     end
 
     # Prepares the GL environment as the rendering loop is starting up
@@ -61,14 +61,6 @@ module Prism
       end
 
       LibGL.flush
-    end
-
-    # Give the programmer a chance to manually handle uniform structs in their GLSL code.
-    # This allows for the edge case in which programmers want to define new structs in their shaders.
-    # This method can be overridden to provide support for those custom structs.
-    def update_uniform_struct(transform : Transform, material : Material, shader : Shader, uniform_name : String, uniform_type : String)
-      puts "Error: #{uniform_type} is not a supported type in Rendering Engine"
-      exit 1
     end
 
     def render(object : GameObject)

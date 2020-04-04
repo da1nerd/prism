@@ -27,6 +27,11 @@ module Prism
       self.shader = Shader.new("forward-spot")
     end
 
+    @[Override]
+    def update(delta : Float32)
+      @point_light.transform.parent = transform
+    end
+
     @[Uniform::Field]
     def direction : Prism::Vector3f
       return self.transform.get_transformed_rot.forward
