@@ -15,17 +15,10 @@ module Prism
     @window_size : Core::Size?
     @sampler_map : Hash(String, LibGL::Int)
     @lights : Array(Light)
-    @active_light : Light?
     @ambient_light : Light?
-    @forward_ambient : Shader?
     @main_camera : Camera?
 
-    getter active_light
-    setter main_camera, active_light
-
-    register_uniforms [
-      {name: ambient, type: Vector3f, default: Vector3f.new(0, 0, 0)},
-    ]
+    setter main_camera
 
     def initialize
       super()
@@ -76,11 +69,7 @@ module Prism
       LibGL.depth_func(LibGL::EQUAL)
 
       @lights.each do |light|
-        # if shader = light.shader
-        @active_light = light
-
         object.render_all(light, self)
-        # end
       end
 
       LibGL.depth_func(LibGL::LESS)
@@ -119,8 +108,6 @@ module Prism
 
     # Changes the active ambient light
     def ambient_light=(@ambient_light : AmbientLight)
-      self.uniform_ambient = ambient_light.color
-      @forward_ambient = ambient_light.shader
     end
 
     # Returns which version of OpenGL is available
