@@ -3,12 +3,18 @@ require "./uniform"
 
 module Prism
   class Material
+    include Uniform::Serializable
     include Uniform
 
     register_uniforms [
       {name: specular_intensity, type: Float32, default: 0},
       {name: specular_power, type: Float32, default: 0},
     ]
+
+    @[Uniform::Field(key: "specularIntensity")]
+    @specular_intensity : Float32 = 1
+    @[Uniform::Field(key: "specularPower")]
+    @specular_power : Float32 = 8
 
     @texture_map : Hash(String, Texture)
 

@@ -8,7 +8,7 @@ module Prism
     include Uniform::Serializable
     getter color
 
-    @[Uniform::Field]
+    @[Uniform::Field(key: "R_ambient")]
     @color : Vector3f
 
     def initialize
