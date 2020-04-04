@@ -16,6 +16,12 @@ module Prism
     @[Uniform::Field(key: "specularPower")]
     @specular_power : Float32 = 8
 
+    # TODO: the material needs to have a uniform for the "diffuse" that's the sampler2D which is used for textures.
+    # We are already adding a texting that has the same name as the uniform, so perhaps
+    # we could automate adding the diffuse field.
+    # @[Uniform::Field(key: "diffuse")]
+    # @diffuseSamplerSlot : Float32 = 0
+
     @texture_map : Hash(String, Texture)
 
     def initialize

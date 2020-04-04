@@ -59,6 +59,8 @@ module Prism
     def render(object : GameObject)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
+      # TODO: it would be nice if the ambient could be added to the list
+      # I might need to update the ambient shader for this.
       object.render_all(self.ambient_light.as(Light), self)
 
       LibGL.enable(LibGL::BLEND)
