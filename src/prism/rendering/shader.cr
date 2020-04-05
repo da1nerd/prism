@@ -57,10 +57,25 @@ module Prism
     def update_uniforms(transform : Transform, material : Material, rendering_engine : RenderingEngine)
       world_matrix = transform.get_transformation
       mvp_matrix = rendering_engine.main_camera.get_view_projection * world_matrix
+      material_uniforms = material.to_uniform
 
       @resource.uniforms.each do |key, _|
         if @uniform_map.has_key? key
           value = @uniform_map[key]
+          case value.class.name
+          when "Int32"
+            set_uniform(key, value.as(LibGL::Int))
+          when "Float32"
+            set_uniform(key, value.as(LibGL::Float))
+          when "Prism::Vector3f"
+            set_uniform(key, value.as(Prism::Vector3f))
+          when "Prism::Matrix4f"
+            set_uniform(key, value.as(Prism::Matrix4f))
+          else
+            raise Exception.new("Unsupported uniform type #{value.class}")
+          end
+        elsif material_uniforms.has_key? key
+          value = material_uniforms[key]
           case value.class.name
           when "Int32"
             set_uniform(key, value.as(LibGL::Int))
@@ -84,6 +99,7 @@ module Prism
           uniform_type = @resource.uniform_types[i]
 
           if uniform_type == "sampler2D"
+            # diffuse
             sampler_slot : LibGL::Int = rendering_engine.get_sampler_slot(uniform_name)
             material.get_texture(uniform_name).bind(sampler_slot)
             set_uniform(uniform_name, sampler_slot)
@@ -97,56 +113,12 @@ module Prism
               puts "Error: #{uniform_name} is not a valid component of Transform"
               exit 1
             end
-          elsif uniform_name.starts_with?("R_")
-            # rendering
-            unprefixed_uniform_name = uniform_name[2..-1]
-            if uniform_type == "vec3"
-              set_uniform(uniform_name, rendering_engine.get_uniform(unprefixed_uniform_name.underscore).as(Vector3f))
-              # elsif uniform_type == "float"
-              # set_uniform(uniform_name, rendering_engine.get_uniform(unprefixed_uniform_name.underscore).as(Float32))
-            elsif uniform_type == "DirectionalLight"
-              # puts uniform_name
-              # set_uniform_directional_light(uniform_name, rendering_engine.active_light.as(DirectionalLight))
-            elsif uniform_type == "SpotLight"
-              # set_uniform_spot_light(uniform_name, rendering_engine.active_light.as(SpotLight))
-            elsif uniform_type == "PointLight"
-              # TODO: eventually we'll just need todo this. all of the other boilerplate will go away.
-              # @resource.uniforms.each do |key, _|
-              #   if @uniform_map.has_key? key
-              #     value = @uniform_map[key]
-              #     case value.class.name
-              #     when "Int32"
-              #       set_uniform(key, value.as(LibGL::Int))
-              #     when "Float32"
-              #       set_uniform(key, value.as(LibGL::Float))
-              #     when "Prism::Vector3f"
-              #       set_uniform(key, value.as(Prism::Vector3f))
-              #     when "Prism::Matrix4f"
-              #       set_uniform(key, value.as(Prism::Matrix4f))
-              #     else
-              #       raise Exception.new("Unsupported uniform type #{value.class}")
-              #     end
-              #   end
-              # end
-            else
-              rendering_engine.update_uniform_struct(transform, material, self, uniform_name, uniform_type)
-            end
           elsif uniform_name.starts_with?("C_")
             # Camera
             if uniform_name == "C_eyePos"
               set_uniform(uniform_name, rendering_engine.main_camera.transform.get_transformed_pos)
             else
               puts "Error: #{uniform_name} is not a valid component of Camera"
-              exit 1
-            end
-          else
-            # materials
-            # if uniform_type == "vec3"
-            # set_uniform(uniform_name, material.get_uniform(uniform_name).as(Vector3f))
-            if uniform_type == "float"
-              set_uniform(uniform_name, material.get_uniform(uniform_name.underscore).as(Float32))
-            else
-              puts "Error: #{uniform_type} is not a supported type in Material"
               exit 1
             end
           end
@@ -359,33 +331,6 @@ module Prism
       end
 
       LibGL.attach_shader(@resource.program, shader)
-    end
-
-    # TODO: everything below here is deprecated
-
-    def set_uniform_base_light(name : String, base_light : BaseLight)
-      set_uniform(name + ".color", base_light.color)
-      set_uniform(name + ".intensity", base_light.intensity)
-    end
-
-    def set_uniform_directional_light(name : String, directional_light : DirectionalLight)
-      set_uniform_base_light(name + ".base", directional_light)
-      set_uniform(name + ".direction", directional_light.direction)
-    end
-
-    def set_uniform_point_light(name : String, point_light : PointLight)
-      set_uniform_base_light(name + ".base", point_light)
-      set_uniform(name + ".atten.constant", point_light.attenuation.constant)
-      set_uniform(name + ".atten.linear", point_light.attenuation.linear)
-      set_uniform(name + ".atten.exponent", point_light.attenuation.exponent)
-      set_uniform(name + ".position", point_light.transform.get_transformed_pos)
-      set_uniform(name + ".range", point_light.range)
-    end
-
-    def set_uniform_spot_light(name : String, spot_light : SpotLight)
-      set_uniform_point_light(name + ".pointLight", spot_light)
-      set_uniform(name + ".direction", spot_light.direction)
-      set_uniform(name + ".cutoff", spot_light.cutoff)
     end
   end
 end

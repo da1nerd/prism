@@ -15,23 +15,16 @@ module Prism
     @window_size : Core::Size?
     @sampler_map : Hash(String, LibGL::Int)
     @lights : Array(Light)
-    @active_light : Light?
     @ambient_light : Light?
-    @forward_ambient : Shader?
     @main_camera : Camera?
 
-    getter active_light
-    setter main_camera, active_light
-
-    register_uniforms [
-      {name: ambient, type: Vector3f, default: Vector3f.new(0, 0, 0)},
-    ]
+    setter main_camera
 
     def initialize
       super()
       @lights = [] of Light
       @sampler_map = {} of String => LibGL::Int
-      @sampler_map["diffuse"] = 0
+      @sampler_map["diffuse"] = 0 # TODO: what is this?
     end
 
     # Prepares the GL environment as the rendering loop is starting up
@@ -63,17 +56,11 @@ module Prism
       LibGL.flush
     end
 
-    # Give the programmer a chance to manually handle uniform structs in their GLSL code.
-    # This allows for the edge case in which programmers want to define new structs in their shaders.
-    # This method can be overridden to provide support for those custom structs.
-    def update_uniform_struct(transform : Transform, material : Material, shader : Shader, uniform_name : String, uniform_type : String)
-      puts "Error: #{uniform_type} is not a supported type in Rendering Engine"
-      exit 1
-    end
-
     def render(object : GameObject)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
+      # TODO: it would be nice if the ambient could be added to the list
+      # I might need to update the ambient shader for this.
       object.render_all(self.ambient_light.as(Light), self)
 
       LibGL.enable(LibGL::BLEND)
@@ -84,11 +71,7 @@ module Prism
       LibGL.depth_func(LibGL::EQUAL)
 
       @lights.each do |light|
-        # if shader = light.shader
-        @active_light = light
-
         object.render_all(light, self)
-        # end
       end
 
       LibGL.depth_func(LibGL::LESS)
@@ -127,8 +110,6 @@ module Prism
 
     # Changes the active ambient light
     def ambient_light=(@ambient_light : AmbientLight)
-      self.uniform_ambient = ambient_light.color
-      @forward_ambient = ambient_light.shader
     end
 
     # Returns which version of OpenGL is available
