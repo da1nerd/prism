@@ -3,7 +3,6 @@ require "../../core/vector3f"
 require "../../core/matrix4f"
 require "../material"
 require "../../core/transform"
-# require "./uniform"
 require "./serializable"
 
 module Prism
