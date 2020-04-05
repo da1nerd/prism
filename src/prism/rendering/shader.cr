@@ -75,6 +75,10 @@ module Prism
             raise Exception.new("Unsupported uniform type #{value.class}")
           end
         elsif material_uniforms.has_key? key
+          if material.has_texture? key
+            material.bind_texture key
+          end
+
           value = material_uniforms[key]
           case value.class.name
           when "Int32"
@@ -99,10 +103,6 @@ module Prism
           uniform_type = @resource.uniform_types[i]
 
           if uniform_type == "sampler2D"
-            # diffuse
-            sampler_slot : LibGL::Int = rendering_engine.get_sampler_slot(uniform_name)
-            material.get_texture(uniform_name).bind(sampler_slot)
-            # set_uniform(uniform_name, sampler_slot)
           elsif uniform_name.starts_with?("T_")
             # transformations
             if uniform_name == "T_MVP"

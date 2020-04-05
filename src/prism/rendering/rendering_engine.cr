@@ -13,7 +13,6 @@ module Prism
     include Uniform
 
     @window_size : Core::Size?
-    @sampler_map : Hash(String, LibGL::Int)
     @lights : Array(Light)
     @ambient_light : Light?
     @main_camera : Camera?
@@ -23,8 +22,6 @@ module Prism
     def initialize
       super()
       @lights = [] of Light
-      @sampler_map = {} of String => LibGL::Int
-      @sampler_map["diffuse"] = 0 # TODO: what is this?
     end
 
     # Prepares the GL environment as the rendering loop is starting up
@@ -115,10 +112,6 @@ module Prism
     # Returns which version of OpenGL is available
     def get_open_gl_version
       return String.new(LibGL.get_string(LibGL::VERSION))
-    end
-
-    def get_sampler_slot(sampler_name : String) : LibGL::Int
-      @sampler_map[sampler_name]
     end
   end
 end

@@ -20,13 +20,15 @@ module Prism
       @texture_map = {} of String => Texture
     end
 
-    # Creates a material with an initial texture set to default values.
+    # Creates a material with a "diffuse" texture loaded from the *texture_path*
+    # There should be a matching "diffuse" uniform in your shader program.
     def initialize(texture_path : String)
       super()
       @texture_map = {} of String => Texture
       add_texture("diffuse", Texture.new(texture_path))
     end
 
+    # Adds a texture to the material
     def add_texture(name : String, texture : Texture)
       @texture_map[name] = texture
     end
@@ -43,6 +45,7 @@ module Prism
       map
     end
 
+    # Retrieves a texture by name
     def get_texture(name : String) : Texture
       if @texture_map.has_key?(name)
         @texture_map[name]
@@ -50,6 +53,23 @@ module Prism
         # TODO: return a better default texture
         Texture.new("test.png")
       end
+    end
+
+    # Binds the given texture to it's sampler slot
+    def bind_texture(name : String)
+      sampler_slot : Int32 = 0
+      @texture_map.each do |key, texture|
+        if key === name
+          texture.bind(sampler_slot)
+          return
+        end
+        sampler_slot += 1
+      end
+    end
+
+    # Checks if the material has a texture.
+    def has_texture?(name : String) : Bool
+      return @texture_map.has_key?(name)
     end
   end
 end
