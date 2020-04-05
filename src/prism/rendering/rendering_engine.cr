@@ -2,7 +2,6 @@ require "lib_gl"
 require "annotation"
 require "../components/camera"
 require "../components/base_light"
-require "./uniform"
 
 module Prism
   # Expose the graphics language integer values so keep a clean abstraction.
@@ -10,8 +9,6 @@ module Prism
 
   # Manages the OpenGL environment and renders game objects
   class RenderingEngine < Prism::Core::Engine
-    include Uniform
-
     @window_size : Core::Size?
     @lights : Array(Light)
     @ambient_light : Light?

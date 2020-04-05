@@ -2,15 +2,15 @@ require "./point_light"
 
 module Prism
   # Represents a spot light
-  @[Uniform::Serializable::Options(struct: "R_spotLight")]
+  @[Shader::Serializable::Options(struct: "R_spotLight")]
   class SpotLight < PointLight
-    include Uniform::Serializable
+    include Shader::Serializable
     property cutoff
 
-    @[Uniform::Field(key: "cutoff")]
+    @[Shader::Field(key: "cutoff")]
     @cutoff : Float32
 
-    @[Uniform::Field(key: "pointLight")]
+    @[Shader::Field(key: "pointLight")]
     @point_light : PointLight
 
     def initialize
@@ -32,7 +32,7 @@ module Prism
       @point_light.transform.parent = transform
     end
 
-    @[Uniform::Field]
+    @[Shader::Field]
     def direction : Prism::Vector3f
       return self.transform.get_transformed_rot.forward
     end

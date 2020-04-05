@@ -5,7 +5,7 @@ require "../rendering/shader"
 module Prism
   # Fundamental light component
   class Light < GameComponent
-    include Uniform::Serializable
+    include Shader::Serializable
     property shader
 
     @shader : Shader?

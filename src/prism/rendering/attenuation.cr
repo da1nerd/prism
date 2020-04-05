@@ -1,23 +1,23 @@
 module Prism
   # Defines the gradual diminishing in strength of something
   class Attenuation < Prism::Vector3f
-    include Uniform::Serializable
+    include Shader::Serializable
 
     def initialize(constant : Float32, linear : Float32, exponent : Float32)
       super
     end
 
-    @[Uniform::Field(key: "constant")]
+    @[Shader::Field(key: "constant")]
     def constant : Float32
       self.x
     end
 
-    @[Uniform::Field(key: "linear")]
+    @[Shader::Field(key: "linear")]
     def linear : Float32
       self.y
     end
 
-    @[Uniform::Field(key: "exponent")]
+    @[Shader::Field(key: "exponent")]
     def exponent : Float32
       self.z
     end

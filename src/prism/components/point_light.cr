@@ -3,22 +3,22 @@ require "./base_light"
 module Prism
   # Represents a point light.
   # That is, light that radiates out from a point.
-  @[Uniform::Serializable::Options(struct: "R_pointLight")]
+  @[Shader::Serializable::Options(struct: "R_pointLight")]
   class PointLight < BaseLight
     COLOR_DEPTH = 256.0f32
 
-    include Uniform::Serializable
+    include Shader::Serializable
     property range
     getter attenuation
 
-    @[Uniform::Field]
+    @[Shader::Field]
     @base : BaseLight
-    @[Uniform::Field]
+    @[Shader::Field]
     @range : Float32
-    @[Uniform::Field(key: "atten")]
+    @[Shader::Field(key: "atten")]
     @attenuation : Attenuation
 
-    @[Uniform::Field]
+    @[Shader::Field]
     def position : Prism::Vector3f
       self.transform.get_transformed_pos
     end
