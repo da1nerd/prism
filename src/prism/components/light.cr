@@ -15,7 +15,7 @@ module Prism
     # This should be done just before drawing the object's `Prism::Mesh`
     def bind(transform : Transform, material : Material)
       if shader = @shader
-        shader.bind_new(to_uniform, transform, material, @engine.as(RenderingEngine).main_camera)
+        shader.bind(to_uniform, transform, material, @engine.as(RenderingEngine).main_camera)
       end
     end
 
