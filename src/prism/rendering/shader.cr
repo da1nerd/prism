@@ -102,7 +102,7 @@ module Prism
             # diffuse
             sampler_slot : LibGL::Int = rendering_engine.get_sampler_slot(uniform_name)
             material.get_texture(uniform_name).bind(sampler_slot)
-            set_uniform(uniform_name, sampler_slot)
+            # set_uniform(uniform_name, sampler_slot)
           elsif uniform_name.starts_with?("T_")
             # transformations
             if uniform_name == "T_MVP"
