@@ -47,16 +47,14 @@ module Prism
       LibGL.use_program(@resource.program)
     end
 
-    def bind_new(@uniform_map : Uniform::UniformMap, transform : Transform, material : Material, rendering_engine : RenderingEngine)
-      # TODO: the rendering_engine prop is deprecated and will be removed in the future
-      # puts @uniform_map
+    def bind_new(@uniform_map : Uniform::UniformMap, transform : Transform, material : Material, camera : Camera)
       bind
-      update_uniforms(transform, material, rendering_engine)
+      update_uniforms(transform, material, camera)
     end
 
-    def update_uniforms(transform : Transform, material : Material, rendering_engine : RenderingEngine)
+    def update_uniforms(transform : Transform, material : Material, camera : Camera)
       world_matrix = transform.get_transformation
-      mvp_matrix = rendering_engine.main_camera.get_view_projection * world_matrix
+      mvp_matrix = camera.get_view_projection * world_matrix
       material_uniforms = material.to_uniform
 
       @resource.uniforms.each do |key, _|
@@ -115,7 +113,7 @@ module Prism
           elsif uniform_name.starts_with?("C_")
             # Camera
             if uniform_name == "C_eyePos"
-              set_uniform(uniform_name, rendering_engine.main_camera.transform.get_transformed_pos)
+              set_uniform(uniform_name, camera.transform.get_transformed_pos)
             else
               puts "Error: #{uniform_name} is not a valid component of Camera"
               exit 1
