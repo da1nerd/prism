@@ -118,11 +118,15 @@ module Prism::Uniform
       to_uniform(false)
     end
 
+    # Allows manually injecting some uniform keys
+    private def on_to_uniform : UniformMap | Nil
+    end
+
     protected def to_uniform(is_sub : Bool)
       {% begin %}
         {% valid_types = [Int32, Float32, Prism::Vector3f, Prism::Matrix4f] %}
         {% options = @type.annotation(::Prism::Uniform::Serializable::Options) %}
-        {% global_struct_name = options && options[:struct] %}
+        {% global_struct_name = options && options[:struct] || false %}
         {% properties = {} of Nil => Nil %}
 
         {% for mdef in @type.methods %}
@@ -201,6 +205,14 @@ module Prism::Uniform
           end
         {% end %}
 
+        # Add manual uniform definitions to the map
+        _manual_uniforms = on_to_uniform
+        if _manual_uniforms
+          _manual_uniforms.each do |k, v|
+            %ukey = is_sub && {{global_struct_name}} ? {{global_struct_name}}.to_s + "." + k : k
+            uniforms[%ukey] = v
+          end
+        end
         uniforms
       {% end %}
     end

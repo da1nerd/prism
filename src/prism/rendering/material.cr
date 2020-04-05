@@ -1,3 +1,4 @@
+require "annotation"
 require "./texture"
 require "./uniform"
 
@@ -6,22 +7,12 @@ module Prism
     include Uniform::Serializable
     include Uniform
 
-    register_uniforms [
-      {name: specular_intensity, type: Float32, default: 0},
-      {name: specular_power, type: Float32, default: 0},
-    ]
+    property specular_intensity, specular_power
 
     @[Uniform::Field(key: "specularIntensity")]
     @specular_intensity : Float32 = 1
     @[Uniform::Field(key: "specularPower")]
     @specular_power : Float32 = 8
-
-    # TODO: the material needs to have a uniform for the "diffuse" that's the sampler2D which is used for textures.
-    # We are already adding a texting that has the same name as the uniform, so perhaps
-    # we could automate adding the diffuse field.
-    # @[Uniform::Field(key: "diffuse")]
-    # @diffuseSamplerSlot : Float32 = 0
-
     @texture_map : Hash(String, Texture)
 
     def initialize
@@ -34,12 +25,22 @@ module Prism
       super()
       @texture_map = {} of String => Texture
       add_texture("diffuse", Texture.new(texture_path))
-      self.uniform_specular_intensity = 1f32
-      self.uniform_specular_power = 8f32
     end
 
     def add_texture(name : String, texture : Texture)
       @texture_map[name] = texture
+    end
+
+    @[Override]
+    private def on_to_uniform : UniformMap | Nil
+      # manually register the texture sampler slots
+      sampler_slot : Int32 = 0
+      map = UniformMap.new
+      @texture_map.each do |key, texture|
+        map[key] = sampler_slot
+        sampler_slot += 1
+      end
+      map
     end
 
     def get_texture(name : String) : Texture
