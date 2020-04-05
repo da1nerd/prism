@@ -1,18 +1,19 @@
 require "lib_gl"
-require "../core/vector3f"
-require "../core/matrix4f"
-require "./material"
-require "../core/transform"
-require "./uniform"
+require "../../core/vector3f"
+require "../../core/matrix4f"
+require "../material"
+require "../../core/transform"
+# require "./uniform"
+require "./serializable"
 
 module Prism
   class Shader
     @@loaded_shaders = {} of String => ShaderResource
     @resource : ShaderResource
-    @uniform_map : Uniform::UniformMap
+    @uniform_map : Shader::UniformMap
 
     def initialize(@file_name : String)
-      @uniform_map = Uniform::UniformMap.new
+      @uniform_map = Shader::UniformMap.new
       if @@loaded_shaders.has_key?(@file_name)
         @resource = @@loaded_shaders[@file_name]
         @resource.add_reference
@@ -43,7 +44,7 @@ module Prism
     end
 
     # Uses the shader
-    def bind(@uniform_map : Uniform::UniformMap, transform : Transform, material : Material, camera : Camera)
+    def bind(@uniform_map : Shader::UniformMap, transform : Transform, material : Material, camera : Camera)
       LibGL.use_program(@resource.program)
       update_uniforms(transform, material, camera)
     end
@@ -86,6 +87,8 @@ module Prism
           else
             raise Exception.new("Unsupported uniform type #{value.class}")
           end
+        else
+          # puts "missing uniform #{key}"
         end
       end
 

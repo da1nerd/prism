@@ -29,6 +29,7 @@ module Prism
       return @resource.id
     end
 
+    # Binds to the first sampler slot (0)
     def bind
       bind(0)
     end

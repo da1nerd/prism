@@ -1,17 +1,16 @@
 require "annotation"
 require "./texture"
-require "./uniform"
+require "./shader/serializable"
 
 module Prism
   class Material
-    include Uniform::Serializable
-    include Uniform
+    include Shader::Serializable
 
     property specular_intensity, specular_power
 
-    @[Uniform::Field(key: "specularIntensity")]
+    @[Shader::Field(key: "specularIntensity")]
     @specular_intensity : Float32 = 1
-    @[Uniform::Field(key: "specularPower")]
+    @[Shader::Field(key: "specularPower")]
     @specular_power : Float32 = 8
     @texture_map : Hash(String, Texture)
 
@@ -34,10 +33,10 @@ module Prism
     end
 
     @[Override]
-    private def on_to_uniform : UniformMap | Nil
+    private def on_to_uniform : Shader::UniformMap | Nil
       # manually register the texture sampler slots
       sampler_slot : Int32 = 0
-      map = UniformMap.new
+      map = Shader::UniformMap.new
       @texture_map.each do |key, texture|
         map[key] = sampler_slot
         sampler_slot += 1

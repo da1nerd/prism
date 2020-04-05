@@ -5,10 +5,10 @@ require "./light"
 module Prism
   # Represents an ambient light source.
   class AmbientLight < Light
-    include Uniform::Serializable
+    include Shader::Serializable
     getter color
 
-    @[Uniform::Field(key: "R_ambient")]
+    @[Shader::Field(key: "R_ambient")]
     @color : Vector3f
 
     def initialize
@@ -19,8 +19,8 @@ module Prism
       self.shader = Shader.new("forward-ambient")
     end
 
+    # TODO: deprecate this
     def add_to_engine(engine : RenderingEngine)
-      super
       engine.ambient_light = self
     end
   end
