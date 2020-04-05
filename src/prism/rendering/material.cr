@@ -3,12 +3,24 @@ require "./uniform"
 
 module Prism
   class Material
+    include Uniform::Serializable
     include Uniform
 
     register_uniforms [
       {name: specular_intensity, type: Float32, default: 0},
       {name: specular_power, type: Float32, default: 0},
     ]
+
+    @[Uniform::Field(key: "specularIntensity")]
+    @specular_intensity : Float32 = 1
+    @[Uniform::Field(key: "specularPower")]
+    @specular_power : Float32 = 8
+
+    # TODO: the material needs to have a uniform for the "diffuse" that's the sampler2D which is used for textures.
+    # We are already adding a texting that has the same name as the uniform, so perhaps
+    # we could automate adding the diffuse field.
+    # @[Uniform::Field(key: "diffuse")]
+    # @diffuseSamplerSlot : Float32 = 0
 
     @texture_map : Hash(String, Texture)
 
