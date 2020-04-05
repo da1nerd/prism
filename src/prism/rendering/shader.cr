@@ -42,13 +42,9 @@ module Prism
       end
     end
 
-    # uses the shader
-    def bind
+    # Uses the shader
+    def bind(@uniform_map : Uniform::UniformMap, transform : Transform, material : Material, camera : Camera)
       LibGL.use_program(@resource.program)
-    end
-
-    def bind_new(@uniform_map : Uniform::UniformMap, transform : Transform, material : Material, camera : Camera)
-      bind
       update_uniforms(transform, material, camera)
     end
 
@@ -90,8 +86,6 @@ module Prism
           else
             raise Exception.new("Unsupported uniform type #{value.class}")
           end
-        else
-          puts key
         end
       end
 
