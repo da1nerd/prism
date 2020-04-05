@@ -102,8 +102,7 @@ module Prism
           uniform_name = @resource.uniform_names[i]
           uniform_type = @resource.uniform_types[i]
 
-          if uniform_type == "sampler2D"
-          elsif uniform_name.starts_with?("T_")
+          if uniform_name.starts_with?("T_")
             # transformations
             if uniform_name == "T_MVP"
               set_uniform(uniform_name, mvp_matrix)
