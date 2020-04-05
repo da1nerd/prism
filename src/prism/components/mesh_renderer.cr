@@ -11,7 +11,7 @@ module Prism
     end
 
     def render(light : Light, rendering_engine : RenderingEngine)
-      light.bind(self.transform, @material)
+      light.bind(self.transform, @material, rendering_engine.main_camera)
       @mesh.draw
     end
   end

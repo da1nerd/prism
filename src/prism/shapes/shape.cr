@@ -32,7 +32,7 @@ module Prism
       def render(light : Light, rendering_engine : RenderingEngine)
         if mesh = @mesh
           if material = @material
-            light.bind(self.transform, material)
+            light.bind(self.transform, material, rendering_engine.main_camera)
             mesh.draw
           end
         end
