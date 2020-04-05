@@ -34,7 +34,7 @@ Install OpenGL
 
 ```bash
 # on linux
-install opengl `sudo apt install mesa-common-dev`
+sudo apt install mesa-common-dev
 
 # on mac
 # TODO: give install instructions
