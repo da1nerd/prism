@@ -1,6 +1,6 @@
 require "./vector3f"
 
-module Prism
+module Prism::VMath
   struct Quaternion
     getter x, y, z, w
 

@@ -64,10 +64,10 @@ describe Prism do
     describe "#get_sprite_coordinates" do
       it "returns the coords" do
         coords = Prism::Spritemap.get_sprite_coordinates(1, 1, 4, 4)
-        expect_vectors_match(coords[:bottom_left], Prism::Vector2f.new(0.25, 0.5))
-        expect_vectors_match(coords[:bottom_right], Prism::Vector2f.new(0.5, 0.5))
-        expect_vectors_match(coords[:top_right], Prism::Vector2f.new(0.5, 0.25))
-        expect_vectors_match(coords[:top_left], Prism::Vector2f.new(0.25, 0.25))
+        expect_vectors_match(coords[:bottom_left], Prism::VMath::Vector2f.new(0.25, 0.5))
+        expect_vectors_match(coords[:bottom_right], Prism::VMath::Vector2f.new(0.5, 0.5))
+        expect_vectors_match(coords[:top_right], Prism::VMath::Vector2f.new(0.5, 0.25))
+        expect_vectors_match(coords[:top_left], Prism::VMath::Vector2f.new(0.25, 0.25))
       end
     end
   end

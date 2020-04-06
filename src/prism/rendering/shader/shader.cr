@@ -1,8 +1,6 @@
 require "lib_gl"
-require "../../core/vector3f"
-require "../../core/matrix4f"
 require "../material"
-require "../../core/transform"
+require "../../transform"
 require "./serializable"
 
 module Prism
@@ -61,10 +59,10 @@ module Prism
             set_uniform(key, value.as(LibGL::Int))
           when "Float32"
             set_uniform(key, value.as(LibGL::Float))
-          when "Prism::Vector3f"
-            set_uniform(key, value.as(Prism::Vector3f))
-          when "Prism::Matrix4f"
-            set_uniform(key, value.as(Prism::Matrix4f))
+          when "Prism::VMath::Vector3f"
+            set_uniform(key, value.as(Vector3f))
+          when "Prism::VMath::Matrix4f"
+            set_uniform(key, value.as(Matrix4f))
           else
             raise Exception.new("Unsupported uniform type #{value.class}")
           end
@@ -79,10 +77,10 @@ module Prism
             set_uniform(key, value.as(LibGL::Int))
           when "Float32"
             set_uniform(key, value.as(LibGL::Float))
-          when "Prism::Vector3f"
-            set_uniform(key, value.as(Prism::Vector3f))
-          when "Prism::Matrix4f"
-            set_uniform(key, value.as(Prism::Matrix4f))
+          when "Prism::VMath::Vector3f"
+            set_uniform(key, value.as(Vector3f))
+          when "Prism::VMath::Matrix4f"
+            set_uniform(key, value.as(Matrix4f))
           else
             raise Exception.new("Unsupported uniform type #{value.class}")
           end

@@ -1,7 +1,7 @@
 require "../../src/prism/**"
 
 class BoxDemo < Prism::GameEngine
-  alias Color = Prism::Vector3f
+  alias Color = Prism::VMath::Vector3f
 
   def init
     material = Prism::Material.new("defaultTexture.png")

@@ -23,7 +23,7 @@ module Prism
     end
 
     @[Shader::Field(key: "direction")]
-    def direction : Prism::Vector3f
+    def direction : Prism::VMath::Vector3f
       return self.transform.get_transformed_rot.forward
     end
   end

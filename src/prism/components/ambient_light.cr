@@ -1,5 +1,5 @@
 require "../rendering/shader"
-require "../core/light"
+require "../light"
 
 module Prism
   # Represents an ambient light source.

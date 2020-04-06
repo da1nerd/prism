@@ -1,11 +1,9 @@
-require "./vector3f"
-require "./matrix4f"
 require "./game_component"
 require "annotation"
 
 module Prism
   class Camera < GameComponent
-    @projection : Matrix4f
+    @projection : VMath::Matrix4f
     @sync_aspect_ratio : Bool
 
     # Creates a camera with default values
@@ -21,7 +19,7 @@ module Prism
     end
 
     @[Override]
-    def input(tick : Tick, input : Input)
+    def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       super
       # keep the aspect ratio in sync with the window
       if @sync_aspect_ratio

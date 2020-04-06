@@ -1,7 +1,7 @@
-require "../core/game_component"
+require "../game_component"
 require "../rendering/mesh"
 require "../rendering/material"
-require "../core/transform"
+require "../transform"
 
 module Prism
   # Renders a mesh (shape) with some material (texture) applied to it

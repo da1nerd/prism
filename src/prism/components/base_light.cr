@@ -1,4 +1,3 @@
-require "../core/vector3f"
 require "../rendering/shader"
 
 module Prism

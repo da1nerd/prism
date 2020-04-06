@@ -1,6 +1,8 @@
+require "../vmath"
+
 module Prism
   # Defines the gradual diminishing in strength of something
-  class Attenuation < Prism::Vector3f
+  class Attenuation < VMath::Vector3f
     include Shader::Serializable
 
     def initialize(constant : Float32, linear : Float32, exponent : Float32)

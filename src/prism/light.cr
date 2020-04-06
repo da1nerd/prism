@@ -1,6 +1,5 @@
 require "annotation"
-require "./vector3f"
-require "../rendering/shader"
+require "./rendering/shader"
 require "./game_component.cr"
 
 module Prism

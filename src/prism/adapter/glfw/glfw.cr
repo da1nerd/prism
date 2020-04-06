@@ -38,6 +38,4 @@ end
 module Prism
   # inject the adapter into the top namespace
   include Adapter::GLFW
-  alias Tick = RenderLoop::Tick
-  alias Input = RenderLoop::Input
 end

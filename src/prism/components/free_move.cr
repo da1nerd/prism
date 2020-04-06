@@ -1,4 +1,4 @@
-require "../core/game_component.cr"
+require "../game_component.cr"
 
 module Prism
   class FreeMove < GameComponent
@@ -19,7 +19,7 @@ module Prism
       @position = Vector3f.new(0, 0, 0)
     end
 
-    def input(tick : Tick, input : Input)
+    def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       mov_amt = @speed * tick.frame_time.to_f32
 
       movement = Vector3f.new(0, 0, 0)
@@ -40,7 +40,7 @@ module Prism
       @position = calculate_position(movement)
     end
 
-    def update(tick : Tick)
+    def update(tick : RenderLoop::Tick)
       if @position.length > 0
         self.transform.pos = @position
       end

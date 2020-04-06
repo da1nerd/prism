@@ -1,3 +1,6 @@
+require "../../vmath"
+include Prism::VMath
+
 module Prism
   class Shader
     # TODO: all of the below should eventually go into the Shader namespace.
@@ -8,7 +11,7 @@ module Prism
     class UniformTypeException < Exception
     end
 
-    alias UniformMap = Hash(String, Int32 | Float32 | Prism::Vector3f | Prism::Matrix4f)
+    alias UniformMap = Hash(String, Int32 | Float32 | Vector3f | Matrix4f)
 
     # The `Prism::Uniform::Serializable` module automatically generates methods for Uniform serialization when included.
     #
@@ -99,7 +102,7 @@ module Prism
 
       protected def to_uniform(is_sub : Bool)
         {% begin %}
-        {% valid_types = [Int32, Float32, Prism::Vector3f, Prism::Matrix4f] %}
+        {% valid_types = [Int32, Float32, Vector3f, Matrix4f] %}
         {% options = @type.annotation(::Prism::Shader::Serializable::Options) %}
         {% global_struct_name = options && options[:struct] || false %}
         {% properties = {} of Nil => Nil %}
