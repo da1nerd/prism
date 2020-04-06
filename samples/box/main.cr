@@ -1,6 +1,7 @@
 require "../../src/prism/**"
 
 class BoxDemo < Prism::GameEngine
+  alias Color = Prism::Vector3f
   def init
     material = Prism::Material.new("defaultTexture.png")
     brick_material = Prism::Material.new("bricks.png")
@@ -50,7 +51,7 @@ class BoxDemo < Prism::GameEngine
 
     # create some ambient light
     ambient_light = Prism::Object.new
-    ambient_light.add_component(Prism::AmbientLight.new(Prism::Vector3f.new(0.5, 0.5, 0.5)))
+    ambient_light.add_component(Prism::AmbientLight.new(Color.new(0.5, 0.5, 0.5)))
 
     # creates a moveable camera with sane defaults
     camera = Prism::Object.new
@@ -78,8 +79,5 @@ class BoxDemo < Prism::GameEngine
     # obj.set_axis_position(0, 0, 0) # default position is front right bottom corner.
   end
 end
-
-# engine = Prism::CoreEngine.new(800, 600, 60.0, "Box Demo", BoxDemo.new)
-# engine.start
 
 Prism::Adapter::GLFW.run("Box Demo", BoxDemo.new)
