@@ -1,5 +1,3 @@
-require "../core/game_object"
-
 module Prism
   module Shapes
     class Shape < GameObject

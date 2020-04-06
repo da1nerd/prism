@@ -1,8 +1,3 @@
-require "./shape"
-require "../core/vector3f"
-require "../rendering/mesh"
-require "lib_gl"
-
 module Prism
   module Shapes
     class Plain < Shape
