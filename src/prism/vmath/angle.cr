@@ -1,4 +1,4 @@
-module Prism
+module Prism::VMath
   # Represents an angle value in the engine.
   struct Angle
     @angle : Float32
