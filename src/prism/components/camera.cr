@@ -1,6 +1,7 @@
 require "../core/vector3f"
 require "../core/matrix4f"
 require "./game_component"
+require "annotation"
 
 module Prism
   class Camera < GameComponent
@@ -19,6 +20,7 @@ module Prism
     def sync_aspect_ratio=(@sync_aspect_ratio : Bool)
     end
 
+    @[Override]
     def input(tick : Prism::Core::Tick, input : Core::Input)
       super
       # keep the aspect ratio in sync with the window

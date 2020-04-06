@@ -18,10 +18,5 @@ module Prism
     def initialize(@color : Vector3f)
       self.shader = Shader.new("forward-ambient")
     end
-
-    # TODO: deprecate this
-    def add_to_engine(engine : RenderingEngine)
-      engine.ambient_light = self
-    end
   end
 end
