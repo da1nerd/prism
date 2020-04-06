@@ -15,7 +15,7 @@ module Prism
 
     property color, intensity
 
-    def initialize(@color, @intensity : Float32)
+    def initialize(@color : Vector3f, @intensity : Float32)
     end
   end
 end

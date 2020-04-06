@@ -100,21 +100,21 @@ module Prism
 
     # Retrieves a pixel's color value
     # Gives the pixel color found at *x* and *y*, (horizontal axis, vertical axis)
-    def pixel(x : Int32, y : Int32) : Color
+    def pixel(x : Int32, y : Int32) : ColorUInt8
       offset = (x + y * @width) * @num_channels
       r = @pixels[offset]
       g = @pixels[offset + 1]
       b = @pixels[offset + 2]
       if alpha?
         a = @pixels[offset + 3]
-        return Color.new(r, g, b, a)
+        return ColorUInt8.new(r, g, b, a)
       else
-        return Color.new(r, g, b)
+        return ColorUInt8.new(r, g, b)
       end
     end
 
     # Sets a pixel value
-    def set_pixel(x : Int32, y : Int32, color : Color)
+    def set_pixel(x : Int32, y : Int32, color : ColorUInt8)
       offset = (x + y * @width) * @num_channels
       @pixels[offset] = color.red
       @pixels[offset + 1] = color.green

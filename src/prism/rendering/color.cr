@@ -1,9 +1,13 @@
 module Prism
-  class Color
-    getter red, green, blue, alpha
-    setter red, green, blue, alpha
 
-    def initialize(@red : UInt8, @green : UInt8, @blue : UInt8, @alpha : UInt8 = 1)
+  struct ColorUInt8
+    property red, green, blue, alpha
+
+    def initialize(red : UInt8, green : UInt8, blue : UInt8)
+      initialize(red, green, blue, 1)
+    end
+
+    def initialize(@red : UInt8, @green : UInt8, @blue : UInt8, @alpha : UInt8)
     end
 
     # Checks if the color is black
