@@ -8,8 +8,8 @@ module Prism
   alias GraphicsInt = LibGL::Int
 
   # Manages the OpenGL environment and renders game objects
-  class RenderingEngine < Prism::Core::Engine
-    @window_size : Core::Size?
+  class RenderingEngine < RenderLoop::Engine
+    @window_size : RenderLoop::Size?
     @lights : Array(Light)
     @ambient_light : Light?
     @main_camera : Camera?
@@ -36,7 +36,7 @@ module Prism
 
     # Keep track of the window size at each tick so we can keep the viewport in sync
     @[Override]
-    def tick(tick : Prism::Core::Tick, input : Prism::Core::Input)
+    def tick(tick : Tick, input : RenderLoop::Input)
       @window_size = input.window_size
     end
 

@@ -1,4 +1,4 @@
-require "prism-core"
+require "render_loop"
 require "crystglfw"
 
 # TODO: this should be in a Prism::Context::GLFW namespace since this is tied
@@ -8,7 +8,7 @@ module Prism::Adapter::GLFW
   alias MouseButton = CrystGLFW::MouseButton
 
   # A window adapter
-  class Window < Prism::Core::Window(CrystGLFW::Key, CrystGLFW::MouseButton)
+  class Window < RenderLoop::Window(CrystGLFW::Key, CrystGLFW::MouseButton)
     def initialize(title : String, width : Int32, height : Int32)
       @window = CrystGLFW::Window.new(title: title, width: width, height: height)
     end
@@ -21,11 +21,11 @@ module Prism::Adapter::GLFW
       @window.should_close?
     end
 
-    def size : Prism::Core::Size
+    def size : RenderLoop::Size
       @window.size
     end
 
-    def size(s : Prism::Core::Size)
+    def size(s : RenderLoop::Size)
     end
 
     def render
@@ -50,11 +50,11 @@ module Prism::Adapter::GLFW
       end
     end
 
-    def cursor_position : Prism::Core::Position
+    def cursor_position : RenderLoop::Position
       @window.cursor.position
     end
 
-    def cursor_position=(position : Prism::Core::Position)
+    def cursor_position=(position : RenderLoop::Position)
       @window.cursor.position = position
     end
 

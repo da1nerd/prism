@@ -1,12 +1,12 @@
 require "lib_gl"
-require "prism-core"
+require "render_loop"
 require "annotation"
 require "./game_object"
 
 module Prism
   # The game interace.
   # A game must inherit this class in order to be used by the engine.
-  abstract class GameEngine < Prism::Core::Engine
+  abstract class GameEngine < RenderLoop::Engine
     @root : GameObject = GameObject.new
     @engine : RenderingEngine?
 
@@ -30,7 +30,7 @@ module Prism
 
     # Gives input state to the game
     @[Override]
-    def tick(tick : Prism::Core::Tick, input : Prism::Core::Input)
+    def tick(tick : Tick, input : RenderLoop::Input)
       @root.input_all(tick, input)
       @root.update_all(tick)
     end

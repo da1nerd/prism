@@ -1,6 +1,6 @@
 require "../core/transform"
 require "../rendering/shader"
-require "prism-core"
+require "render_loop"
 
 module Prism
   # The fundamental building block of the game.
@@ -15,10 +15,10 @@ module Prism
 
     @parent : GameObject = GameObject.new
 
-    def input(tick : Prism::Core::Tick, input : Prism::Core::Input)
+    def input(tick : Tick, input : RenderLoop::Input)
     end
 
-    def update(tick : Prism::Core::Tick)
+    def update(tick : Tick)
     end
 
     # TODO: *rendering_engine* is deprecated
