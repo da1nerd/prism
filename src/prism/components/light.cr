@@ -1,3 +1,4 @@
+require "annotation"
 require "./game_component"
 require "../core/vector3f"
 require "../rendering/shader"
@@ -16,6 +17,10 @@ module Prism
       if shader = @shader
         shader.bind(to_uniform, transform, material, camera)
       end
+    end
+
+    def add_to_engine(engine : RenderingEngine)
+      engine.add_light(self)
     end
   end
 end

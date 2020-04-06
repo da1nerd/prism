@@ -53,9 +53,7 @@ module Prism
     def render(object : GameObject)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
-      # TODO: it would be nice if the ambient could be added to the list
-      # I might need to update the ambient shader for this.
-      object.render_all(self.ambient_light.as(Light), self)
+      object.render_all(self.ambient_light, self)
 
       LibGL.enable(LibGL::BLEND)
       LibGL.blend_equation(LibGL::FUNC_ADD)
@@ -73,20 +71,28 @@ module Prism
       LibGL.disable(LibGL::BLEND)
     end
 
+    # Registers a light.
     def add_light(light : Light)
-      @lights.push(light)
+      if light.is_a?(AmbientLight)
+        @ambient_light = light.as(AmbientLight)
+      else
+        @lights.push(light)
+      end
     end
 
+    # Registers the active camera.
+    # Only one camera is supported for now.
     def add_camera(camera : Camera)
       @main_camera = camera
     end
 
+    # Returns the active camera
+    @[Raises]
     def main_camera : Camera
       if camera = @main_camera
         return camera
       else
-        puts "Error: No camera has been set."
-        exit 1
+        raise Exception.new "No camera found."
       end
     end
 
@@ -96,16 +102,9 @@ module Prism
       if light = @ambient_light
         return light
       else
-        ambient = AmbientLight.new
-        ambient.add_to_engine self
-        ambient
+        @ambient_light = AmbientLight.new
+        @ambient_light.as(AmbientLight)
       end
-    end
-
-    # Changes the active ambient light
-    # TODO: automaticlaly determine this when adding a light.
-    # DEPRECATED
-    def ambient_light=(@ambient_light : AmbientLight)
     end
 
     # Returns which version of OpenGL is available
