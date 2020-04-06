@@ -20,12 +20,12 @@ class BoxDemo < Prism::GameEngine
     # create a north wall that is 5x2
     north_wall = Prism::Shapes::Plain.new(5, 5)
     north_wall.material = material
-    north_wall.rotate_x_axis(Prism::Angle.from_degrees(-90)).move_north(5)
+    north_wall.rotate_x_axis(Prism::VMath::Angle.from_degrees(-90)).move_north(5)
     # create a west wall that is 5x2
     west_wall = Prism::Shapes::Plain.new(5, 5)
     west_wall.material = material
-    west_wall.rotate_x_axis(Prism::Angle.from_degrees(-90))
-    west_wall.rotate_y_axis(Prism::Angle.from_degrees(-90))
+    west_wall.rotate_x_axis(Prism::VMath::Angle.from_degrees(-90))
+    west_wall.rotate_y_axis(Prism::VMath::Angle.from_degrees(-90))
 
     # create a floating 1x1x1 box in the middle of the room
     box = Prism::Shapes::Box.new(1)
