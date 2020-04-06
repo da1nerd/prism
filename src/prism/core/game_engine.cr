@@ -1,4 +1,3 @@
-require "lib_gl"
 require "render_loop"
 require "annotation"
 require "./game_object"

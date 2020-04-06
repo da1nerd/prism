@@ -1,4 +1,3 @@
-require "lib_gl"
 require "./reference_counter.cr"
 
 module Prism

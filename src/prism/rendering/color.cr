@@ -1,5 +1,4 @@
 module Prism
-
   struct ColorUInt8
     property red, green, blue, alpha
 
