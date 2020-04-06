@@ -15,10 +15,10 @@ module Prism
 
     @parent : GameObject = GameObject.new
 
-    def input(delta : Float32, input : Prism::Core::Input)
+    def input(tick : Prism::Core::Tick, input : Prism::Core::Input)
     end
 
-    def update(delta : Float32)
+    def update(tick : Prism::Core::Tick)
     end
 
     # TODO: *rendering_engine* is deprecated

@@ -65,20 +65,20 @@ module Prism
     end
 
     # Performs input update logic on this object's children
-    def input_all(delta : Float32, input : Prism::Core::Input)
-      input(delta, input)
+    def input_all(tick : Prism::Core::Tick, input : Prism::Core::Input)
+      input(tick, input)
 
       0.upto(@children.size - 1) do |i|
-        @children[i].input_all(delta, input)
+        @children[i].input_all(tick, input)
       end
     end
 
     # Performs game update logic on this object's children
-    def update_all(delta : Float32)
-      update(delta)
+    def update_all(tick : Prism::Core::Tick)
+      update(tick)
 
       0.upto(@children.size - 1) do |i|
-        @children[i].update_all(delta)
+        @children[i].update_all(tick)
       end
     end
 
@@ -93,18 +93,18 @@ module Prism
     end
 
     # Performs input update logic on this object
-    def input(delta : Float32, input : Prism::Core::Input)
+    def input(tick : Prism::Core::Tick, input : Prism::Core::Input)
       @transform.update
 
       0.upto(@components.size - 1) do |i|
-        @components[i].input(delta, input)
+        @components[i].input(tick, input)
       end
     end
 
     # Performs game update logic on this object
-    def update(delta : Float32)
+    def update(tick : Prism::Core::Tick)
       0.upto(@components.size - 1) do |i|
-        @components[i].update(delta)
+        @components[i].update(tick)
       end
     end
 

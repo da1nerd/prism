@@ -15,14 +15,11 @@ module Prism
 
     property color, intensity
 
-    # TODO: deprecate this
-    @engine : RenderingEngine?
-
     def initialize(@color, @intensity : Float32)
     end
 
-    def add_to_engine(@engine : RenderingEngine)
-      @engine.as(RenderingEngine).add_light(self)
+    def add_to_engine(engine : RenderingEngine)
+      engine.as(RenderingEngine).add_light(self)
     end
   end
 end
