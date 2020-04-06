@@ -1,5 +1,4 @@
-require "./game_component.cr"
-require "render_loop"
+require "../core/game_component.cr"
 
 module Prism
   class FreeLook < GameComponent

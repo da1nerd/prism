@@ -1,4 +1,4 @@
-require "./game_component.cr"
+require "../core/game_component.cr"
 
 module Prism
   class FreeMove < GameComponent

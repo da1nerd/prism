@@ -1,6 +1,5 @@
-require "./game_component"
 require "../rendering/shader"
-require "./light"
+require "../core/light"
 
 module Prism
   # Represents an ambient light source.

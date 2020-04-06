@@ -1,8 +1,7 @@
-require "../components/game_component"
+require "./game_component"
 require "./transform"
 require "../rendering/rendering_engine"
 require "./moveable"
-require "render_loop"
 
 module Prism
   # Represents an object within the scene graph.
@@ -65,7 +64,7 @@ module Prism
     end
 
     # Performs input update logic on this object's children
-    def input_all(tick : Tick, input : RenderLoop::Input)
+    def input_all(tick : Tick, input : Input)
       input(tick, input)
 
       0.upto(@children.size - 1) do |i|
@@ -93,7 +92,7 @@ module Prism
     end
 
     # Performs input update logic on this object
-    def input(tick : Tick, input : RenderLoop::Input)
+    def input(tick : Tick, input : Input)
       @transform.update
 
       0.upto(@components.size - 1) do |i|

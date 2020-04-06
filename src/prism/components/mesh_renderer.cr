@@ -1,7 +1,6 @@
-require "./game_component"
+require "../core/game_component"
 require "../rendering/mesh"
 require "../rendering/material"
-require "../rendering/shader"
 require "../core/transform"
 
 module Prism

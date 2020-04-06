@@ -1,7 +1,6 @@
 require "lib_gl"
 require "annotation"
-require "../components/camera"
-require "../components/base_light"
+require "../core/camera"
 
 module Prism
   # Expose the graphics language integer values so keep a clean abstraction.

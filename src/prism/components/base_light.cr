@@ -1,4 +1,3 @@
-require "./game_component"
 require "../core/vector3f"
 require "../rendering/shader"
 
