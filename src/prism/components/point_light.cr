@@ -19,7 +19,7 @@ module Prism
     @attenuation : Attenuation
 
     @[Shader::Field]
-    def position : Prism::Vector3f
+    def position : Prism::VMath::Vector3f
       self.transform.get_transformed_pos
     end
 

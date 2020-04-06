@@ -1,4 +1,4 @@
-require "../core/game_object"
+require "../game_object"
 
 module Prism
   # A camera has free movement using the mouse and arrow keys

@@ -1,4 +1,7 @@
-module Prism
+require "./**"
+
+# Vector math
+module Prism::VMath
   extend self
 
   # converts degrees to radians

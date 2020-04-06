@@ -1,5 +1,3 @@
-require "../../core/vector3f"
-require "../../core/vector2f"
 require "./obj_index"
 
 module Prism

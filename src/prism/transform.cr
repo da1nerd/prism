@@ -1,10 +1,9 @@
-require "./vector3f"
-require "matrix"
-require "./matrix4f"
+require "./vmath"
 
 module Prism
   # Handles positional transformations
   class Transform
+    include Prism::VMath
     @parent : Transform?
     @parent_matrix : Matrix4f
 

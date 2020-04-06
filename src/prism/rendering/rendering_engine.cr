@@ -1,6 +1,6 @@
 require "lib_gl"
 require "annotation"
-require "../core/camera"
+require "../camera"
 
 module Prism
   # Expose the graphics language integer values so keep a clean abstraction.
@@ -35,7 +35,7 @@ module Prism
 
     # Keep track of the window size at each tick so we can keep the viewport in sync
     @[Override]
-    def tick(tick : Tick, input : RenderLoop::Input)
+    def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
       @window_size = input.window_size
     end
 

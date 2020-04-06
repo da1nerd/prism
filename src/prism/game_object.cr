@@ -1,6 +1,6 @@
 require "./game_component"
 require "./transform"
-require "../rendering/rendering_engine"
+require "./rendering/rendering_engine"
 require "./moveable"
 
 module Prism
@@ -64,7 +64,7 @@ module Prism
     end
 
     # Performs input update logic on this object's children
-    def input_all(tick : Tick, input : Input)
+    def input_all(tick : RenderLoop::Tick, input : RenderLoop::Input)
       input(tick, input)
 
       0.upto(@children.size - 1) do |i|
@@ -73,7 +73,7 @@ module Prism
     end
 
     # Performs game update logic on this object's children
-    def update_all(tick : Tick)
+    def update_all(tick : RenderLoop::Tick)
       update(tick)
 
       0.upto(@children.size - 1) do |i|
@@ -92,7 +92,7 @@ module Prism
     end
 
     # Performs input update logic on this object
-    def input(tick : Tick, input : Input)
+    def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       @transform.update
 
       0.upto(@components.size - 1) do |i|
@@ -101,7 +101,7 @@ module Prism
     end
 
     # Performs game update logic on this object
-    def update(tick : Tick)
+    def update(tick : RenderLoop::Tick)
       0.upto(@components.size - 1) do |i|
         @components[i].update(tick)
       end

@@ -28,12 +28,12 @@ module Prism
     end
 
     @[Override]
-    def update(tick : Tick)
+    def update(tick : RenderLoop::Tick)
       @point_light.transform.parent = transform
     end
 
     @[Shader::Field]
-    def direction : Prism::Vector3f
+    def direction : Prism::VMath::Vector3f
       return self.transform.get_transformed_rot.forward
     end
   end

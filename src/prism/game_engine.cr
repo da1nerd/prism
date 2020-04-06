@@ -29,7 +29,7 @@ module Prism
 
     # Gives input state to the game
     @[Override]
-    def tick(tick : Tick, input : RenderLoop::Input)
+    def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
       @root.input_all(tick, input)
       @root.update_all(tick)
     end

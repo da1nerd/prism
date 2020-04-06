@@ -1,6 +1,3 @@
-require "../../core/vector3f"
-require "../../core/vector2f"
-
 module Prism
   class IndexedModel
     @positions : Array(Vector3f)
