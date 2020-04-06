@@ -19,8 +19,8 @@ module Prism
       @position = Vector3f.new(0, 0, 0)
     end
 
-    def input(delta : Float32, input : Core::Input)
-      mov_amt = @speed * delta
+    def input(tick : Prism::Core::Tick, input : Core::Input)
+      mov_amt = @speed * tick.frame_time.to_f32
 
       movement = Vector3f.new(0, 0, 0)
 
@@ -40,7 +40,7 @@ module Prism
       @position = calculate_position(movement)
     end
 
-    def update(delta : Float32)
+    def update(tick : Prism::Core::Tick)
       if @position.length > 0
         self.transform.pos = @position
       end

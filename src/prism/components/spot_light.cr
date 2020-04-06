@@ -28,7 +28,7 @@ module Prism
     end
 
     @[Override]
-    def update(delta : Float32)
+    def update(tick : Prism::Core::Tick)
       @point_light.transform.parent = transform
     end
 

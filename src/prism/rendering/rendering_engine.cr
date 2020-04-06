@@ -103,6 +103,8 @@ module Prism
     end
 
     # Changes the active ambient light
+    # TODO: automaticlaly determine this when adding a light.
+    # DEPRECATED
     def ambient_light=(@ambient_light : AmbientLight)
     end
 
