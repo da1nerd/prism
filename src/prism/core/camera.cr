@@ -1,5 +1,5 @@
-require "../core/vector3f"
-require "../core/matrix4f"
+require "./vector3f"
+require "./matrix4f"
 require "./game_component"
 require "annotation"
 

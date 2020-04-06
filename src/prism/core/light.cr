@@ -1,7 +1,7 @@
 require "annotation"
-require "./game_component"
-require "../core/vector3f"
+require "./vector3f"
 require "../rendering/shader"
+require "./game_component.cr"
 
 module Prism
   # Fundamental light component
@@ -15,7 +15,7 @@ module Prism
     # This should be done just before drawing the object's `Prism::Mesh`
     def bind(transform : Transform, material : Material, camera : Camera)
       if shader = @shader
-        shader.bind(to_uniform, transform, material, camera)
+        shader.bind(self.to_uniform, transform, material, camera)
       end
     end
 
