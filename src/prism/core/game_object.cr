@@ -2,7 +2,7 @@ require "../components/game_component"
 require "./transform"
 require "../rendering/rendering_engine"
 require "./moveable"
-require "prism-core"
+require "render_loop"
 
 module Prism
   # Represents an object within the scene graph.
@@ -65,7 +65,7 @@ module Prism
     end
 
     # Performs input update logic on this object's children
-    def input_all(tick : Prism::Core::Tick, input : Prism::Core::Input)
+    def input_all(tick : Tick, input : RenderLoop::Input)
       input(tick, input)
 
       0.upto(@children.size - 1) do |i|
@@ -74,7 +74,7 @@ module Prism
     end
 
     # Performs game update logic on this object's children
-    def update_all(tick : Prism::Core::Tick)
+    def update_all(tick : Tick)
       update(tick)
 
       0.upto(@children.size - 1) do |i|
@@ -93,7 +93,7 @@ module Prism
     end
 
     # Performs input update logic on this object
-    def input(tick : Prism::Core::Tick, input : Prism::Core::Input)
+    def input(tick : Tick, input : RenderLoop::Input)
       @transform.update
 
       0.upto(@components.size - 1) do |i|
@@ -102,7 +102,7 @@ module Prism
     end
 
     # Performs game update logic on this object
-    def update(tick : Prism::Core::Tick)
+    def update(tick : Tick)
       0.upto(@components.size - 1) do |i|
         @components[i].update(tick)
       end

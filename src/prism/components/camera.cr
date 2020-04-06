@@ -21,7 +21,7 @@ module Prism
     end
 
     @[Override]
-    def input(tick : Prism::Core::Tick, input : Core::Input)
+    def input(tick : Tick, input : Input)
       super
       # keep the aspect ratio in sync with the window
       if @sync_aspect_ratio

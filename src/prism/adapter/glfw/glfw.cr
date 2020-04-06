@@ -1,4 +1,4 @@
-require "prism-core"
+require "render_loop"
 require "crystglfw"
 
 # TODO: this should be under a Prism::Context::GLFW namespace
@@ -21,7 +21,7 @@ module Prism::Adapter::GLFW
     game.engine = rendering_engine
     engines = [game, rendering_engine]
 
-    harness = Prism::Core::LoopHarness.new(frame_rate, engines)
+    harness = RenderLoop::LoopHarness.new(frame_rate, engines)
     CrystGLFW.run do
       window = GLFW::Window.new(title: title, width: width, height: height)
       window.startup # TODO: this is a temporary hack. The startup method should be called when the harness starts.
@@ -38,4 +38,6 @@ end
 module Prism
   # inject the adapter into the top namespace
   include Adapter::GLFW
+  alias Tick = RenderLoop::Tick
+  alias Input = RenderLoop::Input
 end

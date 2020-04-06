@@ -9,8 +9,8 @@ crystal: 0.33.0
 dependencies:
   annotation:
     github: grottopress/annotation.cr
-  prism-core:
-    github: neutrinog/prism-core
+  render_loop:
+    github: neutrinog/render_loop
   lib_gl:
     github: calebuharrison/LibGL
     branch: master

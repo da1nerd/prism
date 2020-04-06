@@ -1,15 +1,7 @@
 require "./spec_helper"
 
 describe Prism do
-  describe Prism::Adapter::GLFW do
-    it "runs" do
-      # TODO: kill after a moment
-      game = TestGame.new
-      # Prism::Adapter::GLFW.run("Demo", game)
-    end
-  end
-
-  describe Prism::Uniform do
+  describe Prism::Shader do
     it "serializes uniforms" do
       child = UniformTest::Child.new
       child.to_uniform.should eq({
