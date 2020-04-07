@@ -1,5 +1,5 @@
 language: crystal
-
+cache: shards
 crystal:
   - latest
   - nightly
