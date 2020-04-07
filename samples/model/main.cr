@@ -50,12 +50,12 @@ class ModelDemo < Prism::GameEngine
     mesh2 = Mesh.new(verticies2, indicies2, true)
     mesh = Mesh.new(verticies, indicies, true)
     material = Material.new
-    material.add_texture("diffuse", Texture.new("defaultTexture.png"))
+    material.add_texture("diffuse", Texture.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/defaultTexture.png")))
     # material.add_float("specularIntensity", 1)
     # material.add_float("specularPower", 8)
 
     material2 = Material.new
-    material2.add_texture("diffuse", Texture.new("test.png"))
+    material2.add_texture("diffuse", Texture.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/test.png")))
     # material2.add_float("specularIntensity", 1)
     # material2.add_float("specularPower", 8)
 

@@ -45,12 +45,12 @@ module Prism
     end
 
     # Retrieves a texture by name
+    @[Raises]
     def get_texture(name : String) : Texture
       if @texture_map.has_key?(name)
         @texture_map[name]
       else
-        # TODO: return a better default texture
-        Texture.new("test.png")
+        raise Exception.new("Could not find texture '#{name}'. You must add a texture to the material.")
       end
     end
 

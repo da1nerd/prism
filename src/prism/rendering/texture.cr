@@ -43,11 +43,9 @@ module Prism
     end
 
     # Loads a texture
-    private def load_texture(file_name : String) : TextureResource
-      ext = File.extname(file_name)
-
+    private def load_texture(file_path : String) : TextureResource
       # read texture data
-      bitmap = Bitmap.new(File.join("/res/textures/", file_name))
+      bitmap = Bitmap.new(file_path)
 
       # create texture
       resource = TextureResource.new

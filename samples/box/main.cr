@@ -4,8 +4,8 @@ class BoxDemo < Prism::GameEngine
   alias Color = Prism::VMath::Vector3f
 
   def init
-    material = Prism::Material.new("defaultTexture.png")
-    brick_material = Prism::Material.new("bricks.png")
+    material = Prism::Material.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/defaultTexture.png"))
+    brick_material = Prism::Material.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/bricks.png"))
 
     # create a 5x5 floor
     floor = Prism::Shapes::Plain.new(5, 5)
