@@ -123,12 +123,9 @@ module Prism
     end
 
     # Loads a bitmap
-    private def load_bitmap(file_name : String) : BitmapResource
-      ext = File.extname(file_name)
-
+    private def load_bitmap(file_path : String) : BitmapResource
       # read bitmap data
-      path = File.join(File.dirname(PROGRAM_NAME), file_name)
-      canvas = StumpyPNG.read(path)
+      canvas = StumpyPNG.read(file_path)
 
       # create bitmap
       resource = BitmapResource.new
