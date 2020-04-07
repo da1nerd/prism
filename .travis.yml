@@ -1,1 +1,16 @@
 language: crystal
+
+crystal:
+  - latest
+  - nightly
+
+before_install:
+  - sudo apt-get -y install libglfw3-dev mesa-common-dev
+
+addons:
+  apt:
+    update: true
+
+script:
+  - crystal spec
+  - crystal tool format --check
