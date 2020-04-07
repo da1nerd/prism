@@ -4,6 +4,9 @@ version: 0.3.0
 authors:
   - Joel Lonbeck <joel@neutrinographics.com>
 
+description: |
+  3D rendering engine.
+
 crystal: 0.33.0
 
 dependencies:
