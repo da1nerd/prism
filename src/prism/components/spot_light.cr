@@ -24,7 +24,8 @@ module Prism
     def initialize(color : Vector3f, intensity : Float32, attenuation : Attenuation, @cutoff : Float32)
       super(color, intensity, attenuation)
       @point_light = PointLight.new(color, intensity, attenuation)
-      self.shader = Shader.new("forward-spot")
+      shader_path = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", "forward-spot")
+      self.shader = Shader.new(shader_path)
     end
 
     @[Override]
