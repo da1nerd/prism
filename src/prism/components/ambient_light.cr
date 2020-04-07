@@ -15,7 +15,8 @@ module Prism
     end
 
     def initialize(@color : Vector3f)
-      self.shader = Shader.new("forward-ambient")
+      shader_path = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", "forward-ambient")
+      self.shader = Shader.new(shader_path)
     end
   end
 end

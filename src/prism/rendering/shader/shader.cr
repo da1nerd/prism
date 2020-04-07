@@ -169,17 +169,17 @@ module Prism
       # LibGL.delete_shader(shader)
     end
 
-    private def load_shader(file_name : String) : String
+    private def load_shader(file_path : String) : String
       include_directive = "#include"
 
-      path = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", file_name)
       shader_source = ""
 
       # glsl dependencies can be added like: #include "file.sh"
-      File.each_line(path) do |line|
+      File.each_line(file_path) do |line|
         include_match = line.scan(/\#include\s+["<]([^">]*)[>"]/)
         if include_match.size > 0
-          shader_source += self.load_shader(include_match[0][1])
+          include_path = File.join(File.dirname(file_path), include_match[0][1])
+          shader_source += self.load_shader(include_path)
         else
           shader_source += line + "\n"
         end

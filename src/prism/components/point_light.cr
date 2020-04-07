@@ -41,7 +41,8 @@ module Prism
 
       @range = (-b + Math.sqrt(b * b - 4.0f32 * a * c)) / (2.0f32 * a)
 
-      self.shader = Shader.new("forward-point")
+      shader_path = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", "forward-point")
+      self.shader = Shader.new(shader_path)
     end
   end
 end
