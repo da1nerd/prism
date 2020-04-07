@@ -54,7 +54,7 @@ module Prism
         exit 1
       end
 
-      test1 = OBJModel.new(File.join(File.dirname(PROGRAM_NAME), "/res/models/", file_name))
+      test1 = OBJModel.new(file_name)
       model = test1.to_indexed_model
       model.calc_normals
 

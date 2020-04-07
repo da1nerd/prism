@@ -3,7 +3,7 @@ require "lib_gl"
 
 include Prism
 
-class ModelDemo < Prism::Game
+class ModelDemo < Prism::GameEngine
   def init
     # Add model to look at
     # material2 = Material.new
@@ -51,15 +51,17 @@ class ModelDemo < Prism::Game
     mesh = Mesh.new(verticies, indicies, true)
     material = Material.new
     material.add_texture("diffuse", Texture.new("defaultTexture.png"))
-    material.add_float("specularIntensity", 1)
-    material.add_float("specularPower", 8)
+    # material.add_float("specularIntensity", 1)
+    # material.add_float("specularPower", 8)
 
     material2 = Material.new
     material2.add_texture("diffuse", Texture.new("test.png"))
-    material2.add_float("specularIntensity", 1)
-    material2.add_float("specularPower", 8)
+    # material2.add_float("specularIntensity", 1)
+    # material2.add_float("specularPower", 8)
 
-    temp_mesh = Mesh.new("monkey3.obj")
+    monkey_file = File.join(File.dirname(PROGRAM_NAME), "/res/models/", "monkey3.obj")
+
+    temp_mesh = Mesh.new(monkey_file)
 
     mesh_renderer = MeshRenderer.new(mesh, material)
 
@@ -84,7 +86,7 @@ class ModelDemo < Prism::Game
     spot_light_object.add_component(spot_light)
 
     spot_light_object.transform.pos.set(5, 0, 5)
-    spot_light_object.transform.rot = Quaternion.new(Vector3f.new(0.0f32, 1.0f32, 0.0f32), Prism.to_rad(90.0f32))
+    spot_light_object.transform.rot = Quaternion.new(Vector3f.new(0.0f32, 1.0f32, 0.0f32), Prism::VMath.to_rad(90.0f32))
 
     add_object(plane_object)
     add_object(directional_light_object)
@@ -109,14 +111,12 @@ class ModelDemo < Prism::Game
     add_object(test_mesh3)
 
     test_mesh3.transform.pos.set(5, 5, 5)
-    test_mesh3.transform.rot.set(Quaternion.new(Vector3f.new(0, 1, 0), Prism.to_rad(-70)))
+    test_mesh3.transform.rot.set(Quaternion.new(Vector3f.new(0, 1, 0), Prism::VMath.to_rad(-70)))
 
-    add_object(GameObject.new.add_component(MeshRenderer.new(Mesh.new("monkey3.obj"), material2)))
+    add_object(GameObject.new.add_component(MeshRenderer.new(Mesh.new(monkey_file), material2)))
 
-    directional_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism.to_rad(-45f32))
+    directional_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::VMath.to_rad(-45f32))
   end
 end
 
-#  Example creating a window
-engine = CoreEngine.new(800, 600, 60.0, "Model Demo", ModelDemo.new)
-engine.start
+Prism::Adapter::GLFW.run("Model Demo", ModelDemo.new)
