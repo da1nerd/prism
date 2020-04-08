@@ -1,5 +1,8 @@
 module Prism::Common::Light
   # Represents an ambient light source.
+  # This is a special type of light that provides a minimum amount of light to the entire scene.
+  # For now you always need to have an ambient light otherwise no other light sources will work.
+  # That may be a bug that get's fixed later on.
   class AmbientLight < Core::AmbientLight
     SHADER_PATH = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", "forward-ambient")
     include Core::Shader::Serializable

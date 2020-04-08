@@ -1,4 +1,5 @@
 module Prism::Common::Node
+  # A rectangular plane
   class Plain < Shape
     def initialize(@width : Float32, @depth : Float32)
       initialize(@width, @depth, {

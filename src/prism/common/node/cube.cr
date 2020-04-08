@@ -1,7 +1,7 @@
 require "./shape"
 
 module Prism::Common::Node
-  class Box < Shape
+  class Cube < Shape
     def initialize(@size : Float32)
       initialize(@size, {
         bottom_left:  Vector2f.new(0, 0),
