@@ -8,6 +8,7 @@ module Prism
     @@loaded_shaders = {} of String => ShaderResource
     @resource : ShaderResource
     @uniform_map : Shader::UniformMap
+    @file_name : String
 
     def initialize(@file_name : String)
       @uniform_map = Shader::UniformMap.new
@@ -46,7 +47,7 @@ module Prism
       update_uniforms(transform, material, camera)
     end
 
-    def update_uniforms(transform : Transform, material : Material, camera : Camera)
+    private def update_uniforms(transform : Transform, material : Material, camera : Camera)
       world_matrix = transform.get_transformation
       mvp_matrix = camera.get_view_projection * world_matrix
       material_uniforms = material.to_uniform
@@ -118,31 +119,31 @@ module Prism
     end
 
     # Sets an integer uniform variable value
-    def set_uniform(name : String, value : LibGL::Int)
+    private def set_uniform(name : String, value : LibGL::Int)
       LibGL.uniform_1i(@resource.uniforms[name], value)
     end
 
     # Sets a float uniform variable value
-    def set_uniform(name : String, value : LibGL::Float)
+    private def set_uniform(name : String, value : LibGL::Float)
       LibGL.uniform_1f(@resource.uniforms[name], value)
     end
 
     # Sets a 3 dimensional float vector value to a uniform variable
-    def set_uniform(name : String, value : Vector3f)
+    private def set_uniform(name : String, value : Vector3f)
       LibGL.uniform_3f(@resource.uniforms[name], value.x, value.y, value.z)
     end
 
     # Sets a 4 dimensional matrix float value to a uniform variable
-    def set_uniform(name : String, value : Matrix4f)
+    private def set_uniform(name : String, value : Matrix4f)
       LibGL.uniform_matrix_4fv(@resource.uniforms[name], 1, LibGL::TRUE, value.as_array)
     end
 
-    def set_attrib_location(attribute : String, location : LibGL::Int)
+    private def set_attrib_location(attribute : String, location : LibGL::Int)
       LibGL.bind_attrib_location(@resource.program, location, attribute)
     end
 
     # compiles the shader
-    def compile
+    private def compile
       LibGL.link_program(@resource.program)
 
       LibGL.get_program_iv(@resource.program, LibGL::LINK_STATUS, out link_status)

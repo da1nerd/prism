@@ -11,24 +11,25 @@ module Prism
     class UniformTypeException < Exception
     end
 
-    alias UniformMap = Hash(String, Int32 | Float32 | Vector3f | Matrix4f)
+    alias UniformType = Int32 | Float32 | Vector3f | Matrix4f
+    alias UniformMap = Hash(String, UniformType)
 
-    # The `Prism::Uniform::Serializable` module automatically generates methods for Uniform serialization when included.
+    # The `Prism::Shader::Serializable` module automatically generates methods for Uniform serialization when included.
     #
     # ## Example
     #
     # ```
     # class A
-    #   include Uniform::Serializable
+    #   include Shader::Serializable
     #
-    #   @[Uniform::Field]
+    #   @[Shader::Field]
     #   @a : String = "a"
     # end
     #
     # class B < A
-    #   include Uniform::Serializable
+    #   include Shader::Serializable
     #
-    #   @[Uniform::Field]
+    #   @[Shader::Field]
     #   @b : Float32 = 1
     # end
     #
@@ -38,44 +39,42 @@ module Prism
     #
     # ### Usage
     #
-    # Including `Uniform::Serializable` will create a `#to_uniform` method on the current class.
+    # Including `Shader::Serializable` will create a `#to_uniform` method on the current class.
     # By default, this method will serialize into a uniform object containing the value of every annotated instance variable, the keys being the instance variable name.
     # Supported primitives are (string, integer, float, Vector3f),
-    # along with objects which include `Uniform::Serializable`.
+    # along with objects which include `Shader::Serializable`.
     # Union types are not supported.
     #
-    # To change how individual instance variables are parsed and serialized, the annotation `Uniform::Field`
+    # To change how individual instance variables are parsed and serialized, the annotation `Shader::Field`
     # can be placed on the instance variable. Annotating methods is also allowed.
     #
     # ```
     # class A
-    #   include Uniform::Serializable
+    #   include Shader::Serializable
     #
-    #   @[Uniform::Field(key: "attribute")]
+    #   @[Shader::Field(key: "attribute")]
     #   @a : String = "value"
     # end
     # ```
     #
-    # `Uniform::Field` properties:
-    # * **ignore**: if `true` skip this field in serialization.
+    # `Shader::Field` properties:
     # * **key**: the value of the key in the uniform object (by default the name of the instance variable)
-    # * **struct**: the name of the struct in the uniform object (by default keys are not in a struct)
     #
-    # ### Class annotation `Uniform::Serializable::Options`
+    # ### Class annotation `Shader::Serializable::Options`
     #
     # supported properties:
-    # * **struct**: if provided, this will prefix all field keys with the struct name. This overrides the struct property on all fields.
+    # * **name**: the name of the uniform struct variable in the glsl program.
     #
     # ```
-    # @[Uniform::Serializable::Options(struct: "BaseClass")]
+    # @[Shader::Serializable::Options(name: "R_spotLight")]
     # class A
-    #   include Uniform::Serializable
-    #   @[Uniform::Field]
+    #   include Shader::Serializable
+    #   @[Shader::Field]
     #   @a : Int32 = 1
     # end
     #
     # c = A.new
-    # c.to_uniform # => {"BaseClass.a" => 1}
+    # c.to_uniform # => {"R_spotLight.a" => 1}
     # ```
     module Serializable
       annotation Options
@@ -100,11 +99,13 @@ module Prism
       private def on_to_uniform : UniformMap | Nil
       end
 
+      # Produces a map of uniform values
       protected def to_uniform(is_sub : Bool)
         {% begin %}
+        # TODO: use UniformType instead of this array
         {% valid_types = [Int32, Float32, Vector3f, Matrix4f] %}
         {% options = @type.annotation(::Prism::Shader::Serializable::Options) %}
-        {% global_struct_name = options && options[:struct] || false %}
+        {% global_struct_name = options && options[:name] || false %}
         {% properties = {} of Nil => Nil %}
 
         {% for mdef in @type.methods %}
@@ -119,7 +120,7 @@ module Prism
                 serializable: is_serializable,
                 valid:        is_valid,
                 key:          (ann && ann[:key]) ? ann[:key].id.stringify : mdef.name.stringify,
-                struct:       (ann && ann[:struct]) ? ann[:struct].id.stringify : false,
+                name:       (ann && ann[:name]) ? ann[:name].id.stringify : false,
               }
             %}
             {% if !is_serializable && !is_valid %}
@@ -143,7 +144,7 @@ module Prism
                 serializable: is_serializable,
                 valid:        is_valid,
                 key:          ((ann && ann[:key]) || ivar).id.stringify,
-                struct:       (ann && ann[:struct]) ? ann[:struct].id.stringify : false,
+                name:       (ann && ann[:name]) ? ann[:name].id.stringify : false,
               }
             %}
             {% if !is_serializable && !is_valid %}
@@ -156,7 +157,7 @@ module Prism
           {% end %}
         {% end %}
 
-        uniforms = UniformMap.new # of String => ({% for t, i in valid_types %}{{t}}{% if i < valid_types.size - 1 %} | {% end %}{% end %})
+        uniforms = UniformMap.new
 
         {% for name, value in properties %}
 
@@ -167,7 +168,7 @@ module Prism
           {% end %}
 
           unless _{{name}}.nil?
-            {% struct_name = global_struct_name ? global_struct_name : value[:struct] %}
+            {% struct_name = global_struct_name ? global_struct_name : value[:name] %}
             {% uniform_key = struct_name ? struct_name + "." + value[:key] : value[:key] %}
             %struct_key = {{uniform_key}}
             %short_key = {{value[:key]}}

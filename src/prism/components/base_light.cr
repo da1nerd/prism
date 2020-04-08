@@ -1,8 +1,8 @@
 require "../rendering/shader"
 
 module Prism
-  # Fundamental light component
-  class BaseLight < Light
+  # A pseudo light object that provides some of the basic light properties.
+  class BaseLight
     include Shader::Serializable
 
     @[Shader::Field(key: "color")]
