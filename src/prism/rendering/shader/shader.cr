@@ -52,6 +52,7 @@ module Prism
       mvp_matrix = camera.get_view_projection * world_matrix
       material_uniforms = material.to_uniform
 
+      # maps the uniforms to the `UniformType`
       @resource.uniforms.each do |key, _|
         if @uniform_map.has_key? key
           value = @uniform_map[key]

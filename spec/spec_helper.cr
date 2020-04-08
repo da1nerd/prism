@@ -10,26 +10,29 @@ end
 module UniformTest
   include Prism
 
+  @[Shader::Serializable::Options(name: "Parent")]
   class Parent
     include Shader::Serializable
 
-    @[Shader::Field(struct: "Person", key: "name")]
+    @[Shader::Field(key: "name")]
     @name : Int32 = 1
 
     @[Shader::Field(key: "val")]
     @val : Int32 = 5
   end
 
+  @[Shader::Serializable::Options(name: "Person")]
   class Child < Parent
     include Shader::Serializable
 
-    @[Shader::Field(struct: "Person", key: "age")]
+    @[Shader::Field(key: "age")]
     @age : Int32 = 25
 
-    @[Shader::Field(struct: "Person", key: "att")]
+    @[Shader::Field(key: "att")]
     @att : Attribute = Attribute.new
   end
 
+  @[Shader::Serializable::Options(name: "Attribute")]
   class Attribute
     include Shader::Serializable
 
