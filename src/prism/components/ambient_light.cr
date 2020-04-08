@@ -4,6 +4,7 @@ require "../light"
 module Prism
   # Represents an ambient light source.
   class AmbientLight < Light
+    SHADER_PATH = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", "forward-ambient")
     include Shader::Serializable
     getter color
 
@@ -15,8 +16,7 @@ module Prism
     end
 
     def initialize(@color : Vector3f)
-      shader_path = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", "forward-ambient")
-      self.shader = Shader.new(shader_path)
+      super(Shader.new(SHADER_PATH))
     end
   end
 end

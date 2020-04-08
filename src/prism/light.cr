@@ -6,16 +6,17 @@ module Prism
   # Fundamental light component
   class Light < GameComponent
     include Shader::Serializable
-    property shader
+    # property shader
 
-    @shader : Shader?
+    @shader : Shader
+
+    def initialize(@shader : Shader)
+    end
 
     # Binds an object's *transform* and *material* to the light shader.
     # This should be done just before drawing the object's `Prism::Mesh`
     def bind(transform : Transform, material : Material, camera : Camera)
-      if shader = @shader
-        shader.bind(self.to_uniform, transform, material, camera)
-      end
+      @shader.bind(self.to_uniform, transform, material, camera)
     end
 
     def add_to_engine(engine : RenderingEngine)
