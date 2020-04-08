@@ -1,5 +1,6 @@
 module Prism::Common::Light
   # A pseudo light object that provides some of the basic light properties.
+  # This light source is at a location within the scene.
   class BaseLight
     include Core::Shader::Serializable
 
