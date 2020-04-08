@@ -102,10 +102,8 @@ module Prism
       # Produces a map of uniform values
       protected def to_uniform(is_sub : Bool)
         {% begin %}
-        # TODO: use UniformType instead of this array
-        {% valid_types = [Int32, Float32, Vector3f, Matrix4f] %}
         {% options = @type.annotation(::Prism::Shader::Serializable::Options) %}
-        {% global_struct_name = options && options[:name] || false %}
+        {% struct_name = options && options[:name] || false %}
         {% properties = {} of Nil => Nil %}
 
         {% for mdef in @type.methods %}
@@ -113,18 +111,17 @@ module Prism
           {% if ann && !ann[:ignore] %}
             {%
               is_serializable = ::Prism::Shader::Serializable.includers.any? { |t| t == mdef.return_type.id }
-              is_valid = valid_types.any? { |t| t.name == mdef.return_type.id }
+              is_valid = UniformType.union_types.any? { |t| t.name == mdef.return_type.id }
               properties[mdef.name] = {
                 method:       true,
                 type:         mdef.return_type,
                 serializable: is_serializable,
                 valid:        is_valid,
                 key:          (ann && ann[:key]) ? ann[:key].id.stringify : mdef.name.stringify,
-                name:       (ann && ann[:name]) ? ann[:name].id.stringify : false,
               }
             %}
             {% if !is_serializable && !is_valid %}
-              raise_uniform_parse_error("{{@type.name}}", "{{mdef.name}}", "{{mdef.return_type}}", {{valid_types}}, {
+              raise_uniform_parse_error("{{@type.name}}", "{{mdef.name}}", "{{mdef.return_type}}", {{UniformType.union_types}}, {
                 file: {{mdef.filename}},
                 line: {{mdef.line_number}},
                 column: {{mdef.column_number}}
@@ -138,17 +135,16 @@ module Prism
           {% if ann && !ann[:ignore] %}
             {%
               is_serializable = ::Prism::Shader::Serializable.includers.any? { |t| t.name == ivar.type.name }
-              is_valid = valid_types.any? { |t| t.name == ivar.type.name }
+              is_valid = UniformType.union_types.any? { |t| t.name == ivar.type.name }
               properties[ivar.id] = {
                 type:         ivar.type,
                 serializable: is_serializable,
                 valid:        is_valid,
                 key:          ((ann && ann[:key]) || ivar).id.stringify,
-                name:       (ann && ann[:name]) ? ann[:name].id.stringify : false,
               }
             %}
             {% if !is_serializable && !is_valid %}
-              raise_uniform_parse_error("{{@type.name}}", "{{ivar.id}}", "{{ivar.type}}", {{valid_types}}, {
+              raise_uniform_parse_error("{{@type.name}}", "{{ivar.id}}", "{{ivar.type}}", {{UniformType.union_types}}, {
                 file: {{ivar.filename}},
                 line: {{ivar.line_number}},
                 column: {{ivar.column_number}}
@@ -168,7 +164,6 @@ module Prism
           {% end %}
 
           unless _{{name}}.nil?
-            {% struct_name = global_struct_name ? global_struct_name : value[:name] %}
             {% uniform_key = struct_name ? struct_name + "." + value[:key] : value[:key] %}
             %struct_key = {{uniform_key}}
             %short_key = {{value[:key]}}
@@ -188,7 +183,7 @@ module Prism
         _manual_uniforms = on_to_uniform
         if _manual_uniforms
           _manual_uniforms.each do |k, v|
-            %ukey = is_sub && {{global_struct_name}} ? {{global_struct_name}}.to_s + "." + k : k
+            %ukey = is_sub && {{struct_name}} ? {{struct_name}}.to_s + "." + k : k
             uniforms[%ukey] = v
           end
         end

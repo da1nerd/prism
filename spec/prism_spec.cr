@@ -2,15 +2,24 @@ require "./spec_helper"
 
 describe Prism do
   describe Prism::Shader do
-    it "serializes uniforms" do
+    it "serializes an object with sub types" do
       child = UniformTest::Child.new
       child.to_uniform.should eq({
         "Person.name"            => 1,
-        "val"                    => 5,
+        "Person.val"             => 5,
         "Person.age"             => 25,
         "Person.att.method_test" => 6.2f32,
         "Person.att.color"       => 12,
         "Person.att.height"      => 72,
+      })
+    end
+
+    it "serializes an object" do
+      att = UniformTest::Attribute.new
+      att.to_uniform.should eq({
+        "Attribute.method_test" => 6.2f32,
+        "Attribute.color"       => 12,
+        "Attribute.height"      => 72,
       })
     end
   end
