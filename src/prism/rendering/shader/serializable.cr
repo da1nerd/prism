@@ -111,6 +111,8 @@ module Prism
           {% if ann && !ann[:ignore] %}
             {%
               is_serializable = ::Prism::Shader::Serializable.includers.any? { |t| t == mdef.return_type.id }
+              # TODO: the comparison here is too strict.
+              # t.name == mdef.return_type.id requires you to type out the full namespace or it will fail.
               is_valid = UniformType.union_types.any? { |t| t.name == mdef.return_type.id }
               properties[mdef.name] = {
                 method:       true,
