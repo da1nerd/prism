@@ -6,18 +6,18 @@ require "crystglfw"
 module Prism::Adapter::GLFW
   extend self
 
-  def run(title : String, game : Prism::GameEngine)
+  def run(title : String, game : Core::GameEngine)
     run(title, game, frame_rate, 60, 800, 600)
   end
 
-  def run(title : String, game : Prism::GameEngine, frame_rate : Float64 = 60)
+  def run(title : String, game : Core::GameEngine, frame_rate : Float64 = 60)
     run(title, game, frame_rate, 800, 600)
   end
 
   # Starts Prism.
   # This automatically adds the standard rendering engine
-  def run(title : String, game : Prism::GameEngine, frame_rate : Float64, width : Int32, height : Int32)
-    rendering_engine = Prism::RenderingEngine.new
+  def run(title : String, game : Core::GameEngine, frame_rate : Float64, width : Int32, height : Int32)
+    rendering_engine = Core::RenderingEngine.new
     game.engine = rendering_engine
     engines = [game, rendering_engine]
 

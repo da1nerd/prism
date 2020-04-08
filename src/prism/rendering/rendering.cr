@@ -1,4 +1,0 @@
-require "./**"
-
-module Prism
-end
