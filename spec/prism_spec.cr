@@ -1,7 +1,7 @@
 require "./spec_helper"
 
-describe Prism do
-  describe Prism::Shader do
+describe Prism::Core do
+  describe Prism::Core::Shader do
     it "serializes an object with sub types" do
       child = UniformTest::Child.new
       child.to_uniform.should eq({
@@ -23,8 +23,10 @@ describe Prism do
       })
     end
   end
+end
 
-  describe Prism::Spritemap do
+describe Prism::Common do
+  describe Prism::Common::Spritemap do
     # This is our sample test grid
     # +---------------+
     # | 0 | 1 | 2 | 3 |
@@ -38,7 +40,7 @@ describe Prism do
 
     describe "#get_coordinates" do
       it "calculates the coords for index 0" do
-        coords = Prism::Spritemap.get_coordinates(0, 4)
+        coords = Prism::Common::Spritemap.get_coordinates(0, 4)
         coords.should eq({
           col: 0,
           row: 0,
@@ -46,7 +48,7 @@ describe Prism do
       end
 
       it "calculates the coords for index 9" do
-        coords = Prism::Spritemap.get_coordinates(9, 4)
+        coords = Prism::Common::Spritemap.get_coordinates(9, 4)
         coords.should eq({
           col: 1,
           row: 2,
@@ -54,7 +56,7 @@ describe Prism do
       end
 
       it "calculates the coords for index 12" do
-        coords = Prism::Spritemap.get_coordinates(12, 4)
+        coords = Prism::Common::Spritemap.get_coordinates(12, 4)
         coords.should eq({
           col: 0,
           row: 3,
@@ -62,7 +64,7 @@ describe Prism do
       end
 
       it "calculates the coords for index 15" do
-        coords = Prism::Spritemap.get_coordinates(15, 4)
+        coords = Prism::Common::Spritemap.get_coordinates(15, 4)
         coords.should eq({
           col: 3,
           row: 3,
@@ -72,7 +74,7 @@ describe Prism do
 
     describe "#get_sprite_coordinates" do
       it "returns the coords" do
-        coords = Prism::Spritemap.get_sprite_coordinates(1, 1, 4, 4)
+        coords = Prism::Common::Spritemap.get_sprite_coordinates(1, 1, 4, 4)
         expect_vectors_match(coords[:bottom_left], Prism::VMath::Vector2f.new(0.25, 0.5))
         expect_vectors_match(coords[:bottom_right], Prism::VMath::Vector2f.new(0.5, 0.5))
         expect_vectors_match(coords[:top_right], Prism::VMath::Vector2f.new(0.5, 0.25))

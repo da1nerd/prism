@@ -3,7 +3,7 @@ require "lib_gl"
 
 include Prism
 
-class ModelDemo < Prism::GameEngine
+class ModelDemo < Core::GameEngine
   def init
     # Add model to look at
     # material2 = Material.new
@@ -24,10 +24,10 @@ class ModelDemo < Prism::GameEngine
     field_width = 10.0f32
 
     verticies = [
-      Vertex.new(Vector3f.new(-field_width, 0, -field_depth), Vector2f.new(0, 0)),
-      Vertex.new(Vector3f.new(-field_width, 0, field_depth * 3), Vector2f.new(0, 1)),
-      Vertex.new(Vector3f.new(field_width * 3, 0, -field_depth), Vector2f.new(1, 0)),
-      Vertex.new(Vector3f.new(field_width * 3, 0, field_depth * 3), Vector2f.new(1, 1)),
+      Core::Vertex.new(Vector3f.new(-field_width, 0, -field_depth), Vector2f.new(0, 0)),
+      Core::Vertex.new(Vector3f.new(-field_width, 0, field_depth * 3), Vector2f.new(0, 1)),
+      Core::Vertex.new(Vector3f.new(field_width * 3, 0, -field_depth), Vector2f.new(1, 0)),
+      Core::Vertex.new(Vector3f.new(field_width * 3, 0, field_depth * 3), Vector2f.new(1, 1)),
     ]
 
     indicies = Array(LibGL::Int){
@@ -36,10 +36,10 @@ class ModelDemo < Prism::GameEngine
     }
 
     verticies2 = [
-      Vertex.new(Vector3f.new(-field_width/10.0f32, 0, -field_depth/10.0f32), Vector2f.new(0, 0)),
-      Vertex.new(Vector3f.new(-field_width/10.0f32, 0, field_depth/10.0f32 * 3), Vector2f.new(0, 1)),
-      Vertex.new(Vector3f.new(field_width/10.0f32 * 3, 0, -field_depth/10.0f32), Vector2f.new(1, 0)),
-      Vertex.new(Vector3f.new(field_width/10.0f32 * 3, 0, field_depth/10.0f32 * 3), Vector2f.new(1, 1)),
+      Core::Vertex.new(Vector3f.new(-field_width/10.0f32, 0, -field_depth/10.0f32), Vector2f.new(0, 0)),
+      Core::Vertex.new(Vector3f.new(-field_width/10.0f32, 0, field_depth/10.0f32 * 3), Vector2f.new(0, 1)),
+      Core::Vertex.new(Vector3f.new(field_width/10.0f32 * 3, 0, -field_depth/10.0f32), Vector2f.new(1, 0)),
+      Core::Vertex.new(Vector3f.new(field_width/10.0f32 * 3, 0, field_depth/10.0f32 * 3), Vector2f.new(1, 1)),
     ]
 
     indicies2 = Array(LibGL::Int){
@@ -47,41 +47,41 @@ class ModelDemo < Prism::GameEngine
       2, 1, 3,
     }
 
-    mesh2 = Mesh.new(verticies2, indicies2, true)
-    mesh = Mesh.new(verticies, indicies, true)
-    material = Material.new
-    material.add_texture("diffuse", Texture.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/defaultTexture.png")))
+    mesh2 = Core::Mesh.new(verticies2, indicies2, true)
+    mesh = Core::Mesh.new(verticies, indicies, true)
+    material = Core::Material.new
+    material.add_texture("diffuse", Core::Texture.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/defaultTexture.png")))
     # material.add_float("specularIntensity", 1)
     # material.add_float("specularPower", 8)
 
-    material2 = Material.new
-    material2.add_texture("diffuse", Texture.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/test.png")))
+    material2 = Core::Material.new
+    material2.add_texture("diffuse", Core::Texture.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/test.png")))
     # material2.add_float("specularIntensity", 1)
     # material2.add_float("specularPower", 8)
 
     monkey_file = File.join(File.dirname(PROGRAM_NAME), "/res/models/", "monkey3.obj")
 
-    temp_mesh = Mesh.new(monkey_file)
+    temp_mesh = Core::Mesh.new(monkey_file)
 
-    mesh_renderer = MeshRenderer.new(mesh, material)
+    mesh_renderer = Common::Component::MeshRenderer.new(mesh, material)
 
-    plane_object = GameObject.new
+    plane_object = Core::GameObject.new
     plane_object.add_component(mesh_renderer)
     plane_object.transform.pos.set(0, -1, 5)
 
-    directional_light_object = GameObject.new
-    directional_light = DirectionalLight.new(Vector3f.new(0, 0, 1), 0.4)
+    directional_light_object = Core::GameObject.new
+    directional_light = Common::Light::DirectionalLight.new(Vector3f.new(0, 0, 1), 0.4)
     directional_light_object.add_component(directional_light)
 
-    point_light_object = GameObject.new
-    point_light = PointLight.new(Vector3f.new(0.0f32, 1.0f32, 0.0f32), 0.4f32, Attenuation.new(0.0f32, 0.0f32, 1.0f32))
+    point_light_object = Core::GameObject.new
+    point_light = Common::Light::PointLight.new(Vector3f.new(0.0f32, 1.0f32, 0.0f32), 0.4f32, Core::Attenuation.new(0.0f32, 0.0f32, 1.0f32))
     point_light_object.add_component(point_light)
 
-    spot_light_object = GameObject.new
-    spot_light = SpotLight.new(
+    spot_light_object = Core::GameObject.new
+    spot_light = Common::Light::SpotLight.new(
       Vector3f.new(0.0f32, 1.0f32, 1.0f32),
       0.4f32,
-      Attenuation.new(0.0f32, 0.0f32, 0.1f32),
+      Core::Attenuation.new(0.0f32, 0.0f32, 0.1f32),
       0.7f32)
     spot_light_object.add_component(spot_light)
 
@@ -93,18 +93,18 @@ class ModelDemo < Prism::GameEngine
     add_object(point_light_object)
     add_object(spot_light_object)
 
-    test_mesh1 = GameObject.new.add_component(MeshRenderer.new(mesh2, material))
-    test_mesh2 = GameObject.new.add_component(MeshRenderer.new(mesh2, material))
-    test_mesh3 = GameObject.new.add_component(MeshRenderer.new(temp_mesh, material))
+    test_mesh1 = Core::GameObject.new.add_component(Common::Component::MeshRenderer.new(mesh2, material))
+    test_mesh2 = Core::GameObject.new.add_component(Common::Component::MeshRenderer.new(mesh2, material))
+    test_mesh3 = Core::GameObject.new.add_component(Common::Component::MeshRenderer.new(temp_mesh, material))
 
     test_mesh1.transform.pos.set(0f32, 2f32, 0f32)
     test_mesh1.transform.rot = Quaternion.new(Vector3f.new(0f32, 1f32, 0f32), 0.4f32)
     test_mesh2.transform.pos.set(0f32, 0f32, 5f32)
 
     test_mesh1.add_child(test_mesh2)
-    camObj = GameObject.new.add_component(Camera.new)
-    camObj.add_component(FreeLook.new(0.1375f32))
-    camObj.add_component(FreeMove.new(4f32))
+    camObj = Core::GameObject.new.add_component(Core::Camera.new)
+    camObj.add_component(Common::Component::FreeLook.new(0.1375f32))
+    camObj.add_component(Common::Component::FreeMove.new(4f32))
     test_mesh2.add_child(camObj)
 
     add_object(test_mesh1)
@@ -113,9 +113,13 @@ class ModelDemo < Prism::GameEngine
     test_mesh3.transform.pos.set(5, 5, 5)
     test_mesh3.transform.rot.set(Quaternion.new(Vector3f.new(0, 1, 0), Prism::VMath.to_rad(-70)))
 
-    add_object(GameObject.new.add_component(MeshRenderer.new(Mesh.new(monkey_file), material2)))
+    add_object(Core::GameObject.new.add_component(Common::Component::MeshRenderer.new(Core::Mesh.new(monkey_file), material2)))
 
     directional_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::VMath.to_rad(-45f32))
+
+    ambient_light = Prism::Core::Object.new
+    ambient_light.add_component(Prism::Common::Light::AmbientLight.new(Vector3f.new(0.2, 0.2, 0.2)))
+    add_object(ambient_light)
   end
 end
 
