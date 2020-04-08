@@ -3,9 +3,9 @@ module Prism::Common::Node
   class GhostCamera < Core::GameObject
     def initialize
       super
-      add_component(Camera.new)
-      add_component(FreeLook.new)
-      add_component(FreeMove.new)
+      add_component(Core::Camera.new)
+      add_component(Component::FreeLook.new)
+      add_component(Component::FreeMove.new)
     end
   end
 end
