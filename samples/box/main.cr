@@ -55,10 +55,10 @@ class BoxDemo < Prism::Core::GameEngine
     ambient_light.add_component(Prism::Common::Light::AmbientLight.new(Color.new(0.5, 0.5, 0.5)))
 
     # creates a moveable camera with sane defaults
-    camera = Prism::Core::Object.new
-    camera.add_component(Prism::Core::Camera.new)
-    camera.add_component(Prism::Common::Component::FreeLook.new)
-    camera.add_component(Prism::Common::Component::FreeMove.new)
+    camera = Prism::Common::Node::GhostCamera.new # Prism::Core::Object.new
+    # camera.add_component(Prism::Core::Camera.new)
+    # camera.add_component(Prism::Common::Component::FreeLook.new)
+    # camera.add_component(Prism::Common::Component::FreeMove.new)
     camera.move_east(3.5).elevate_by(0.5)
     camera.transform.look_at(box)
 

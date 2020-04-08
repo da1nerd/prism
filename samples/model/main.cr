@@ -102,10 +102,8 @@ class ModelDemo < Core::GameEngine
     test_mesh2.transform.pos.set(0f32, 0f32, 5f32)
 
     test_mesh1.add_child(test_mesh2)
-    camObj = Core::GameObject.new.add_component(Core::Camera.new)
-    camObj.add_component(Common::Component::FreeLook.new(0.1375f32))
-    camObj.add_component(Common::Component::FreeMove.new(4f32))
-    test_mesh2.add_child(camObj)
+
+    test_mesh2.add_child(Common::Node::GhostCamera.new)
 
     add_object(test_mesh1)
     add_object(test_mesh3)

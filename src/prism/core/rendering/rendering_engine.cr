@@ -75,7 +75,6 @@ module Prism::Core
     # Registers a light.
     def add_light(light : Core::Light)
       if light.is_a?(Core::AmbientLight)
-        puts light
         @ambient_light = light.as(Core::AmbientLight)
       else
         @lights.push(light)
