@@ -46,12 +46,13 @@ class BoxDemo < Prism::Core::GameEngine
     sun_light.transform.look_at(box)
 
     point_light = Prism::Core::Object.new
-    point_light.add_component(Light::PointLight.new)
+    point_light.add_component(Light::PointLight.new(Prism::VMath::Vector3f.new(1, 0, 0)))
     point_light.move_north(2.5).move_east(1.5).elevate_by(1.5)
 
     spot_light = Prism::Core::Object.new
-    spot_light.add_component(Light::SpotLight.new)
-    spot_light.move_north(3.5).move_east(2.5).elevate_by(1)
+    spot_light.add_component(Light::SpotLight.new(Prism::VMath::Vector3f.new(0, 0.5, 0.5)))
+    spot_light.move_north(4).move_east(4).elevate_by(1)
+    spot_light.transform.rotate(Prism::VMath::Vector3f.new(1, 0, 0), -Prism::VMath.to_rad(70))
 
     # create some ambient light
     ambient_light = Prism::Core::Object.new

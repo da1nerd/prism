@@ -22,7 +22,7 @@ module Prism::Common::Light
     end
 
     def initialize
-      initialize(Vector3f.new(1, 0, 0), 0.5, Core::Attenuation.new(0.0f32, 0.0f32, 1.0f32))
+      initialize(Vector3f.new(1, 1, 1), 1, Core::Attenuation.new(0.0f32, 0.0f32, 1.0f32))
     end
 
     def initialize(color : Vector3f)
