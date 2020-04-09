@@ -12,11 +12,11 @@ module Prism::Common::Light
     @point_light : PointLight
 
     def initialize
-      initialize(Vector3f.new(0, 0, 1), 0.5, Core::Attenuation.new(0.0f32, 0.0f32, 0.5f32), 0.9)
+      initialize(Vector3f.new(1, 1, 1), 1, Core::Attenuation.new(0.0f32, 0.0f32, 1f32), 0.5)
     end
 
     def initialize(color : Vector3f)
-      initialize(color, 0.5, Attenuation.new(0.0f32, 0.0f32, 0.1f32), 0.7)
+      initialize(color, 1, Core::Attenuation.new(0.0f32, 0.0f32, 0.1f32), 0.8)
     end
 
     def initialize(color : Vector3f, intensity : Float32, attenuation : Core::Attenuation, @cutoff : Float32)
