@@ -12,7 +12,7 @@ module Prism::Core
 
     # Creates a new shader from *file_name*.
     #
-    # The vector and fragment shaders will be interpolated from *file_name*,
+    # The vertex and fragment shaders will be interpolated from *file_name*,
     # therefore *file_name* should be extension-less.
     #
     # Shader programs may include other files using the `#include "file.ext"` statement.
@@ -29,7 +29,6 @@ module Prism::Core
     #   # forward-point.vs
     #   # lighting.glh <- embeded into forward-point.vs
     #   # forward-point.fs
-    #   # lighting.glh <- embeded into foward-point.fs
     # end
     # ```
     #
