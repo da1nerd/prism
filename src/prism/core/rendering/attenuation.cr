@@ -1,7 +1,7 @@
 module Prism::Core
   # Defines the gradual diminishing in strength of something
   # In other words, how quickly something fades off. This is particularly useful for point lights.
-  # 
+  #
   class Attenuation < VMath::Vector3f
     include Shader::Serializable
 
