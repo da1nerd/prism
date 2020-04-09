@@ -4,7 +4,6 @@ module Prism::Common::Light
   # not in the scene only the resulting rays.
   @[Core::Shader::Serializable::Options(name: "R_directionalLight")]
   class DirectionalLight < Core::Light
-    SHADER_PATH = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", "forward-directional")
     include Core::Shader::Serializable
 
     # Creates a directional light with default values
@@ -16,7 +15,7 @@ module Prism::Common::Light
     @base : BaseLight
 
     def initialize(color : Vector3f, intensity : Float32)
-      super(Core::Shader.new(SHADER_PATH))
+      super(Core::Shader.new("forward-directional"))
       @base = BaseLight.new(color, intensity)
     end
 
