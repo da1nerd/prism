@@ -31,6 +31,8 @@ module Prism::Core
       LibGL.enable(LibGL::DEPTH_TEST)
       LibGL.enable(LibGL::DEPTH_CLAMP)
       LibGL.enable(LibGL::TEXTURE_2D)
+      # Uncomment the below line to display everything as a wire frame
+      # LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::LINE)
     end
 
     # Keep track of the window size at each tick so we can keep the viewport in sync

@@ -8,6 +8,10 @@ This project was largely inspired by ["The Benny Box"](https://www.youtube.com/c
 
 This is a work in progress as I follow tutorials and wrap my head around game development.
 
+## Features
+
+* Support for vertex and fragment shaders
+
 ## Demo
 You can view a demo game built with this library at https://github.com/neutrinog/prism-demo.
 
