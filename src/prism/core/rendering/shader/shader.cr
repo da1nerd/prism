@@ -126,10 +126,11 @@ module Prism::Core
         0.upto(@resource.uniform_names.size - 1) do |i|
           uniform_name = @resource.uniform_names[i]
           uniform_type = @resource.uniform_types[i]
+          # TODO: the below uniforms need to be configurable just like the lights are configurable.
 
           if uniform_name.starts_with?("T_")
             # transformations
-            if uniform_name == "T_MVP"
+            if uniform_name == "T_MVP" # model view projection
               set_uniform(uniform_name, mvp_matrix)
             elsif uniform_name == "T_model"
               set_uniform(uniform_name, world_matrix)
