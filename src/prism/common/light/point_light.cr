@@ -3,7 +3,6 @@ module Prism::Common::Light
   # That is, light that radiates out from a point.
   @[Core::Shader::Serializable::Options(name: "R_pointLight")]
   class PointLight < Core::Light
-    SHADER_PATH = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", "forward-point")
     COLOR_DEPTH = 256.0f32
 
     include Core::Shader::Serializable
@@ -31,7 +30,7 @@ module Prism::Common::Light
     end
 
     def initialize(color : Vector3f, intensity : Float32, @attenuation : Core::Attenuation)
-      super(Core::Shader.new(SHADER_PATH))
+      super(Core::Shader.new("forward-point"))
       @base = BaseLight.new(color, intensity)
 
       a = @attenuation.exponent

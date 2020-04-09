@@ -1,0 +1,3 @@
+line a.1
+#include "b.txt"
+line a.2

@@ -1,6 +1,7 @@
 require "spec"
 require "../src/prism"
 require "render_loop"
+require "baked_file_system"
 
 def expect_vectors_match(got : Prism::VMath::Vector2f, expected : Prism::VMath::Vector2f)
   got.x.should eq(expected.x)
@@ -47,4 +48,11 @@ module UniformTest
       6.2f32
     end
   end
+end
+
+# Embeds the default shaders at compile time.
+class DemoStorage
+  extend BakedFileSystem
+
+  bake_folder "./storage"
 end

@@ -10,15 +10,38 @@ module Prism::Core
     @uniform_map : Shader::UniformMap
     @file_name : String
 
-    def initialize(@file_name : String)
+    # Creates a new shader from *file_name*.
+    #
+    # The vector and fragment shaders will be interpolated from *file_name*,
+    # therefore *file_name* should be extension-less.
+    #
+    # Shader programs may include other files using the `#include "file.ext"` statement.
+    # These includes are resolved by *shader_reader* which receives the name of the included file.
+    #
+    # > NOTE: *file_name* will be passed to *shader_reader* as well.
+    #
+    # ## Example
+    #
+    # ```
+    # Shader.new "forward-point" do |path|
+    #   File.read(File.join("my/shader/directory", path))
+    #   # Ends up reading:
+    #   # forward-point.vs
+    #   # lighting.glh <- embeded into forward-point.vs
+    #   # forward-point.fs
+    #   # lighting.glh <- embeded into foward-point.fs
+    # end
+    # ```
+    #
+    def initialize(@file_name : String, &shader_reader : String -> String)
       @uniform_map = Shader::UniformMap.new
       if @@loaded_shaders.has_key?(@file_name)
         @resource = @@loaded_shaders[@file_name]
         @resource.add_reference
       else
         @resource = ShaderResource.new
-        vertex_shader_text = load_shader("#{@file_name}.vs")
-        fragment_shader_text = load_shader("#{@file_name}.fs")
+        vertex_shader_text = Shader.load_shader_program("#{@file_name}.vs", &shader_reader)
+        fragment_shader_text = Shader.load_shader_program("#{@file_name}.fs", &shader_reader)
 
         add_vertex_shader(vertex_shader_text)
         add_fragment_shader(fragment_shader_text)
@@ -31,6 +54,14 @@ module Prism::Core
         add_all_uniforms(fragment_shader_text)
 
         @@loaded_shaders[@file_name] = @resource
+      end
+    end
+
+    # An internal initalizer that uses `ShaderStorage` to load embedded shaders.
+    # This allows using the embeded default shaders.
+    protected def initialize(@file_name : String)
+      initialize @file_name do |path|
+        ShaderStorage.get(path).gets_to_end
       end
     end
 
@@ -171,17 +202,21 @@ module Prism::Core
       # LibGL.delete_shader(shader)
     end
 
-    private def load_shader(file_path : String) : String
-      include_directive = "#include"
+    # Loads a shader program
+    def self.load_shader_program(file_path : String, &file_reader : String -> String) : String
+      input = file_reader.call file_path
+      evaluate_includes input, &file_reader
+    end
 
+    # Searches for include statements and combines them with the *input*
+    # An include statement looks like `#include "somefile.ext"`
+    private def self.evaluate_includes(input : String, &file_reader : String -> String) : String
       shader_source = ""
 
-      # glsl dependencies can be added like: #include "file.sh"
-      File.each_line(file_path) do |line|
+      input.each_line() do |line|
         include_match = line.scan(/\#include\s+["<]([^">]*)[>"]/)
         if include_match.size > 0
-          include_path = File.join(File.dirname(file_path), include_match[0][1])
-          shader_source += self.load_shader(include_path)
+          shader_source += load_shader_program(include_match[0][1], &file_reader)
         else
           shader_source += line + "\n"
         end

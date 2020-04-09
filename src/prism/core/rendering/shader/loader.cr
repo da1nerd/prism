@@ -1,0 +1,2 @@
+module Prism::Core
+end

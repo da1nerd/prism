@@ -26,5 +26,7 @@ dependencies:
   crystglfw:
     github: neutrinog/CrystGLFW
     branch: support-crystal-0.31
-
+  baked_file_system:
+    github: schovi/baked_file_system
+    version: 0.9.8
 license: MIT

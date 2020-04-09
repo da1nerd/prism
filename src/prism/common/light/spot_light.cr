@@ -2,7 +2,6 @@ module Prism::Common::Light
   # Represents a spot light
   @[Core::Shader::Serializable::Options(name: "R_spotLight")]
   class SpotLight < Core::Light
-    SHADER_PATH = File.join(File.dirname(PROGRAM_NAME), "/res/shaders/", "forward-spot")
     include Core::Shader::Serializable
     property cutoff
 
@@ -21,7 +20,7 @@ module Prism::Common::Light
     end
 
     def initialize(color : Vector3f, intensity : Float32, attenuation : Core::Attenuation, @cutoff : Float32)
-      super(Core::Shader.new(SHADER_PATH))
+      super(Core::Shader.new("forward-spot"))
       @point_light = PointLight.new(color, intensity, attenuation)
     end
 
