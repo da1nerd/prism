@@ -6,13 +6,15 @@ module Prism::Core
   class Material
     include Shader::Serializable
 
-    property specular_intensity, specular_power
+    property specular_intensity, specular_power, color
 
     @[Shader::Field(key: "specularIntensity")]
     @specular_intensity : Float32 = 1
     @[Shader::Field(key: "specularPower")]
     @specular_power : Float32 = 8
     @texture_map : Hash(String, Texture)
+    @[Shader::Field(key: "materialColor")]
+    @color : Vector3f = Vector3f.new(0, 0, 0)
 
     def initialize
       super
