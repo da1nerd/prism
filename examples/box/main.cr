@@ -5,8 +5,8 @@ class BoxDemo < Prism::Core::GameEngine
   alias Color = Prism::VMath::Vector3f
 
   def init
-    material = Prism::Core::Material.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/defaultTexture.png"))
-    brick_material = Prism::Core::Material.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/bricks.png"))
+    material = Prism::Core::Material.new(File.join(__DIR__, "../res/textures/defaultTexture.png"))
+    brick_material = Prism::Core::Material.new(File.join(__DIR__, "../res/textures/bricks.png"))
     green_material = Prism::Core::Material.new
     green_material.color = Color.new(0, 1, 0)
 

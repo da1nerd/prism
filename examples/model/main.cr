@@ -50,16 +50,16 @@ class ModelDemo < Core::GameEngine
     mesh2 = Core::Mesh.new(verticies2, indicies2, true)
     mesh = Core::Mesh.new(verticies, indicies, true)
     material = Core::Material.new
-    material.add_texture("diffuse", Core::Texture.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/defaultTexture.png")))
+    material.add_texture("diffuse", Core::Texture.new(File.join(__DIR__, "../res/textures/defaultTexture.png")))
     # material.add_float("specularIntensity", 1)
     # material.add_float("specularPower", 8)
 
     material2 = Core::Material.new
-    material2.add_texture("diffuse", Core::Texture.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/test.png")))
+    material2.add_texture("diffuse", Core::Texture.new(File.join(__DIR__, "../res/textures/test.png")))
     # material2.add_float("specularIntensity", 1)
     # material2.add_float("specularPower", 8)
 
-    monkey_file = File.join(File.dirname(PROGRAM_NAME), "/res/models/", "monkey3.obj")
+    monkey_file = File.join(__DIR__, "../res/models/", "monkey3.obj")
 
     temp_mesh = Core::Mesh.new(monkey_file)
 
