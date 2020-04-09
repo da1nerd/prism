@@ -7,6 +7,8 @@ class BoxDemo < Prism::Core::GameEngine
   def init
     material = Prism::Core::Material.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/defaultTexture.png"))
     brick_material = Prism::Core::Material.new(File.join(File.dirname(PROGRAM_NAME), "/res/textures/bricks.png"))
+    green_material = Prism::Core::Material.new()
+    green_material.color = Color.new(0, 1, 0)
 
     # create a 5x5 floor
     floor = Node::Plain.new(5, 5)
@@ -35,7 +37,7 @@ class BoxDemo < Prism::Core::GameEngine
 
     # create a second smaller box
     tiny_box = Node::Cube.new(0.5)
-    tiny_box.material = brick_material
+    tiny_box.material = green_material
     tiny_box.move_north(3).move_east(3).elevate_by(0.5)
 
     # create a light with default values
