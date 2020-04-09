@@ -8,6 +8,11 @@ module Prism::Core
     @resource : TextureResource
     @file_name : String
 
+    def initialize
+      @file_name = ""
+      @resource = TextureResource.new
+    end
+
     def initialize(@file_name : String)
       if @@loaded_textures.has_key?(@file_name)
         @resource = @@loaded_textures[@file_name]

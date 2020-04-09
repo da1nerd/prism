@@ -19,6 +19,8 @@ module Prism::Core
     def initialize
       super
       @texture_map = {} of String => Texture
+      # add blank texture
+      add_texture("diffuse", Texture.new)
     end
 
     # Creates a material with a "diffuse" texture loaded from the *texture_path*
