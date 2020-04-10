@@ -1,6 +1,6 @@
 require "./obj_index"
 
-module Prism::Core
+module Prism::Core::Model
   # Represents an OBJ model.
   # This class can load and parses OBJ models
   class OBJModel

@@ -1,4 +1,4 @@
-module Prism::Core
+module Prism::Core::Model
   class IndexedModel
     @positions : Array(Vector3f)
     @tex_coords : Array(Vector2f)

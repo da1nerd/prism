@@ -1,4 +1,4 @@
-module Prism::Core
+module Prism::Core::Shader
   # Represents a struct in GLSL
   struct GLSLStruct
     getter name, properties
