@@ -9,7 +9,7 @@ This is a stable, though not completely baked, 3D rendering engine. Documentatio
 
 * **Defaults** most things should "just work" with sane defaults.
 * **Pure** other than a few system level dependencies, this should be 100% pure crystal code. Wrapping an existing project is cheating.
-* **Simple** try to avoid obtuse graphics language, or at least document it very well.
+* **Simple** try to avoid obtuse graphics language, or at least document it very well so noobs can understand what's going on.
 * **Extensible** you can extend/replace/add engines to the core with ease.
 
 ![Peek 2020-04-11 00-58](https://user-images.githubusercontent.com/166412/79012747-38b3c000-7b91-11ea-987d-37026e4052ab.gif)
