@@ -4,6 +4,8 @@
 
 A 3D rendering engine.
 
+> I'm looking to get some feedback on this first release. If you have ideas or suggestions please open an [issue](https://github.com/neutrinog/prism/issues).
+
 ## Goals
 
 * **Defaults** most things should "just work" with sane defaults.
