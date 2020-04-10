@@ -1,10 +1,5 @@
-require "lib_gl"
-require "../material"
-require "../../transform"
-require "./serializable"
-
-module Prism::Core
-  class Shader
+module Prism::Core::Shader
+  class ShaderEngine
     @@loaded_shaders = {} of String => ShaderResource
     @resource : ShaderResource
     @uniform_map : Shader::UniformMap
@@ -39,8 +34,8 @@ module Prism::Core
         @resource.add_reference
       else
         @resource = ShaderResource.new
-        vertex_shader_text = Shader.load_shader_program("#{@file_name}.vs", &shader_reader)
-        fragment_shader_text = Shader.load_shader_program("#{@file_name}.fs", &shader_reader)
+        vertex_shader_text = ShaderEngine.load_shader_program("#{@file_name}.vs", &shader_reader)
+        fragment_shader_text = ShaderEngine.load_shader_program("#{@file_name}.fs", &shader_reader)
 
         add_vertex_shader(vertex_shader_text)
         add_fragment_shader(fragment_shader_text)

@@ -1,6 +1,6 @@
 require "./shape"
 
-module Prism::Common::Node
+module Prism::Common::Objects
   class Cube < Shape
     def initialize(@size : Float32)
       initialize(@size, {

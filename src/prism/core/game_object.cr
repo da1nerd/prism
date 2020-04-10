@@ -1,6 +1,6 @@
-require "./game_component"
-require "./transform"
-require "./rendering/rendering_engine"
+# require "./game_component"
+# require "./transform"
+# require "./rendering_engine"
 require "./moveable"
 
 module Prism::Core

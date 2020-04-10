@@ -15,7 +15,7 @@ module Prism::Common::Light
     @base : BaseLight
 
     def initialize(color : Vector3f, intensity : Float32)
-      super(Core::Shader.new("forward-directional"))
+      super(Core::Shader::ShaderEngine.new("forward-directional"))
       @base = BaseLight.new(color, intensity)
     end
 

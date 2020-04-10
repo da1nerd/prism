@@ -1,4 +1,4 @@
-module Prism::Common::Node
+module Prism::Common::Objects
   # A camera has free movement using the mouse and arrow keys
   class GhostCamera < Core::GameObject
     def initialize

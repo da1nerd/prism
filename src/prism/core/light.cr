@@ -1,6 +1,6 @@
 require "annotation"
-require "./rendering/shader"
-require "./game_component.cr"
+require "./shader"
+require "./game_component"
 
 module Prism::Core
   # Fundamental light component
@@ -8,9 +8,9 @@ module Prism::Core
     include Shader::Serializable
     # property shader
 
-    @shader : Shader
+    @shader : Shader::ShaderEngine
 
-    def initialize(@shader : Shader)
+    def initialize(@shader : Shader::ShaderEngine)
     end
 
     # Binds an object's *transform* and *material* to the light shader.
