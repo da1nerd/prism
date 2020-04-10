@@ -1,3 +1,5 @@
+require "annotations"
+
 module Prism::Common::Objects
   class Shape < Core::GameObject
     @material : Core::Material?
@@ -26,6 +28,7 @@ module Prism::Common::Objects
       end
     end
 
+    @[Override]
     def render(light : Core::Light, rendering_engine : Core::RenderingEngine)
       if mesh = @mesh
         if material = @material

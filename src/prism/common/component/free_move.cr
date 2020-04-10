@@ -17,6 +17,7 @@ module Prism::Common::Component
       @position = Vector3f.new(0, 0, 0)
     end
 
+    @[Override]
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       mov_amt = @speed * tick.frame_time.to_f32
 

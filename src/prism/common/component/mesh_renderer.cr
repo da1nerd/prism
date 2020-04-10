@@ -4,6 +4,7 @@ module Prism::Common::Component
     def initialize(@mesh : Core::Mesh, @material : Core::Material)
     end
 
+    @[Override]
     def render(light : Core::Light, rendering_engine : Core::RenderingEngine)
       light.bind(self.transform, @material, rendering_engine.main_camera)
       @mesh.draw
