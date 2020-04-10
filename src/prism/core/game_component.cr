@@ -1,13 +1,7 @@
 require "render_loop"
 
 module Prism::Core
-  # The fundamental building block of the game.
-  #
-  # Components are the lights, material, meshes, etc.
-  # that represent all the things in the game.
-  # The `GameComponent` is added to a `GameObject`
-  # which composes the scene graph.
-  # These inherit the properties of their parent game object.
+  # A game component is an enhancement that can be added to a game object
   abstract class GameComponent
     setter parent
 
@@ -19,7 +13,9 @@ module Prism::Core
     def update(tick : RenderLoop::Tick)
     end
 
-    # TODO: *rendering_engine* is deprecated
+    # Renders the component
+    #
+    # > Warning: the *rendering_engine* property will be deprecated in the future
     def render(light : Light, rendering_engine : RenderingEngine)
     end
 
