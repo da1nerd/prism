@@ -15,6 +15,57 @@ A 3D rendering engine.
 
 ![Peek 2020-04-11 00-58](https://user-images.githubusercontent.com/166412/79012747-38b3c000-7b91-11ea-987d-37026e4052ab.gif)
 
+<details>
+  <summary>Click to see code</summary>
+<p>
+```crystal
+require "prism"
+
+module Demo
+  VERSION = "0.1.0"
+
+  class Box < Prism::Core::GameEngine
+    include Prism
+    include Prism::Common
+    alias Color = VMath::Vector3f
+    def init
+      green_material = Core::Material.new
+      green_material.color = Color.new(0, 1, 0)
+
+      red_material = Core::Material.new
+      red_material.color = Color.new(1, 0, 0)
+
+      floor = Objects::Plain.new(5, 5)
+      floor.material = red_material
+      add_object(floor)
+
+      box = Objects::Cube.new(1)
+      box.material = green_material
+      box.move_north(2).move_east(2).elevate_by(1)
+      add_object(box)
+
+      sun_light = Core::Object.new
+      sun_light.add_component(Light::DirectionalLight.new)
+      sun_light.transform.look_at(box)
+      add_object(sun_light)
+
+      ambient_light = Core::Object.new
+      ambient_light.add_component(Light::AmbientLight.new(Color.new(0.3, 0.3, 0.3)))
+      add_object(ambient_light)
+
+      camera = Objects::GhostCamera.new
+      camera.move_east(3.5).elevate_by(0.5)
+      camera.transform.look_at(box)
+      add_object(camera)
+    end
+  end
+
+  Prism::ContextAdapter::GLFW.run("Box", Box.new)
+end
+```
+</p>
+</details>
+
 ## Installation
 
 Add this to your application's `shard.yml`:
