@@ -10,6 +10,11 @@ class BoxDemo < Prism::Core::GameEngine
     green_material = Prism::Core::Material.new
     green_material.color = Color.new(0, 1, 0)
 
+    # create monkey head
+    monkey_file = File.join(__DIR__, "./res/models/", "monkey3.obj")
+    monkey = Prism::Core::GameObject.new.add_component(Component::MeshRenderer.new(Prism::Core::Mesh.new(monkey_file), green_material))
+    monkey.move_south(1).move_east(1).elevate_by(1)
+
     # create a 5x5 floor
     floor = Objects::Plain.new(5, 5)
     floor.material = material
@@ -64,6 +69,7 @@ class BoxDemo < Prism::Core::GameEngine
     camera.transform.look_at(box)
 
     # add everything to the scene
+    add_object(monkey)
     add_object(ambient_light)
     add_object(sun_light)
     add_object(point_light)
