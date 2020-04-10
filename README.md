@@ -16,7 +16,7 @@ A 3D rendering engine.
 ![Peek 2020-04-11 00-58](https://user-images.githubusercontent.com/166412/79012747-38b3c000-7b91-11ea-987d-37026e4052ab.gif)
 
 <details>
-  <summary>Click to see code</summary>
+  <summary>Click to see the demo code</summary>
 
 ```crystal
 require "prism"
