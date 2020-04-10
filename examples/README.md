@@ -11,5 +11,5 @@ shards install
 
 Then you can run each of the examples. Run the following from the root directory or it won't pick up the prism library.
 ```
-crystal examples/box/main.cr
+crystal examples/box.cr
 ```
