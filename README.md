@@ -2,9 +2,9 @@
 [![GitHub release](https://img.shields.io/github/release/neutrinog/prism.svg)](https://github.com/neutrinog/prism/releases)
 [![Build Status](https://travis-ci.org/neutrinog/prism.svg?branch=master)](https://travis-ci.org/neutrinog/prism)
 
-A 3D rendering engine.
+This is a stable, though not completely baked 3D rendering engine. Documentation is a little sparse right now, but hopefully the [examples](./examples) will help.
 
-> I'm looking to get some feedback on this first release. If you have ideas or suggestions please open an [issue](https://github.com/neutrinog/prism/issues).
+**I'm looking to get some feedback on this project. If you have ideas or suggestions please open an [issue](https://github.com/neutrinog/prism/issues).**
 
 ## Goals
 
