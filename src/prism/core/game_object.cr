@@ -82,7 +82,8 @@ module Prism::Core
     end
 
     # Performs rendering operations on this object's children
-    # TODO: *rendering_engine* is deprecated
+    #
+    # > Warning: the *rendering_engine* property will be deprecated in the future
     def render_all(shader : Light, rendering_engine : RenderingEngine)
       render(shader, rendering_engine)
 
@@ -108,7 +109,8 @@ module Prism::Core
     end
 
     # Performs rendering operations on this object
-    # TODO: *rendering_engine* is deprecated
+    #
+    # > Warning: the *rendering_engine* property will be deprecated in the future
     def render(shader : Light, rendering_engine : RenderingEngine)
       0.upto(@components.size - 1) do |i|
         @components[i].render(shader, rendering_engine)
