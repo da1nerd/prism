@@ -121,4 +121,4 @@ class ModelDemo < Core::GameEngine
   end
 end
 
-Prism::Adapter::GLFW.run("Model Demo", ModelDemo.new)
+Prism::ContextAdapter::GLFW.run("Model Demo", ModelDemo.new)

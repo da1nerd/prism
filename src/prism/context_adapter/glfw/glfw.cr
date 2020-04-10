@@ -1,9 +1,8 @@
 require "render_loop"
 require "crystglfw"
 
-# TODO: this should be under a Prism::Context::GLFW namespace
-# since this is setting up the context in which the game will run.
-module Prism::Adapter::GLFW
+# An adapter for the GLFW rendering context.
+module Prism::ContextAdapter::GLFW
   extend self
 
   def run(title : String, game : Core::GameEngine)
@@ -14,8 +13,8 @@ module Prism::Adapter::GLFW
     run(title, game, frame_rate, 800, 600)
   end
 
-  # Starts Prism.
-  # This automatically adds the standard rendering engine
+  # Starts up `Prism`.
+  # This automatically adds the standard `RenderingEngine` and attaches it to the `GameEngine`.
   def run(title : String, game : Core::GameEngine, frame_rate : Float64, width : Int32, height : Int32)
     rendering_engine = Core::RenderingEngine.new
     game.engine = rendering_engine
@@ -24,7 +23,6 @@ module Prism::Adapter::GLFW
     harness = RenderLoop::LoopHarness.new(frame_rate, engines)
     CrystGLFW.run do
       window = GLFW::Window.new(title: title, width: width, height: height)
-      window.startup # TODO: this is a temporary hack. The startup method should be called when the harness starts.
 
       harness.on_tick do
         CrystGLFW.poll_events
@@ -36,6 +34,6 @@ module Prism::Adapter::GLFW
 end
 
 module Prism
-  # inject the adapter into the top namespace
-  include Adapter::GLFW
+  # inject the adapter into the top namespace so we can easily access the `GLFW::Window`
+  include ContextAdapter::GLFW
 end

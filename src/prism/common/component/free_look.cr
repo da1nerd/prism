@@ -11,10 +11,10 @@ module Prism::Common::Component
     end
 
     def initialize(sensitivity : Float32)
-      initialize(sensitivity, Adapter::GLFW::Window::Key::Escape)
+      initialize(sensitivity, ContextAdapter::GLFW::Window::Key::Escape)
     end
 
-    def initialize(@sensitivity : Float32, @unlock_mouse_key : Adapter::GLFW::Window::Key)
+    def initialize(@sensitivity : Float32, @unlock_mouse_key : ContextAdapter::GLFW::Window::Key)
     end
 
     @[Override]

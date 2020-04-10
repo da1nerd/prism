@@ -82,4 +82,4 @@ class BoxDemo < Prism::Core::GameEngine
   end
 end
 
-Prism::Adapter::GLFW.run("Box Demo", BoxDemo.new)
+Prism::ContextAdapter::GLFW.run("Box Demo", BoxDemo.new)
