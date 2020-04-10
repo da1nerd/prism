@@ -10,7 +10,7 @@ module Prism::Common::Objects
       })
     end
 
-    def initialize(@width : Float32, @depth : Float32, @texture_coords : SpriteCoords)
+    def initialize(@width : Float32, @depth : Float32, @texture_coords : TextureCoords)
       super()
 
       field_depth = 1.0f32

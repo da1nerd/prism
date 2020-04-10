@@ -1,4 +1,3 @@
-require "annotation"
 require "./shader"
 require "./game_component"
 
@@ -19,7 +18,7 @@ module Prism::Core
       @shader.bind(self.to_uniform, transform, material, camera)
     end
 
-    def add_to_engine(engine : RenderingEngine)
+    def add_to_engine(engine : Core::RenderingEngine)
       engine.add_light(self)
     end
   end

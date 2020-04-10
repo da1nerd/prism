@@ -5,7 +5,7 @@ module Prism::Core
   abstract class GameComponent
     setter parent
 
-    @parent : GameObject = GameObject.new
+    @parent : Core::GameObject = Core::GameObject.new
 
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
     end
@@ -16,13 +16,13 @@ module Prism::Core
     # Renders the component
     #
     # > Warning: the *rendering_engine* property will be deprecated in the future
-    def render(light : Light, rendering_engine : RenderingEngine)
+    def render(light : Core::Light, rendering_engine : Core::RenderingEngine)
     end
 
-    def add_to_engine(engine : RenderingEngine)
+    def add_to_engine(engine : Core::RenderingEngine)
     end
 
-    def transform : Transform
+    def transform : Core::Transform
       @parent.transform
     end
   end
