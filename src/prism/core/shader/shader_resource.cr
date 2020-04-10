@@ -1,5 +1,5 @@
 require "lib_gl"
-require "./reference_counter.cr"
+require "../reference_counter.cr"
 
 module Prism::Core
   # Manages the state of a single GL shader program.

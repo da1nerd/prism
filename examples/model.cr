@@ -1,4 +1,4 @@
-require "../../src/prism/**"
+require "../src/prism/**"
 require "lib_gl"
 
 include Prism
@@ -50,16 +50,16 @@ class ModelDemo < Core::GameEngine
     mesh2 = Core::Mesh.new(verticies2, indicies2, true)
     mesh = Core::Mesh.new(verticies, indicies, true)
     material = Core::Material.new
-    material.add_texture("diffuse", Core::Texture.new(File.join(__DIR__, "../res/textures/defaultTexture.png")))
+    material.add_texture("diffuse", Core::Texture.new(File.join(__DIR__, "./res/textures/defaultTexture.png")))
     # material.add_float("specularIntensity", 1)
     # material.add_float("specularPower", 8)
 
     material2 = Core::Material.new
-    material2.add_texture("diffuse", Core::Texture.new(File.join(__DIR__, "../res/textures/test.png")))
+    material2.add_texture("diffuse", Core::Texture.new(File.join(__DIR__, "./res/textures/defaultTexture.png")))
     # material2.add_float("specularIntensity", 1)
     # material2.add_float("specularPower", 8)
 
-    monkey_file = File.join(__DIR__, "../res/models/", "monkey3.obj")
+    monkey_file = File.join(__DIR__, "./res/models/", "monkey3.obj")
 
     temp_mesh = Core::Mesh.new(monkey_file)
 
@@ -103,7 +103,7 @@ class ModelDemo < Core::GameEngine
 
     test_mesh1.add_child(test_mesh2)
 
-    test_mesh2.add_child(Common::Node::GhostCamera.new)
+    test_mesh2.add_child(Common::Objects::GhostCamera.new)
 
     add_object(test_mesh1)
     add_object(test_mesh3)

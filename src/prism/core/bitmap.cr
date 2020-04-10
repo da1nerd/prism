@@ -1,6 +1,5 @@
 require "lib_gl"
 require "stumpy_png"
-require "./resource_management/bitmap_resource"
 
 module Prism::Core
   # Provides a resource wrapper around the image loading library.

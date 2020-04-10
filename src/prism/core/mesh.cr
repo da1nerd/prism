@@ -1,5 +1,4 @@
 require "lib_gl"
-require "./resource_management/mesh_resource"
 
 module Prism::Core
   struct MeshCache
@@ -53,7 +52,7 @@ module Prism::Core
         exit 1
       end
 
-      test1 = OBJModel.new(file_name)
+      test1 = Model::OBJModel.new(file_name)
       model = test1.to_indexed_model
       model.calc_normals
 

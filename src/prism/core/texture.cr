@@ -1,5 +1,4 @@
 require "lib_gl"
-require "./resource_management/texture_resource"
 require "./bitmap.cr"
 
 module Prism::Core

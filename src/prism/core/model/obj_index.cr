@@ -1,4 +1,4 @@
-module Prism::Core
+module Prism::Core::Model
   class OBJIndex
     BASE       = 17i32
     MULTIPLIER = 31i32
