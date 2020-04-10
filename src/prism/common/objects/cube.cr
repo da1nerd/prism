@@ -1,6 +1,8 @@
 require "./shape"
 
 module Prism::Common::Objects
+  # A basic cube shape.
+  # You can configure the *size* of the cube to make it smaller or bigger.
   class Cube < Shape
     def initialize(@size : Float32)
       initialize(@size, {
