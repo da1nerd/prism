@@ -17,8 +17,7 @@ A 3D rendering engine.
 
 <details>
   <summary>Click to see code</summary>
-<p>
-```crystal
+<code>
 require "prism"
 
 module Demo
@@ -62,8 +61,7 @@ module Demo
 
   Prism::ContextAdapter::GLFW.run("Box", Box.new)
 end
-```
-</p>
+</code>
 </details>
 
 ## Installation
