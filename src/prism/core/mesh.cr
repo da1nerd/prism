@@ -1,5 +1,4 @@
 require "lib_gl"
-require "./vertex"
 require "./resource_management/mesh_resource"
 
 module Prism::Core

@@ -1,6 +1,6 @@
 require "annotation"
 require "./texture"
-require "./shader/serializable"
+require "./shader"
 
 module Prism::Core
   class Material

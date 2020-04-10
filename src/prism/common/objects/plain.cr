@@ -1,4 +1,4 @@
-module Prism::Common::Node
+module Prism::Common::Objects
   # A rectangular plane
   class Plain < Shape
     def initialize(@width : Float32, @depth : Float32)

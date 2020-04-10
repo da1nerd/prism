@@ -1,6 +1,7 @@
 require "lib_gl"
 require "annotation"
-require "../camera"
+
+# require "../camera"
 
 module Prism::Core
   # Expose the graphics language integer values so keep a clean abstraction.

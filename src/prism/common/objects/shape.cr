@@ -1,4 +1,4 @@
-module Prism::Common::Node
+module Prism::Common::Objects
   class Shape < Core::GameObject
     @material : Core::Material?
     @mesh : Core::Mesh?

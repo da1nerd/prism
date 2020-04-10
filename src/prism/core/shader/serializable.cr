@@ -1,106 +1,105 @@
 include Prism::VMath
 
-module Prism::Core
-  class Shader
-    # TODO: all of the below should eventually go into the Shader namespace.
-    annotation Field
+module Prism::Core::Shader
+  # TODO: all of the below should eventually go into the Shader namespace.
+  annotation Field
+  end
+
+  # This exception is raised when a uniform has an invalid type.
+  class UniformTypeException < Exception
+  end
+
+  alias UniformType = Int32 | Float32 | Vector3f | Matrix4f
+  alias UniformMap = Hash(String, UniformType)
+
+  # The `Prism::Shader::Serializable` module automatically generates methods for Uniform serialization when included.
+  #
+  # ## Example
+  #
+  # ```
+  # class A
+  #   include Shader::Serializable
+  #
+  #   @[Shader::Field]
+  #   @a : String = "a"
+  # end
+  #
+  # class B < A
+  #   include Shader::Serializable
+  #
+  #   @[Shader::Field]
+  #   @b : Float32 = 1
+  # end
+  #
+  # my_b = B.new
+  # my_b.to_uniform # => {"a" => "a", "b" => 1.0}
+  # ```
+  #
+  # ### Usage
+  #
+  # Including `Shader::Serializable` will create a `#to_uniform` method on the current class.
+  # By default, this method will serialize into a uniform object containing the value of every annotated instance variable, the keys being the instance variable name.
+  # Supported primitives are (string, integer, float, Vector3f),
+  # along with objects which include `Shader::Serializable`.
+  # Union types are not supported.
+  #
+  # To change how individual instance variables are parsed and serialized, the annotation `Shader::Field`
+  # can be placed on the instance variable. Annotating methods is also allowed.
+  #
+  # ```
+  # class A
+  #   include Shader::Serializable
+  #
+  #   @[Shader::Field(key: "attribute")]
+  #   @a : String = "value"
+  # end
+  # ```
+  #
+  # `Shader::Field` properties:
+  # * **key**: the value of the key in the uniform object (by default the name of the instance variable)
+  #
+  # ### Class annotation `Shader::Serializable::Options`
+  #
+  # supported properties:
+  # * **name**: the name of the uniform struct variable in the glsl program.
+  #
+  # ```
+  # @[Shader::Serializable::Options(name: "R_spotLight")]
+  # class A
+  #   include Shader::Serializable
+  #   @[Shader::Field]
+  #   @a : Int32 = 1
+  # end
+  #
+  # c = A.new
+  # c.to_uniform # => {"R_spotLight.a" => 1}
+  # ```
+  module Serializable
+    annotation Options
     end
 
-    # This exception is raised when a uniform has an invalid type.
-    class UniformTypeException < Exception
+    private def raise_uniform_parse_error(klass, field, type, valid_types, field_location)
+      message = <<-STRING
+  Invalid uniform configuration!
+  #{klass}.#{field} has an invalid uniform type '#{type}'. Try serialising '#{type}' or change '#{field}' to one of #{valid_types}.
+    from #{field_location[:file]}:#{field_location[:line]}:#{field_location[:column]}.
+  STRING
+      raise UniformTypeException.new(message)
     end
 
-    alias UniformType = Int32 | Float32 | Vector3f | Matrix4f
-    alias UniformMap = Hash(String, UniformType)
+    # Serializes the class to a Uniform object that can be consumed by the `Prism::Shader`.
+    @[Raises]
+    def to_uniform
+      to_uniform(false)
+    end
 
-    # The `Prism::Shader::Serializable` module automatically generates methods for Uniform serialization when included.
-    #
-    # ## Example
-    #
-    # ```
-    # class A
-    #   include Shader::Serializable
-    #
-    #   @[Shader::Field]
-    #   @a : String = "a"
-    # end
-    #
-    # class B < A
-    #   include Shader::Serializable
-    #
-    #   @[Shader::Field]
-    #   @b : Float32 = 1
-    # end
-    #
-    # my_b = B.new
-    # my_b.to_uniform # => {"a" => "a", "b" => 1.0}
-    # ```
-    #
-    # ### Usage
-    #
-    # Including `Shader::Serializable` will create a `#to_uniform` method on the current class.
-    # By default, this method will serialize into a uniform object containing the value of every annotated instance variable, the keys being the instance variable name.
-    # Supported primitives are (string, integer, float, Vector3f),
-    # along with objects which include `Shader::Serializable`.
-    # Union types are not supported.
-    #
-    # To change how individual instance variables are parsed and serialized, the annotation `Shader::Field`
-    # can be placed on the instance variable. Annotating methods is also allowed.
-    #
-    # ```
-    # class A
-    #   include Shader::Serializable
-    #
-    #   @[Shader::Field(key: "attribute")]
-    #   @a : String = "value"
-    # end
-    # ```
-    #
-    # `Shader::Field` properties:
-    # * **key**: the value of the key in the uniform object (by default the name of the instance variable)
-    #
-    # ### Class annotation `Shader::Serializable::Options`
-    #
-    # supported properties:
-    # * **name**: the name of the uniform struct variable in the glsl program.
-    #
-    # ```
-    # @[Shader::Serializable::Options(name: "R_spotLight")]
-    # class A
-    #   include Shader::Serializable
-    #   @[Shader::Field]
-    #   @a : Int32 = 1
-    # end
-    #
-    # c = A.new
-    # c.to_uniform # => {"R_spotLight.a" => 1}
-    # ```
-    module Serializable
-      annotation Options
-      end
+    # Allows manually injecting some uniform keys
+    private def on_to_uniform : UniformMap | Nil
+    end
 
-      private def raise_uniform_parse_error(klass, field, type, valid_types, field_location)
-        message = <<-STRING
-    Invalid uniform configuration!
-    #{klass}.#{field} has an invalid uniform type '#{type}'. Try serialising '#{type}' or change '#{field}' to one of #{valid_types}.
-      from #{field_location[:file]}:#{field_location[:line]}:#{field_location[:column]}.
-    STRING
-        raise UniformTypeException.new(message)
-      end
-
-      # Serializes the class to a Uniform object that can be consumed by the `Prism::Shader`.
-      @[Raises]
-      def to_uniform
-        to_uniform(false)
-      end
-
-      # Allows manually injecting some uniform keys
-      private def on_to_uniform : UniformMap | Nil
-      end
-
-      # Produces a map of uniform values
-      protected def to_uniform(is_sub : Bool)
-        {% begin %}
+    # Produces a map of uniform values
+    protected def to_uniform(is_sub : Bool)
+      {% begin %}
         {% options = @type.annotation(::Prism::Core::Shader::Serializable::Options) %}
         {% struct_name = options && options[:name] || false %}
         {% properties = {} of Nil => Nil %}
@@ -190,7 +189,6 @@ module Prism::Core
         end
         uniforms
       {% end %}
-      end
     end
   end
 end
