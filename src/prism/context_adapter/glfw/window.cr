@@ -2,7 +2,12 @@ require "render_loop"
 require "crystglfw"
 
 module Prism::ContextAdapter::GLFW
+  # The keyboard key enum.
+  # this contains a list of all keys.
   alias Key = CrystGLFW::Key
+
+  # The mouse button enum.
+  # This contains a list of all mouse buttons.
   alias MouseButton = CrystGLFW::MouseButton
 
   # A window adapter.

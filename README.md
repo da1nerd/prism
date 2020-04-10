@@ -4,16 +4,14 @@
 
 A 3D rendering engine.
 
-This project was largely inspired by ["The Benny Box"](https://www.youtube.com/channel/UCnlpv-hhcsAtEHKR2y2fW4Q) and his [3D Game Engine Tutorial](https://www.youtube.com/watch?v=ss3AnSxJ2X8&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&index=1). Thanks for all the good tutorials Benny!
+## Goals
 
-This is a work in progress as I follow tutorials and wrap my head around game development.
+* **Defaults** most things should "just work" with sane defaults.
+* **Pure** other than a few system level dependencies, this should be 100% pure crystal code. Wrapping an existing project is cheating.
+* **Simple** try to avoid obtuse graphics language, or at least document it very well.
+* **Extensible** you can extend/replace/add engines to the core with ease.
 
-## Features
-
-* Support for vertex and fragment shaders
-
-## Demo
-You can view a demo game built with this library at https://github.com/neutrinog/prism-demo.
+![Peek 2020-04-11 00-58](https://user-images.githubusercontent.com/166412/79012747-38b3c000-7b91-11ea-987d-37026e4052ab.gif)
 
 ## Installation
 
@@ -71,3 +69,7 @@ make start
 ## Contributors
 
 - [neutrinog](https://github.com/neutrinog) Joel Lonbeck - creator, maintainer
+
+## Special Thanks
+
+This project was largely inspired by ["The Benny Box"](https://www.youtube.com/channel/UCnlpv-hhcsAtEHKR2y2fW4Q) and his [3D Game Engine Tutorial](https://www.youtube.com/watch?v=ss3AnSxJ2X8&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5&index=1). Thanks for all the good tutorials Benny!
