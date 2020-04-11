@@ -14,3 +14,6 @@ addons:
 script:
   - crystal spec
   - crystal tool format --check
+
+after_success:
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then crystal docs && netlify deploy --prod; fi
