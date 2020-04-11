@@ -84,11 +84,11 @@ module Prism::Core
     # Performs rendering operations on this object's children
     #
     # > Warning: the *rendering_engine* property will be deprecated in the future
-    def render_all(shader : Core::Light, rendering_engine : Core::RenderingEngine)
-      render(shader, rendering_engine)
+    def render_all(&block : RenderCallback)
+      render(&block)
 
       0.upto(@children.size - 1) do |i|
-        @children[i].render_all(shader, rendering_engine)
+        @children[i].render_all(&block)
       end
     end
 
@@ -111,9 +111,9 @@ module Prism::Core
     # Performs rendering operations on this object
     #
     # > Warning: the *rendering_engine* property will be deprecated in the future
-    def render(shader : Core::Light, rendering_engine : Core::RenderingEngine)
+    def render(&block : RenderCallback)
       0.upto(@components.size - 1) do |i|
-        @components[i].render(shader, rendering_engine)
+        @components[i].render(&block)
       end
     end
 

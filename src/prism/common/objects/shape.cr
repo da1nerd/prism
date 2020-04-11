@@ -31,11 +31,10 @@ module Prism::Common::Objects
     end
 
     @[Override]
-    def render(light : Core::Light, rendering_engine : Core::RenderingEngine)
+    def render(&block : Core::RenderCallback)
       if mesh = @mesh
         if material = @material
-          light.bind(self.transform, material, rendering_engine.main_camera)
-          mesh.draw
+          block.call self.transform, material, mesh
         end
       end
     end

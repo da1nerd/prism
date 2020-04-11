@@ -6,6 +6,7 @@ require "annotation"
 module Prism::Core
   # Expose the graphics language integer values so keep a clean abstraction.
   alias GraphicsInt = LibGL::Int
+  alias RenderCallback = (Transform, Material, Mesh) -> Nil
 
   # Manages the OpenGL environment and renders game objects
   class RenderingEngine < RenderLoop::Engine
@@ -56,7 +57,10 @@ module Prism::Core
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
       if light = @ambient_light
-        object.render_all(light, self)
+        object.render_all do |transform, material, mesh|
+          light.as(Light).bind(transform, material, self.main_camera)
+          mesh.draw
+        end
       end
 
       LibGL.enable(LibGL::BLEND)
@@ -66,8 +70,13 @@ module Prism::Core
       LibGL.depth_mask(LibGL::FALSE)
       LibGL.depth_func(LibGL::EQUAL)
 
-      @lights.each do |light|
-        object.render_all(light, self)
+      i = 0
+      while i < @lights.size
+        object.render_all do |transform, material, mesh|
+          @lights[i].as(Light).bind(transform, material, self.main_camera)
+          mesh.draw
+        end
+        i += 1
       end
 
       LibGL.depth_func(LibGL::LESS)
