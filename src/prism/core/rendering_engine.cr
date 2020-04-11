@@ -73,7 +73,7 @@ module Prism::Core
       i = 0
       while i < @lights.size
         object.render_all do |transform, material, mesh|
-          @lights[i].as(Light).bind(transform, material, self.main_camera)
+          @lights[i].bind(transform, material, self.main_camera)
           mesh.draw
         end
         i += 1
