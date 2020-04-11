@@ -5,9 +5,8 @@ module Prism::Common::Component
     end
 
     @[Override]
-    def render(light : Core::Light, rendering_engine : Core::RenderingEngine)
-      light.bind(self.transform, @material, rendering_engine.main_camera)
-      @mesh.draw
+    def render(&block : Core::RenderCallback)
+      block.call self.transform, @material, @mesh
     end
   end
 end

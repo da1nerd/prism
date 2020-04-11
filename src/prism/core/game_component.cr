@@ -16,7 +16,7 @@ module Prism::Core
     # Renders the component
     #
     # > Warning: the *rendering_engine* property will be deprecated in the future
-    def render(light : Core::Light, rendering_engine : Core::RenderingEngine)
+    def render(&block : RenderCallback)
     end
 
     def add_to_engine(engine : Core::RenderingEngine)
