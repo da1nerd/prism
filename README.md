@@ -12,6 +12,12 @@ This is a stable, though not completely baked, 3D rendering engine. Documentatio
 * **Simple** try to avoid obtuse graphics language, or at least document it very well so noobs can understand what's going on.
 * **Extensible** you can extend/replace/add engines to the core with ease.
 
+## Roadmap
+
+I'm building a roadmap in [this issue](https://github.com/neutrinog/prism/issues/45).
+
+## Demo
+
 ![Peek 2020-04-11 00-58](https://user-images.githubusercontent.com/166412/79012747-38b3c000-7b91-11ea-987d-37026e4052ab.gif)
 
 <details>
