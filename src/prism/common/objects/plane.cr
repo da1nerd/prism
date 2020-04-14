@@ -1,7 +1,7 @@
 module Prism::Common::Objects
   # A rectangular plane
   # It doesn't get much simpler than that.
-  class Plain < Shape
+  class Plane < Shape
     def initialize(@width : Float32, @depth : Float32)
       initialize(@width, @depth, {
         bottom_left:  Vector2f.new(0, 0),

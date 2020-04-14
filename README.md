@@ -34,7 +34,7 @@ module Demo
       red_material = Core::Material.new
       red_material.color = Color.new(1, 0, 0)
 
-      floor = Objects::Plain.new(5, 5)
+      floor = Objects::Plane.new(5, 5)
       floor.material = red_material
       add_object(floor)
 
