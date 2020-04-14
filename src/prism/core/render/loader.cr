@@ -22,11 +22,12 @@ module Prism::Core::Render
     end
 
     # Loads the vertex positions into a vertex attibute object.
-    def load_to_vao(positions : Array(Float32)) : RawModel
+    def load_to_vao(positions : Array(Float32), indicies : Array(Int32)) : RawModel
       vao_id : Int32 = create_vao
+      bind_indicies_buffer(indicies)
       store_data_in_attribute_list(0, positions)
       unbind_vao
-      RawModel.new(vao_id, positions.size / 3)
+      RawModel.new(vao_id, indicies.size)
     end
 
     # Create a new vertex attribute object
@@ -52,6 +53,14 @@ module Prism::Core::Render
     # Unbind the vertex attribute object
     private def unbind_vao
       LibGL.bind_vertex_array(0)
+    end
+
+    private def bind_indicies_buffer(indicies : Array(Int32))
+        vbo_id = LibGL.gen_buffers
+        vbos.push(vbo_id)
+        LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, vbo_id)
+        LibGL.buffer_data(LibGL::ELEMENT_ARRAY_BUFFER, indicies, LibGL::STATIC_DRAW)
+        LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, 0)
     end
   end
 end
