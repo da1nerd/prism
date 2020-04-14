@@ -16,21 +16,21 @@ class BoxDemo < Prism::Core::GameEngine
     monkey.move_south(1).move_east(1).elevate_by(1)
 
     # create a 5x5 floor
-    floor = Objects::Plain.new(5, 5)
+    floor = Objects::Plane.new(5, 5)
     floor.material = material
 
     # creates a 5x5 ceiling
-    ceiling = Objects::Plain.new(5, 5)
+    ceiling = Objects::Plane.new(5, 5)
     ceiling.material = material
     ceiling.reverse_face
     ceiling.elevate_to(5)
 
     # create a north wall that is 5x2
-    north_wall = Objects::Plain.new(5, 5)
+    north_wall = Objects::Plane.new(5, 5)
     north_wall.material = material
     north_wall.rotate_x_axis(Prism::VMath::Angle.from_degrees(-90)).move_north(5)
     # create a west wall that is 5x2
-    west_wall = Objects::Plain.new(5, 5)
+    west_wall = Objects::Plane.new(5, 5)
     west_wall.material = material
     west_wall.rotate_x_axis(Prism::VMath::Angle.from_degrees(-90))
     west_wall.rotate_y_axis(Prism::VMath::Angle.from_degrees(-90))
