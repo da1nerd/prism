@@ -15,5 +15,10 @@ module Prism::Core
       @ref_count -= 1
       return @ref_count == 0
     end
+
+    # Checks if there are any references of this object
+    def has_references? : Bool
+      return @ref_count > 0
+    end
   end
 end

@@ -10,9 +10,11 @@ class BoxDemo < Prism::Core::GameEngine
     green_material = Prism::Core::Material.new
     green_material.color = Color.new(0, 1, 0)
 
+    stall_material = Prism::Core::Material.new(File.join(__DIR__, "./res/textures/stallTexture.png"))
+
     # create monkey head
-    monkey_file = File.join(__DIR__, "./res/models/", "monkey3.obj")
-    monkey = Prism::Core::GameObject.new.add_component(Component::MeshRenderer.new(Prism::Core::Mesh.new(monkey_file), green_material))
+    monkey_file = File.join(__DIR__, "./res/models/", "stall.obj")
+    monkey = Prism::Core::GameObject.new.add_component(Component::MeshRenderer.new(Prism::Core::Mesh.new(monkey_file), stall_material))
     monkey.move_south(1).move_east(1).elevate_by(1)
 
     # create a 5x5 floor
@@ -48,7 +50,7 @@ class BoxDemo < Prism::Core::GameEngine
     # create a light with default values
     sun_light = Prism::Core::Object.new
     sun_light.add_component(Light::DirectionalLight.new)
-    sun_light.transform.look_at(box)
+    sun_light.transform.look_at(monkey)
 
     point_light = Prism::Core::Object.new
     point_light.add_component(Light::PointLight.new(Prism::VMath::Vector3f.new(1, 0, 0)))
@@ -66,20 +68,20 @@ class BoxDemo < Prism::Core::GameEngine
     # creates a moveable camera with sane defaults
     camera = Objects::GhostCamera.new
     camera.move_east(3.5).elevate_by(0.5)
-    camera.transform.look_at(box)
+    camera.transform.look_at(monkey)
 
     # add everything to the scene
     add_object(monkey)
     add_object(ambient_light)
     add_object(sun_light)
-    add_object(point_light)
-    add_object(spot_light)
-    add_object(floor)
-    add_object(ceiling)
-    add_object(north_wall)
-    add_object(west_wall)
-    add_object(box)
-    add_object(tiny_box)
+    # add_object(point_light)
+    # add_object(spot_light)
+    # add_object(floor)
+    # add_object(ceiling)
+    # add_object(north_wall)
+    # add_object(west_wall)
+    # add_object(box)
+    # add_object(tiny_box)
     add_object(camera)
 
     # TODO: allow changing an object's center axis as well.

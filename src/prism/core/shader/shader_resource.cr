@@ -43,16 +43,12 @@ module Prism::Core
     end
 
     # garbage collection
-    # TODO: make sure this is getting called
     def finalize
-      puts "cleaning up shader resource garbage"
       @shaders.each do |id|
         LibGL.detach_shader(@program, id)
         LibGL.delete_shader(id)
       end
       LibGL.delete_program(@program)
-      # TODO: do we need this?
-      LibGL.delete_buffers(1, out @program)
     end
   end
 end

@@ -7,7 +7,7 @@ module Prism::Common::Component
     @position : Vector3f
 
     def initialize
-      initialize(4)
+      initialize(10)
     end
 
     def initialize(speed : Float32)
