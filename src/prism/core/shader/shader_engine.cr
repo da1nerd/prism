@@ -27,6 +27,7 @@ module Prism::Core::Shader
     # end
     # ```
     #
+    # TODO: let this take in a path to the vertex shader and fragment shader for more flexibility.
     def initialize(@file_name : String, &shader_reader : String -> String)
       @uniform_map = Shader::UniformMap.new
       if @@loaded_shaders.has_key?(@file_name)
@@ -34,13 +35,16 @@ module Prism::Core::Shader
         @resource.add_reference
       else
         @resource = ShaderResource.new
-        vertex_shader_text = ShaderEngine.load_shader_program("#{@file_name}.vs", &shader_reader)
-        fragment_shader_text = ShaderEngine.load_shader_program("#{@file_name}.fs", &shader_reader)
+        vertex_shader_text = ShaderEngine.read_shader_file("#{@file_name}.vs", &shader_reader)
+        fragment_shader_text = ShaderEngine.read_shader_file("#{@file_name}.fs", &shader_reader)
 
-        add_vertex_shader(vertex_shader_text)
-        add_fragment_shader(fragment_shader_text)
+        vertex_shader_id = load_shader(vertex_shader_text, LibGL::VERTEX_SHADER)
+        fragment_shader_id = load_shader(fragment_shader_text, LibGL::FRAGMENT_SHADER)
 
-        add_all_attributes(vertex_shader_text)
+        @resource.attach_shader(vertex_shader_id)
+        @resource.attach_shader(fragment_shader_id)
+
+        automatically_bind_attributes(vertex_shader_text)
 
         compile
 
@@ -66,10 +70,15 @@ module Prism::Core::Shader
       end
     end
 
-    # Uses the shader
-    def bind(@uniform_map : Shader::UniformMap, transform : Transform, material : Material, camera : Camera)
+    # Binds the program to OpenGL so it can run.
+    def start(@uniform_map : Shader::UniformMap, transform : Transform, material : Material, camera : Camera)
       LibGL.use_program(@resource.program)
       update_uniforms(transform, material, camera)
+    end
+
+    # Unbinds the program from OpenGL so it won't run.
+    def stop
+      LibGL.use_program(0)
     end
 
     private def update_uniforms(transform : Transform, material : Material, camera : Camera)
@@ -165,8 +174,8 @@ module Prism::Core::Shader
       LibGL.uniform_matrix_4fv(@resource.uniforms[name], 1, LibGL::TRUE, value.as_array)
     end
 
-    private def set_attrib_location(attribute : String, location : LibGL::Int)
-      LibGL.bind_attrib_location(@resource.program, location, attribute)
+    protected def bind_attribute(variable_name : String, attribute_location : LibGL::Int)
+      LibGL.bind_attrib_location(@resource.program, attribute_location, variable_name)
     end
 
     # compiles the shader
@@ -198,7 +207,7 @@ module Prism::Core::Shader
     end
 
     # Loads a shader program
-    def self.load_shader_program(file_path : String, &file_reader : String -> String) : String
+    def self.read_shader_file(file_path : String, &file_reader : String -> String) : String
       input = file_reader.call file_path
       evaluate_includes input, &file_reader
     end
@@ -211,7 +220,7 @@ module Prism::Core::Shader
       input.each_line() do |line|
         include_match = line.scan(/\#include\s+["<]([^">]*)[>"]/)
         if include_match.size > 0
-          shader_source += load_shader_program(include_match[0][1], &file_reader)
+          shader_source += read_shader_file(include_match[0][1], &file_reader)
         else
           shader_source += line + "\n"
         end
@@ -220,31 +229,21 @@ module Prism::Core::Shader
       return shader_source
     end
 
-    private def add_vertex_shader(text : String)
-      add_program(text, LibGL::VERTEX_SHADER)
-    end
-
-    private def add_geometry_shader(text : String)
-      add_program(text, LibGL::GEOMETRY_SHADER)
-    end
-
-    private def add_fragment_shader(text : String)
-      add_program(text, LibGL::FRAGMENT_SHADER)
-    end
-
     # Parses the shader text for attribute delcarations and automatically adds them
-    private def add_all_attributes(shader_text : String)
-      keyword = "attribute"
-      start_location = shader_text.index(/\b#{keyword}\b/)
+    # This supports older versions of glsl as well as newer versions.
+    private def automatically_bind_attributes(shader_text : String)
+      version = shader_text.scan(/#version\s+(\d+)/)[0][1].to_i
+      keyword = version > 120 ? "in" : "attribute"
+      start_location = shader_text.index(/^\b#{keyword}\b/)
       attribute_number = 0
       while start = start_location
         end_location = shader_text.index(";", start).not_nil!
         uniform_line = shader_text[start..end_location]
-        matches = uniform_line.scan(/\b#{keyword}\b\s+([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_]+)/)
+        matches = uniform_line.scan(/^\b#{keyword}\b\s+([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_]+)/)
         attribute_type = matches[0][1]
         attribute_name = matches[0][2]
 
-        set_attrib_location(attribute_name, attribute_number)
+        bind_attribute(attribute_name, attribute_number)
         attribute_number += 1
 
         start_location = shader_text.index(/\b#{keyword}\b/, end_location)
@@ -329,9 +328,10 @@ module Prism::Core::Shader
       end
     end
 
-    private def add_program(text : String, type : LibGL::UInt)
-      shader = LibGL.create_shader(type)
-      if shader == 0
+    # Adds a shader program to OpenGL
+    private def load_shader(text : String, type : LibGL::UInt) : UInt32
+      shader_id = LibGL.create_shader(type)
+      if shader_id == 0
         shader_error_code = LibGL.get_error
         puts "Error #{shader_error_code}: Shader creation failed. Could not find valid memory location when adding shader"
         exit 1
@@ -339,21 +339,18 @@ module Prism::Core::Shader
 
       ptr = text.to_unsafe
       source = [ptr]
-      size = [text.size]
-      size = Pointer(Int32).new(0)
-      LibGL.shader_source(shader, 1, source, size)
-      LibGL.compile_shader(shader)
+      LibGL.shader_source(shader_id, 1, source, Pointer(Int32).new(0))
+      LibGL.compile_shader(shader_id)
 
-      LibGL.get_shader_iv(shader, LibGL::COMPILE_STATUS, out compile_status)
+      LibGL.get_shader_iv(shader_id, LibGL::COMPILE_STATUS, out compile_status)
       if compile_status == LibGL::FALSE
-        LibGL.get_shader_info_log(shader, 1024, nil, out compile_log)
+        LibGL.get_shader_info_log(shader_id, 2048, nil, out compile_log)
         compile_log_str = String.new(pointerof(compile_log))
         compile_error_code = LibGL.get_error
         puts "Error #{compile_error_code}: Failed compiling shader '#{text}': #{compile_log_str}"
         exit 1
       end
-
-      LibGL.attach_shader(@resource.program, shader)
+      shader_id
     end
   end
 end

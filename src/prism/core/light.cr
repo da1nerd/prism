@@ -14,8 +14,13 @@ module Prism::Core
 
     # Binds an object's *transform* and *material* to the light shader.
     # This should be done just before drawing the object's `Prism::Mesh`
-    def bind(transform : Transform, material : Material, camera : Camera)
-      @shader.bind(self.to_uniform, transform, material, camera)
+    def on(transform : Transform, material : Material, camera : Camera)
+      @shader.start(self.to_uniform, transform, material, camera)
+    end
+
+    # Turns off the light
+    def off
+      @shader.stop
     end
 
     def add_to_engine(engine : Core::RenderingEngine)

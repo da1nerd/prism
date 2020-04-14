@@ -57,11 +57,11 @@ module Prism::Core::Render
     end
 
     private def bind_indicies_buffer(indicies : Array(UInt32))
-        LibGL.gen_buffers(1, out vbo_id)
-        @vbos.push(vbo_id)
-        LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, vbo_id)
-        LibGL.buffer_data(LibGL::ELEMENT_ARRAY_BUFFER, indicies.size * sizeof(Float32), indicies, LibGL::STATIC_DRAW)
-        LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, 0)
+      LibGL.gen_buffers(1, out vbo_id)
+      @vbos.push(vbo_id)
+      LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, vbo_id)
+      LibGL.buffer_data(LibGL::ELEMENT_ARRAY_BUFFER, indicies.size * sizeof(Float32), indicies, LibGL::STATIC_DRAW)
+      LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, 0)
     end
   end
 end

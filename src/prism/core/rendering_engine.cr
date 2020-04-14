@@ -58,8 +58,9 @@ module Prism::Core
 
       if light = @ambient_light
         object.render_all do |transform, material, mesh|
-          light.as(Light).bind(transform, material, self.main_camera)
+          light.as(Light).on(transform, material, self.main_camera)
           mesh.draw
+          light.as(Light).off
         end
       end
 
@@ -73,8 +74,9 @@ module Prism::Core
       i = 0
       while i < @lights.size
         object.render_all do |transform, material, mesh|
-          @lights[i].bind(transform, material, self.main_camera)
+          @lights[i].on(transform, material, self.main_camera)
           mesh.draw
+          @lights[i].off
         end
         i += 1
       end
