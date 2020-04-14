@@ -19,7 +19,9 @@ module Prism::Core
     # TODO: make sure this is getting called
     def finalize
       puts "cleaning up texture resource garbage"
-      LibGL.delete_buffers(1, out @id)
+      LibGL.delete_textures(1, pointerof(@id))
+      # TODO: do we need this?
+      LibGL.delete_buffers(1, pointerof(@id))
     end
   end
 end

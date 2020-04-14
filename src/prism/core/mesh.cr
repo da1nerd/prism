@@ -97,11 +97,7 @@ module Prism::Core
       end
     end
 
-    def draw
-      LibGL.enable_vertex_attrib_array(0)
-      LibGL.enable_vertex_attrib_array(1)
-      LibGL.enable_vertex_attrib_array(2)
-
+    def draw()
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @resource.vbo)
 
       mesh_offset = Pointer(Void).new(0)
@@ -117,10 +113,6 @@ module Prism::Core
       LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @resource.ibo)
       indicies_offset = Pointer(Void).new(0)
       LibGL.draw_elements(LibGL::TRIANGLES, @resource.size, LibGL::UNSIGNED_INT, indicies_offset)
-
-      LibGL.disable_vertex_attrib_array(0)
-      LibGL.disable_vertex_attrib_array(1)
-      LibGL.disable_vertex_attrib_array(2)
     end
 
     # Calculates the up direction for all the verticies

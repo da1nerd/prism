@@ -12,8 +12,9 @@ module Prism::Core
     @uniform_names : Array(String)
     @uniform_types : Array(String)
     @shaders : Array(LibGL::UInt)
+    @num_attributes : LibGL::UInt
 
-    getter program, uniforms, uniform_names, uniform_types
+    getter program, uniforms, uniform_names, uniform_types, num_attributes
 
     def initialize
       @program = LibGL.create_program
@@ -21,6 +22,7 @@ module Prism::Core
       @uniform_names = [] of String
       @uniform_types = [] of String
       @shaders = [] of LibGL::UInt
+      @num_attributes = 0
 
       if @program == 0
         program_error_code = LibGL.get_error
@@ -33,6 +35,11 @@ module Prism::Core
     def attach_shader(shader_id : LibGL::UInt)
       @shaders.push(shader_id)
       LibGL.attach_shader(@program, shader_id)
+    end
+
+    def bind_attribute(variable_name : String, attribute_location : LibGL::Int)
+      LibGL.bind_attrib_location(@program, attribute_location, variable_name)
+      @num_attributes += 1
     end
 
     # garbage collection

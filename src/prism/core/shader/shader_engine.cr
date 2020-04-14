@@ -74,10 +74,16 @@ module Prism::Core::Shader
     def start(@uniform_map : Shader::UniformMap, transform : Transform, material : Material, camera : Camera)
       LibGL.use_program(@resource.program)
       update_uniforms(transform, material, camera)
+      0.upto(@resource.num_attributes) do |i|
+        LibGL.enable_vertex_attrib_array(i)
+      end
     end
 
     # Unbinds the program from OpenGL so it won't run.
     def stop
+      0.upto(@resource.num_attributes) do |i|
+        LibGL.disable_vertex_attrib_array(i)
+      end
       LibGL.use_program(0)
     end
 
@@ -174,10 +180,6 @@ module Prism::Core::Shader
       LibGL.uniform_matrix_4fv(@resource.uniforms[name], 1, LibGL::TRUE, value.as_array)
     end
 
-    protected def bind_attribute(variable_name : String, attribute_location : LibGL::Int)
-      LibGL.bind_attrib_location(@resource.program, attribute_location, variable_name)
-    end
-
     # compiles the shader
     private def compile
       LibGL.link_program(@resource.program)
@@ -234,7 +236,7 @@ module Prism::Core::Shader
     private def automatically_bind_attributes(shader_text : String)
       version = shader_text.scan(/#version\s+(\d+)/)[0][1].to_i
       keyword = version > 120 ? "in" : "attribute"
-      start_location = shader_text.index(/^\b#{keyword}\b/)
+      start_location = shader_text.index(/^\b#{keyword}\b/m)
       attribute_number = 0
       while start = start_location
         end_location = shader_text.index(";", start).not_nil!
@@ -243,7 +245,7 @@ module Prism::Core::Shader
         attribute_type = matches[0][1]
         attribute_name = matches[0][2]
 
-        bind_attribute(attribute_name, attribute_number)
+        @resource.bind_attribute(attribute_name, attribute_number)
         attribute_number += 1
 
         start_location = shader_text.index(/\b#{keyword}\b/, end_location)
