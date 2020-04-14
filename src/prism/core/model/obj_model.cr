@@ -4,16 +4,16 @@ module Prism::Core::Model
   # Represents an OBJ model.
   # This class can load and parses OBJ models
   class OBJModel
-    @positions : Array(Vector3f)
-    @tex_coords : Array(Vector2f)
+    @verticies : Array(Vector3f)
+    @textures : Array(Vector2f)
     @normals : Array(Vector3f)
     @indicies : Array(OBJIndex)
     @has_tex_coords : Bool
     @has_normals : Bool
 
     def initialize(file_name : String)
-      @positions = [] of Vector3f
-      @tex_coords = [] of Vector2f
+      @verticies = [] of Vector3f
+      @textures = [] of Vector2f
       @normals = [] of Vector3f
       @indicies = [] of OBJIndex
       @has_tex_coords = false
@@ -25,10 +25,10 @@ module Prism::Core::Model
           next
         elsif tokens[0] === "v"
           # verticies
-          @positions.push(Vector3f.new(tokens[1].to_f32, tokens[2].to_f32, tokens[3].to_f32))
+          @verticies.push(Vector3f.new(tokens[1].to_f32, tokens[2].to_f32, tokens[3].to_f32))
         elsif tokens[0] === "vt"
           # vertex textures
-          @tex_coords.push(Vector2f.new(tokens[1].to_f32, tokens[2].to_f32))
+          @textures.push(Vector2f.new(tokens[1].to_f32, tokens[2].to_f32))
         elsif tokens[0] === "vn"
           # vertex normals
           @normals.push(Vector3f.new(tokens[1].to_f32, tokens[2].to_f32, tokens[3].to_f32))
@@ -52,12 +52,14 @@ module Prism::Core::Model
 
       0.upto(@indicies.size - 1) do |i|
         current_index = @indicies[i]
-        current_position = @positions[current_index.vertex_index]
+        current_position = @verticies[current_index.vertex_index]
         current_tex_coord = Vector2f.new(0f32, 0f32)
         current_normal = Vector3f.new(0f32, 0f32, 0f32)
 
         if @has_tex_coords
-          current_tex_coord = @tex_coords[current_index.tex_coord_index]
+          # TRICKY: blender starts from the bottom left of the texture, so we have to move it to the top left for OpenGL.
+          tmp = @textures[current_index.tex_coord_index]
+          current_tex_coord = Vector2f.new(tmp.x, 1 - tmp.y)
         end
 
         if @has_normals
