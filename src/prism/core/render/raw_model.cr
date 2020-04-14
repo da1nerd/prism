@@ -7,7 +7,7 @@ module Prism::Core::Render
     # The number of verticies stored in the vertex attribute object
     getter vertex_count
 
-    def initialize(@vao_id : Int32, @vertex_count : Int32)
+    def initialize(@vao_id : UInt32, @vertex_count : Int32)
     end
   end
 end

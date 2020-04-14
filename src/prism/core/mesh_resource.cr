@@ -7,7 +7,9 @@ module Prism::Core
   # Keeps track of references to a single GL mesh (represented by several buffers)
   # and performs cleanup operations during garbage collection
   class MeshResource < ReferenceCounter
+    # Vertex buffer object
     @vbo : LibGL::UInt
+    # Indicies buffer object
     @ibo : LibGL::UInt
     @size : Int32
 
