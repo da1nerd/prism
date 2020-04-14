@@ -58,6 +58,8 @@ module Prism::Core
 
       if light = @ambient_light
         object.render_all do |transform, material, mesh|
+          # Lights are a special kind of shader programs.
+          # We turn on the shader program before drawing the mesh/model
           light.as(Light).on(transform, material, self.main_camera)
           mesh.draw
           light.as(Light).off

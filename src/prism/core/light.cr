@@ -7,9 +7,9 @@ module Prism::Core
     include Shader::Serializable
     # property shader
 
-    @shader : Shader::ShaderEngine
+    @shader : Shader::ShaderProgram
 
-    def initialize(@shader : Shader::ShaderEngine)
+    def initialize(@shader : Shader::ShaderProgram)
     end
 
     # Binds an object's *transform* and *material* to the light shader.

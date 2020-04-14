@@ -1,5 +1,5 @@
 module Prism::Core::Shader
-  class ShaderEngine
+  class ShaderProgram
     @@loaded_shaders = {} of String => ShaderResource
     @resource : ShaderResource
     @uniform_map : Shader::UniformMap
@@ -35,8 +35,8 @@ module Prism::Core::Shader
         @resource.add_reference
       else
         @resource = ShaderResource.new
-        vertex_shader_text = ShaderEngine.read_shader_file("#{@file_name}.vs", &shader_reader)
-        fragment_shader_text = ShaderEngine.read_shader_file("#{@file_name}.fs", &shader_reader)
+        vertex_shader_text = ShaderProgram.read_shader_file("#{@file_name}.vs", &shader_reader)
+        fragment_shader_text = ShaderProgram.read_shader_file("#{@file_name}.fs", &shader_reader)
 
         vertex_shader_id = load_shader(vertex_shader_text, LibGL::VERTEX_SHADER)
         fragment_shader_id = load_shader(fragment_shader_text, LibGL::FRAGMENT_SHADER)

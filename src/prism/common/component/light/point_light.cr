@@ -30,7 +30,7 @@ module Prism::Common::Light
     end
 
     def initialize(color : Vector3f, intensity : Float32, @attenuation : Core::Attenuation)
-      super(Core::Shader::ShaderEngine.new("forward-point"))
+      super(Core::Shader::ShaderProgram.new("forward-point"))
       @base = BaseLight.new(color, intensity)
 
       a = @attenuation.exponent
