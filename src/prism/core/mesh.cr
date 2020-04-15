@@ -56,7 +56,7 @@ module Prism::Core
 
       test1 = Model::OBJModel.new(file_name)
       model = test1.to_indexed_model
-      model.calc_normals
+      # model.calc_normals
 
       verticies = [] of Vertex
       0.upto(model.positions.size - 1) do |i|
@@ -80,9 +80,11 @@ module Prism::Core
 
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @resource.vbo)
       LibGL.buffer_data(LibGL::ARRAY_BUFFER, verticies.size * Vertex::SIZE * sizeof(Float32), Vertex.flatten(verticies), LibGL::STATIC_DRAW)
+      LibGL.bind_buffer(LibGL::ARRAY_BUFFER, 0)
 
       LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @resource.ibo)
       LibGL.buffer_data(LibGL::ELEMENT_ARRAY_BUFFER, indicies.size * Vertex::SIZE * sizeof(Float32), indicies, LibGL::STATIC_DRAW)
+      LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, 0)
     end
 
     # Reverses the face of the mesh
