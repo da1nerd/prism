@@ -14,12 +14,16 @@ module Prism::Common::Objects
       generate_terrain(height_map)
     end
 
+    def transform
+      @transform.pos = Vector3f.new(@x, 0, @z)
+      @transform
+    end
+
     private def generate_terrain(height_map : String)
       bitmap = Core::Bitmap.new(height_map)
 
       vertex_count = bitmap.height
 
-      count : Int32 = (vertex_count * vertex_count).to_i32
       vertices = [] of Core::Vertex
       indices = [] of Int32
       0.upto(vertex_count - 1) do |i|
@@ -42,9 +46,8 @@ module Prism::Common::Objects
         end
       end
 
-      pointer : Int32 = 0
-      0.upto(vertex_count - 1) do |gz|
-        0.upto(vertex_count - 1) do |gx|
+      0.upto(vertex_count - 2) do |gz|
+        0.upto(vertex_count - 2) do |gx|
           top_left : Int32 = (gz * vertex_count) + gx
           top_right : Int32 = top_left + 1
           bottom_left : Int32 = ((gz + 1)*vertex_count) + gx
