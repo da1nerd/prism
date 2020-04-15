@@ -6,7 +6,15 @@ module Prism::Core
   class Material
     include Shader::Serializable
 
-    property specular_intensity, specular_power, color
+    property specular_intensity, specular_power, color, transparent, use_fake_lighting
+
+    # Indicates if this material has transparency
+    @transparent : Bool = false
+
+    # This allows you to simulate some half decent lighting.
+    # This is helpful when rendering entities that are composed of a bunch of flat meshes. e.g. plants, trees, etc.
+    @[Shader::Field(key: "useFakeLighting")]
+    @use_fake_lighting : Bool = false
 
     # The reflectivity determines how shiny the surface of the object is.
     @[Shader::Field(key: "specularIntensity")]
@@ -29,6 +37,12 @@ module Prism::Core
       @texture_map = {} of String => Texture
       # add blank texture
       add_texture("diffuse", Texture.new)
+    end
+
+    def initialize(texture_path : File)
+      super()
+      @texture_map = {} of String => Texture
+      add_texture("diffuse", Texture.new(texture_path))
     end
 
     # Creates a material with a "diffuse" texture loaded from the *texture_path*

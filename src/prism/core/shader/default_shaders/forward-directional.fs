@@ -11,10 +11,11 @@ uniform vec3 materialColor;
 
 void main()
 {
-  vec4 color = (vec4(materialColor, 1.0) + texture2D(diffuse, texCoord0.xy)) * calcDirectionalLight(R_directionalLight, normalize(normal0), worldPos0);
+  vec4 textureColor = texture2D(diffuse, texCoord0.xy);
   // discards transparent pixels
-  if (color.a <= 0.0) {
+  if (textureColor.a <= 0.5) {
     discard;
   }
+  vec4 color = (vec4(materialColor, 1.0) + textureColor) * calcDirectionalLight(R_directionalLight, normalize(normal0), worldPos0);
   gl_FragColor = color;
 }

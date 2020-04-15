@@ -37,8 +37,8 @@ module Prism::Common::Objects
             ),
             # texture coordinates
             Vector2f.new(
-              j.to_f32 // (VERTEX_COUNT - 1),
-              i.to_f32 // (VERTEX_COUNT - 1)
+              j.to_f32 // (VERTEX_COUNT - 1) * 40,
+              i.to_f32 // (VERTEX_COUNT - 1) * 40
             ),
             # normals
             Vector3f.new(0, 1, 0)

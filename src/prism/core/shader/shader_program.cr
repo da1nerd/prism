@@ -99,6 +99,8 @@ module Prism::Core::Shader
           case value.class.name
           when "Int32"
             set_uniform(key, value.as(LibGL::Int))
+          when "Bool"
+            set_uniform(key, value.as(Bool))
           when "Float32"
             set_uniform(key, value.as(LibGL::Float))
           when "Prism::VMath::Vector3f"
@@ -117,6 +119,8 @@ module Prism::Core::Shader
           case value.class.name
           when "Int32"
             set_uniform(key, value.as(LibGL::Int))
+          when "Bool"
+            set_uniform(key, value.as(Bool))
           when "Float32"
             set_uniform(key, value.as(LibGL::Float))
           when "Prism::VMath::Vector3f"
@@ -178,6 +182,12 @@ module Prism::Core::Shader
     # Sets a 4 dimensional matrix float value to a uniform variable
     private def set_uniform(name : String, value : Matrix4f)
       LibGL.uniform_matrix_4fv(@resource.uniforms[name], 1, LibGL::TRUE, value.as_array)
+    end
+
+    # Sets a boolean uniform variable value.
+    # Booleans are represented as floats in GLSL
+    private def set_uniform(name : String, value : Bool)
+      LibGL.uniform_1f(@resource.uniforms[name], value ? 1.0 : 0.0)
     end
 
     # compiles the shader
@@ -349,7 +359,7 @@ module Prism::Core::Shader
         LibGL.get_shader_info_log(shader_id, 2048, nil, out compile_log)
         compile_log_str = String.new(pointerof(compile_log))
         compile_error_code = LibGL.get_error
-        puts "Error #{compile_error_code}: Failed compiling shader '#{text}': #{compile_log_str}"
+        puts "Error #{compile_error_code}: Failed compiling shader #{@file_name}\n'#{text}': #{compile_log_str}"
         exit 1
       end
       shader_id
