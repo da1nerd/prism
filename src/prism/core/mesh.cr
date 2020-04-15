@@ -42,6 +42,7 @@ module Prism::Core
     # garbage collection
     def finalize
       if @resource.remove_reference && @file_name != nil
+        puts "Trashed mesh #{@file_name}"
         @@loaded_models.delete(@file_name)
       end
     end

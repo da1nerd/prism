@@ -66,6 +66,7 @@ module Prism::Core::Shader
     # garbage collection
     def finalize
       if @resource.remove_reference
+        puts "Trashed shader #{@file_name}"
         @@loaded_shaders.delete(@file_name)
       end
     end

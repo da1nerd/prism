@@ -12,7 +12,7 @@ module Prism::Core
     #
     # Returns `true` if there are no more references
     def remove_reference
-      @ref_count -= 1
+      @ref_count -= 1 if @ref_count > 0
       return @ref_count == 0
     end
 
