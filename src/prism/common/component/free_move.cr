@@ -24,6 +24,9 @@ module Prism::Common::Component
 
       movement = Vector3f.new(0, 0, 0)
 
+      if input.get_key(Window::Key::LeftShift)
+        mov_amt *= 10
+      end
       if input.get_key(@forward_key)
         movement = movement + calculate_move(self.transform.rot.forward, mov_amt)
       end
