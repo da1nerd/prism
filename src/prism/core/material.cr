@@ -8,11 +8,19 @@ module Prism::Core
 
     property specular_intensity, specular_power, color
 
+    # The reflectivity determines how shiny the surface of the object is.
     @[Shader::Field(key: "specularIntensity")]
     @specular_intensity : Float32 = 1
+
+    # The shine dampening determines how close the camera has to be
+    # to the reflected light to see any change in the brightness on surface of the object.
     @[Shader::Field(key: "specularPower")]
-    @specular_power : Float32 = 8
+    @specular_power : Float32 = 10
+
     @texture_map : Hash(String, Texture)
+
+    # The color of the surface of the object.
+    # this defaults to black
     @[Shader::Field(key: "materialColor")]
     @color : Vector3f = Vector3f.new(0, 0, 0)
 

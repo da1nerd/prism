@@ -101,7 +101,7 @@ module Prism::Core
       end
     end
 
-    def draw()
+    def draw
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @resource.vbo)
 
       mesh_offset = Pointer(Void).new(0)
