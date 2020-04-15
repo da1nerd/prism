@@ -77,6 +77,8 @@ module Prism::Core
       format = bitmap.alpha? ? LibGL::RGBA : LibGL::RGB
       LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, format, bitmap.width, bitmap.height, 0, format, LibGL::UNSIGNED_BYTE, bitmap.pixels)
       LibGL.generate_mipmap(LibGL::TEXTURE_2D)
+      LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MIN_FILTER, LibGL::LINEAR_MIPMAP_LINEAR)
+      LibGL.tex_parameter_f(LibGL::TEXTURE_2D, LibGL::TEXTURE_LOD_BIAS, -0.4)
       return resource
     end
   end
