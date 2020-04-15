@@ -6,11 +6,13 @@ module Prism::Common::Objects
 
     @x : Float32
     @z : Float32
+    @heights : Array(Array(Float32))
 
     def initialize(grid_x : Int32, grid_z : Int32, height_map : String)
       super()
       @x = (grid_x * SIZE).to_f32
       @z = (grid_z * SIZE).to_f32
+      @heights = [] of Array(Float32)
       generate_terrain(height_map)
     end
 
@@ -19,20 +21,58 @@ module Prism::Common::Objects
       @transform
     end
 
+    def height_at(position : Vector3f) : Float32
+      height_at(position.x, position.z)
+    end
+
+    # Retrieves the height of the terrain at the given world position.
+    def height_at(world_x : Float32, world_z : Float32) : Float32
+      terrain_x = world_x - @x
+      terrain_z = world_z - @z
+      grid_square_size = SIZE.to_f32 / (@heights.size() - 1)
+      grid_x : Int32 = (terrain_x / grid_square_size).floor.to_i32
+      grid_z : Int32 = (terrain_z / grid_square_size).floor.to_i32
+      return 0f32 if grid_x >= @heights.size() -1 || grid_z >= @heights.size - 1 || grid_x < 0 || grid_z < 0
+      x_coord = (terrain_x % grid_square_size) / grid_square_size
+      z_coord = (terrain_z % grid_square_size) / grid_square_size
+
+      if x_coord <= 1 - z_coord
+        barryCentric(Vector3f.new(0, @heights[grid_x][grid_z], 0), Vector3f.new(1,
+            @heights[grid_x + 1][grid_z], 0), Vector3f.new(0,
+            @heights[grid_x][grid_z + 1], 1), Vector2f.new(x_coord, z_coord));
+      else
+        barryCentric(Vector3f.new(1, @heights[grid_x + 1][grid_z], 0), Vector3f.new(1,
+            @heights[grid_x + 1][grid_z + 1], 1), Vector3f.new(0,
+            @heights[grid_x][grid_z + 1], 1), Vector2f.new(x_coord, z_coord));
+      end
+    end
+
+    # TODO: move this into math module
+    private def barryCentric(p1 : Vector3f, p2 : Vector3f, p3 : Vector3f, pos : Vector2f) : Float32
+      det : Float32 = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z)
+      l1 : Float32 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det
+      l2 : Float32 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det
+      l3 : Float32 = 1.0f32 - l1 - l2
+      l1 * p1.y + l2 * p2.y + l3 * p3.y
+    end
+
     private def generate_terrain(height_map : String)
       bitmap = Core::Bitmap.new(height_map)
-
       vertex_count = bitmap.height
+      # reset height map
+      @heights = Array.new(vertex_count) { [] of Float32 }
 
       vertices = [] of Core::Vertex
       indices = [] of Int32
       0.upto(vertex_count - 1) do |i|
         0.upto(vertex_count - 1) do |j|
+          height = get_height(j, i, bitmap)
+          @heights[j] << height
           vertices.push(Core::Vertex.new(
             # vertex position
             Vector3f.new(
               (j / (vertex_count - 1) * SIZE).to_f32,
-              get_height(j, i, bitmap),
+              height,
               (i / (vertex_count - 1) * SIZE).to_f32
             ),
             # texture coordinates

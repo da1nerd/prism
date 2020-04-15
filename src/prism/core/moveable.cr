@@ -5,13 +5,13 @@ module Prism::Core
     # Elevates the object to the exact position
     def elevate_to(position : Float32)
       # TODO: use parent transformation
-      @transform.pos = @transform.rot.up * position
+      @transform.pos.y = position# = @transform.rot.up * position
       self
     end
 
     # Changes the object's elevation by the distance
     def elevate_by(amount : Float32)
-      @transform.pos += @transform.rot.up * amount
+      @transform.pos.y += amount # @transform.rot.up * amount
       self
     end
 
