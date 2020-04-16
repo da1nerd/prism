@@ -1,6 +1,6 @@
 module Prism::Common::Component
-  # Causes the parent `GameObject`'s position to be controlled by the mouse.
-  class FreeLook < Core::GameComponent
+  # Causes the parent `Entity`'s position to be controlled by the mouse.
+  class FreeLook < Core::Component
     Y_AXIS = Vector3f.new(0, 1, 0)
     @mouse_locked = false
 

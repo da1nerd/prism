@@ -3,7 +3,7 @@ require "annotations"
 module Prism::Common::Objects
   # A basic shape class that holds a mesh and a material.
   # Normally you'll want to inherit this class to create new shapes.
-  class Shape < Core::GameObject
+  class Shape < Core::Entity
     @material : Core::Material?
     @mesh : Core::Mesh?
 

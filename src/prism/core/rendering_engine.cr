@@ -60,7 +60,7 @@ module Prism::Core
       LibGL.disable(LibGL::CULL_FACE)
     end
 
-    def render(object : Core::GameObject)
+    def render(object : Core::Entity)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
       if light = @ambient_light

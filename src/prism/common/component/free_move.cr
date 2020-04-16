@@ -1,6 +1,6 @@
 module Prism::Common::Component
-  # Causes the parent `GameObject`'s position to be controlled by the keyboard.
-  class FreeMove < Core::GameComponent
+  # Causes the parent `Entity`'s position to be controlled by the keyboard.
+  class FreeMove < Core::Component
     # TODO: change to property
     getter movement
     setter movement

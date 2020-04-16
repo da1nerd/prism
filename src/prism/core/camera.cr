@@ -1,8 +1,8 @@
-require "./game_component"
+require "./component"
 require "annotation"
 
 module Prism::Core
-  class Camera < GameComponent
+  class Camera < Component
     @projection : VMath::Matrix4f
     @sync_aspect_ratio : Bool
 

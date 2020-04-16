@@ -9,12 +9,12 @@ class BoxDemo < Prism::Core::GameEngine
   end
 
   # Loads a model from the resources and attaches it's material
-  def load_model(name : String, &modify_material : Prism::Core::Material -> Prism::Core::Material) : Prism::Core::GameObject
+  def load_model(name : String, &modify_material : Prism::Core::Material -> Prism::Core::Material) : Prism::Core::Entity
     material = Prism::Core::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
     mesh = Prism::Core::Mesh.new(File.join(__DIR__, "./res/models/#{name}.obj"))
     material = modify_material.call(material)
     component = Component::MeshRenderer.new(mesh, material)
-    object = Prism::Core::GameObject.new.add_component(component)
+    object = Prism::Core::Entity.new.add_component(component)
   end
 
   # Loads a texture from the resources and returns it as a material

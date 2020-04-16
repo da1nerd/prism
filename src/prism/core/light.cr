@@ -1,9 +1,9 @@
 require "./shader"
-require "./game_component"
+require "./component"
 
 module Prism::Core
   # Fundamental light component
-  abstract class Light < GameComponent
+  abstract class Light < Component
     include Shader::Serializable
     # property shader
 

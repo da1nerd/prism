@@ -22,7 +22,7 @@ module Prism::Common::Objects
       @transform
     end
 
-    def height_at(object : Core::GameObject)
+    def height_at(object : Core::Entity)
       height_at(object.transform.pos)
     end
 
