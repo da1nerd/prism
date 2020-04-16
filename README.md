@@ -2,7 +2,7 @@
 [![GitHub release](https://img.shields.io/github/release/neutrinog/prism.svg)](https://github.com/neutrinog/prism/releases)
 [![Build Status](https://travis-ci.org/neutrinog/prism.svg?branch=master)](https://travis-ci.org/neutrinog/prism)
 
-This is a stable, though not completely baked, 3D rendering engine. Documentation is a little sparse right now, but hopefully the [examples](./examples) will help. *Disclaimer:* I barely know anything about game development much less game engine development. This has been a learn-as-i-go project. If you have ideas or suggestions I would love it if you opened an [issue](https://github.com/neutrinog/prism/issues).
+This is a stable, though not completely baked, 3D rendering engine. Documentation is a little sparse right now, but hopefully the [example](./example) will help. *Disclaimer:* I barely know anything about game development much less game engine development. This has been a learn-as-i-go project. If you have ideas or suggestions I would love it if you opened an [issue](https://github.com/neutrinog/prism/issues).
 
 
 ## Goals
