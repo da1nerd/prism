@@ -1,13 +1,13 @@
 module Prism::Common::Component
-  # Causes the parent `GameObject`'s position to be controlled by the keyboard.
-  class FreeMove < Core::GameComponent
+  # Causes the parent `Entity`'s position to be controlled by the keyboard.
+  class FreeMove < Core::Component
     # TODO: change to property
     getter movement
     setter movement
     @position : Vector3f
 
     def initialize
-      initialize(4)
+      initialize(10)
     end
 
     def initialize(speed : Float32)
@@ -24,6 +24,9 @@ module Prism::Common::Component
 
       movement = Vector3f.new(0, 0, 0)
 
+      if input.get_key(Window::Key::LeftShift)
+        mov_amt *= 10
+      end
       if input.get_key(@forward_key)
         movement = movement + calculate_move(self.transform.rot.forward, mov_amt)
       end

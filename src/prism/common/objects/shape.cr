@@ -3,18 +3,19 @@ require "annotations"
 module Prism::Common::Objects
   # A basic shape class that holds a mesh and a material.
   # Normally you'll want to inherit this class to create new shapes.
-  class Shape < Core::GameObject
-    @material : Core::Material?
+  class Shape < Core::Entity
+    @material : Core::Material
     @mesh : Core::Mesh?
 
     setter material
 
     def initialize
       super
+      @material = Core::Material.new
     end
 
-    def initialize(@mesh)
-      super()
+    def initialize(mesh)
+      initialize(mesh, Core::Material.new)
     end
 
     def initialize(@mesh, @material)
@@ -33,9 +34,7 @@ module Prism::Common::Objects
     @[Override]
     def render(&block : Core::RenderCallback)
       if mesh = @mesh
-        if material = @material
-          block.call self.transform, material, mesh
-        end
+        block.call self.transform, @material, mesh
       end
     end
   end

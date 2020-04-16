@@ -27,9 +27,7 @@ module Prism::Core
     def startup
       LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
       LibGL.front_face(LibGL::CW)
-      # Uncomment these lines to enable culling the back face for better performance.
-      # LibGL.cull_face(LibGL::BACK)
-      # LibGL.enable(LibGL::CULL_FACE)
+      enable_culling
       LibGL.enable(LibGL::DEPTH_TEST)
       LibGL.enable(LibGL::DEPTH_CLAMP)
       LibGL.enable(LibGL::TEXTURE_2D)
@@ -53,13 +51,27 @@ module Prism::Core
       LibGL.flush
     end
 
-    def render(object : Core::GameObject)
+    def enable_culling
+      LibGL.cull_face(LibGL::BACK)
+      LibGL.enable(LibGL::CULL_FACE)
+    end
+
+    def disable_culling
+      LibGL.disable(LibGL::CULL_FACE)
+    end
+
+    def render(object : Core::Entity)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
       if light = @ambient_light
         object.render_all do |transform, material, mesh|
-          light.as(Light).bind(transform, material, self.main_camera)
+          # Lights are a special kind of shader programs.
+          # We turn on the shader program before drawing the mesh/model
+          disable_culling if material.has_transparency?
+          light.as(Light).on(transform, material, self.main_camera)
           mesh.draw
+          light.as(Light).off
+          enable_culling
         end
       end
 
@@ -73,8 +85,11 @@ module Prism::Core
       i = 0
       while i < @lights.size
         object.render_all do |transform, material, mesh|
-          @lights[i].bind(transform, material, self.main_camera)
+          disable_culling if material.has_transparency?
+          @lights[i].on(transform, material, self.main_camera)
           mesh.draw
+          @lights[i].off
+          enable_culling
         end
         i += 1
       end

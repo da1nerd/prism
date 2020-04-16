@@ -2,7 +2,7 @@
 [![GitHub release](https://img.shields.io/github/release/neutrinog/prism.svg)](https://github.com/neutrinog/prism/releases)
 [![Build Status](https://travis-ci.org/neutrinog/prism.svg?branch=master)](https://travis-ci.org/neutrinog/prism)
 
-This is a stable, though not completely baked, 3D rendering engine. Documentation is a little sparse right now, but hopefully the [examples](./examples) will help. *Disclaimer:* I barely know anything about game development much less game engine development. This has been a learn-as-i-go project. If you have ideas or suggestions I would love it if you opened an [issue](https://github.com/neutrinog/prism/issues).
+This is a stable, though not completely baked, 3D game engine. Documentation is a little sparse right now, but hopefully the [example](./example) will help. *Disclaimer:* I barely know anything about game development much less game engine development. This has been a learn-as-i-go project. If you have ideas or suggestions I would love it if you opened an [issue](https://github.com/neutrinog/prism/issues).
 
 
 ## Goals
@@ -18,58 +18,10 @@ I'm building a roadmap in [this issue](https://github.com/neutrinog/prism/issues
 
 ## Demo
 
-![Peek 2020-04-11 00-58](https://user-images.githubusercontent.com/166412/79012747-38b3c000-7b91-11ea-987d-37026e4052ab.gif)
+![Prism Demo](https://user-images.githubusercontent.com/166412/79414532-15e03c00-7fd5-11ea-9bd8-ae19325a3332.gif)
 
-<details>
-  <summary>Click to see the demo code</summary>
 
-```crystal
-require "prism"
-
-module Demo
-  VERSION = "0.1.0"
-
-  class Box < Prism::Core::GameEngine
-    include Prism
-    include Prism::Common
-    alias Color = VMath::Vector3f
-    def init
-      green_material = Core::Material.new
-      green_material.color = Color.new(0, 1, 0)
-
-      red_material = Core::Material.new
-      red_material.color = Color.new(1, 0, 0)
-
-      floor = Objects::Plane.new(5, 5)
-      floor.material = red_material
-      add_object(floor)
-
-      box = Objects::Cube.new(1)
-      box.material = green_material
-      box.move_north(2).move_east(2).elevate_by(1)
-      add_object(box)
-
-      sun_light = Core::Object.new
-      sun_light.add_component(Light::DirectionalLight.new)
-      sun_light.transform.look_at(box)
-      add_object(sun_light)
-
-      ambient_light = Core::Object.new
-      ambient_light.add_component(Light::AmbientLight.new(Color.new(0.3, 0.3, 0.3)))
-      add_object(ambient_light)
-
-      camera = Objects::GhostCamera.new
-      camera.move_east(3.5).elevate_by(0.5)
-      camera.transform.look_at(box)
-      add_object(camera)
-    end
-  end
-
-  Prism::ContextAdapter::GLFW.run("Box", Box.new)
-end
-```
-
-</details>
+You can find code for this demo in the [example](./example) dir.
 
 ## Installation
 

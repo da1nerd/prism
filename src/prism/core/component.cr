@@ -2,10 +2,10 @@ require "render_loop"
 
 module Prism::Core
   # A game component is an enhancement that can be added to a game object
-  abstract class GameComponent
+  abstract class Component
     setter parent
 
-    @parent : Core::GameObject = Core::GameObject.new
+    @parent : Core::Entity = Core::Entity.new
 
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
     end

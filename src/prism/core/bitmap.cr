@@ -52,6 +52,7 @@ module Prism::Core
     # garbage collection
     def finalize
       if @resource.remove_reference
+        puts "Trashed bitmap #{@file_name}"
         @@loaded_bitmaps.delete(@file_name)
       end
     end

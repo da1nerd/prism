@@ -6,7 +6,7 @@ module Prism::Core
   # The game interace.
   # A game must inherit this class in order to be used by the engine.
   abstract class GameEngine < RenderLoop::Engine
-    @root : GameObject = GameObject.new
+    @root : Entity = Entity.new
     @engine : RenderingEngine?
 
     # Returns the registered `GameEngine` or throw an exception.
@@ -41,7 +41,7 @@ module Prism::Core
     end
 
     # Adds an object to the game's scene graph.
-    def add_object(object : GameObject)
+    def add_object(object : Entity)
       @root.add_child(object)
     end
 
