@@ -4,89 +4,85 @@ class BoxDemo < Prism::Core::GameEngine
   include Prism::Common
   alias Color = Prism::VMath::Vector3f
 
+  def load_model(name : String)
+    load_model(name) {|m| m}
+  end
+
+  # Loads a model from the resources and attaches it's material
+  def load_model(name : String, &modify_material : Prism::Core::Material -> Prism::Core::Material) : Prism::Core::GameObject
+    material = Prism::Core::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
+    mesh = Prism::Core::Mesh.new(File.join(__DIR__, "./res/models/#{name}.obj"))
+    material = modify_material.call(material)
+    component = Component::MeshRenderer.new(mesh, material)
+    object = Prism::Core::GameObject.new.add_component(component)
+  end
+
+  # Loads a texture from the resources and returns it as a material
+  def load_material(name : String)
+    Prism::Core::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
+  end
+
   def init
-    material = Prism::Core::Material.new(File.join(__DIR__, "./res/textures/defaultTexture.png"))
-    brick_material = Prism::Core::Material.new(File.join(__DIR__, "./res/textures/bricks.png"))
-    green_material = Prism::Core::Material.new
-    green_material.color = Color.new(0, 1, 0)
+    # Generate the terrain
+    terrain_material = load_material("terrain")
+    terrain_material.specular_intensity = 0.7f32
+    terrain_material.specular_power = 10f32
+    terrain = Objects::Terrain.new(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
+    terrain.material = terrain_material
 
-    stall_material = Prism::Core::Material.new(File.join(__DIR__, "./res/textures/stallTexture.png"))
+    # Add a merchant stall
+    stall = load_model("stall")
+    stall.move_north(65).move_east(55)
+    stall.elevate_to(terrain.height_at(stall))
 
-    # create monkey head
-    monkey_file = File.join(__DIR__, "./res/models/", "stall.obj")
-    monkey = Prism::Core::GameObject.new.add_component(Component::MeshRenderer.new(Prism::Core::Mesh.new(monkey_file), stall_material))
-    monkey.move_south(1).move_east(1).elevate_by(1)
+    # Add a fern
+    fern = load_model("fern") do |m|
+      m.specular_intensity = 0.5f32
+      m.has_transparency = true
+      # m.use_fake_lighting = true
+      m
+    end
+    fern.move_north(50).move_east(40)
+    fern.elevate_to(terrain.height_at(fern))
 
-    # create a 5x5 floor
-    floor = Objects::Plane.new(5, 5)
-    floor.material = material
+    # add a tree
+    tree = load_model("lowPolyTree")
+    tree.move_north(55).move_east(60)
+    tree.elevate_to(terrain.height_at(tree))
 
-    # creates a 5x5 ceiling
-    ceiling = Objects::Plane.new(5, 5)
-    ceiling.material = material
-    ceiling.reverse_face
-    ceiling.elevate_to(5)
+    # add some grass
+    grass = load_model("grass") do |m|
+      m.specular_intensity = 0.5f32
+      m.has_transparency = true
+      m.use_fake_lighting = true
+      m
+    end
+    grass.move_north(50).move_east(45)
+    grass.elevate_to(terrain.height_at(fern))
 
-    # create a north wall that is 5x2
-    north_wall = Objects::Plane.new(5, 5)
-    north_wall.material = material
-    north_wall.rotate_x_axis(Prism::VMath::Angle.from_degrees(-90)).move_north(5)
-    # create a west wall that is 5x2
-    west_wall = Objects::Plane.new(5, 5)
-    west_wall.material = material
-    west_wall.rotate_x_axis(Prism::VMath::Angle.from_degrees(-90))
-    west_wall.rotate_y_axis(Prism::VMath::Angle.from_degrees(-90))
-
-    # create a floating 1x1x1 box in the middle of the room
-    box = Objects::Cube.new(1)
-    box.material = brick_material
-    box.move_north(2).move_east(2).elevate_by(1)
-
-    # create a second smaller box
-    tiny_box = Objects::Cube.new(0.5)
-    tiny_box.material = green_material
-    tiny_box.move_north(3).move_east(3).elevate_by(0.5)
-
-    # create a light with default values
+    # Add some sunlight
     sun_light = Prism::Core::Object.new
     sun_light.add_component(Light::DirectionalLight.new)
-    sun_light.transform.look_at(monkey)
+    sun_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::VMath.to_rad(-80f32))
 
-    point_light = Prism::Core::Object.new
-    point_light.add_component(Light::PointLight.new(Prism::VMath::Vector3f.new(1, 0, 0)))
-    point_light.move_north(2.5).move_east(1.5).elevate_by(1.5)
-
-    spot_light = Prism::Core::Object.new
-    spot_light.add_component(Light::SpotLight.new(Prism::VMath::Vector3f.new(0, 0.5, 0.5)))
-    spot_light.move_north(4).move_east(4).elevate_by(1)
-    spot_light.transform.rotate(Prism::VMath::Vector3f.new(1, 0, 0), -Prism::VMath.to_rad(70))
-
-    # create some ambient light
+    # Add some ambient light
     ambient_light = Prism::Core::Object.new
-    ambient_light.add_component(Light::AmbientLight.new(Color.new(0.3, 0.3, 0.3)))
+    ambient_light.add_component(Light::AmbientLight.new(Color.new(0.6, 0.6, 0.6)))
 
-    # creates a moveable camera with sane defaults
+    # Add a moveable camera
     camera = Objects::GhostCamera.new
-    camera.move_east(3.5).elevate_by(0.5)
-    camera.transform.look_at(monkey)
+    camera.move_north(30).move_east(30).elevate_to(20)
+    camera.transform.look_at(stall)
 
     # add everything to the scene
-    add_object(monkey)
+    add_object(tree)
+    add_object(fern)
+    add_object(grass)
+    add_object(terrain)
     add_object(ambient_light)
     add_object(sun_light)
-    # add_object(point_light)
-    # add_object(spot_light)
-    # add_object(floor)
-    # add_object(ceiling)
-    # add_object(north_wall)
-    # add_object(west_wall)
-    # add_object(box)
-    # add_object(tiny_box)
+    add_object(stall)
     add_object(camera)
-
-    # TODO: allow changing an object's center axis as well.
-    #  You should be able to place the axis at any 3d point.
-    # obj.set_axis_position(0, 0, 0) # default position is front right bottom corner.
   end
 end
 

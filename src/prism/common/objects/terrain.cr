@@ -17,8 +17,13 @@ module Prism::Common::Objects
     end
 
     def transform
+      # Force position of terrain
       @transform.pos = Vector3f.new(@x, 0, @z)
       @transform
+    end
+
+    def height_at(object : Core::GameObject)
+      height_at(object.transform.pos)
     end
 
     def height_at(position : Vector3f) : Float32

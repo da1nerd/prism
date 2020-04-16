@@ -67,7 +67,7 @@ module Prism::Core
         object.render_all do |transform, material, mesh|
           # Lights are a special kind of shader programs.
           # We turn on the shader program before drawing the mesh/model
-          disable_culling if material.transparent
+          disable_culling if material.has_transparency?
           light.as(Light).on(transform, material, self.main_camera)
           mesh.draw
           light.as(Light).off
@@ -85,7 +85,7 @@ module Prism::Core
       i = 0
       while i < @lights.size
         object.render_all do |transform, material, mesh|
-          disable_culling if material.transparent
+          disable_culling if material.has_transparency?
           @lights[i].on(transform, material, self.main_camera)
           mesh.draw
           @lights[i].off

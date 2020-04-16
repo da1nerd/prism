@@ -6,10 +6,13 @@ module Prism::Core
   class Material
     include Shader::Serializable
 
-    property specular_intensity, specular_power, color, transparent, use_fake_lighting
+    property specular_intensity, specular_power, color, use_fake_lighting
+    
+    # Indicates that this material has transparency
+    setter has_transparency
 
     # Indicates if this material has transparency
-    @transparent : Bool = false
+    @has_transparency : Bool = false
 
     # This allows you to simulate some half decent lighting.
     # This is helpful when rendering entities that are composed of a bunch of flat meshes. e.g. plants, trees, etc.
@@ -51,6 +54,11 @@ module Prism::Core
       super()
       @texture_map = {} of String => Texture
       add_texture("diffuse", Texture.new(texture_path))
+    end
+
+    # Checks if this material has any transparency
+    def has_transparency?
+      @has_transparency
     end
 
     # Adds a texture to the material
