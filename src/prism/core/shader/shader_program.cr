@@ -1,8 +1,29 @@
 module Prism::Core::Shader
+
+  # Represents a shader.
+  # The terminology is a little inconsistent and needs some work.
+  #
+  # A `ShaderResource` is a light wrapper around the shader program information. This holds information like the id, uniform names, etc.
+  # This might be considered the heart of the `ShaderProgram` because well... it is.
+  # The key purpose of the `ShaderResource` is to prevent compiling the same program if it's used more than once.
+  # Instead we will simply reuse the compiled program.
+  #
+  # This `ShaderProgram` contains all of the shader implementation.
+  #
+  # I probably need to rename these two classes
   class ShaderProgram
-    @@loaded_shaders = {} of String => ShaderResource
+    # A map of shader programs that have been created.
+    # This allows us to re-use programs.
+    @@programs = {} of String => ShaderResource
+
+    # The shader program being.
     @resource : ShaderResource
+
+    # A map of uniform values that will be written to the buffer.
     @uniform_map : Shader::UniformMap
+
+    # The name of shader file that was loaded.
+    # This is used to clean up the programs map after garbage collection.
     @file_name : String
 
     # Creates a new shader from *file_name*.
@@ -30,33 +51,41 @@ module Prism::Core::Shader
     # TODO: let this take in a path to the vertex shader and fragment shader for more flexibility.
     def initialize(@file_name : String, &shader_reader : String -> String)
       @uniform_map = Shader::UniformMap.new
-      if @@loaded_shaders.has_key?(@file_name)
-        @resource = @@loaded_shaders[@file_name]
+      if @@programs.has_key?(@file_name)
+        # Re-use a compiled program so we don't need to compile a new one.
+        @resource = @@programs[@file_name]
         @resource.add_reference
       else
+        # create a new resource and register it with the list of active programs
         @resource = ShaderResource.new
+        @@programs[@file_name] = @resource
+
+        # read the vertex and fragment shader files
         vertex_shader_text = ShaderProgram.read_shader_file("#{@file_name}.vs", &shader_reader)
         fragment_shader_text = ShaderProgram.read_shader_file("#{@file_name}.fs", &shader_reader)
 
+        # load the shader code into OpenGL
         vertex_shader_id = load_shader(vertex_shader_text, LibGL::VERTEX_SHADER)
         fragment_shader_id = load_shader(fragment_shader_text, LibGL::FRAGMENT_SHADER)
 
+        # attach the now-loaded shader code to the program.
         @resource.attach_shader(vertex_shader_id)
         @resource.attach_shader(fragment_shader_id)
 
+        # searches for attributes in the shader code and automatically binds them to the program
         automatically_bind_attributes(vertex_shader_text)
 
         compile
 
+        # searches for uniforms in the shader code and automatically binds them to the program
         add_all_uniforms(vertex_shader_text)
         add_all_uniforms(fragment_shader_text)
 
-        @@loaded_shaders[@file_name] = @resource
       end
     end
 
     # An internal initalizer that uses `ShaderStorage` to load embedded shaders.
-    # This allows using the embeded default shaders.
+    # This makes it easy to use the embeded default shaders.
     protected def initialize(@file_name : String)
       initialize @file_name do |path|
         ShaderStorage.get(path).gets_to_end
@@ -64,14 +93,19 @@ module Prism::Core::Shader
     end
 
     # garbage collection
+    # When an instance of this class is garbage collected we will update the refernce counter.
+    # When remove_reference returns true, there are no more objects using the resource so we delete
+    # it from the pograms array which will eventually trigger it's own garbage collection.
     def finalize
       if @resource.remove_reference
         puts "Trashed shader #{@file_name}"
-        @@loaded_shaders.delete(@file_name)
+        @@programs.delete(@file_name)
       end
     end
 
     # Binds the program to OpenGL so it can run.
+    # First we enable the program, then we bind values to all of the uniforms.
+    # Finally, we enable all of the attributes.
     def start(@uniform_map : Shader::UniformMap, transform : Transform, material : Material, camera : Camera)
       LibGL.use_program(@resource.program)
       update_uniforms(transform, material, camera)
@@ -88,6 +122,7 @@ module Prism::Core::Shader
       LibGL.use_program(0)
     end
 
+    # Binds all of the uniform values to the program.
     private def update_uniforms(transform : Transform, material : Material, camera : Camera)
       world_matrix = transform.get_transformation
       mvp_matrix = camera.get_view_projection * world_matrix

@@ -2,6 +2,7 @@ require "lib_gl"
 require "../reference_counter.cr"
 
 module Prism::Core
+  # An internal representation of a `ShaderProgram`.
   # Manages the state of a single GL shader program.
   #
   # Keeps track of references to a single GL shader program
@@ -29,6 +30,11 @@ module Prism::Core
         puts "Error #{program_error_code}: Shader program creation failed. Could not find valid memory location in constructor"
         exit 1
       end
+    end
+
+    # Returns the shader program id
+    def id
+      @program
     end
 
     # Attaches a shader to the program
