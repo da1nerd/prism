@@ -77,7 +77,7 @@ vec4 calcPointLight(PointLight pointLight, vec3 normal, vec3 worldPos)
   float attenuation = pointLight.atten.constant +
                        pointLight.atten.linear * distanceToPoint +
                        pointLight.atten.exponent * distanceToPoint * distanceToPoint +
-                       0.0001;
+                       0.000001;
 
   return color / attenuation;
 }

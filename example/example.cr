@@ -50,6 +50,15 @@ class BoxDemo < Prism::Core::GameEngine
     tree.move_north(55).move_east(60)
     tree.elevate_to(terrain.height_at(tree))
 
+    # add a lamp
+    lamp = load_model("lamp")
+    lamp.move_north(65).move_east(50)
+    lamp.elevate_to(terrain.height_at(lamp))
+    lamp_light = Prism::Core::Object.new
+    lamp_light.add_component(Light::PointLight.new(Color.new(1, 1, 1), 5))
+    lamp_light.elevate_by(11).move_south(5)
+    lamp.add_object(lamp_light)
+
     # add some grass
     grass = load_model("grass") do |m|
       m.specular_intensity = 0.5f32
@@ -62,12 +71,12 @@ class BoxDemo < Prism::Core::GameEngine
 
     # Add some sunlight
     sun_light = Prism::Core::Object.new
-    sun_light.add_component(Light::DirectionalLight.new)
+    sun_light.add_component(Light::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.3))
     sun_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::VMath.to_rad(-80f32))
 
     # Add some ambient light
     ambient_light = Prism::Core::Object.new
-    ambient_light.add_component(Light::AmbientLight.new(Color.new(0.6, 0.6, 0.6)))
+    ambient_light.add_component(Light::AmbientLight.new(Color.new(0.2, 0.2, 0.2)))
 
     # Add a moveable camera
     camera = Objects::GhostCamera.new
@@ -75,6 +84,7 @@ class BoxDemo < Prism::Core::GameEngine
     camera.transform.look_at(stall)
 
     # add everything to the scene
+    add_object(lamp)
     add_object(tree)
     add_object(fern)
     add_object(grass)
@@ -86,4 +96,4 @@ class BoxDemo < Prism::Core::GameEngine
   end
 end
 
-Prism::ContextAdapter::GLFW.run("Box Demo", BoxDemo.new)
+Prism::ContextAdapter::GLFW.run("Prism Demo", BoxDemo.new)
