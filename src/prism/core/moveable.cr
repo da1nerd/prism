@@ -5,7 +5,7 @@ module Prism::Core
     # Elevates the object to the exact position
     def elevate_to(position : Float32)
       # TODO: use parent transformation
-      @transform.pos.y = position# = @transform.rot.up * position
+      @transform.pos.y = position # = @transform.rot.up * position
       self
     end
 

@@ -4,7 +4,7 @@ module Prism::Core
   #
   # The attenuation equation is
   # ```
-  # 1 / (constant + linear * x + exponent * x^2)
+  # 1 / (constant + linear * x + exponent * x ^ 2)
   # ```
   # The easiest way to understand how to configure attenuation will be to graph it
   # with something like https://www.desmos.com/calculator

@@ -3,7 +3,7 @@ module Prism::Common::Light
   # That is, light that radiates out from a point.
   @[Core::Shader::Serializable::Options(name: "R_pointLight")]
   class PointLight < Core::Light
-    COLOR_DEPTH = 256.0f32
+    COLOR_DEPTH   = 256.0f32
     DEFAULT_ATTEN = Core::Attenuation.new(1.0f32, 0.001f32, 0.002f32)
 
     include Core::Shader::Serializable

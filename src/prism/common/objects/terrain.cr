@@ -34,21 +34,21 @@ module Prism::Common::Objects
     def height_at(world_x : Float32, world_z : Float32) : Float32
       terrain_x = world_x - @x
       terrain_z = world_z - @z
-      grid_square_size = SIZE.to_f32 / (@heights.size() - 1)
+      grid_square_size = SIZE.to_f32 / (@heights.size - 1)
       grid_x : Int32 = (terrain_x / grid_square_size).floor.to_i32
       grid_z : Int32 = (terrain_z / grid_square_size).floor.to_i32
-      return 0f32 if grid_x >= @heights.size() -1 || grid_z >= @heights.size - 1 || grid_x < 0 || grid_z < 0
+      return 0f32 if grid_x >= @heights.size - 1 || grid_z >= @heights.size - 1 || grid_x < 0 || grid_z < 0
       x_coord = (terrain_x % grid_square_size) / grid_square_size
       z_coord = (terrain_z % grid_square_size) / grid_square_size
 
       if x_coord <= 1 - z_coord
         barryCentric(Vector3f.new(0, @heights[grid_x][grid_z], 0), Vector3f.new(1,
-            @heights[grid_x + 1][grid_z], 0), Vector3f.new(0,
-            @heights[grid_x][grid_z + 1], 1), Vector2f.new(x_coord, z_coord));
+          @heights[grid_x + 1][grid_z], 0), Vector3f.new(0,
+          @heights[grid_x][grid_z + 1], 1), Vector2f.new(x_coord, z_coord))
       else
         barryCentric(Vector3f.new(1, @heights[grid_x + 1][grid_z], 0), Vector3f.new(1,
-            @heights[grid_x + 1][grid_z + 1], 1), Vector3f.new(0,
-            @heights[grid_x][grid_z + 1], 1), Vector2f.new(x_coord, z_coord));
+          @heights[grid_x + 1][grid_z + 1], 1), Vector3f.new(0,
+          @heights[grid_x][grid_z + 1], 1), Vector2f.new(x_coord, z_coord))
       end
     end
 

@@ -5,7 +5,7 @@ class BoxDemo < Prism::Core::GameEngine
   alias Color = Prism::VMath::Vector3f
 
   def load_model(name : String)
-    load_model(name) {|m| m}
+    load_model(name) { |m| m }
   end
 
   # Loads a model from the resources and attaches it's material
@@ -54,9 +54,12 @@ class BoxDemo < Prism::Core::GameEngine
     lamp = load_model("lamp")
     lamp.move_north(65).move_east(50)
     lamp.elevate_to(terrain.height_at(lamp))
+
+    # attach light to lamp
     lamp_light = Prism::Core::Object.new
     lamp_light.add_component(Light::PointLight.new(Color.new(1, 1, 1), 5))
     lamp_light.elevate_by(11).move_south(5)
+    # NOTE: Objects inheirt the parent's position, so the previous line is relative to `lamp`
     lamp.add_object(lamp_light)
 
     # add some grass

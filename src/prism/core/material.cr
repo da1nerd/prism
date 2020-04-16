@@ -7,7 +7,7 @@ module Prism::Core
     include Shader::Serializable
 
     property specular_intensity, specular_power, color, use_fake_lighting
-    
+
     # Indicates that this material has transparency
     setter has_transparency
 
