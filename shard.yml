@@ -5,7 +5,7 @@ authors:
   - Joel Lonbeck <joel@neutrinographics.com>
 
 description: |
-  A 3D rendering engine.
+  A 3D game engine.
 
 crystal: 0.34.0
 
