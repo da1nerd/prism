@@ -40,7 +40,7 @@ module Prism::Core
     end
 
     # Rotates to look at the *object*
-    def look_at(object : GameObject)
+    def look_at(object : Entity)
       @rot = get_look_at_direction(object.transform.pos, @rot.up)
     end
 

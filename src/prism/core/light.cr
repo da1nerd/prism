@@ -1,21 +1,26 @@
 require "./shader"
-require "./game_component"
+require "./component"
 
 module Prism::Core
   # Fundamental light component
-  abstract class Light < GameComponent
+  abstract class Light < Component
     include Shader::Serializable
     # property shader
 
-    @shader : Shader::ShaderEngine
+    @shader : Shader::ShaderProgram
 
-    def initialize(@shader : Shader::ShaderEngine)
+    def initialize(@shader : Shader::ShaderProgram)
     end
 
     # Binds an object's *transform* and *material* to the light shader.
     # This should be done just before drawing the object's `Prism::Mesh`
-    def bind(transform : Transform, material : Material, camera : Camera)
-      @shader.bind(self.to_uniform, transform, material, camera)
+    def on(transform : Transform, material : Material, camera : Camera)
+      @shader.start(self.to_uniform, transform, material, camera)
+    end
+
+    # Turns off the light
+    def off
+      @shader.stop
     end
 
     def add_to_engine(engine : Core::RenderingEngine)

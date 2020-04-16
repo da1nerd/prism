@@ -38,26 +38,23 @@ struct DirectionalLight
 
 vec4 calcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPos)
 {
-  float diffuseFactor = dot(normal, -direction);
+  float diffuseFactor = max(dot(normal, -direction), 0.0);
   vec4 diffuseColor = vec4(0,0,0,0);
   vec4 specularColor = vec4(0,0,0,0);
 
-  if(diffuseFactor > 0)
+  diffuseColor = vec4(base.color, 1.0) * base.intensity * diffuseFactor;
+
+  vec3 directionToEye = normalize(C_eyePos - worldPos);
+  // vec3 reflectDirection = normalize(reflect(direction, normal));
+  vec3 halfDirection = normalize(directionToEye - direction);
+
+  float specularFactor = dot(halfDirection, normal);
+  // float specularFactor = dot(directionToEye, reflectDirection);
+  specularFactor = pow(specularFactor, specularPower);
+
+  if(specularFactor > 0)
   {
-    diffuseColor = vec4(base.color, 1.0) * base.intensity * diffuseFactor;
-
-    vec3 directionToEye = normalize(C_eyePos - worldPos);
-    // vec3 reflectDirection = normalize(reflect(direction, normal));
-    vec3 halfDirection = normalize(directionToEye - direction);
-
-    float specularFactor = dot(halfDirection, normal);
-    // float specularFactor = dot(directionToEye, reflectDirection);
-    specularFactor = pow(specularFactor, specularPower);
-
-    if(specularFactor > 0)
-    {
-      specularColor = vec4(base.color, 1.0) * specularIntensity * specularFactor;
-    }
+    specularColor = vec4(base.color, 1.0) * specularIntensity * specularFactor;
   }
 
   return diffuseColor + specularColor;
@@ -80,7 +77,7 @@ vec4 calcPointLight(PointLight pointLight, vec3 normal, vec3 worldPos)
   float attenuation = pointLight.atten.constant +
                        pointLight.atten.linear * distanceToPoint +
                        pointLight.atten.exponent * distanceToPoint * distanceToPoint +
-                       0.0001;
+                       0.000001;
 
   return color / attenuation;
 }

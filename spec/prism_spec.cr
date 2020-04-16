@@ -2,14 +2,14 @@ require "./spec_helper"
 
 describe Prism::Core do
   it "loads a shader program with from compiled storage" do
-    program = Prism::Core::Shader::ShaderEngine.load_shader_program "a.txt" do |path|
+    program = Prism::Core::Shader::ShaderProgram.read_shader_file "a.txt" do |path|
       DemoStorage.get(path).gets_to_end
     end
     program.should eq("line a.1\nline b.1\nline a.2\n")
   end
 
   it "loads a shader program with from a file" do
-    program = Prism::Core::Shader::ShaderEngine.load_shader_program "a.txt" do |path|
+    program = Prism::Core::Shader::ShaderProgram.read_shader_file "a.txt" do |path|
       File.read(File.join(__DIR__, "storage", path))
     end
     program.should eq("line a.1\nline b.1\nline a.2\n")

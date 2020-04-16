@@ -10,6 +10,8 @@ module Prism::Core
 
   # Manages the state of a model mesh
   # Meshes give the shapes which can be covered in `Material`s.
+  # This is also known as the "model"
+  # TODO: rename to "model"
   class Mesh
     @@loaded_models = {} of String => MeshResource
     @resource : MeshResource
@@ -40,6 +42,7 @@ module Prism::Core
     # garbage collection
     def finalize
       if @resource.remove_reference && @file_name != nil
+        puts "Trashed mesh #{@file_name}"
         @@loaded_models.delete(@file_name)
       end
     end
@@ -54,7 +57,7 @@ module Prism::Core
 
       test1 = Model::OBJModel.new(file_name)
       model = test1.to_indexed_model
-      model.calc_normals
+      # model.calc_normals
 
       verticies = [] of Vertex
       0.upto(model.positions.size - 1) do |i|
@@ -78,9 +81,11 @@ module Prism::Core
 
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @resource.vbo)
       LibGL.buffer_data(LibGL::ARRAY_BUFFER, verticies.size * Vertex::SIZE * sizeof(Float32), Vertex.flatten(verticies), LibGL::STATIC_DRAW)
+      LibGL.bind_buffer(LibGL::ARRAY_BUFFER, 0)
 
       LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @resource.ibo)
       LibGL.buffer_data(LibGL::ELEMENT_ARRAY_BUFFER, indicies.size * Vertex::SIZE * sizeof(Float32), indicies, LibGL::STATIC_DRAW)
+      LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, 0)
     end
 
     # Reverses the face of the mesh
@@ -98,10 +103,6 @@ module Prism::Core
     end
 
     def draw
-      LibGL.enable_vertex_attrib_array(0)
-      LibGL.enable_vertex_attrib_array(1)
-      LibGL.enable_vertex_attrib_array(2)
-
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @resource.vbo)
 
       mesh_offset = Pointer(Void).new(0)
@@ -117,10 +118,6 @@ module Prism::Core
       LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, @resource.ibo)
       indicies_offset = Pointer(Void).new(0)
       LibGL.draw_elements(LibGL::TRIANGLES, @resource.size, LibGL::UNSIGNED_INT, indicies_offset)
-
-      LibGL.disable_vertex_attrib_array(0)
-      LibGL.disable_vertex_attrib_array(1)
-      LibGL.disable_vertex_attrib_array(2)
     end
 
     # Calculates the up direction for all the verticies

@@ -9,7 +9,7 @@ module Prism::Core::Shader
   class UniformTypeException < Exception
   end
 
-  alias UniformType = Int32 | Float32 | Vector3f | Matrix4f
+  alias UniformType = Int32 | Float32 | Vector3f | Matrix4f | Bool
   alias UniformMap = Hash(String, UniformType)
 
   # The `Prism::Shader::Serializable` module automatically generates methods for Uniform serialization when included.

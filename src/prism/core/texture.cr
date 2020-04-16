@@ -12,6 +12,17 @@ module Prism::Core
       @resource = TextureResource.new
     end
 
+    def initialize(file : File)
+      @file_name = file.path
+      if @@loaded_textures.has_key?(@file_name)
+        @resource = @@loaded_textures[@file_name]
+        @resource.add_reference
+      else
+        @resource = load_texture(@file_name)
+        @@loaded_textures[@file_name] = @resource
+      end
+    end
+
     def initialize(@file_name : String)
       if @@loaded_textures.has_key?(@file_name)
         @resource = @@loaded_textures[@file_name]
@@ -25,6 +36,7 @@ module Prism::Core
     # garbage collection
     def finalize
       if @resource.remove_reference
+        puts "Trashed texture #{@file_name}"
         @@loaded_textures.delete(@file_name)
       end
     end
@@ -66,6 +78,8 @@ module Prism::Core
       format = bitmap.alpha? ? LibGL::RGBA : LibGL::RGB
       LibGL.tex_image_2d(LibGL::TEXTURE_2D, 0, format, bitmap.width, bitmap.height, 0, format, LibGL::UNSIGNED_BYTE, bitmap.pixels)
       LibGL.generate_mipmap(LibGL::TEXTURE_2D)
+      LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MIN_FILTER, LibGL::LINEAR_MIPMAP_LINEAR)
+      LibGL.tex_parameter_f(LibGL::TEXTURE_2D, LibGL::TEXTURE_LOD_BIAS, -0.4)
       return resource
     end
   end

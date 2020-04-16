@@ -1,6 +1,6 @@
 module Prism::Common::Component
   # Renders a mesh (shape) with some material (texture) applied to it.
-  class MeshRenderer < Core::GameComponent
+  class MeshRenderer < Core::Component
     def initialize(@mesh : Core::Mesh, @material : Core::Material)
     end
 

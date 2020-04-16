@@ -20,7 +20,7 @@ module Prism::Common::Light
     end
 
     def initialize(color : Vector3f, intensity : Float32, attenuation : Core::Attenuation, @cutoff : Float32)
-      super(Core::Shader::ShaderEngine.new("forward-spot"))
+      super(Core::Shader::ShaderProgram.new("forward-spot"))
       @point_light = PointLight.new(color, intensity, attenuation)
     end
 

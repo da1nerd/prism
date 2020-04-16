@@ -15,7 +15,7 @@ module Prism::Common::Light
     end
 
     def initialize(@color : Vector3f)
-      super(Core::Shader::ShaderEngine.new("forward-ambient"))
+      super(Core::Shader::ShaderProgram.new("forward-ambient"))
     end
   end
 end
