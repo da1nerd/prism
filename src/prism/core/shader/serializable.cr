@@ -1,7 +1,8 @@
 include Prism::VMath
 
 module Prism::Core::Shader
-  # TODO: all of the below should eventually go into the Shader namespace.
+
+  # Placing this annotation on a method or instance variable will turn it into a uniform variable in a glsl program.
   annotation Field
   end
 
