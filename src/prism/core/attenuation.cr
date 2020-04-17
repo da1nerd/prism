@@ -8,7 +8,7 @@ module Prism::Core
   # ```
   # The easiest way to understand how to configure attenuation will be to graph it
   # with something like https://www.desmos.com/calculator
-  class Attenuation < VMath::Vector3f
+  class Attenuation < Maths::Vector3f
     include Shader::Serializable
 
     def initialize(constant : Float32, linear : Float32, exponent : Float32)

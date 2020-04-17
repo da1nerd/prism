@@ -192,6 +192,7 @@ module Prism::Core::Shader
       @resource.uniforms.each do |key, _|
         if @uniforms.has_key? key
           value = @uniforms[key]
+          # TODO: need to use actual classes here so it's easier to maintain.
           case value.class.name
           when "Int32"
             set_uniform(key, value.as(LibGL::Int))
@@ -199,9 +200,9 @@ module Prism::Core::Shader
             set_uniform(key, value.as(Bool))
           when "Float32"
             set_uniform(key, value.as(LibGL::Float))
-          when "Prism::VMath::Vector3f"
+          when "Prism::Maths::Vector3f"
             set_uniform(key, value.as(Vector3f))
-          when "Prism::VMath::Matrix4f"
+          when "Prism::Maths::Matrix4f"
             set_uniform(key, value.as(Matrix4f))
           else
             raise Exception.new("Unsupported uniform type #{value.class}")

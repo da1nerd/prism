@@ -1,4 +1,4 @@
-include Prism::VMath
+include Prism::Maths
 
 module Prism::Core::Shader
   # Placing this annotation on a method or instance variable will turn it into a uniform variable in a glsl program.

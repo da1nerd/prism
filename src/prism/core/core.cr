@@ -1,4 +1,4 @@
-require "../v_math"
+require "../maths"
 require "./**"
 
 module Prism::Core

@@ -3,7 +3,7 @@ require "annotation"
 
 module Prism::Core
   class Camera < Component
-    @projection : VMath::Matrix4f
+    @projection : Maths::Matrix4f
     @sync_aspect_ratio : Bool
 
     # Creates a camera with default values

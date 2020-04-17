@@ -1,6 +1,6 @@
 require "./quanternion"
 
-module Prism::VMath
+module Prism::Maths
   class Vector3f
     getter x, y, z
     setter x, y, z

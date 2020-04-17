@@ -10,6 +10,7 @@ module Prism::Core::Shader
   # This `ShaderProgram` contains all of the shader implementation.
   #
   # I probably need to rename these two classes
+  # DEPRECATED
   class ShaderProgram
     # A map of shader programs that have been created.
     # This allows us to re-use programs.
@@ -49,6 +50,7 @@ module Prism::Core::Shader
     #
     # TODO: let this take in a path to the vertex shader and fragment shader for more flexibility.
     def initialize(@file_name : String, &shader_reader : String -> String)
+      raise Exception.new("ShaderProgram is deprecated")
       @uniform_map = Shader::UniformMap.new
       if @@programs.has_key?(@file_name)
         # Re-use a compiled program so we don't need to compile a new one.
@@ -137,9 +139,9 @@ module Prism::Core::Shader
             set_uniform(key, value.as(Bool))
           when "Float32"
             set_uniform(key, value.as(LibGL::Float))
-          when "Prism::VMath::Vector3f"
+          when "Prism::Maths::Vector3f"
             set_uniform(key, value.as(Vector3f))
-          when "Prism::VMath::Matrix4f"
+          when "Prism::Maths::Matrix4f"
             set_uniform(key, value.as(Matrix4f))
           else
             raise Exception.new("Unsupported uniform type #{value.class}")
@@ -157,9 +159,9 @@ module Prism::Core::Shader
             set_uniform(key, value.as(Bool))
           when "Float32"
             set_uniform(key, value.as(LibGL::Float))
-          when "Prism::VMath::Vector3f"
+          when "Prism::Maths::Vector3f"
             set_uniform(key, value.as(Vector3f))
-          when "Prism::VMath::Matrix4f"
+          when "Prism::Maths::Matrix4f"
             set_uniform(key, value.as(Matrix4f))
           else
             raise Exception.new("Unsupported uniform type #{value.class}")

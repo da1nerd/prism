@@ -2,7 +2,7 @@ require "./**"
 
 # Vector math
 # TODO: move this into a separate library or use an existing library.
-module Prism::VMath
+module Prism::Maths
   extend self
 
   # converts degrees to radians

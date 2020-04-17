@@ -36,10 +36,10 @@ module Prism::Common::Component
         rot_x = delta_pos.y != 0
 
         if rot_y
-          self.transform.rotate(Y_AXIS, Prism::VMath.to_rad(delta_pos.x * @sensitivity))
+          self.transform.rotate(Y_AXIS, Prism::Maths.to_rad(delta_pos.x * @sensitivity))
         end
         if rot_x
-          self.transform.rotate(self.transform.rot.right, Prism::VMath.to_rad(delta_pos.y * @sensitivity))
+          self.transform.rotate(self.transform.rot.right, Prism::Maths.to_rad(delta_pos.y * @sensitivity))
         end
 
         if rot_y || rot_x

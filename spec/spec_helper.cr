@@ -3,7 +3,7 @@ require "../src/prism"
 require "render_loop"
 require "baked_file_system"
 
-def expect_vectors_match(got : Prism::VMath::Vector2f, expected : Prism::VMath::Vector2f)
+def expect_vectors_match(got : Prism::Maths::Vector2f, expected : Prism::Maths::Vector2f)
   got.x.should eq(expected.x)
   got.y.should eq(expected.y)
 end
