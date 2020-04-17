@@ -1,4 +1,5 @@
 #version 120
+#include "lighting.glh"
 
 struct Light
 {
@@ -14,8 +15,6 @@ varying vec3 toCameraVector;
 uniform sampler2D diffuse;
 uniform vec3 materialColor;
 uniform Light light;
-uniform float specularPower;
-uniform float specularIntensity;
 
 void main(void) {
     vec3 unitNormal = normalize(surfaceNormal);
