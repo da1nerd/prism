@@ -62,7 +62,7 @@ module Prism::Core
       LibGL.disable(LibGL::CULL_FACE)
     end
 
-    def render(object : Core::Entity)
+    def render(entity : Core::Entity)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
       # if light = @ambient_light
@@ -100,7 +100,7 @@ module Prism::Core
       LibGL.depth_mask(LibGL::TRUE)
       LibGL.disable(LibGL::BLEND)
 
-      object.render_all do |transform, material, mesh|
+      entity.render_all do |transform, material, mesh|
         disable_culling if material.has_transparency?
         shader = @test.as(Shader::Program)
         shader.material = material
