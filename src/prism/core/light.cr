@@ -3,9 +3,15 @@ require "./component"
 
 module Prism::Core
   class SimpleLight < Component
-    property color
+    include Shader::Serializable
 
-    def initialize(@color : Vector3f)
+    @[Shader::Field]
+    @color : Vector3f
+  
+    @[Shader::Field]
+    @position : Vector3f
+
+    def initialize(@position : Vector3f, @color : Vector3f)
     end
   end
 
