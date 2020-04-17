@@ -107,7 +107,8 @@ module Prism::Core
         shader = @test.as(Shader::Program)
         shader.material = material
         shader.transformation_matrix = transform.get_transformation
-        shader.projection_matrix = self.main_camera.get_view_projection
+        shader.projection_matrix = self.main_camera.get_projection
+        shader.view_matrix = self.main_camera.get_view
         shader.light = light
         shader.start(self.main_camera)
         mesh.draw
