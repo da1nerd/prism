@@ -9,13 +9,10 @@ struct Light
 varying vec2 pass_textureCoords;
 varying vec3 surfaceNormal;
 varying vec3 toLightVector;
-//varying vec3 toCameraVector;
 
 uniform sampler2D diffuse;
 uniform vec3 materialColor;
 uniform Light light;
-//2uniform float specularIntensity;
-//2uniform float specularPower;
 
 void main(void) {
     vec3 unitNormal = normalize(surfaceNormal);
@@ -25,14 +22,5 @@ void main(void) {
     float brightness = max(nDot1, 0.0);
     vec3 stuff = brightness * light.color;
 
-    //vec3 unitVectorToCamera = normalize(toCameraVector);
-    //vec3 lightDirection = -unitLightVector;
-    //vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);
-
-  //  float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);
-  ////  specularFactor = max(specularFactor, 0.0);
-   // float dampedFactor = pow(specularFactor, specularPower);
-    //vec3 finalSpecular = dampedFactor * light.color;
-
-    gl_FragColor = vec4(stuff, 1.0) * (vec4(materialColor, 1.0) + texture2D(diffuse, pass_textureCoords));// + vec4(finalSpecular, 1.0);
+    gl_FragColor = vec4(stuff, 1.0) * (vec4(materialColor, 1.0) + texture2D(diffuse, pass_textureCoords));
 }
