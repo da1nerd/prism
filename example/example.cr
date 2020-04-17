@@ -60,7 +60,7 @@ class BoxDemo < Prism::Core::GameEngine
     lamp_light.add_component(Light::PointLight.new(Color.new(1, 1, 1), 5))
     lamp_light.elevate_by(11).move_south(5)
     # NOTE: Objects inheirt the parent's position, so the previous line is relative to `lamp`
-    lamp.add_object(lamp_light)
+    # lamp.add_object(lamp_light)
 
     # add some grass
     grass = load_model("grass") do |m|
