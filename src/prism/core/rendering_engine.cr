@@ -100,8 +100,6 @@ module Prism::Core
       LibGL.depth_mask(LibGL::TRUE)
       LibGL.disable(LibGL::BLEND)
 
-      light = SimpleLight.new(Vector3f.new(0,0,-20), Vector3f.new(1,1,1))
-
       object.render_all do |transform, material, mesh|
         disable_culling if material.has_transparency?
         shader = @test.as(Shader::Program)

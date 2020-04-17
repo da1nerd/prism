@@ -2,19 +2,6 @@ require "./shader"
 require "./component"
 
 module Prism::Core
-  class SimpleLight < Component
-    include Shader::Serializable
-
-    @[Shader::Field]
-    @color : Vector3f
-  
-    @[Shader::Field]
-    @position : Vector3f
-
-    def initialize(@position : Vector3f, @color : Vector3f)
-    end
-  end
-
   # Fundamental light component
   abstract class Light < Component
     include Shader::Serializable
