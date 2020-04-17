@@ -1,13 +1,13 @@
 require "lib_gl"
 require "../reference_counter.cr"
 
-module Prism::Core
+module Prism::Core::Shader
   # An internal representation of a `ShaderProgram`.
   # Manages the state of a single GL shader program.
   #
   # Keeps track of references to a single GL shader program
   # and performs cleanup operations during garbage collection
-  class ShaderResource < ReferenceCounter
+  class CompiledProgram < ReferenceCounter
     @program : LibGL::UInt
     @uniforms : Hash(String, Int32)
     @uniform_names : Array(String)

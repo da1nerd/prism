@@ -1,5 +1,5 @@
 module Prism::Core
-  class Vertex
+  struct Vertex
     SIZE = 8
 
     getter pos, tex_coord, normal

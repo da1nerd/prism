@@ -14,6 +14,7 @@ module Prism::Core
     @lights : Array(Core::Light)
     @ambient_light : Core::Light?
     @main_camera : Core::Camera?
+    @test : Shader::StaticShader?
 
     setter main_camera
 
@@ -31,6 +32,7 @@ module Prism::Core
       LibGL.enable(LibGL::DEPTH_TEST)
       LibGL.enable(LibGL::DEPTH_CLAMP)
       LibGL.enable(LibGL::TEXTURE_2D)
+      @test = Shader::StaticShader.new
       # Uncomment the below line to display everything as a wire frame
       # LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::LINE)
     end
@@ -63,17 +65,17 @@ module Prism::Core
     def render(object : Core::Entity)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
-      if light = @ambient_light
-        object.render_all do |transform, material, mesh|
-          # Lights are a special kind of shader programs.
-          # We turn on the shader program before drawing the mesh/model
-          disable_culling if material.has_transparency?
-          light.as(Light).on(transform, material, self.main_camera)
-          mesh.draw
-          light.as(Light).off
-          enable_culling
-        end
-      end
+      # if light = @ambient_light
+      #   object.render_all do |transform, material, mesh|
+      #     # Lights are a special kind of shader programs.
+      #     # We turn on the shader program before drawing the mesh/model
+      #     disable_culling if material.has_transparency?
+      #     light.as(Light).on(transform, material, self.main_camera)
+      #     mesh.draw
+      #     light.as(Light).off
+      #     enable_culling
+      #   end
+      # end
 
       LibGL.enable(LibGL::BLEND)
       LibGL.blend_equation(LibGL::FUNC_ADD)
@@ -82,21 +84,32 @@ module Prism::Core
       LibGL.depth_mask(LibGL::FALSE)
       LibGL.depth_func(LibGL::EQUAL)
 
-      i = 0
-      while i < @lights.size
-        object.render_all do |transform, material, mesh|
-          disable_culling if material.has_transparency?
-          @lights[i].on(transform, material, self.main_camera)
-          mesh.draw
-          @lights[i].off
-          enable_culling
-        end
-        i += 1
-      end
+
+      # i = 0
+      # while i < @lights.size
+      #   object.render_all do |transform, material, mesh|
+      #     disable_culling if material.has_transparency?
+      #     @lights[i].on(transform, material, self.main_camera)
+      #     mesh.draw
+      #     @lights[i].off
+      #     enable_culling
+      #   end
+      #   i += 1
+      # end
+
+
 
       LibGL.depth_func(LibGL::LESS)
       LibGL.depth_mask(LibGL::TRUE)
       LibGL.disable(LibGL::BLEND)
+
+      object.render_all do |transform, material, mesh|
+        disable_culling if material.has_transparency?
+        @test.as(Shader::Program).start(Shader::UniformMap.new, transform, material, self.main_camera)
+        mesh.draw
+        @test.as(Shader::Program).stop
+        enable_culling
+      end
     end
 
     # Registers a light.

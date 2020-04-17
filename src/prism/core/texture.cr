@@ -36,7 +36,7 @@ module Prism::Core
     # garbage collection
     def finalize
       if @resource.remove_reference
-        puts "Trashed texture #{@file_name}"
+        # puts "Trashed texture #{@file_name}"
         @@loaded_textures.delete(@file_name)
       end
     end

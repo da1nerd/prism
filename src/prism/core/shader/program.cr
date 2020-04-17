@@ -1,22 +1,50 @@
+require "./serializable"
+
 module Prism::Core::Shader
+  extend self
+
+  # Loads a shader program
+  protected def read_shader_file(file_path : String, &file_reader : String -> String) : String
+    input = file_reader.call file_path
+    evaluate_includes input, &file_reader
+  end
+
+  # Searches for include statements and combines them with the *input*
+  # An include statement looks like `#include "somefile.ext"`
+  protected def evaluate_includes(input : String, &file_reader : String -> String) : String
+    shader_source = ""
+
+    input.each_line() do |line|
+      include_match = line.scan(/\#include\s+["<]([^">]*)[>"]/)
+      if include_match.size > 0
+        shader_source += read_shader_file(include_match[0][1], &file_reader)
+      else
+        shader_source += line + "\n"
+      end
+    end
+
+    return shader_source
+  end
+
   # Represents a shader.
   # The terminology is a little inconsistent and needs some work.
   #
-  # A `ShaderResource` is a light wrapper around the shader program information. This holds information like the id, uniform names, etc.
+  # A `CompiledProgram` is a light wrapper around the shader program information. This holds information like the id, uniform names, etc.
   # This might be considered the heart of the `ShaderProgram` because well... it is.
-  # The key purpose of the `ShaderResource` is to prevent compiling the same program if it's used more than once.
+  # The key purpose of the `CompiledProgram` is to prevent compiling the same program if it's used more than once.
   # Instead we will simply reuse the compiled program.
   #
   # This `ShaderProgram` contains all of the shader implementation.
   #
   # I probably need to rename these two classes
-  class ShaderProgram
+  class Program
+    include Serializable
     # A map of shader programs that have been created.
     # This allows us to re-use programs.
-    @@programs = {} of String => ShaderResource
+    @@programs = {} of String => CompiledProgram
 
-    # The shader program being.
-    @resource : ShaderResource
+    # The compiled program being used
+    @resource : CompiledProgram
 
     # A map of uniform values that will be written to the buffer.
     @uniform_map : Shader::UniformMap
@@ -56,12 +84,12 @@ module Prism::Core::Shader
         @resource.add_reference
       else
         # create a new resource and register it with the list of active programs
-        @resource = ShaderResource.new
+        @resource = CompiledProgram.new
         @@programs[@file_name] = @resource
 
         # read the vertex and fragment shader files
-        vertex_shader_text = ShaderProgram.read_shader_file("#{@file_name}.vs", &shader_reader)
-        fragment_shader_text = ShaderProgram.read_shader_file("#{@file_name}.fs", &shader_reader)
+        vertex_shader_text = Shader.read_shader_file("#{@file_name}.vs", &shader_reader)
+        fragment_shader_text = Shader.read_shader_file("#{@file_name}.fs", &shader_reader)
 
         # load the shader code into OpenGL
         vertex_shader_id = load_shader(vertex_shader_text, LibGL::VERTEX_SHADER)
@@ -71,10 +99,10 @@ module Prism::Core::Shader
         @resource.attach_shader(vertex_shader_id)
         @resource.attach_shader(fragment_shader_id)
 
+        compile
+
         # searches for attributes in the vertex shader code and automatically binds them to the program
         automatically_bind_attributes(vertex_shader_text)
-
-        compile
 
         # searches for uniforms in the shader code and automatically binds them to the program
         add_all_uniforms(vertex_shader_text)
@@ -96,7 +124,7 @@ module Prism::Core::Shader
     # it from the pograms array which will eventually trigger it's own garbage collection.
     def finalize
       if @resource.remove_reference
-        # puts "Trashed shader #{@file_name}"
+        puts "Trashed shader #{@file_name}"
         @@programs.delete(@file_name)
       end
     end
@@ -104,8 +132,10 @@ module Prism::Core::Shader
     # Binds the program to OpenGL so it can run.
     # First we enable the program, then we bind values to all of the uniforms.
     # Finally, we enable all of the attributes.
+    # TODO: rename this to bind
     def start(@uniform_map : Shader::UniformMap, transform : Transform, material : Material, camera : Camera)
       LibGL.use_program(@resource.program)
+    #   @uniform_map = self.to_uniform
       update_uniforms(transform, material, camera)
       0.upto(@resource.num_attributes - 1) do |i|
         LibGL.enable_vertex_attrib_array(i)
@@ -113,6 +143,7 @@ module Prism::Core::Shader
     end
 
     # Unbinds the program from OpenGL so it won't run.
+    # TODO: rename this to unbind
     def stop
       0.upto(@resource.num_attributes - 1) do |i|
         LibGL.disable_vertex_attrib_array(i)
@@ -165,7 +196,7 @@ module Prism::Core::Shader
             raise Exception.new("Unsupported uniform type #{value.class}")
           end
         else
-          # puts "missing uniform #{key}"
+          puts "missing uniform #{key}"
         end
       end
 
@@ -252,29 +283,6 @@ module Prism::Core::Shader
       # LibGL.delete_shader(shader)
     end
 
-    # Loads a shader program
-    def self.read_shader_file(file_path : String, &file_reader : String -> String) : String
-      input = file_reader.call file_path
-      evaluate_includes input, &file_reader
-    end
-
-    # Searches for include statements and combines them with the *input*
-    # An include statement looks like `#include "somefile.ext"`
-    private def self.evaluate_includes(input : String, &file_reader : String -> String) : String
-      shader_source = ""
-
-      input.each_line() do |line|
-        include_match = line.scan(/\#include\s+["<]([^">]*)[>"]/)
-        if include_match.size > 0
-          shader_source += read_shader_file(include_match[0][1], &file_reader)
-        else
-          shader_source += line + "\n"
-        end
-      end
-
-      return shader_source
-    end
-
     # Parses the shader text for attribute delcarations and automatically adds them
     # This supports older versions of glsl as well as newer versions.
     #
@@ -290,6 +298,7 @@ module Prism::Core::Shader
       keyword = version > 120 ? "in" : "attribute"
       start_location = shader_text.index(/^\b#{keyword}\b/m)
       attribute_number = 0
+
       while start = start_location
         end_location = shader_text.index(";", start).not_nil!
         uniform_line = shader_text[start..end_location]
@@ -341,12 +350,12 @@ module Prism::Core::Shader
     end
 
     # Adds a uniform while expanding it's struct properties as needed
-    private def add_uniform(uniform_name : String, uniform_type : String, structs : Hash(String, GLSLStruct))
+    private def register_uniform(uniform_name : String, uniform_type : String, structs : Hash(String, GLSLStruct))
       if structs.has_key?(uniform_type)
         properties = structs[uniform_type].properties
         0.upto(properties.size - 1) do |i|
           prop : GLSLProperty = properties[i]
-          add_uniform("#{uniform_name}.#{prop.name}", prop.prop_type, structs)
+          register_uniform("#{uniform_name}.#{prop.name}", prop.prop_type, structs)
         end
       else
         # add the final uniform
@@ -376,7 +385,7 @@ module Prism::Core::Shader
 
         @resource.uniform_names.push(uniform_name)
         @resource.uniform_types.push(uniform_type)
-        self.add_uniform(uniform_name, uniform_type, structs)
+        self.register_uniform(uniform_name, uniform_type, structs)
 
         start_location = shader_text.index(/\b#{keyword}\b/, end_location)
       end
