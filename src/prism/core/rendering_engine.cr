@@ -104,7 +104,9 @@ module Prism::Core
         disable_culling if material.has_transparency?
         shader = @test.as(Shader::Program)
         shader.material = material
-        shader.start(Shader::UniformMap.new, transform, self.main_camera)
+        shader.transformation_matrix = transform.get_transformation
+        shader.projection_matrix = self.main_camera.get_view_projection
+        shader.start(self.main_camera)
         mesh.draw
         shader.stop
         enable_culling

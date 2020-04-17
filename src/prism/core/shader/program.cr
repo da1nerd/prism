@@ -45,9 +45,6 @@ module Prism::Core::Shader
     # The compiled program being used
     @resource : CompiledProgram
 
-    # A map of uniform values that will be written to the buffer.
-    @uniform_map : Shader::UniformMap
-
     # The name of shader file that was loaded.
     # This is used to clean up the programs map after garbage collection.
     @file_name : String
@@ -117,7 +114,6 @@ module Prism::Core::Shader
     #
     # TODO: let this take in a path to the vertex shader and fragment shader for more flexibility.
     def initialize(@file_name : String, &shader_reader : String -> String)
-      @uniform_map = Shader::UniformMap.new
       @uniforms = UniformMap.new
       if @@programs.has_key?(@file_name)
         # Re-use a compiled program so we don't need to compile a new one.
@@ -174,9 +170,9 @@ module Prism::Core::Shader
     # First we enable the program, then we bind values to all of the uniforms.
     # Finally, we enable all of the attributes.
     # TODO: rename this to bind
-    def start(@uniform_map : Shader::UniformMap, transform : Transform, camera : Camera)
+    def start(camera : Camera)
       LibGL.use_program(@resource.program)
-      update_uniforms(transform, camera)
+      update_uniforms(camera)
       0.upto(@resource.num_attributes - 1) do |i|
         LibGL.enable_vertex_attrib_array(i)
       end
@@ -192,9 +188,9 @@ module Prism::Core::Shader
     end
 
     # Binds all of the uniform values to the program.
-    private def update_uniforms(transform : Transform, camera : Camera)
-      world_matrix = transform.get_transformation
-      mvp_matrix = camera.get_view_projection * world_matrix
+    private def update_uniforms(camera : Camera)
+      # world_matrix = transform.get_transformation
+      # mvp_matrix = camera.get_view_projection * world_matrix
 
       # maps the uniforms to the `UniformType`
       @resource.uniforms.each do |key, _|
@@ -228,9 +224,10 @@ module Prism::Core::Shader
           if uniform_name.starts_with?("T_")
             # transformations
             if uniform_name == "T_MVP" # model view projection
-              set_uniform(uniform_name, mvp_matrix)
+              # set_uniform(uniform_name, mvp_matrix)
             elsif uniform_name == "T_model"
-              set_uniform(uniform_name, world_matrix)
+              # TODO: T_model is now transformation_matrix in glsl
+              # set_uniform(uniform_name, world_matrix)
             else
               puts "Error: #{uniform_name} is not a valid component of Transform"
               exit 1

@@ -6,9 +6,10 @@ attribute vec3 normal;
 
 varying vec2 pass_textureCoords;
 
-uniform mat4 T_MVP;
+uniform mat4 transformation_matrix;
+uniform mat4 projection_matrix;
 
 void main(void) {
-    gl_Position = T_MVP * vec4(position, 1.0);
+    gl_Position = projection_matrix * transformation_matrix * vec4(position, 1.0);
     pass_textureCoords = textureCoords;
 }
