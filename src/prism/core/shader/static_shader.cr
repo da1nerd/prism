@@ -6,7 +6,7 @@ module Prism::Core::Shader
     uniform transformation_matrix, Matrix4f
     uniform projection_matrix, Matrix4f
     uniform view_matrix, Matrix4f
-    uniform light, SimpleLight
+    uniform light, Core::Light
 
     def initialize
       super("static")
