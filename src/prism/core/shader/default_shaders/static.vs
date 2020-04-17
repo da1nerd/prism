@@ -20,6 +20,7 @@ uniform mat4 transformation_matrix;
 uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
 uniform Light light;
+uniform vec3 C_eyePos;
 
 void main(void) {
     worldPosition = (transformation_matrix * vec4(position, 1.0)).xyz;
@@ -28,5 +29,5 @@ void main(void) {
 
     surfaceNormal = (transformation_matrix * vec4(normal, 0.0)).xyz;
     toLightVector = light.position - worldPosition;
-   // toCameraVector = (inverse(view_matrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
+    toCameraVector = C_eyePos;//(inverse(view_matrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz; //(inverse(view_matrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
 }
