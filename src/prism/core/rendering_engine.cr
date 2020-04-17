@@ -84,7 +84,6 @@ module Prism::Core
       LibGL.depth_mask(LibGL::FALSE)
       LibGL.depth_func(LibGL::EQUAL)
 
-
       # i = 0
       # while i < @lights.size
       #   object.render_all do |transform, material, mesh|
@@ -97,17 +96,17 @@ module Prism::Core
       #   i += 1
       # end
 
-
-
       LibGL.depth_func(LibGL::LESS)
       LibGL.depth_mask(LibGL::TRUE)
       LibGL.disable(LibGL::BLEND)
 
       object.render_all do |transform, material, mesh|
         disable_culling if material.has_transparency?
-        @test.as(Shader::Program).start(Shader::UniformMap.new, transform, material, self.main_camera)
+        shader = @test.as(Shader::Program)
+        shader.material = material
+        shader.start(Shader::UniformMap.new, transform, self.main_camera)
         mesh.draw
-        @test.as(Shader::Program).stop
+        shader.stop
         enable_culling
       end
     end

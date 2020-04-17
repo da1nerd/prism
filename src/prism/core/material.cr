@@ -66,43 +66,20 @@ module Prism::Core
       @texture_map[name] = texture
     end
 
+    # Injects the texture sampler slots into the uniform map
+    # so the shader can properly use them.
     @[Override]
     private def on_to_uniform : Shader::UniformMap | Nil
       # manually register the texture sampler slots
       sampler_slot : Int32 = 0
       map = Shader::UniformMap.new
       @texture_map.each do |key, texture|
+        # TRICKY: bind the texture to the sampler slot now since the shader is about to use them.
+        texture.bind(sampler_slot)
         map[key] = sampler_slot
         sampler_slot += 1
       end
       map
-    end
-
-    # Retrieves a texture by name
-    @[Raises]
-    def get_texture(name : String) : Texture
-      if @texture_map.has_key?(name)
-        @texture_map[name]
-      else
-        raise Exception.new("Could not find texture '#{name}'. You must add a texture to the material.")
-      end
-    end
-
-    # Binds the given texture to it's sampler slot
-    def bind_texture(name : String)
-      sampler_slot : Int32 = 0
-      @texture_map.each do |key, texture|
-        if key === name
-          texture.bind(sampler_slot)
-          return
-        end
-        sampler_slot += 1
-      end
-    end
-
-    # Checks if the material has a texture.
-    def has_texture?(name : String) : Bool
-      return @texture_map.has_key?(name)
     end
   end
 end

@@ -2,9 +2,9 @@ require "./shader"
 require "./component"
 
 module Prism::Core
-
   class SimpleLight < Component
     property color
+
     def initialize(@color : Vector3f)
     end
   end

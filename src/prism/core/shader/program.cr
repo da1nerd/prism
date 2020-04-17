@@ -38,7 +38,6 @@ module Prism::Core::Shader
   #
   # I probably need to rename these two classes
   class Program
-    include Serializable
     # A map of shader programs that have been created.
     # This allows us to re-use programs.
     @@programs = {} of String => CompiledProgram
@@ -52,6 +51,47 @@ module Prism::Core::Shader
     # The name of shader file that was loaded.
     # This is used to clean up the programs map after garbage collection.
     @file_name : String
+
+    # A map of registered uniform values
+    @uniforms : UniformMap
+    getter uniforms
+
+    # Generates an inline uniform property.
+    # Rather than namespacing `Shader::Serializable` uniforms with *name*, the uniforms are instead expanded so they can be accessed directly.
+    # Properties added this way will be automatically bound to the compiled shader program when the shader is
+    macro inline_uniform(name, type)
+      # Sets the value of the {{name}} uniform.
+      def {{name}}=(value : {{type}})
+          if value.is_a?(Shader::Serializable)
+              _{{name}}_uniforms = value.to_uniform(true)
+              _{{name}}_uniforms.each do |k, v|
+                  @uniforms[k] = v
+              end
+          else
+              @uniforms["{{name}}"] = value
+          end
+
+          # TODO: bind textures
+      end
+    end
+
+    # Generates a uniform property.
+    # Properties added this way will be automatically bound to the compiled shader program when the shader is
+    macro uniform(name, type)
+        # Sets the value of the {{name}} uniform.
+        def {{name}}=(value : {{type}})
+            if value.is_a?(Shader::Serializable)
+                _{{name}}_uniforms = value.to_uniform(true)
+                _{{name}}_uniforms.each do |k, v|
+                    @uniforms["{{name}}.#{k}"] = v
+                end
+            else
+                @uniforms["{{name}}"] = value
+            end
+
+            # TODO: bind textures
+        end
+    end
 
     # Creates a new shader from *file_name*.
     #
@@ -78,6 +118,7 @@ module Prism::Core::Shader
     # TODO: let this take in a path to the vertex shader and fragment shader for more flexibility.
     def initialize(@file_name : String, &shader_reader : String -> String)
       @uniform_map = Shader::UniformMap.new
+      @uniforms = UniformMap.new
       if @@programs.has_key?(@file_name)
         # Re-use a compiled program so we don't need to compile a new one.
         @resource = @@programs[@file_name]
@@ -133,10 +174,9 @@ module Prism::Core::Shader
     # First we enable the program, then we bind values to all of the uniforms.
     # Finally, we enable all of the attributes.
     # TODO: rename this to bind
-    def start(@uniform_map : Shader::UniformMap, transform : Transform, material : Material, camera : Camera)
+    def start(@uniform_map : Shader::UniformMap, transform : Transform, camera : Camera)
       LibGL.use_program(@resource.program)
-    #   @uniform_map = self.to_uniform
-      update_uniforms(transform, material, camera)
+      update_uniforms(transform, camera)
       0.upto(@resource.num_attributes - 1) do |i|
         LibGL.enable_vertex_attrib_array(i)
       end
@@ -152,35 +192,14 @@ module Prism::Core::Shader
     end
 
     # Binds all of the uniform values to the program.
-    private def update_uniforms(transform : Transform, material : Material, camera : Camera)
+    private def update_uniforms(transform : Transform, camera : Camera)
       world_matrix = transform.get_transformation
       mvp_matrix = camera.get_view_projection * world_matrix
-      material_uniforms = material.to_uniform
 
       # maps the uniforms to the `UniformType`
       @resource.uniforms.each do |key, _|
-        if @uniform_map.has_key? key
-          value = @uniform_map[key]
-          case value.class.name
-          when "Int32"
-            set_uniform(key, value.as(LibGL::Int))
-          when "Bool"
-            set_uniform(key, value.as(Bool))
-          when "Float32"
-            set_uniform(key, value.as(LibGL::Float))
-          when "Prism::VMath::Vector3f"
-            set_uniform(key, value.as(Vector3f))
-          when "Prism::VMath::Matrix4f"
-            set_uniform(key, value.as(Matrix4f))
-          else
-            raise Exception.new("Unsupported uniform type #{value.class}")
-          end
-        elsif material_uniforms.has_key? key
-          if material.has_texture? key
-            material.bind_texture key
-          end
-
-          value = material_uniforms[key]
+        if @uniforms.has_key? key
+          value = @uniforms[key]
           case value.class.name
           when "Int32"
             set_uniform(key, value.as(LibGL::Int))
@@ -362,8 +381,7 @@ module Prism::Core::Shader
         uniform_location = LibGL.get_uniform_location(@resource.program, uniform_name)
         if uniform_location == -1
           uniform_error_code = LibGL.get_error
-          puts "Error #{uniform_error_code}: Could not find location for uniform '#{uniform_name}'."
-          exit 1
+          raise Exception.new("Error #{uniform_error_code}: Could not find location for uniform '#{uniform_name}'.")
         end
 
         @resource.uniforms[uniform_name] = uniform_location
