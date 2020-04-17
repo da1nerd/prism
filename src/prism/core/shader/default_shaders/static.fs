@@ -22,7 +22,7 @@ void main(void) {
     vec3 unitLightVector = normalize(toLightVector);
 
     float nDot1 = dot(unitNormal, unitLightVector);
-    float brightness = max(nDot1, 0.0);
+    float brightness = max(nDot1, 0.2); // TODO: pass the 0.2 in as an ambient light.
     vec3 stuff = brightness * light.color;
 
     vec3 unitVectorToCamera = normalize(toCameraVector);
