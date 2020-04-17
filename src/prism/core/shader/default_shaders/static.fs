@@ -18,8 +18,13 @@ uniform vec3 materialColor;
 uniform DirectionalLight light;
 
 void main(void) {
+    vec4 textureColor = texture2D(diffuse, pass_textureCoords);
+    // discards transparent pixels
+    if (textureColor.a <= 0.5) {
+        discard;
+    }
     vec3 unitNormal = normalize(surfaceNormal);
     vec4 lightRays = calcDirectionalLight(light, unitNormal, worldPosition);
     lightRays = max(lightRays, 0.2);
-    gl_FragColor = lightRays * (vec4(materialColor, 1.0) + texture2D(diffuse, pass_textureCoords));// + vec4(finalSpecular, 1.0);
+    gl_FragColor = lightRays * (vec4(materialColor, 1.0) + textureColor);
 }
