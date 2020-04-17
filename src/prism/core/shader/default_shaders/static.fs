@@ -9,8 +9,6 @@ struct Light
 
 varying vec2 pass_textureCoords;
 varying vec3 surfaceNormal;
-varying vec3 toLightVector;
-varying vec3 toCameraVector;
 varying vec3 worldPosition;
 
 uniform sampler2D diffuse;

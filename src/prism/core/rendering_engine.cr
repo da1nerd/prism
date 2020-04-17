@@ -110,9 +110,10 @@ module Prism::Core
         shader.projection_matrix = self.main_camera.get_projection
         shader.view_matrix = self.main_camera.get_view
         shader.light = @lights[0].as(Core::Light)
-        shader.start(self.main_camera)
+        shader.eye_pos = self.main_camera.transform.get_transformed_pos
+        shader.bind
         mesh.draw
-        shader.stop
+        shader.unbind
         enable_culling
       end
     end

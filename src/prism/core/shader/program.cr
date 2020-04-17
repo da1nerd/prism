@@ -161,7 +161,7 @@ module Prism::Core::Shader
     # it from the pograms array which will eventually trigger it's own garbage collection.
     def finalize
       if @resource.remove_reference
-        puts "Trashed shader #{@file_name}"
+        # puts "Trashed shader \"#{@file_name}\""
         @@programs.delete(@file_name)
       end
     end
@@ -169,30 +169,26 @@ module Prism::Core::Shader
     # Binds the program to OpenGL so it can run.
     # First we enable the program, then we bind values to all of the uniforms.
     # Finally, we enable all of the attributes.
-    # TODO: rename this to bind
-    def start(camera : Camera)
+    def bind
       LibGL.use_program(@resource.program)
-      update_uniforms(camera)
+      set_all_uniforms
       0.upto(@resource.num_attributes - 1) do |i|
         LibGL.enable_vertex_attrib_array(i)
       end
     end
 
     # Unbinds the program from OpenGL so it won't run.
-    # TODO: rename this to unbind
-    def stop
+    def unbind
       0.upto(@resource.num_attributes - 1) do |i|
         LibGL.disable_vertex_attrib_array(i)
       end
       LibGL.use_program(0)
     end
 
-    # Binds all of the uniform values to the program.
-    private def update_uniforms(camera : Camera)
-      # world_matrix = transform.get_transformation
-      # mvp_matrix = camera.get_view_projection * world_matrix
-
-      # maps the uniforms to the `UniformType`
+    # Sets all of the uniform values.
+    # This will raise an exception if a uniform is missing or invalid.
+    @[Raises]
+    private def set_all_uniforms
       @resource.uniforms.each do |key, _|
         if @uniforms.has_key? key
           value = @uniforms[key]
@@ -211,36 +207,7 @@ module Prism::Core::Shader
             raise Exception.new("Unsupported uniform type #{value.class}")
           end
         else
-          puts "missing uniform #{key}"
-        end
-      end
-
-      if @resource.uniform_names.size > 0
-        0.upto(@resource.uniform_names.size - 1) do |i|
-          uniform_name = @resource.uniform_names[i]
-          uniform_type = @resource.uniform_types[i]
-          # TODO: the below uniforms need to be configurable just like the lights are configurable.
-
-          if uniform_name.starts_with?("T_")
-            # transformations
-            if uniform_name == "T_MVP" # model view projection
-              # set_uniform(uniform_name, mvp_matrix)
-            elsif uniform_name == "T_model"
-              # TODO: T_model is now transformation_matrix in glsl
-              # set_uniform(uniform_name, world_matrix)
-            else
-              puts "Error: #{uniform_name} is not a valid component of Transform"
-              exit 1
-            end
-          elsif uniform_name.starts_with?("C_")
-            # Camera
-            if uniform_name == "C_eyePos"
-              set_uniform(uniform_name, camera.transform.get_transformed_pos)
-            else
-              puts "Error: #{uniform_name} is not a valid component of Camera"
-              exit 1
-            end
-          end
+          raise Exception.new("Missing required uniform \"#{key}\"")
         end
       end
     end
