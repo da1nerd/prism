@@ -105,7 +105,6 @@ module Prism::Core
       r = @renderer.as(Renderer)
       s = @shader.as(Shader::Program)
 
-
       shader = @shader.as(Shader::Program)
       shader.start
       # TODO: perhaps the shader uniform configuration here could be put inside of a sub-renderer.
