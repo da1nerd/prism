@@ -102,6 +102,13 @@ module Prism::Core
 
       shader = @test.as(Shader::Program)
       shader.start
+      # TODO: perhaps the shader uniform configuration here could be put inside of a sub-renderer.
+      #  Then we could allow users to create these rendering plugins that are mapped to a specific shader program.
+      #  This main rendering engine can sort all of the entities into a hash and then loop
+      #  over all of the rendering plugins and hand them the hash.
+      #  The rendering plugins can then render those entities it supports.
+      #  We might also want to put the gl settings from the startup method in these plugins as well.
+      #  This would allow them to tweak things as needed. e.g. there would be some prepare stage and cleanup stage to configure gl stuff.
       shader.projection_matrix = self.main_camera.get_projection
       shader.view_matrix = self.main_camera.get_view
       shader.light = @lights[0].as(Core::Light)
