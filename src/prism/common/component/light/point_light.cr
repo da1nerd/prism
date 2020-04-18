@@ -12,7 +12,7 @@ module Prism::Common::Light
     @base : BaseLight
     @[Core::Shader::Field]
     @range : Float32
-    @[Core::Shader::Field(key: "atten")]
+    @[Core::Shader::Field(name: "atten")]
     @attenuation : Core::Attenuation
 
     @[Core::Shader::Field]

@@ -3,10 +3,10 @@ module Prism::Common::Light
   class SpotLight < Core::Light
     property cutoff
 
-    @[Core::Shader::Field(key: "cutoff")]
+    @[Core::Shader::Field(name: "cutoff")]
     @cutoff : Float32
 
-    @[Core::Shader::Field(key: "pointLight")]
+    @[Core::Shader::Field(name: "pointLight")]
     @point_light : PointLight
 
     def initialize

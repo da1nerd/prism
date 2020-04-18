@@ -15,10 +15,10 @@ module UniformTest
   class Parent
     include Shader::Serializable
 
-    @[Shader::Field(key: "name")]
+    @[Shader::Field(name: "name")]
     @name : Int32 = 1
 
-    @[Shader::Field(key: "val")]
+    @[Shader::Field(name: "val")]
     @val : Int32 = 5
   end
 
@@ -26,10 +26,10 @@ module UniformTest
   class Child < Parent
     include Shader::Serializable
 
-    @[Shader::Field(key: "age")]
+    @[Shader::Field(name: "age")]
     @age : Int32 = 25
 
-    @[Shader::Field(key: "att")]
+    @[Shader::Field(name: "att")]
     @att : Attribute = Attribute.new
   end
 
@@ -37,13 +37,13 @@ module UniformTest
   class Attribute
     include Shader::Serializable
 
-    @[Shader::Field(key: "color")]
+    @[Shader::Field(name: "color")]
     @c : Int32 = 12
 
     @[Shader::Field]
     @height : Int32 = 72
 
-    @[Shader::Field(key: "method_test")]
+    @[Shader::Field(name: "method_test")]
     def test : Float32
       6.2f32
     end

@@ -16,23 +16,23 @@ module Prism::Core
 
     # This allows you to simulate some half decent lighting.
     # This is helpful when rendering entities that are composed of a bunch of flat meshes. e.g. plants, trees, etc.
-    @[Shader::Field(key: "useFakeLighting")]
+    @[Shader::Field(name: "useFakeLighting")]
     @use_fake_lighting : Bool = false
 
     # The reflectivity determines how shiny the surface of the object is.
-    @[Shader::Field(key: "specularIntensity")]
+    @[Shader::Field(name: "specularIntensity")]
     @specular_intensity : Float32 = 1
 
     # The shine dampening determines how close the camera has to be
     # to the reflected light to see any change in the brightness on surface of the object.
-    @[Shader::Field(key: "specularPower")]
+    @[Shader::Field(name: "specularPower")]
     @specular_power : Float32 = 10
 
     @texture_map : Hash(String, Texture)
 
     # The color of the surface of the object.
     # this defaults to black
-    @[Shader::Field(key: "materialColor")]
+    @[Shader::Field(name: "materialColor")]
     @color : Vector3f = Vector3f.new(0, 0, 0)
 
     def initialize

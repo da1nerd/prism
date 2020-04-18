@@ -6,7 +6,7 @@ module Prism::Common::Light
   class AmbientLight < Core::AmbientLight
     getter color
 
-    @[Core::Shader::Field(key: "R_ambient")]
+    @[Core::Shader::Field(name: "R_ambient")]
     @color : Vector3f
 
     def initialize

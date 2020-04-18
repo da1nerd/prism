@@ -15,7 +15,7 @@ module Prism::Common::Light
       @base = BaseLight.new(color, intensity)
     end
 
-    @[Core::Shader::Field(key: "direction")]
+    @[Core::Shader::Field(name: "direction")]
     def direction : Prism::Maths::Vector3f
       return self.transform.get_transformed_rot.forward
     end
