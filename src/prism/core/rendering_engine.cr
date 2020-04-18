@@ -100,20 +100,20 @@ module Prism::Core
       LibGL.depth_mask(LibGL::TRUE)
       LibGL.disable(LibGL::BLEND)
 
+      shader = @test.as(Shader::Program)
+      shader.start
+      shader.projection_matrix = self.main_camera.get_projection
+      shader.view_matrix = self.main_camera.get_view
+      shader.light = @lights[0].as(Core::Light)
+      shader.eye_pos = self.main_camera.transform.get_transformed_pos
       entity.render_all do |transform, material, mesh|
-        disable_culling if material.has_transparency?
-        shader = @test.as(Shader::Program)
         shader.material = material
         shader.transformation_matrix = transform.get_transformation
-        shader.projection_matrix = self.main_camera.get_projection
-        shader.view_matrix = self.main_camera.get_view
-        shader.light = @lights[0].as(Core::Light)
-        shader.eye_pos = self.main_camera.transform.get_transformed_pos
-        shader.bind
+        disable_culling if material.has_transparency?
         mesh.draw
-        shader.unbind
         enable_culling
       end
+      shader.stop
     end
 
     # Registers a light.

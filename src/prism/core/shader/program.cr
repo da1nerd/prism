@@ -49,10 +49,6 @@ module Prism::Core::Shader
     # This is used to clean up the programs map after garbage collection.
     @file_name : String
 
-    # A map of registered uniform values
-    @uniforms : UniformMap
-    getter uniforms
-
     # Generates an inline uniform property.
     # Rather than namespacing `Shader::Serializable` uniforms with *name*, the uniforms are instead expanded so they can be accessed directly.
     # Properties added this way will be automatically bound to the compiled shader program when the shader is
@@ -62,13 +58,11 @@ module Prism::Core::Shader
           if value.is_a?(Shader::Serializable)
               _{{name}}_uniforms = value.to_uniform(true)
               _{{name}}_uniforms.each do |k, v|
-                  @uniforms[k] = v
+                  set_uniform(k, v)
               end
           else
-              @uniforms["{{name}}"] = value
+            set_uniform("{{name}}", value)
           end
-
-          # TODO: bind textures
       end
     end
 
@@ -80,13 +74,11 @@ module Prism::Core::Shader
             if value.is_a?(Shader::Serializable)
                 _{{name}}_uniforms = value.to_uniform(true)
                 _{{name}}_uniforms.each do |k, v|
-                    @uniforms["{{name}}.#{k}"] = v
+                    set_uniform("{{name}}.#{k}", v)
                 end
             else
-                @uniforms["{{name}}"] = value
+                set_uniform("{{name}}", value)
             end
-
-            # TODO: bind textures
         end
     end
 
@@ -114,7 +106,6 @@ module Prism::Core::Shader
     #
     # TODO: let this take in a path to the vertex shader and fragment shader for more flexibility.
     def initialize(@file_name : String, &shader_reader : String -> String)
-      @uniforms = UniformMap.new
       if @@programs.has_key?(@file_name)
         # Re-use a compiled program so we don't need to compile a new one.
         @resource = @@programs[@file_name]
@@ -169,74 +160,56 @@ module Prism::Core::Shader
     # Binds the program to OpenGL so it can run.
     # First we enable the program, then we bind values to all of the uniforms.
     # Finally, we enable all of the attributes.
-    def bind
+    def start
       LibGL.use_program(@resource.program)
-      set_all_uniforms
       0.upto(@resource.num_attributes - 1) do |i|
         LibGL.enable_vertex_attrib_array(i)
       end
     end
 
     # Unbinds the program from OpenGL so it won't run.
-    def unbind
+    def stop
       0.upto(@resource.num_attributes - 1) do |i|
         LibGL.disable_vertex_attrib_array(i)
       end
       LibGL.use_program(0)
     end
 
-    # Sets all of the uniform values.
-    # This will raise an exception if a uniform is missing or invalid.
+    # Returns the location of the uniform variable.
+    # This will raise an exception if uniform does not exist in the glsl program.
     @[Raises]
-    private def set_all_uniforms
-      @resource.uniforms.each do |key, _|
-        if @uniforms.has_key? key
-          value = @uniforms[key]
-          # TODO: need to use actual classes here so it's easier to maintain.
-          case value.class.name
-          when "Int32"
-            set_uniform(key, value.as(LibGL::Int))
-          when "Bool"
-            set_uniform(key, value.as(Bool))
-          when "Float32"
-            set_uniform(key, value.as(LibGL::Float))
-          when "Prism::Maths::Vector3f"
-            set_uniform(key, value.as(Vector3f))
-          when "Prism::Maths::Matrix4f"
-            set_uniform(key, value.as(Matrix4f))
-          else
-            raise Exception.new("Unsupported uniform type #{value.class}")
-          end
-        else
-          raise Exception.new("Missing required uniform \"#{key}\"")
-        end
+    private def get_uniform_location(name : String) : Int32
+      if @resource.uniforms.has_key? name
+        @resource.uniforms[name]
+      else
+        raise Exception.new "The uniform \"#{name}\" is not defined in your glsl code. Update your shader or remove \"#{name}\" from your Shader::Program."
       end
     end
 
     # Sets an integer uniform variable value
     private def set_uniform(name : String, value : LibGL::Int)
-      LibGL.uniform_1i(@resource.uniforms[name], value)
+      LibGL.uniform_1i(get_uniform_location(name), value)
     end
 
     # Sets a float uniform variable value
     private def set_uniform(name : String, value : LibGL::Float)
-      LibGL.uniform_1f(@resource.uniforms[name], value)
+      LibGL.uniform_1f(get_uniform_location(name), value)
     end
 
     # Sets a 3 dimensional float vector value to a uniform variable
     private def set_uniform(name : String, value : Vector3f)
-      LibGL.uniform_3f(@resource.uniforms[name], value.x, value.y, value.z)
+      LibGL.uniform_3f(get_uniform_location(name), value.x, value.y, value.z)
     end
 
     # Sets a 4 dimensional matrix float value to a uniform variable
     private def set_uniform(name : String, value : Matrix4f)
-      LibGL.uniform_matrix_4fv(@resource.uniforms[name], 1, LibGL::TRUE, value.as_array)
+      LibGL.uniform_matrix_4fv(get_uniform_location(name), 1, LibGL::TRUE, value.as_array)
     end
 
     # Sets a boolean uniform variable value.
     # Booleans are represented as floats in GLSL
     private def set_uniform(name : String, value : Bool)
-      LibGL.uniform_1f(@resource.uniforms[name], value ? 1.0 : 0.0)
+      LibGL.uniform_1f(get_uniform_location(name), value ? 1.0 : 0.0)
     end
 
     # compiles the shader
