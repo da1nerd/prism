@@ -14,7 +14,8 @@ module Prism::Core
     @lights : Array(Core::Light)
     @ambient_light : Core::Light?
     @main_camera : Core::Camera?
-    @test : Shader::StaticShader?
+    @shader : Shader::StaticShader?
+    @renderer : Renderer?
 
     setter main_camera
 
@@ -32,7 +33,8 @@ module Prism::Core
       LibGL.enable(LibGL::DEPTH_TEST)
       LibGL.enable(LibGL::DEPTH_CLAMP)
       LibGL.enable(LibGL::TEXTURE_2D)
-      @test = Shader::StaticShader.new
+      @shader = Shader::StaticShader.new
+      @renderer = Renderer.new(@shader.as(Shader::Program))
       # Uncomment the below line to display everything as a wire frame
       # LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::LINE)
     end
@@ -100,7 +102,11 @@ module Prism::Core
       LibGL.depth_mask(LibGL::TRUE)
       LibGL.disable(LibGL::BLEND)
 
-      shader = @test.as(Shader::Program)
+      r = @renderer.as(Renderer)
+      s = @shader.as(Shader::Program)
+
+
+      shader = @shader.as(Shader::Program)
       shader.start
       # TODO: perhaps the shader uniform configuration here could be put inside of a sub-renderer.
       #  Then we could allow users to create these rendering plugins that are mapped to a specific shader program.
