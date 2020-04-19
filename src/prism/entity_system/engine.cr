@@ -5,6 +5,9 @@ module Prism::EntitySystem
     @node_lists : Hash(Class, Array(Node))
 
     def initialize
+      @entities = [] of Entity
+      @systems = [] of System
+      @node_lists = [] of Array(Node)
     end
 
     def add_entity(entity : Entity)
