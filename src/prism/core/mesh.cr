@@ -42,7 +42,7 @@ module Prism::Core
     # garbage collection
     def finalize
       if @resource.remove_reference && @file_name != nil
-        puts "Trashed mesh #{@file_name}"
+        # puts "Trashed mesh #{@file_name}"
         @@loaded_models.delete(@file_name)
       end
     end
@@ -105,6 +105,9 @@ module Prism::Core
     def draw
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, @resource.vbo)
 
+      # TODO: we should be able to automate setting the attribute pointers.
+      #  this data should be available from our `Vertex` class.
+      #  There should be a way to validate this with the shader.
       mesh_offset = Pointer(Void).new(0)
       LibGL.vertex_attrib_pointer(0, 3, LibGL::FLOAT, LibGL::FALSE, Vertex::SIZE * sizeof(Float32), mesh_offset)
 

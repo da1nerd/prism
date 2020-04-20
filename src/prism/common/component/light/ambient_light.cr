@@ -4,10 +4,9 @@ module Prism::Common::Light
   # For now you always need to have an ambient light otherwise no other light sources will work.
   # That may be a bug that get's fixed later on.
   class AmbientLight < Core::AmbientLight
-    include Core::Shader::Serializable
     getter color
 
-    @[Core::Shader::Field(key: "R_ambient")]
+    @[Core::Shader::Field(name: "R_ambient")]
     @color : Vector3f
 
     def initialize
@@ -15,7 +14,6 @@ module Prism::Common::Light
     end
 
     def initialize(@color : Vector3f)
-      super(Core::Shader::ShaderProgram.new("forward-ambient"))
     end
   end
 end

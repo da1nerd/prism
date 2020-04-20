@@ -1,6 +1,6 @@
 require "matrix"
 
-module Prism::VMath
+module Prism::Maths
   # TODO: port another matrix class to here
   class Matrix4f
     @m : Matrix(Float32)

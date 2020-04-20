@@ -1,14 +1,12 @@
 module Prism::Common::Light
   # Represents a spot light
-  @[Core::Shader::Serializable::Options(name: "R_spotLight")]
   class SpotLight < Core::Light
-    include Core::Shader::Serializable
     property cutoff
 
-    @[Core::Shader::Field(key: "cutoff")]
+    @[Core::Shader::Field(name: "cutoff")]
     @cutoff : Float32
 
-    @[Core::Shader::Field(key: "pointLight")]
+    @[Core::Shader::Field(name: "pointLight")]
     @point_light : PointLight
 
     def initialize
@@ -20,7 +18,6 @@ module Prism::Common::Light
     end
 
     def initialize(color : Vector3f, intensity : Float32, attenuation : Core::Attenuation, @cutoff : Float32)
-      super(Core::Shader::ShaderProgram.new("forward-spot"))
       @point_light = PointLight.new(color, intensity, attenuation)
     end
 
@@ -30,7 +27,7 @@ module Prism::Common::Light
     end
 
     @[Core::Shader::Field]
-    def direction : Prism::VMath::Vector3f
+    def direction : Prism::Maths::Vector3f
       return self.transform.get_transformed_rot.forward
     end
   end
