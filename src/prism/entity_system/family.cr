@@ -24,12 +24,12 @@ module Prism::EntitySystem
     # A component has been added to an entity. Test whether the entity's inclusion in this family's
     # NodeList should be modified.
     #
-    abstract def component_added_to_entity(entity : Entity, component_class : String)
+    abstract def component_added_to_entity(entity : Entity, component_class : Component.class)
     #
     # A component has been removed from an entity. Test whether the entity's inclusion in this family's
     # NodeList should be modified.
     #
-    abstract def component_removed_from_entity(entity : Entity, component_class : String)
+    abstract def component_removed_from_entity(entity : Entity, component_class : Component.class)
     #
     # The family is about to be discarded. Clean up all properties as necessary. Usually, you will
     # want to empty the NodeList at this time.

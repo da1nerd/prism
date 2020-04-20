@@ -4,14 +4,14 @@ module Prism::EntitySystem
     @systems : Array(System)
     @node_lists : Hash(String, Array(Node))
     @entity_names : Hash(String, Entity)
-    @families : Hash(String, Family)
+    @families : Hash(Node.class, Family)
 
     def initialize
       @entities = [] of Entity
       @systems = [] of System
       @node_lists = Hash(String, Array(Node)).new
       @entity_names = Hash(String, Entity).new
-      @families = Hash(String, Family).new
+      @families = Hash(Node.class, Family).new
     end
 
     def add_entity(entity : Entity)
@@ -56,7 +56,7 @@ module Prism::EntitySystem
       # return nodes
 
       if @families.has_key? node_class
-        return @families[node_class].node_ist
+        return @families[node_class].node_list
       end
 
       # TODO: later we will allow creating custom families.

@@ -2,7 +2,7 @@ module Prism::EntitySystem
   class Entity
     @@name_count : Int32 = 0
     @name : String
-    @components : Hash(String, Component)
+    @components : Hash(Component.class, Component)
 
     getter name
 
@@ -11,7 +11,7 @@ module Prism::EntitySystem
     end
 
     def initialize(name : String)
-      @components = Hash(String, Component).new
+      @components = Hash(Component.class, Component).new
       if name
         @name = name
       else
@@ -21,16 +21,16 @@ module Prism::EntitySystem
     end
 
     def add(component : Component)
-      @components[component.class.name] = component
+      @components[component.class] = component
       self
     end
 
-    def remove(component_class : String)
+    def remove(component_class : Component.class)
       @components.delete component_lass
       self
     end
 
-    def get(component_class : String) : Component
+    def get(component_class : Component.class) : Component
       return @components[component_class]
     end
 
@@ -40,7 +40,7 @@ module Prism::EntitySystem
     # @param componentClass The class of the component sought.
     # @return true if the entity has a component of the type, false if not.
     #
-    def has(component_class : String) : Bool
+    def has(component_class : Component.class) : Bool
       return @components[component_class] != Nil
     end
   end

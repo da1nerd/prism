@@ -11,7 +11,7 @@ module Prism::EntitySystem
   class ComponentMatchingFamily < Family
     @nodes : Array(Node)
     @entities : Hash(Entity, Node)
-    @components : Hash(String, String)
+    @components : Hash(Component.class, String)
     @node_pool : NodePool
     @engine : Engine
 
@@ -25,7 +25,7 @@ module Prism::EntitySystem
     def initialize(node_class : Node.class, @engine : Engine)
       @nodes = NodeList.new
       @entities = Hash(Entity, Node).new
-      @components = Hash(String, String).new
+      @components = Hash(Component.class, String).new
       @node_pool = NodePool.new(node_class, components)
 
       @node_pool.dispose(node_pool.get) # create a dummy instance to ensure describeType works.
@@ -56,7 +56,7 @@ module Prism::EntitySystem
     # Called by the engine when a component has been added to an entity. We check if the entity is not in
     # this family's NodeList and should be, and add it if appropriate.
     #
-    def component_added_to_entity(entity : Entity, component_class : String)
+    def component_added_to_entity(entity : Entity, component_class : Component.class)
       add_if_match entity
     end
 
@@ -65,8 +65,8 @@ module Prism::EntitySystem
     # is required by this family's NodeList and if so, we check if the entity is in this this NodeList and
     # remove it if so.
     #
-    def component_removed_from_entity(entity : Entity, component_class : String)
-      if @components.has_key? componentClass
+    def component_removed_from_entity(entity : Entity, component_class : Comoponent.class)
+      if @components.has_key? component_class
       end
       remove_if_match entity
     end
@@ -85,13 +85,13 @@ module Prism::EntitySystem
     #
     private def add_if_match(entity : Entity)
       if !@entities[entity] # check if in array
-        @components.each do |key, component_class|
+        @components.each do |component_class, _|
           return unless entity.has component_class
         end
 
         node : Node = @node_pool.get
         node.entity = entity
-        @components.each do |key, component_class|
+        @components.each do |component_class, _|
           node.components[component_class] = entity.get(component_class)
         end
 
