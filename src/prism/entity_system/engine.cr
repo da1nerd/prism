@@ -48,7 +48,7 @@ module Prism::EntitySystem
       @systems.remove(system)
     end
 
-    def get_node_list(node_class : String) : Array(Node)
+    def get_node_list(node_class : Node.class) : Array(Node)
       # nodes = [] of Node
       # node_lists[node_class] = nodes
       # # create the nodes from the current set of entities

@@ -7,13 +7,13 @@ module Prism::EntitySystem
   # while iterating through the NodeList, the pool also maintains a cache of nodes that are added to the pool
   # but should not be reused yet. They are then released into the pool by calling the releaseCache method.
   #
-  private class NodePool(T)
+  private class NodePool
     @nodes : Array(Node)
     @node_cache : Array(Node)
     @components : Array(String)
 
     # Creates a pool for the given node class.
-    def initialize(@components : Array(String))
+    def initialize(@node_class : Node.class, @components : Array(String))
       @nodes = [] of Node
       @node_cache = [] of Node
     end
@@ -25,7 +25,7 @@ module Prism::EntitySystem
       if @nodes.size < 0
         @nodes.pop
       else
-        T.new
+        @node_class.new
       end
     end
 
@@ -36,6 +36,7 @@ module Prism::EntitySystem
       @components.each do |index, component_name|
         node[component_name] = null
       end
+      node.components.clear
       node.entity = Nil
       @nodes.push node
     end

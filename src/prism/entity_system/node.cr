@@ -9,9 +9,12 @@ module Prism::EntitySystem
   #
   class Node
     # The entity whose components are included in the node.
-    @entity : Entity
+    @entity : Entity?
+    @components : Hash(String, Component)
+    protected property entity, components
 
-    def initialize(@entity : Entity)
+    def initialize
+      @components = Hash(String, Component).new
     end
   end
 end

@@ -8,11 +8,11 @@ module Prism::EntitySystem
   # It uses the basic entity matching pattern of an entity system - entities are added to the list if
   # they contain components matching all the public properties of the node class.
   #
-  class ComponentMatchingFamily(T) < Family
+  class ComponentMatchingFamily < Family
     @nodes : Array(Node)
     @entities : Hash(Entity, Node)
     @components : Hash(String, String)
-    @node_pool : NodePool(T)
+    @node_pool : NodePool
     @engine : Engine
 
     #
@@ -22,13 +22,13 @@ module Prism::EntitySystem
     # @param nodeClass The type of node to create and manage a NodeList for.
     # @param engine The engine that this family is managing teh NodeList for.
     #
-    def initialize(@engine : Engine)
+    def initialize(node_class : Node.class, @engine : Engine)
       @nodes = NodeList.new
       @entities = Hash(Entity, Node).new
       @components = Hash(String, String).new
-      @node_pool = NodePool(T).new(components)
+      @node_pool = NodePool.new(node_class, components)
 
-      @node_pool.dispose(nodePool.get) # create a dummy instance to ensure describeType works.
+      @node_pool.dispose(node_pool.get) # create a dummy instance to ensure describeType works.
 
       # TODO: get list of the components in the class and register them in @components
       # loop over components
@@ -84,15 +84,15 @@ module Prism::EntitySystem
     # if it should be in this NodeList and adds it if so.
     #
     private def add_if_match(entity : Entity)
-      if !entities[entity] # check if in array
-        @components.each do |key, class_name|
+      if !@entities[entity] # check if in array
+        @components.each do |key, component_class|
           return unless entity.has component_class
         end
 
-        node : Node = nodePool.get
+        node : Node = @node_pool.get
         node.entity = entity
-        @components.each do |key, class_name|
-          node[@components[class_name]] = entity.get(class_name)
+        @components.each do |key, component_class|
+          node.components[component_class] = entity.get(component_class)
         end
 
         @entities[entity] = node

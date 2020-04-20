@@ -33,5 +33,15 @@ module Prism::EntitySystem
     def get(component_class : String) : Component
       return @components[component_class]
     end
+
+    #
+    # Does the entity have a component of a particular type.
+    #
+    # @param componentClass The class of the component sought.
+    # @return true if the entity has a component of the type, false if not.
+    #
+    def has(component_class : String) : Bool
+      return @components[component_class] != Nil
+    end
   end
 end
