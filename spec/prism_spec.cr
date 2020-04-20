@@ -2,14 +2,14 @@ require "./spec_helper"
 
 describe Prism::Core do
   it "loads a shader program with from compiled storage" do
-    program = Prism::Core::Shader::ShaderProgram.read_shader_file "a.txt" do |path|
+    program = Prism::Core::Shader.read_shader_file "a.txt" do |path|
       DemoStorage.get(path).gets_to_end
     end
     program.should eq("line a.1\nline b.1\nline a.2\n")
   end
 
   it "loads a shader program with from a file" do
-    program = Prism::Core::Shader::ShaderProgram.read_shader_file "a.txt" do |path|
+    program = Prism::Core::Shader.read_shader_file "a.txt" do |path|
       File.read(File.join(__DIR__, "storage", path))
     end
     program.should eq("line a.1\nline b.1\nline a.2\n")
@@ -89,10 +89,10 @@ describe Prism::Common do
     describe "#get_sprite_coordinates" do
       it "returns the coords" do
         coords = Prism::Common::Spritemap.get_sprite_coordinates(1, 1, 4, 4)
-        expect_vectors_match(coords[:bottom_left], Prism::VMath::Vector2f.new(0.25, 0.5))
-        expect_vectors_match(coords[:bottom_right], Prism::VMath::Vector2f.new(0.5, 0.5))
-        expect_vectors_match(coords[:top_right], Prism::VMath::Vector2f.new(0.5, 0.25))
-        expect_vectors_match(coords[:top_left], Prism::VMath::Vector2f.new(0.25, 0.25))
+        expect_vectors_match(coords[:bottom_left], Prism::Maths::Vector2f.new(0.25, 0.5))
+        expect_vectors_match(coords[:bottom_right], Prism::Maths::Vector2f.new(0.5, 0.5))
+        expect_vectors_match(coords[:top_right], Prism::Maths::Vector2f.new(0.5, 0.25))
+        expect_vectors_match(coords[:top_left], Prism::Maths::Vector2f.new(0.25, 0.25))
       end
     end
   end

@@ -1,12 +1,10 @@
 module Prism::Common::Light
   # Represents a point light.
   # That is, light that radiates out from a point.
-  @[Core::Shader::Serializable::Options(name: "R_pointLight")]
   class PointLight < Core::Light
     COLOR_DEPTH   = 256.0f32
     DEFAULT_ATTEN = Core::Attenuation.new(1.0f32, 0.001f32, 0.002f32)
 
-    include Core::Shader::Serializable
     property range
     getter attenuation
 
@@ -14,11 +12,11 @@ module Prism::Common::Light
     @base : BaseLight
     @[Core::Shader::Field]
     @range : Float32
-    @[Core::Shader::Field(key: "atten")]
+    @[Core::Shader::Field(name: "atten")]
     @attenuation : Core::Attenuation
 
     @[Core::Shader::Field]
-    def position : Prism::VMath::Vector3f
+    def position : Prism::Maths::Vector3f
       self.transform.get_transformed_pos
     end
 
@@ -35,7 +33,6 @@ module Prism::Common::Light
     end
 
     def initialize(color : Vector3f, intensity : Float32, @attenuation : Core::Attenuation)
-      super(Core::Shader::ShaderProgram.new("forward-point"))
       @base = BaseLight.new(color, intensity)
 
       a = @attenuation.exponent

@@ -2,7 +2,7 @@ require "../src/prism/**"
 
 class BoxDemo < Prism::Core::GameEngine
   include Prism::Common
-  alias Color = Prism::VMath::Vector3f
+  alias Color = Prism::Maths::Vector3f
 
   def load_model(name : String)
     load_model(name) { |m| m }
@@ -55,13 +55,6 @@ class BoxDemo < Prism::Core::GameEngine
     lamp.move_north(65).move_east(50)
     lamp.elevate_to(terrain.height_at(lamp))
 
-    # attach light to lamp
-    lamp_light = Prism::Core::Object.new
-    lamp_light.add_component(Light::PointLight.new(Color.new(1, 1, 1), 5))
-    lamp_light.elevate_by(11).move_south(5)
-    # NOTE: Objects inheirt the parent's position, so the previous line is relative to `lamp`
-    lamp.add_object(lamp_light)
-
     # add some grass
     grass = load_model("grass") do |m|
       m.specular_intensity = 0.5f32
@@ -75,7 +68,7 @@ class BoxDemo < Prism::Core::GameEngine
     # Add some sunlight
     sun_light = Prism::Core::Object.new
     sun_light.add_component(Light::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.3))
-    sun_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::VMath.to_rad(-80f32))
+    sun_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::Maths.to_rad(-80f32))
 
     # Add some ambient light
     ambient_light = Prism::Core::Object.new
@@ -92,7 +85,7 @@ class BoxDemo < Prism::Core::GameEngine
     add_object(fern)
     add_object(grass)
     add_object(terrain)
-    add_object(ambient_light)
+    # add_object(ambient_light)
     add_object(sun_light)
     add_object(stall)
     add_object(camera)

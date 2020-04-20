@@ -1,4 +1,4 @@
-include Prism::VMath
+include Prism::Maths
 
 module Prism::Core::Shader
   # Placing this annotation on a method or instance variable will turn it into a uniform variable in a glsl program.
@@ -50,15 +50,17 @@ module Prism::Core::Shader
   # class A
   #   include Shader::Serializable
   #
-  #   @[Shader::Field(key: "attribute")]
+  #   @[Shader::Field(name: "attribute")]
   #   @a : String = "value"
   # end
   # ```
   #
   # `Shader::Field` properties:
-  # * **key**: the value of the key in the uniform object (by default the name of the instance variable)
+  # * **name**: the name of the property in the uniform object (by default the name of the instance variable)
   #
   # ### Class annotation `Shader::Serializable::Options`
+  #
+  # > DEPRECATED: the class anotation will be removed in a future version.
   #
   # supported properties:
   # * **name**: the name of the uniform struct variable in the glsl program.
@@ -93,7 +95,7 @@ module Prism::Core::Shader
       to_uniform(false)
     end
 
-    # Allows manually injecting some uniform keys
+    # Allows manually injecting some uniform names
     private def on_to_uniform : UniformMap | Nil
     end
 
@@ -117,7 +119,7 @@ module Prism::Core::Shader
                 type:         mdef.return_type,
                 serializable: is_serializable,
                 valid:        is_valid,
-                key:          (ann && ann[:key]) ? ann[:key].id.stringify : mdef.name.stringify,
+                name:         (ann && ann[:name]) ? ann[:name].id.stringify : mdef.name.stringify,
               }
             %}
             {% if !is_serializable && !is_valid %}
@@ -140,7 +142,7 @@ module Prism::Core::Shader
                 type:         ivar.type,
                 serializable: is_serializable,
                 valid:        is_valid,
-                key:          ((ann && ann[:key]) || ivar).id.stringify,
+                name:         ((ann && ann[:name]) || ivar).id.stringify,
               }
             %}
             {% if !is_serializable && !is_valid %}
@@ -164,9 +166,9 @@ module Prism::Core::Shader
           {% end %}
 
           unless _{{name}}.nil?
-            {% uniform_key = struct_name ? struct_name + "." + value[:key] : value[:key] %}
+            {% uniform_key = struct_name ? struct_name + "." + value[:name] : value[:name] %}
             %struct_key = {{uniform_key}}
-            %short_key = {{value[:key]}}
+            %short_key = {{value[:name]}}
             %ukey = is_sub ? %short_key : %struct_key
             {% if value[:serializable] %}
               _{{name}}_uniforms = _{{name}}.to_uniform(true)

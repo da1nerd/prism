@@ -1,7 +1,7 @@
 module Prism::Core
   # Handles positional transformations
   class Transform
-    include Prism::VMath
+    include Prism::Maths
     @parent : Transform?
     @parent_matrix : Matrix4f
 

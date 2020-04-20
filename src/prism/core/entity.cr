@@ -1,53 +1,149 @@
-require "render_loop"
-require "annotation"
-require "./game_object"
+# require "./game_component"
+# require "./transform"
+require "./rendering_engine"
+require "./moveable"
 
 module Prism::Core
-  # The game interace.
-  # A game must inherit this class in order to be used by the engine.
-  abstract class GameEngine < RenderLoop::Engine
-    @root : Entity = Entity.new
-    @engine : RenderingEngine?
+  # Represents an object within the scene graph.
+  # The screen graph is composed of a tree of `Entity`s.
+  class Entity
+    include Core::Moveable
 
-    # Returns the registered `GameEngine` or throw an exception.
-    # The engine must be assigned before the game loop starts.
-    @[Raises]
-    def engine : RenderingEngine
-      if @engine.nil?
-        raise Exception.new "No RenderingEngine defined. Use #engine= to assign an engine before starting the game loop"
+    @children : Array(Core::Entity)
+    @components : Array(Core::Component)
+    @transform : Core::Transform
+    @engine : Core::RenderingEngine?
+
+    getter transform
+
+    def initialize
+      @children = [] of Core::Entity
+      @components = [] of Core::Component
+      @transform = Core::Transform.new
+    end
+
+    # Adds a child `Entity` to this object
+    # The child will inherit certain attributes of the parent
+    # such as transformation.
+    def add_object(child : Core::Entity)
+      @children.push(child)
+      if engine = @engine
+        child.engine = engine
       end
-      @engine.as(RenderingEngine)
+      child.transform.parent = @transform
     end
 
-    @[Override]
-    def startup
-      self.init
+    # Removes a `Entity` from this object
+    def remove_object(child : Core::Entity)
+      @children.delete(child)
+      child.transform.parent = nil
     end
 
-    # Games should implement this to start their game logic
-    abstract def init
-
-    # Gives input state to the game
-    @[Override]
-    def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
-      @root.input_all(tick, input)
-      @root.update_all(tick)
+    # Alias for add_object
+    def add_child(child : Core::Entity)
+      add_object(child)
     end
 
-    # Renders the game's scene graph
-    @[Override]
-    def render
-      self.engine.render(@root)
+    # Alias for remove_object
+    def remove_child(child : Core::Entity)
+      remove_object(child)
     end
 
-    # Adds an object to the game's scene graph.
-    def add_object(object : Entity)
-      @root.add_child(object)
+    # Removes a `Component` from this object
+    def remove_component(component : Core::Component)
+      component.parent = Core::Entity.new
+      @components.delete(component)
+      return self
     end
 
-    # Registers the `engine` with the game
-    def engine=(@engine : RenderingEngine)
-      @root.engine = @engine.as(RenderingEngine)
+    # Adds a `Component` to this object
+    def add_component(component : Core::Component)
+      component.parent = self
+      @components.push(component)
+      return self
+    end
+
+    # Performs input update logic on this object's children
+    def input_all(tick : RenderLoop::Tick, input : RenderLoop::Input)
+      input(tick, input)
+
+      0.upto(@children.size - 1) do |i|
+        @children[i].input_all(tick, input)
+      end
+    end
+
+    # Performs game update logic on this object's children
+    def update_all(tick : RenderLoop::Tick)
+      update(tick)
+
+      0.upto(@children.size - 1) do |i|
+        @children[i].update_all(tick)
+      end
+    end
+
+    # Performs rendering operations on this object's children
+    #
+    # > Warning: the *rendering_engine* property will be deprecated in the future
+    def render_all(&block : RenderCallback)
+      render(&block)
+
+      0.upto(@children.size - 1) do |i|
+        @children[i].render_all(&block)
+      end
+    end
+
+    # Performs input update logic on this object
+    def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
+      @transform.update
+
+      0.upto(@components.size - 1) do |i|
+        @components[i].input(tick, input)
+      end
+    end
+
+    # Performs game update logic on this object
+    def update(tick : RenderLoop::Tick)
+      0.upto(@components.size - 1) do |i|
+        @components[i].update(tick)
+      end
+    end
+
+    # Performs rendering operations on this object
+    #
+    # > Warning: the *rendering_engine* property will be deprecated in the future
+    def render(&block : RenderCallback)
+      0.upto(@components.size - 1) do |i|
+        @components[i].render(&block)
+      end
+    end
+
+    # Returns an array of all attached objects including it's self
+    def get_all_attached : Array(Core::Entity)
+      result = [] of Core::Entity
+      @children.each do |c|
+        result.concat(c.get_all_attached)
+      end
+      result.push(self)
+      return result
+    end
+
+    # Sets the `CoreEngine` on this object
+    # This allows the object and it's children to interact with the engine
+    def engine=(engine : Core::RenderingEngine)
+      if @engine != engine
+        @engine = engine
+
+        0.upto(@components.size - 1) do |i|
+          @components[i].add_to_engine(engine)
+        end
+
+        0.upto(@children.size - 1) do |i|
+          @children[i].engine = engine
+        end
+      end
     end
   end
+
+  # TODO: this will become the new name. Maybe we should call this an Element instead?
+  alias Object = Core::Entity
 end

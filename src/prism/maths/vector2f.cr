@@ -1,4 +1,4 @@
-module Prism::VMath
+module Prism::Maths
   class Vector2f
     getter x, y : Float32
     setter x, y : Float32
