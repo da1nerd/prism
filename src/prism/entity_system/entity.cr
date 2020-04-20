@@ -1,16 +1,17 @@
 module Prism::EntitySystem
   class Entity
     @@name_count : Int32 = 0
-    # Optional, give the entity a name. This can help with debugging and with serialising the entity.
     @name : String
-    @components : Hash(Class, Object)
+    @components : Hash(String, Component)
+
+    getter name
 
     def initialize
       initialize ""
     end
 
     def initialize(name : String)
-      @components = new Hash(Class, Object)
+      @components = Hash(String, Component).new
       if name
         @name = name
       else
@@ -19,16 +20,17 @@ module Prism::EntitySystem
       end
     end
 
-    def add(component : Object)
-      component_class : Class = component.class
-      @components[component_class] = component
+    def add(component : Component)
+      @components[component.class.name] = component
+      self
     end
 
-    def remove(component_class : Class)
+    def remove(component_class : String)
       @components.delete component_lass
+      self
     end
 
-    def get(component_class : Class) : Object
+    def get(component_class : String) : Component
       return @components[component_class]
     end
   end

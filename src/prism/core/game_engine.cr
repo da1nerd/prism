@@ -8,6 +8,11 @@ module Prism::Core
   abstract class GameEngine < RenderLoop::Engine
     @root : Entity = Entity.new
     @engine : RenderingEngine?
+    @entity_engine : EntitySystem::Engine
+
+    def initialize
+      @entity_engine = EntitySystem::Engine.new
+    end
 
     # Returns the registered `GameEngine` or throw an exception.
     # The engine must be assigned before the game loop starts.
@@ -21,6 +26,11 @@ module Prism::Core
 
     @[Override]
     def startup
+      @entity_engine.add_system EntitySystem::Systems::RenderSystem.new(Shader::StaticShader.new), 1
+      tree_entity = EntitySystem::Entity.new("tree")
+        .add(EntitySystem::Components::Position.new(0, 0, 0))
+      @entity_engine.add_entity(tree_entity)
+
       self.init
     end
 
@@ -30,6 +40,7 @@ module Prism::Core
     # Gives input state to the game
     @[Override]
     def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
+      @entity_engine.update(tick.current_time)
       @root.input_all(tick, input)
       @root.update_all(tick)
     end

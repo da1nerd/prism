@@ -13,7 +13,7 @@ module Prism::EntitySystem
     # Used internally to hold the priority of this system within the system list. This is
     # used to order the systems so they are updated in the correct order.
     @priority : Int32 = 0
-    protected getter priority
+    protected property priority
 
     #
     # Called just after the system is added to the engine, before any calls to the update method.
@@ -21,7 +21,7 @@ module Prism::EntitySystem
     #
     # @param engine The engine the system was added to.
     #
-    def addToEngine(engine : Engine)
+    def add_to_engine(engine : Engine)
     end
 
     #
@@ -30,7 +30,7 @@ module Prism::EntitySystem
     #
     # @param engine The engine the system was removed from.
     #
-    def removeFromEngine(engine : Engine)
+    def remove_from_engine(engine : Engine)
     end
 
     #
@@ -43,6 +43,6 @@ module Prism::EntitySystem
     #
     # @param time The duration, in seconds, of the frame.
     #
-    abstract def update(time : Float32)
+    abstract def update(time : Float64)
   end
 end
