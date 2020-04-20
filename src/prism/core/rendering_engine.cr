@@ -116,6 +116,7 @@ module Prism::Core
       #  This would allow them to tweak things as needed. e.g. there would be some prepare stage and cleanup stage to configure gl stuff.
       shader.projection_matrix = self.main_camera.get_projection
       shader.view_matrix = self.main_camera.get_view
+      # TRICKY: for now we only support a single light by default
       shader.light = @lights[0].as(Core::Light)
       shader.eye_pos = self.main_camera.transform.get_transformed_pos
       entity.render_all do |transform, material, mesh|
