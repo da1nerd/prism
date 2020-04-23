@@ -4,10 +4,10 @@ module Prism::Common::Light
   struct BaseLight
     include Core::Shader::Serializable
 
-    @[Core::Shader::Field("color")]
+    @[Core::Shader::Field(name: "color")]
     @color : Vector3f
 
-    @[Core::Shader::Field("intensity")]
+    @[Core::Shader::Field(name: "intensity")]
     @intensity : Float32
 
     getter color, intensity

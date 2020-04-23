@@ -37,7 +37,7 @@ module Prism::Core::Shader
   # This `ShaderProgram` contains all of the shader implementation.
   #
   # I probably need to rename these two classes
-  class Program
+  abstract class Program
     # A map of shader programs that have been created.
     # This allows us to re-use programs.
     @@programs = {} of String => CompiledProgram
@@ -106,6 +106,7 @@ module Prism::Core::Shader
     #
     # TODO: let this take in a path to the vertex shader and fragment shader for more flexibility.
     def initialize(@file_name : String, &shader_reader : String -> String)
+      @@programs = {} of String => CompiledProgram
       if @@programs.has_key?(@file_name)
         # Re-use a compiled program so we don't need to compile a new one.
         @resource = @@programs[@file_name]
