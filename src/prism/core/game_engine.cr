@@ -12,8 +12,6 @@ module Prism::Core
     @engine : RenderingEngine?
     @window_size : RenderLoop::Size?
     @crash_engine : Crash::Engine = Crash::Engine.new
-    # TODO: don't accept the full camera here. Just it's view projection.
-    @camera : Core::Camera = Core::Camera.new
 
     # property camera
 
@@ -31,7 +29,7 @@ module Prism::Core
     def startup
       # configure entity framework
       # TODO: add more systems here
-      @crash_engine.add_system RenderSystem.new(Shader::StaticShader.new, @camera), 10
+      @crash_engine.add_system RenderSystem.new(Shader::StaticShader.new), 10
 
       # pass initialization to the developer
       self.init

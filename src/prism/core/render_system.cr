@@ -8,7 +8,7 @@ module Prism::Core
     @cameras : Array(Crash::Entity)
     @shader : Core::Shader::Program
 
-    def initialize(@shader : Core::Shader::Program, @camera : Core::Camera)
+    def initialize(@shader : Core::Shader::Program)
       @entities = [] of Crash::Entity
       @lights = [] of Crash::Entity
       @cameras = [] of Crash::Entity
@@ -30,10 +30,16 @@ module Prism::Core
       LibGL.enable(LibGL::DEPTH_TEST)
       LibGL.enable(LibGL::DEPTH_CLAMP)
       LibGL.enable(LibGL::TEXTURE_2D)
-      # @shader = Shader::StaticShader.new
-      # @renderer = Renderer.new(@shader.as(Shader::Program))
       # Uncomment the below line to display everything as a wire frame
       # LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::LINE)
+    end
+
+    def enable_wires
+        LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::LINE)
+    end
+
+    def disable_wires
+        LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::FILL)
     end
 
     def enable_culling
@@ -72,8 +78,12 @@ module Prism::Core
         @shader.material = material
         @shader.transformation_matrix = transform.get_transformation
         disable_culling if material.has_transparency?
-        puts "drawing #{entity.name}"
+        if material.wire_frame?
+            disable_culling
+            enable_wires
+        end
         entity.get(Prism::Core::Mesh).as(Prism::Core::Mesh).draw
+        disable_wires
         enable_culling
       end
       @shader.stop

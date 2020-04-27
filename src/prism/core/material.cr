@@ -10,7 +10,10 @@ module Prism::Core
     property specular_intensity, specular_power, color, use_fake_lighting
 
     # Indicates that this material has transparency
-    setter has_transparency
+    setter has_transparency, wire_frame
+
+    # Indicates the material should be drawn as a wire frame instead of filled
+    @wire_frame : Bool = false
 
     # Indicates if this material has transparency
     @has_transparency : Bool = false
@@ -60,6 +63,10 @@ module Prism::Core
     # Checks if this material has any transparency
     def has_transparency?
       @has_transparency
+    end
+
+    def wire_frame?
+      @wire_frame
     end
 
     # Adds a texture to the material

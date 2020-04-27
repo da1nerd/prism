@@ -68,6 +68,7 @@ class BoxDemo < Prism::Core::GameEngine
     tree = load_model("lowPolyTree")
     tree.move_north(55).move_east(60)
     tree.elevate_to(terrain.height_at(tree))
+    tree.get(Prism::Core::Material).as(Prism::Core::Material).wire_frame = true
 
     # add a lamp
     lamp = load_model("lamp")
