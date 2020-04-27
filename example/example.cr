@@ -45,6 +45,9 @@ class BoxDemo < Prism::Core::GameEngine
     terrain_material.specular_power = 10f32
     terrain = Objects::Terrain.new(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
     terrain.material = terrain_material
+    terrain.add terrain_material
+    terrain.add terrain.transform
+    terrain.add terrain.mesh.as(Prism::Core::Mesh)
 
     # Add a merchant stall
     stall = load_model("stall")

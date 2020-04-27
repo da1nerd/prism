@@ -8,6 +8,8 @@ module Prism::Common::Objects
     @z : Float32
     @heights : Array(Array(Float32))
 
+    getter mesh
+
     def initialize(grid_x : Int32, grid_z : Int32, height_map : String)
       super()
       @x = (grid_x * SIZE).to_f32
