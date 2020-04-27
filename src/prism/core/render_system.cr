@@ -18,7 +18,7 @@ module Prism::Core
     def add_to_engine(engine : Crash::Engine)
       @entities = engine.get_entities Prism::Core::Material, Prism::Core::Mesh, Prism::Core::Transform
       # TODO: just get the lights within range
-      @lights = engine.get_entities Prism::Core::Light
+      @lights = engine.get_entities Prism::Common::Light::DirectionalLight
       @cameras = engine.get_entities Prism::Core::Camera
       prepare
     end
@@ -64,7 +64,7 @@ module Prism::Core
       @shader.start
       @shader.projection_matrix = main_camera.get_projection
       @shader.view_matrix = main_camera.get_view
-      @shader.light = @lights[0].get(Core::Light).as(Core::Light) if @lights.size > 0
+      @shader.light = @lights[0].get(Prism::Common::Light::DirectionalLight).as(Prism::Common::Light::DirectionalLight) #if @lights.size > 0
       @shader.eye_pos = main_camera.transform.get_transformed_pos
       @entities.each do |entity|
         material = entity.get(Prism::Core::Material).as(Prism::Core::Material)

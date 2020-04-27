@@ -88,6 +88,7 @@ class BoxDemo < Prism::Core::GameEngine
     sun_light = Prism::Core::Entity.new
     sun_light.add_component(Light::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.3))
     sun_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::Maths.to_rad(-80f32))
+    sun_light.name = "sun"
 
     # Add some ambient light
     # ambient_light = Prism::Core::Object.new
