@@ -9,7 +9,7 @@ def expect_vectors_match(got : Prism::Maths::Vector2f, expected : Prism::Maths::
 end
 
 module UniformTest
-  include Prism::Core
+  include Prism
 
   @[Shader::Serializable::Options(name: "Parent")]
   class Parent
