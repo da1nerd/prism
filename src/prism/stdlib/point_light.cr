@@ -1,4 +1,4 @@
-module Prism::Common::Light
+module Prism
   # Represents a point light.
   # That is, light that radiates out from a point.
   class PointLight < Prism::Light

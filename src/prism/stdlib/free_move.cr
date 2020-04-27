@@ -1,6 +1,7 @@
-module Prism::Common::Component
+module Prism
   # Causes the parent `Entity`'s position to be controlled by the keyboard.
   class FreeMove < Prism::Component
+    include Prism::Adapter::GLFW
     # TODO: change to property
     getter movement
     setter movement

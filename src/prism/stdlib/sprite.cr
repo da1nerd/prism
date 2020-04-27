@@ -1,4 +1,4 @@
-module Prism::Common
+module Prism
   # Represents a set of coordinates within the material.
   class Sprite
     getter coords, material

@@ -1,6 +1,6 @@
 require "annotations"
 
-module Prism::Common::Objects
+module Prism
   # A basic shape class that holds a mesh and a material.
   # Normally you'll want to inherit this class to create new shapes.
   class Shape < Entity

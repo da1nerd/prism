@@ -1,6 +1,7 @@
-module Prism::Common::Component
+module Prism
   # Causes the parent `Entity`'s position to be controlled by the mouse.
   class FreeLook < Prism::Component
+    include Prism::Adapter::GLFW
     Y_AXIS = Vector3f.new(0, 1, 0)
     @mouse_locked = false
 
@@ -11,10 +12,10 @@ module Prism::Common::Component
     end
 
     def initialize(sensitivity : Float32)
-      initialize(sensitivity, ContextAdapter::GLFW::Window::Key::Escape)
+      initialize(sensitivity, Window::Key::Escape)
     end
 
-    def initialize(@sensitivity : Float32, @unlock_mouse_key : ContextAdapter::GLFW::Window::Key)
+    def initialize(@sensitivity : Float32, @unlock_mouse_key : Window::Key)
     end
 
     @[Override]

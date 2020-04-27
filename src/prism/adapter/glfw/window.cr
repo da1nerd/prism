@@ -1,7 +1,7 @@
 require "render_loop"
 require "crystglfw"
 
-module Prism::ContextAdapter::GLFW
+module Prism::Adapter::GLFW
   # The keyboard key enum.
   # this contains a list of all keys.
   alias Key = CrystGLFW::Key

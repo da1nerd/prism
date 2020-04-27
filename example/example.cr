@@ -1,7 +1,6 @@
 require "../src/prism/**"
 
-class BoxDemo < Prism::GameEngine
-  include Prism::Common
+class Demo < Prism::GameEngine
   alias Color = Prism::Maths::Vector3f
 
   def load_model(name : String)
@@ -42,7 +41,7 @@ class BoxDemo < Prism::GameEngine
     terrain_material = load_material("terrain")
     terrain_material.specular_intensity = 0.7f32
     terrain_material.specular_power = 10f32
-    terrain = Objects::Terrain.new(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
+    terrain = Prism::Terrain.new(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
     terrain.material = terrain_material
     terrain.add terrain_material
     terrain.add terrain.transform
@@ -86,12 +85,12 @@ class BoxDemo < Prism::GameEngine
 
     # Add some sunlight
     sun_light = Prism::Entity.new
-    sun_light.add_component(Light::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.8))
+    sun_light.add_component(Prism::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.8))
     sun_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::Maths.to_rad(-80f32))
     sun_light.name = "sun"
 
     # Add a moveable camera
-    camera = Objects::GhostCamera.new
+    camera = Prism::GhostCamera.new
     camera.name = "camera"
     camera.add camera.transform
     camera.move_north(30).move_east(30).elevate_to(20)
@@ -109,4 +108,4 @@ class BoxDemo < Prism::GameEngine
   end
 end
 
-Prism::ContextAdapter::GLFW.run("Prism Demo", BoxDemo.new)
+Prism::Adapter::GLFW.run("Prism Demo", Demo.new)

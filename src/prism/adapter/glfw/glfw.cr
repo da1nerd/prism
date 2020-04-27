@@ -2,7 +2,7 @@ require "render_loop"
 require "crystglfw"
 
 # An adapter for the GLFW rendering context.
-module Prism::ContextAdapter::GLFW
+module Prism::Adapter::GLFW
   extend self
 
   def run(title : String, game : Prism::GameEngine)
@@ -26,9 +26,4 @@ module Prism::ContextAdapter::GLFW
       harness.start(window)
     end
   end
-end
-
-module Prism
-  # inject the adapter into the top namespace so we can easily access the `GLFW::Window`
-  include ContextAdapter::GLFW
 end

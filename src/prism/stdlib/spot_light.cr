@@ -1,4 +1,4 @@
-module Prism::Common::Light
+module Prism
   # Represents a spot light
   class SpotLight < Prism::Light
     property cutoff

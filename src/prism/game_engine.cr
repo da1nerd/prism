@@ -1,7 +1,6 @@
 require "render_loop"
 require "annotation"
 require "crash"
-require "./common"
 
 module Prism
   # The game interace.

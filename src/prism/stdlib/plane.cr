@@ -1,4 +1,4 @@
-module Prism::Common::Objects
+module Prism
   # A rectangular plane
   # It doesn't get much simpler than that.
   class Plane < Shape

@@ -1,4 +1,4 @@
-module Prism::Common::Objects
+module Prism
   class Terrain < Shape
     SIZE            = 800
     MAX_HEIGHT      =  40

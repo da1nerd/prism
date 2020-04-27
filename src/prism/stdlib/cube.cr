@@ -1,6 +1,6 @@
 require "./shape"
 
-module Prism::Common::Objects
+module Prism
   # A basic cube shape.
   # You can configure the *size* of the cube to make it smaller or bigger.
   class Cube < Shape

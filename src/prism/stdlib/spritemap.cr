@@ -1,4 +1,4 @@
-module Prism::Common
+module Prism
   # Simplifies generating square sprite texture coordinates
   # by mapping the actual coordinates to a grid system.
   class Spritemap
