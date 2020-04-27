@@ -46,14 +46,14 @@ module Prism::Core
     end
 
     # Flush the GL buffers and resize the viewport to match the window size
-    # @[Override]
-    # def flush
-    #   if window_size = @window_size
-    #     LibGL.viewport(0, 0, window_size[:width], window_size[:height])
-    #   end
+    @[Override]
+    def flush
+      if window_size = @window_size
+        LibGL.viewport(0, 0, window_size[:width], window_size[:height])
+      end
 
-    #   LibGL.flush
-    # end
+      LibGL.flush
+    end
 
     def enable_culling
       LibGL.cull_face(LibGL::BACK)

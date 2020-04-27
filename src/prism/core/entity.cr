@@ -53,6 +53,7 @@ module Prism::Core
 
     # Removes a `Component` from this object
     def remove_component(component : Core::Component)
+      remove component
       component.parent = Core::Entity.new
       @legacy_components.delete(component)
       return self
@@ -60,6 +61,7 @@ module Prism::Core
 
     # Adds a `Component` to this object
     def add_component(component : Core::Component)
+      add component
       component.parent = self
       @legacy_components.push(component)
       return self

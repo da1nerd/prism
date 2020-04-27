@@ -15,13 +15,22 @@ class BoxDemo < Prism::Core::GameEngine
     material = modify_material.call(material)
     component = Component::MeshRenderer.new(mesh, material)
     object = Prism::Core::Entity.new.add_component(component)
+    object.name = name
     # add components to entity
     object.add mesh
     object.add material
     object.add object.transform
-    # add entity to system
-    add_entity object
     object
+  end
+
+  def create_entity(*components : Crash::Component) : Prism::Core::Entity
+    entity = Prism::Core::Entity.new
+    components.each do |comp|
+      entity.add comp
+    end
+    entity.add entity.transform
+    add_entity entity
+    entity
   end
 
   # Loads a texture from the resources and returns it as a material
@@ -73,16 +82,18 @@ class BoxDemo < Prism::Core::GameEngine
     grass.elevate_to(terrain.height_at(fern))
 
     # Add some sunlight
-    sun_light = Prism::Core::Object.new
+    sun_light = Prism::Core::Entity.new
     sun_light.add_component(Light::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.3))
     sun_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::Maths.to_rad(-80f32))
 
     # Add some ambient light
-    ambient_light = Prism::Core::Object.new
-    ambient_light.add_component(Light::AmbientLight.new(Color.new(0.2, 0.2, 0.2)))
+    # ambient_light = Prism::Core::Object.new
+    # ambient_light.add_component(Light::AmbientLight.new(Color.new(0.2, 0.2, 0.2)))
 
     # Add a moveable camera
     camera = Objects::GhostCamera.new
+    camera.name = "camera"
+    camera.add camera.transform
     camera.move_north(30).move_east(30).elevate_to(20)
     camera.transform.look_at(stall)
 
@@ -92,7 +103,6 @@ class BoxDemo < Prism::Core::GameEngine
     add_object(fern)
     add_object(grass)
     add_object(terrain)
-    # add_object(ambient_light)
     add_object(sun_light)
     add_object(stall)
     add_object(camera)

@@ -37,10 +37,6 @@ module Prism::Core
       self.init
     end
 
-    def add_entity(entity : Crash::Entity)
-      @crash_engine.add_entity entity
-    end
-
     # Games should implement this to start their game logic
     abstract def init
 
@@ -48,7 +44,6 @@ module Prism::Core
     @[Override]
     def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
       @window_size = input.window_size
-      @crash_engine.update(tick.current_time)
       @root.input_all(tick, input)
       @root.update_all(tick)
     end
@@ -56,7 +51,9 @@ module Prism::Core
     # Renders the game's scene graph
     @[Override]
     def render
-      self.engine.render(@root)
+      # TODO: pass in the correct time
+      @crash_engine.update(0)
+      # self.engine.render(@root)
     end
 
     # Flush the GL buffers and resize the viewport to match the window size
@@ -71,6 +68,7 @@ module Prism::Core
 
     # Adds an object to the game's scene graph.
     def add_object(object : Entity)
+      @crash_engine.add_entity object
       @root.add_child(object)
     end
 

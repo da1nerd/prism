@@ -1,8 +1,9 @@
 require "render_loop"
+require "crash"
 
 module Prism::Core
   # A game component is an enhancement that can be added to a game object
-  abstract class Component
+  abstract class Component < Crash::Component
     setter parent
 
     @parent : Core::Entity = Core::Entity.new
