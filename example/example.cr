@@ -13,8 +13,7 @@ class BoxDemo < Prism::Core::GameEngine
     material = Prism::Core::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
     mesh = Prism::Core::Mesh.new(File.join(__DIR__, "./res/models/#{name}.obj"))
     material = modify_material.call(material)
-    component = Component::MeshRenderer.new(mesh, material)
-    object = Prism::Core::Entity.new.add_component(component)
+    object = Prism::Core::Entity.new
     object.name = name
     # add components to entity
     object.add mesh
@@ -87,13 +86,9 @@ class BoxDemo < Prism::Core::GameEngine
 
     # Add some sunlight
     sun_light = Prism::Core::Entity.new
-    sun_light.add_component(Light::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.3))
+    sun_light.add_component(Light::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.8))
     sun_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::Maths.to_rad(-80f32))
     sun_light.name = "sun"
-
-    # Add some ambient light
-    # ambient_light = Prism::Core::Object.new
-    # ambient_light.add_component(Light::AmbientLight.new(Color.new(0.2, 0.2, 0.2)))
 
     # Add a moveable camera
     camera = Objects::GhostCamera.new

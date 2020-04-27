@@ -15,7 +15,6 @@ module Prism::Core
     @ambient_light : Core::Light?
     @main_camera : Core::Camera?
     @shader : Shader::StaticShader?
-    @renderer : Renderer?
 
     setter main_camera
 
@@ -34,7 +33,6 @@ module Prism::Core
       LibGL.enable(LibGL::DEPTH_CLAMP)
       LibGL.enable(LibGL::TEXTURE_2D)
       @shader = Shader::StaticShader.new
-      @renderer = Renderer.new(@shader.as(Shader::Program))
       # Uncomment the below line to display everything as a wire frame
       # LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::LINE)
     end
@@ -102,7 +100,6 @@ module Prism::Core
       LibGL.depth_mask(LibGL::TRUE)
       LibGL.disable(LibGL::BLEND)
 
-      r = @renderer.as(Renderer)
       s = @shader.as(Shader::Program)
 
       shader = @shader.as(Shader::Program)

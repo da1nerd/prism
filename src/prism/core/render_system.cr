@@ -35,11 +35,11 @@ module Prism::Core
     end
 
     def enable_wires
-        LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::LINE)
+      LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::LINE)
     end
 
     def disable_wires
-        LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::FILL)
+      LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::FILL)
     end
 
     def enable_culling
@@ -70,7 +70,7 @@ module Prism::Core
       @shader.start
       @shader.projection_matrix = main_camera.get_projection
       @shader.view_matrix = main_camera.get_view
-      @shader.light = @lights[0].get(Prism::Common::Light::DirectionalLight).as(Prism::Common::Light::DirectionalLight) #if @lights.size > 0
+      @shader.light = @lights[0].get(Prism::Common::Light::DirectionalLight).as(Prism::Common::Light::DirectionalLight) # if @lights.size > 0
       @shader.eye_pos = main_camera.transform.get_transformed_pos
       @entities.each do |entity|
         material = entity.get(Prism::Core::Material).as(Prism::Core::Material)
@@ -79,8 +79,8 @@ module Prism::Core
         @shader.transformation_matrix = transform.get_transformation
         disable_culling if material.has_transparency?
         if material.wire_frame?
-            disable_culling
-            enable_wires
+          disable_culling
+          enable_wires
         end
         entity.get(Prism::Core::Mesh).as(Prism::Core::Mesh).draw
         disable_wires
