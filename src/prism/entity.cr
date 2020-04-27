@@ -78,17 +78,6 @@ module Prism
       end
     end
 
-    # Performs rendering operations on this object's children
-    #
-    # > Warning: the *rendering_engine* property will be deprecated in the future
-    def render_all(&block : RenderCallback)
-      render(&block)
-
-      0.upto(@children.size - 1) do |i|
-        @children[i].render_all(&block)
-      end
-    end
-
     # Performs input update logic on this object
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       @transform.update
@@ -102,15 +91,6 @@ module Prism
     def update(tick : RenderLoop::Tick)
       0.upto(@legacy_components.size - 1) do |i|
         @legacy_components[i].update(tick)
-      end
-    end
-
-    # Performs rendering operations on this object
-    #
-    # > Warning: the *rendering_engine* property will be deprecated in the future
-    def render(&block : RenderCallback)
-      0.upto(@legacy_components.size - 1) do |i|
-        @legacy_components[i].render(&block)
       end
     end
 

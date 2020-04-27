@@ -14,12 +14,6 @@ module Prism
     def update(tick : RenderLoop::Tick)
     end
 
-    # Renders the component
-    #
-    # > Warning: the *rendering_engine* property will be deprecated in the future
-    def render(&block : RenderCallback)
-    end
-
     def transform : Transform
       @parent.transform
     end

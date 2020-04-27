@@ -2,6 +2,7 @@ require "crash"
 require "annotation"
 
 module Prism::Systems
+  # A default system for rendering `Prism::Entity`s.
   class RenderSystem < Crash::System
     @entities : Array(Crash::Entity)
     @lights : Array(Crash::Entity)
