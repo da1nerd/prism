@@ -1,9 +1,10 @@
 require "annotation"
+require "crash"
 require "./texture"
 require "./shader"
 
 module Prism::Core
-  class Material
+  class Material < Crash::Component
     include Shader::Serializable
 
     property specular_intensity, specular_power, color, use_fake_lighting

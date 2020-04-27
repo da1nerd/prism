@@ -14,11 +14,11 @@ module Prism::Common::Objects
       @material = Core::Material.new
     end
 
-    def initialize(mesh)
+    def initialize(mesh : Core::Mesh)
       initialize(mesh, Core::Material.new)
     end
 
-    def initialize(@mesh, @material)
+    def initialize(@mesh : Core::Mesh, @material : Core::Material)
       super()
     end
 

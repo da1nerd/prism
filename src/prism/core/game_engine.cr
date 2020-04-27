@@ -31,6 +31,10 @@ module Prism::Core
       self.init
     end
 
+    def add_entity(entity : Crash::Entity)
+      @crash_engine.add_entity entity
+    end
+
     # Games should implement this to start their game logic
     abstract def init
 

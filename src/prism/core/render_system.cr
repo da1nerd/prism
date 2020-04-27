@@ -3,29 +3,28 @@ require "annotation"
 
 module Prism::Core
     class RenderSystem < Crash::System
-        @nodes : Array(Crash::Node)
+        @entities : Array(Crash::Entity)
 
         def initialize()
-            @nodes = [] of Crash::Node
+            @entities = [] of Crash::Entity
         end
 
         @[Override]
         def add_to_engine(engine : Crash::Engine)
-            @nodes = engine.get_node_list RenderNode
+            @entities = engine.get_entities Prism::Core::Material, Prism::Core::Mesh
         end
 
         @[Override]
         def update(time : Float64)
-            # TODO: render the nodes
-            @nodes.each do |raw_node|
-                node = raw_node.as(RenderNode)
+            @entities.each do |entity|
+                mesh = entity.get(Prism::Core::Mesh)
                 puts "rendering node"
             end
         end
 
         @[Override]
         def remove_from_engine(engine : Crash::Engine)
-            @nodes.clear
+            @entities.clear
         end
     end
 end

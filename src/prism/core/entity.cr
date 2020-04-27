@@ -2,23 +2,25 @@
 # require "./transform"
 require "./rendering_engine"
 require "./moveable"
+require "crash"
 
 module Prism::Core
   # Represents an object within the scene graph.
   # The screen graph is composed of a tree of `Entity`s.
-  class Entity
+  class Entity < Crash::Entity
     include Core::Moveable
 
     @children : Array(Core::Entity)
-    @components : Array(Core::Component)
+    @legacy_components : Array(Core::Component)
     @transform : Core::Transform
     @engine : Core::RenderingEngine?
 
     getter transform
 
     def initialize
+      super()
       @children = [] of Core::Entity
-      @components = [] of Core::Component
+      @legacy_components = [] of Core::Component
       @transform = Core::Transform.new
     end
 
@@ -52,14 +54,14 @@ module Prism::Core
     # Removes a `Component` from this object
     def remove_component(component : Core::Component)
       component.parent = Core::Entity.new
-      @components.delete(component)
+      @legacy_components.delete(component)
       return self
     end
 
     # Adds a `Component` to this object
     def add_component(component : Core::Component)
       component.parent = self
-      @components.push(component)
+      @legacy_components.push(component)
       return self
     end
 
@@ -96,15 +98,15 @@ module Prism::Core
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       @transform.update
 
-      0.upto(@components.size - 1) do |i|
-        @components[i].input(tick, input)
+      0.upto(@legacy_components.size - 1) do |i|
+        @legacy_components[i].input(tick, input)
       end
     end
 
     # Performs game update logic on this object
     def update(tick : RenderLoop::Tick)
-      0.upto(@components.size - 1) do |i|
-        @components[i].update(tick)
+      0.upto(@legacy_components.size - 1) do |i|
+        @legacy_components[i].update(tick)
       end
     end
 
@@ -112,8 +114,8 @@ module Prism::Core
     #
     # > Warning: the *rendering_engine* property will be deprecated in the future
     def render(&block : RenderCallback)
-      0.upto(@components.size - 1) do |i|
-        @components[i].render(&block)
+      0.upto(@legacy_components.size - 1) do |i|
+        @legacy_components[i].render(&block)
       end
     end
 
@@ -133,8 +135,8 @@ module Prism::Core
       if @engine != engine
         @engine = engine
 
-        0.upto(@components.size - 1) do |i|
-          @components[i].add_to_engine(engine)
+        0.upto(@legacy_components.size - 1) do |i|
+          @legacy_components[i].add_to_engine(engine)
         end
 
         0.upto(@children.size - 1) do |i|

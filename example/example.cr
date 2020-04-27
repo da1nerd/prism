@@ -15,6 +15,12 @@ class BoxDemo < Prism::Core::GameEngine
     material = modify_material.call(material)
     component = Component::MeshRenderer.new(mesh, material)
     object = Prism::Core::Entity.new.add_component(component)
+    # add components to entity
+    object.add mesh
+    object.add material
+    # add entity to system
+    add_entity object
+    object
   end
 
   # Loads a texture from the resources and returns it as a material
