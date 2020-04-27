@@ -1,5 +1,6 @@
 require "render_loop"
 require "annotation"
+require "crash"
 require "./entity"
 
 module Prism::Core
@@ -8,6 +9,7 @@ module Prism::Core
   abstract class GameEngine < RenderLoop::Engine
     @root : Entity = Entity.new
     @engine : RenderingEngine?
+    @crash_engine : Crash::Engine = Crash::Engine.new
 
     # Returns the registered `GameEngine` or throw an exception.
     # The engine must be assigned before the game loop starts.
@@ -21,6 +23,11 @@ module Prism::Core
 
     @[Override]
     def startup
+      # configure entity framework
+      # TODO: add more systems here
+      @crash_engine.add_system RenderSystem.new, 10
+
+      # pass initialization to the developer
       self.init
     end
 
@@ -30,6 +37,7 @@ module Prism::Core
     # Gives input state to the game
     @[Override]
     def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
+      @crash_engine.update(tick.current_time)
       @root.input_all(tick, input)
       @root.update_all(tick)
     end

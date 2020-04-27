@@ -10,6 +10,8 @@ description: |
 crystal: 0.34.0
 
 dependencies:
+  crash:
+    github: neutrinog/crash
   annotation:
     github: grottopress/annotation.cr
   render_loop:
