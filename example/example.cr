@@ -1,7 +1,6 @@
 require "../src/prism/**"
 
-class BoxDemo < Prism::Core::GameEngine
-  include Prism::Common
+class Demo < Prism::GameEngine
   alias Color = Prism::Maths::Vector3f
 
   def load_model(name : String)
@@ -9,17 +8,32 @@ class BoxDemo < Prism::Core::GameEngine
   end
 
   # Loads a model from the resources and attaches it's material
-  def load_model(name : String, &modify_material : Prism::Core::Material -> Prism::Core::Material) : Prism::Core::Entity
-    material = Prism::Core::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
-    mesh = Prism::Core::Mesh.new(File.join(__DIR__, "./res/models/#{name}.obj"))
+  def load_model(name : String, &modify_material : Prism::Material -> Prism::Material) : Prism::Entity
+    material = Prism::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
+    mesh = Prism::Mesh.new(File.join(__DIR__, "./res/models/#{name}.obj"))
     material = modify_material.call(material)
-    component = Component::MeshRenderer.new(mesh, material)
-    object = Prism::Core::Entity.new.add_component(component)
+    object = Prism::Entity.new
+    object.name = name
+    # add components to entity
+    object.add mesh
+    object.add material
+    object.add object.transform
+    object
+  end
+
+  def create_entity(*components : Crash::Component) : Prism::Entity
+    entity = Prism::Entity.new
+    components.each do |comp|
+      entity.add comp
+    end
+    entity.add entity.transform
+    add_entity entity
+    entity
   end
 
   # Loads a texture from the resources and returns it as a material
   def load_material(name : String)
-    Prism::Core::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
+    Prism::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
   end
 
   def init
@@ -27,8 +41,11 @@ class BoxDemo < Prism::Core::GameEngine
     terrain_material = load_material("terrain")
     terrain_material.specular_intensity = 0.7f32
     terrain_material.specular_power = 10f32
-    terrain = Objects::Terrain.new(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
+    terrain = Prism::Terrain.new(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
     terrain.material = terrain_material
+    terrain.add terrain_material
+    terrain.add terrain.transform
+    terrain.add terrain.mesh.as(Prism::Mesh)
 
     # Add a merchant stall
     stall = load_model("stall")
@@ -49,6 +66,7 @@ class BoxDemo < Prism::Core::GameEngine
     tree = load_model("lowPolyTree")
     tree.move_north(55).move_east(60)
     tree.elevate_to(terrain.height_at(tree))
+    tree.get(Prism::Material).as(Prism::Material).wire_frame = true
 
     # add a lamp
     lamp = load_model("lamp")
@@ -66,16 +84,15 @@ class BoxDemo < Prism::Core::GameEngine
     grass.elevate_to(terrain.height_at(fern))
 
     # Add some sunlight
-    sun_light = Prism::Core::Object.new
-    sun_light.add_component(Light::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.3))
+    sun_light = Prism::Entity.new
+    sun_light.add_component(Prism::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.8))
     sun_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::Maths.to_rad(-80f32))
-
-    # Add some ambient light
-    ambient_light = Prism::Core::Object.new
-    ambient_light.add_component(Light::AmbientLight.new(Color.new(0.2, 0.2, 0.2)))
+    sun_light.name = "sun"
 
     # Add a moveable camera
-    camera = Objects::GhostCamera.new
+    camera = Prism::GhostCamera.new
+    camera.name = "camera"
+    camera.add camera.transform
     camera.move_north(30).move_east(30).elevate_to(20)
     camera.transform.look_at(stall)
 
@@ -85,11 +102,10 @@ class BoxDemo < Prism::Core::GameEngine
     add_object(fern)
     add_object(grass)
     add_object(terrain)
-    # add_object(ambient_light)
     add_object(sun_light)
     add_object(stall)
     add_object(camera)
   end
 end
 
-Prism::ContextAdapter::GLFW.run("Prism Demo", BoxDemo.new)
+Prism::Adapter::GLFW.run("Prism Demo", Demo.new)
