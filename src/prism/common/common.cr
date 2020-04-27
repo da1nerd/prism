@@ -1,4 +1,3 @@
-require "../core"
 require "./**"
 
 # A collection of common tools for building a 3D scene.

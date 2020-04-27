@@ -24,7 +24,7 @@ module Prism::Common::Objects
       @transform
     end
 
-    def height_at(object : Core::Entity)
+    def height_at(object : Prism::Entity)
       height_at(object.transform.pos)
     end
 
@@ -64,18 +64,18 @@ module Prism::Common::Objects
     end
 
     private def generate_terrain(height_map : String)
-      bitmap = Core::Bitmap.new(height_map)
+      bitmap = Prism::Bitmap.new(height_map)
       vertex_count = bitmap.height
       # reset height map
       @heights = Array.new(vertex_count) { [] of Float32 }
 
-      vertices = [] of Core::Vertex
+      vertices = [] of Prism::Vertex
       indices = [] of Int32
       0.upto(vertex_count - 1) do |i|
         0.upto(vertex_count - 1) do |j|
           height = get_height(j, i, bitmap)
           @heights[j] << height
-          vertices.push(Core::Vertex.new(
+          vertices.push(Prism::Vertex.new(
             # vertex position
             Vector3f.new(
               (j / (vertex_count - 1) * SIZE).to_f32,
@@ -108,10 +108,10 @@ module Prism::Common::Objects
         end
       end
 
-      @mesh = Core::Mesh.new(vertices, indices)
+      @mesh = Mesh.new(vertices, indices)
     end
 
-    def calculate_normals(x : Int32, z : Int32, image : Core::Bitmap) : Vector3f
+    def calculate_normals(x : Int32, z : Int32, image : Prism::Bitmap) : Vector3f
       height_l = get_height(x - 1, z, image)
       height_r = get_height(x + 1, z, image)
       height_d = get_height(x, z - 1, image)
@@ -122,7 +122,7 @@ module Prism::Common::Objects
     end
 
     # Returns the height represented by a pixel in the image
-    private def get_height(x : Int32, z : Int32, image : Core::Bitmap) : Float32
+    private def get_height(x : Int32, z : Int32, image : Prism::Bitmap) : Float32
       return 0f32 if x < 0 || x >= image.height || z < 0 || z >= image.height
 
       pixel = image.pixel(x, z)

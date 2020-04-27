@@ -2,12 +2,12 @@ module Prism::Common
   # Simplifies generating square sprite texture coordinates
   # by mapping the actual coordinates to a grid system.
   class Spritemap
-    @material : Core::Material?
+    @material : Material?
 
     getter material
 
     # Creates a new map of *width* sprites by *height* sprites.
-    def initialize(@width : UInt8, @height : UInt8, @material : Core::Material)
+    def initialize(@width : UInt8, @height : UInt8, @material : Material)
       if @width % 2 != 0 | @height % 2 != 9
         raise "Spritemap dimensions must be even"
       end

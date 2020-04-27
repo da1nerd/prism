@@ -1,6 +1,6 @@
 require "../src/prism/**"
 
-class BoxDemo < Prism::Core::GameEngine
+class BoxDemo < Prism::GameEngine
   include Prism::Common
   alias Color = Prism::Maths::Vector3f
 
@@ -9,11 +9,11 @@ class BoxDemo < Prism::Core::GameEngine
   end
 
   # Loads a model from the resources and attaches it's material
-  def load_model(name : String, &modify_material : Prism::Core::Material -> Prism::Core::Material) : Prism::Core::Entity
-    material = Prism::Core::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
-    mesh = Prism::Core::Mesh.new(File.join(__DIR__, "./res/models/#{name}.obj"))
+  def load_model(name : String, &modify_material : Prism::Material -> Prism::Material) : Prism::Entity
+    material = Prism::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
+    mesh = Prism::Mesh.new(File.join(__DIR__, "./res/models/#{name}.obj"))
     material = modify_material.call(material)
-    object = Prism::Core::Entity.new
+    object = Prism::Entity.new
     object.name = name
     # add components to entity
     object.add mesh
@@ -22,8 +22,8 @@ class BoxDemo < Prism::Core::GameEngine
     object
   end
 
-  def create_entity(*components : Crash::Component) : Prism::Core::Entity
-    entity = Prism::Core::Entity.new
+  def create_entity(*components : Crash::Component) : Prism::Entity
+    entity = Prism::Entity.new
     components.each do |comp|
       entity.add comp
     end
@@ -34,7 +34,7 @@ class BoxDemo < Prism::Core::GameEngine
 
   # Loads a texture from the resources and returns it as a material
   def load_material(name : String)
-    Prism::Core::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
+    Prism::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
   end
 
   def init
@@ -46,7 +46,7 @@ class BoxDemo < Prism::Core::GameEngine
     terrain.material = terrain_material
     terrain.add terrain_material
     terrain.add terrain.transform
-    terrain.add terrain.mesh.as(Prism::Core::Mesh)
+    terrain.add terrain.mesh.as(Prism::Mesh)
 
     # Add a merchant stall
     stall = load_model("stall")
@@ -67,7 +67,7 @@ class BoxDemo < Prism::Core::GameEngine
     tree = load_model("lowPolyTree")
     tree.move_north(55).move_east(60)
     tree.elevate_to(terrain.height_at(tree))
-    tree.get(Prism::Core::Material).as(Prism::Core::Material).wire_frame = true
+    tree.get(Prism::Material).as(Prism::Material).wire_frame = true
 
     # add a lamp
     lamp = load_model("lamp")
@@ -85,7 +85,7 @@ class BoxDemo < Prism::Core::GameEngine
     grass.elevate_to(terrain.height_at(fern))
 
     # Add some sunlight
-    sun_light = Prism::Core::Entity.new
+    sun_light = Prism::Entity.new
     sun_light.add_component(Light::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.8))
     sun_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::Maths.to_rad(-80f32))
     sun_light.name = "sun"

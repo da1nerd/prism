@@ -1,21 +1,21 @@
 module Prism::Common::Light
   # Represents a point light.
   # That is, light that radiates out from a point.
-  class PointLight < Core::Light
+  class PointLight < Prism::Light
     COLOR_DEPTH   = 256.0f32
-    DEFAULT_ATTEN = Core::Attenuation.new(1.0f32, 0.001f32, 0.002f32)
+    DEFAULT_ATTEN = Prism::Attenuation.new(1.0f32, 0.001f32, 0.002f32)
 
     property range
     getter attenuation
 
-    @[Core::Shader::Field]
+    @[Prism::Shader::Field]
     @base : BaseLight
-    @[Core::Shader::Field]
+    @[Prism::Shader::Field]
     @range : Float32
-    @[Core::Shader::Field(name: "atten")]
-    @attenuation : Core::Attenuation
+    @[Prism::Shader::Field(name: "atten")]
+    @attenuation : Prism::Attenuation
 
-    @[Core::Shader::Field]
+    @[Prism::Shader::Field]
     def position : Prism::Maths::Vector3f
       self.transform.get_transformed_pos
     end
@@ -32,7 +32,7 @@ module Prism::Common::Light
       initialize(color, intensity, DEFAULT_ATTEN)
     end
 
-    def initialize(color : Vector3f, intensity : Float32, @attenuation : Core::Attenuation)
+    def initialize(color : Vector3f, intensity : Float32, @attenuation : Prism::Attenuation)
       @base = BaseLight.new(color, intensity)
 
       a = @attenuation.exponent

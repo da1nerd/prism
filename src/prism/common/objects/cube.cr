@@ -21,43 +21,43 @@ module Prism::Common::Objects
 
       verticies = [
         # bottom
-        Core::Vertex.new(Vector3f.new(0, 0, 0), @texture_coords[:bottom_left]),
-        Core::Vertex.new(Vector3f.new(0, 0, @size), @texture_coords[:bottom_right]),
-        Core::Vertex.new(Vector3f.new(@size, 0, @size), @texture_coords[:top_right]),
-        Core::Vertex.new(Vector3f.new(@size, 0, 0), @texture_coords[:top_left]),
+        Prism::Vertex.new(Vector3f.new(0, 0, 0), @texture_coords[:bottom_left]),
+        Prism::Vertex.new(Vector3f.new(0, 0, @size), @texture_coords[:bottom_right]),
+        Prism::Vertex.new(Vector3f.new(@size, 0, @size), @texture_coords[:top_right]),
+        Prism::Vertex.new(Vector3f.new(@size, 0, 0), @texture_coords[:top_left]),
 
         # top
-        Core::Vertex.new(Vector3f.new(0, @size, 0), @texture_coords[:bottom_left]),
-        Core::Vertex.new(Vector3f.new(0, @size, @size), @texture_coords[:bottom_right]),
-        Core::Vertex.new(Vector3f.new(@size, @size, @size), @texture_coords[:top_right]),
-        Core::Vertex.new(Vector3f.new(@size, @size, 0), @texture_coords[:top_left]),
+        Prism::Vertex.new(Vector3f.new(0, @size, 0), @texture_coords[:bottom_left]),
+        Prism::Vertex.new(Vector3f.new(0, @size, @size), @texture_coords[:bottom_right]),
+        Prism::Vertex.new(Vector3f.new(@size, @size, @size), @texture_coords[:top_right]),
+        Prism::Vertex.new(Vector3f.new(@size, @size, 0), @texture_coords[:top_left]),
 
         # back
-        Core::Vertex.new(Vector3f.new(0, 0, @size), @texture_coords[:bottom_left]),
-        Core::Vertex.new(Vector3f.new(0, @size, @size), @texture_coords[:bottom_right]),
-        Core::Vertex.new(Vector3f.new(@size, @size, @size), @texture_coords[:top_right]),
-        Core::Vertex.new(Vector3f.new(@size, 0, @size), @texture_coords[:top_left]),
+        Prism::Vertex.new(Vector3f.new(0, 0, @size), @texture_coords[:bottom_left]),
+        Prism::Vertex.new(Vector3f.new(0, @size, @size), @texture_coords[:bottom_right]),
+        Prism::Vertex.new(Vector3f.new(@size, @size, @size), @texture_coords[:top_right]),
+        Prism::Vertex.new(Vector3f.new(@size, 0, @size), @texture_coords[:top_left]),
 
         # front
-        Core::Vertex.new(Vector3f.new(0, 0, 0), @texture_coords[:bottom_left]),
-        Core::Vertex.new(Vector3f.new(0, @size, 0), @texture_coords[:bottom_right]),
-        Core::Vertex.new(Vector3f.new(@size, @size, 0), @texture_coords[:top_right]),
-        Core::Vertex.new(Vector3f.new(@size, 0, 0), @texture_coords[:top_left]),
+        Prism::Vertex.new(Vector3f.new(0, 0, 0), @texture_coords[:bottom_left]),
+        Prism::Vertex.new(Vector3f.new(0, @size, 0), @texture_coords[:bottom_right]),
+        Prism::Vertex.new(Vector3f.new(@size, @size, 0), @texture_coords[:top_right]),
+        Prism::Vertex.new(Vector3f.new(@size, 0, 0), @texture_coords[:top_left]),
 
         # left
-        Core::Vertex.new(Vector3f.new(0, 0, 0), @texture_coords[:bottom_left]),
-        Core::Vertex.new(Vector3f.new(0, 0, @size), @texture_coords[:bottom_right]),
-        Core::Vertex.new(Vector3f.new(0, @size, @size), @texture_coords[:top_right]),
-        Core::Vertex.new(Vector3f.new(0, @size, 0), @texture_coords[:top_left]),
+        Prism::Vertex.new(Vector3f.new(0, 0, 0), @texture_coords[:bottom_left]),
+        Prism::Vertex.new(Vector3f.new(0, 0, @size), @texture_coords[:bottom_right]),
+        Prism::Vertex.new(Vector3f.new(0, @size, @size), @texture_coords[:top_right]),
+        Prism::Vertex.new(Vector3f.new(0, @size, 0), @texture_coords[:top_left]),
 
         # right
-        Core::Vertex.new(Vector3f.new(@size, 0, 0), @texture_coords[:bottom_left]),
-        Core::Vertex.new(Vector3f.new(@size, 0, @size), @texture_coords[:bottom_right]),
-        Core::Vertex.new(Vector3f.new(@size, @size, @size), @texture_coords[:top_right]),
-        Core::Vertex.new(Vector3f.new(@size, @size, 0), @texture_coords[:top_left]),
+        Prism::Vertex.new(Vector3f.new(@size, 0, 0), @texture_coords[:bottom_left]),
+        Prism::Vertex.new(Vector3f.new(@size, 0, @size), @texture_coords[:bottom_right]),
+        Prism::Vertex.new(Vector3f.new(@size, @size, @size), @texture_coords[:top_right]),
+        Prism::Vertex.new(Vector3f.new(@size, @size, 0), @texture_coords[:top_left]),
       ]
 
-      indicies = Array(Core::GraphicsInt){
+      indicies = Array(Int32){
         0, 3, 2,
         0, 2, 1,
 
@@ -77,7 +77,7 @@ module Prism::Common::Objects
         20, 22, 21,
       }
 
-      @mesh = Core::Mesh.new(verticies, indicies, true)
+      @mesh = Mesh.new(verticies, indicies, true)
     end
   end
 end

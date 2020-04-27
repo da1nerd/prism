@@ -3,22 +3,22 @@ require "annotations"
 module Prism::Common::Objects
   # A basic shape class that holds a mesh and a material.
   # Normally you'll want to inherit this class to create new shapes.
-  class Shape < Core::Entity
-    @material : Core::Material
-    @mesh : Core::Mesh?
+  class Shape < Entity
+    @material : Material
+    @mesh : Mesh?
 
     setter material
 
     def initialize
       super
-      @material = Core::Material.new
+      @material = Material.new
     end
 
-    def initialize(mesh : Core::Mesh)
-      initialize(mesh, Core::Material.new)
+    def initialize(mesh : Mesh)
+      initialize(mesh, Material.new)
     end
 
-    def initialize(@mesh : Core::Mesh, @material : Core::Material)
+    def initialize(@mesh : Mesh, @material : Material)
       super()
     end
 
@@ -28,13 +28,6 @@ module Prism::Common::Objects
       if mesh = @mesh
         mesh.reverse_face
         @mesh = mesh
-      end
-    end
-
-    @[Override]
-    def render(&block : Core::RenderCallback)
-      if mesh = @mesh
-        block.call self.transform, @material, mesh
       end
     end
   end

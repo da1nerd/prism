@@ -18,18 +18,18 @@ module Prism::Common::Objects
       field_width = 1.0f32
 
       verticies = [
-        Core::Vertex.new(Vector3f.new(0, 0, 0), @texture_coords[:bottom_left]),         # Vector2f.new(0, 0)),
-        Core::Vertex.new(Vector3f.new(0, 0, @depth), @texture_coords[:top_left]),       # Vector2f.new(0, 1)),
-        Core::Vertex.new(Vector3f.new(@width, 0, 0), @texture_coords[:bottom_right]),   # Vector2f.new(1, 0)),
-        Core::Vertex.new(Vector3f.new(@width, 0, @depth), @texture_coords[:top_right]), # Vector2f.new(1, 1))
+        Prism::Vertex.new(Vector3f.new(0, 0, 0), @texture_coords[:bottom_left]),         # Vector2f.new(0, 0)),
+        Prism::Vertex.new(Vector3f.new(0, 0, @depth), @texture_coords[:top_left]),       # Vector2f.new(0, 1)),
+        Prism::Vertex.new(Vector3f.new(@width, 0, 0), @texture_coords[:bottom_right]),   # Vector2f.new(1, 0)),
+        Prism::Vertex.new(Vector3f.new(@width, 0, @depth), @texture_coords[:top_right]), # Vector2f.new(1, 1))
       ]
 
-      indicies = Array(Core::GraphicsInt){
+      indicies = Array(Int32){
         0, 1, 2,
         2, 1, 3,
       }
 
-      @mesh = Core::Mesh.new(verticies, indicies, true)
+      @mesh = Mesh.new(verticies, indicies, true)
     end
   end
 end
