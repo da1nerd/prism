@@ -2,6 +2,7 @@ require "render_loop"
 require "annotation"
 require "crash"
 require "./entity"
+require "../common"
 
 module Prism::Core
   # The game interace.
@@ -9,7 +10,12 @@ module Prism::Core
   abstract class GameEngine < RenderLoop::Engine
     @root : Entity = Entity.new
     @engine : RenderingEngine?
+    @window_size : RenderLoop::Size?
     @crash_engine : Crash::Engine = Crash::Engine.new
+    # TODO: don't accept the full camera here. Just it's view projection.
+    @camera : Core::Camera = Core::Camera.new
+
+    # property camera
 
     # Returns the registered `GameEngine` or throw an exception.
     # The engine must be assigned before the game loop starts.
@@ -25,7 +31,7 @@ module Prism::Core
     def startup
       # configure entity framework
       # TODO: add more systems here
-      @crash_engine.add_system RenderSystem.new, 10
+      @crash_engine.add_system RenderSystem.new(Shader::StaticShader.new, @camera), 10
 
       # pass initialization to the developer
       self.init
@@ -41,6 +47,7 @@ module Prism::Core
     # Gives input state to the game
     @[Override]
     def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
+      @window_size = input.window_size
       @crash_engine.update(tick.current_time)
       @root.input_all(tick, input)
       @root.update_all(tick)
@@ -50,6 +57,16 @@ module Prism::Core
     @[Override]
     def render
       self.engine.render(@root)
+    end
+
+    # Flush the GL buffers and resize the viewport to match the window size
+    @[Override]
+    def flush
+      if window_size = @window_size
+        LibGL.viewport(0, 0, window_size[:width], window_size[:height])
+      end
+
+      LibGL.flush
     end
 
     # Adds an object to the game's scene graph.

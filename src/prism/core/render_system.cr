@@ -4,22 +4,72 @@ require "annotation"
 module Prism::Core
     class RenderSystem < Crash::System
         @entities : Array(Crash::Entity)
+        @camera : Core::Camera
+        @shader : Core::Shader::Program
 
-        def initialize()
+        def initialize(@shader : Core::Shader::Program, @camera : Core::Camera)
             @entities = [] of Crash::Entity
         end
 
         @[Override]
         def add_to_engine(engine : Crash::Engine)
-            @entities = engine.get_entities Prism::Core::Material, Prism::Core::Mesh
+            @entities = engine.get_entities Prism::Core::Material, Prism::Core::Mesh, Prism::Core::Transform
+            # @lights = engine.get_entities Prism::Core::Light
+            prepare
+        end
+
+        def prepare
+            LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
+            LibGL.front_face(LibGL::CW)
+            enable_culling
+            LibGL.enable(LibGL::DEPTH_TEST)
+            LibGL.enable(LibGL::DEPTH_CLAMP)
+            LibGL.enable(LibGL::TEXTURE_2D)
+            # @shader = Shader::StaticShader.new
+            # @renderer = Renderer.new(@shader.as(Shader::Program))
+            # Uncomment the below line to display everything as a wire frame
+            # LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::LINE)
+        end
+
+        def enable_culling
+            LibGL.cull_face(LibGL::BACK)
+            LibGL.enable(LibGL::CULL_FACE)
+        end
+    
+        def disable_culling
+            LibGL.disable(LibGL::CULL_FACE)
         end
 
         @[Override]
         def update(time : Float64)
+            LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
+
+            LibGL.enable(LibGL::BLEND)
+            LibGL.blend_equation(LibGL::FUNC_ADD)
+            LibGL.blend_func(LibGL::ONE, LibGL::ONE_MINUS_SRC_ALPHA)
+
+            LibGL.depth_mask(LibGL::FALSE)
+            LibGL.depth_func(LibGL::EQUAL)
+            
+            LibGL.depth_func(LibGL::LESS)
+            LibGL.depth_mask(LibGL::TRUE)
+            LibGL.disable(LibGL::BLEND)
+
+            @shader.start
+            @shader.projection_matrix = @camera.get_projection
+            @shader.view_matrix = @camera.get_view
+            # @shader.light = 
+            @shader.eye_pos = @camera.transform.get_transformed_pos
             @entities.each do |entity|
-                mesh = entity.get(Prism::Core::Mesh)
-                puts "rendering node"
+                material = entity.get(Prism::Core::Material).as(Prism::Core::Material)
+                transform = entity.get(Prism::Core::Transform).as(Prism::Core::Transform)
+                @shader.material = material
+                @shader.transformation_matrix = transform.get_transformation
+                disable_culling if material.has_transparency?
+                entity.get(Prism::Core::Mesh).as(Prism::Core::Mesh).draw
+                enable_culling
             end
+            @shader.stop
         end
 
         @[Override]

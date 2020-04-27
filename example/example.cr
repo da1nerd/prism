@@ -18,6 +18,7 @@ class BoxDemo < Prism::Core::GameEngine
     # add components to entity
     object.add mesh
     object.add material
+    object.add object.transform
     # add entity to system
     add_entity object
     object

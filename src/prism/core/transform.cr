@@ -1,6 +1,8 @@
+require "crash"
+
 module Prism::Core
   # Handles positional transformations
-  class Transform
+  class Transform < Crash::Component
     include Prism::Maths
     @parent : Transform?
     @parent_matrix : Matrix4f
