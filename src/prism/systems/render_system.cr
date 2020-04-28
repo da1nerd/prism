@@ -8,11 +8,13 @@ module Prism::Systems
     @lights : Array(Crash::Entity)
     @cameras : Array(Crash::Entity)
     @shader : Prism::Shader::Program
+    @grouped_entities : Hash(Prism::TexturedModel, Array(Crash::Entity))
 
     def initialize(@shader : Prism::Shader::Program)
       @entities = [] of Crash::Entity
       @lights = [] of Crash::Entity
       @cameras = [] of Crash::Entity
+      @grouped_entities = {} of Prism::TexturedModel => Array(Crash::Entity)
     end
 
     @[Override]
@@ -31,8 +33,6 @@ module Prism::Systems
       LibGL.enable(LibGL::DEPTH_TEST)
       LibGL.enable(LibGL::DEPTH_CLAMP)
       LibGL.enable(LibGL::TEXTURE_2D)
-      # Uncomment the below line to display everything as a wire frame
-      # LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::LINE)
     end
 
     def enable_wires
@@ -62,6 +62,54 @@ module Prism::Systems
       camera_rotation * camera_translation
     end
 
+    # Sorts the entities into groups of `TexturedModel`s and puts them into @grouped_entities
+    def batch_entities(entities : Array(Crash::Entity))
+      entities.each do |entity|
+        model = entity.get(Prism::TexturedModel).as(Prism::TexturedModel)
+        if @grouped_entities.has_key? model
+          @grouped_entities[model] << entity
+        else
+          @grouped_entities[model] = [entity] of Crash::Entity
+        end
+      end
+    end
+
+    # Prepares the shader before rendering a batch of `TexturedModel`s
+    def prepare_textured_model(model : Prism::TexturedModel)
+      # TODO: should the vertex attribute arrays be enabled here instead of when the shader starts?
+      @shader.material = model.material
+      disable_culling if model.material.has_transparency?
+      if model.material.wire_frame?
+        disable_culling
+        enable_wires
+      end
+    end
+
+    # Prepares the shader for rendering the actual *entity*
+    def prepare_instance(entity : Crash::Entity)
+      transform = entity.get(Prism::Transform).as(Prism::Transform)
+      @shader.transformation_matrix = transform.get_transformation
+    end
+
+    # Cleans up after rendering a batch of `TexturedModel`s
+    def unbind_textured_model
+      # TODO: should the vertex attribute arrays be disabled here instead of when the shader stops?
+      disable_wires
+      enable_culling
+    end
+
+    # Renders batches of `TexturedModel`s at a time for increased performance
+    def render(entities : Hash(Prism::TexturedModel, Array(Crash::Entity)))
+      entities.each do |model, batch|
+        prepare_textured_model model
+        batch.each do |entity|
+          prepare_instance entity
+          model.mesh.draw
+        end
+        unbind_textured_model
+      end
+    end
+
     @[Override]
     def update(time : Float64)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
@@ -76,6 +124,8 @@ module Prism::Systems
       LibGL.depth_func(LibGL::LESS)
       LibGL.depth_mask(LibGL::TRUE)
       LibGL.disable(LibGL::BLEND)
+
+      batch_entities(@entities)
 
       # calculate camera matricies
       cam_entity = @cameras[0]
@@ -100,25 +150,10 @@ module Prism::Systems
         @shader.set_uniform("light.direction", light_transform.get_transformed_rot.forward)
       end
 
-      # TODO: for added efficiency we could sort the entities into groups based on their material and mesh.
-      #  If the material and mesh is the same we can bind the data once and then
-      #  simply draw the different transformations.
+      render(@grouped_entities)
 
-      @entities.each do |entity|
-        model = entity.get(Prism::TexturedModel).as(Prism::TexturedModel)
-        transform = entity.get(Prism::Transform).as(Prism::Transform)
-        @shader.material = model.material
-        @shader.transformation_matrix = transform.get_transformation
-        disable_culling if model.material.has_transparency?
-        if model.material.wire_frame?
-          disable_culling
-          enable_wires
-        end
-        model.mesh.draw
-        disable_wires
-        enable_culling
-      end
       @shader.stop
+      @grouped_entities.clear
     end
 
     @[Override]
