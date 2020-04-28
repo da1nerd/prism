@@ -14,7 +14,8 @@ module Prism
     def startup
       # configure entity framework
       # TODO: add more systems here
-      @crash_engine.add_system Systems::InputSystem.new, 5
+      @crash_engine.add_system Systems::CameraSystem.new, 1
+      @crash_engine.add_system Systems::TransformSystem.new, 5
       @crash_engine.add_system Systems::RenderSystem.new(Prism::Shader::StaticShader.new), 10
 
       # pass initialization to the developer
@@ -29,7 +30,6 @@ module Prism
     def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
       @window_size = input.window_size
       @crash_engine.input(tick, input)
-      @root.input_all(tick, input)
     end
 
     # Renders the game's scene graph
