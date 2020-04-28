@@ -37,22 +37,6 @@ module Prism
       @projection = Matrix4f.new.init_perspective(@fov.radians, @aspect, @z_near, @z_far)
     end
 
-    # Returns the view and projection matricies pre-multiplied.
-    # The name of this method is misleading. The multiplication order is projection * view
-    def get_view_projection : Matrix4f
-      get_projection * get_view
-    end
-
-    # Returns the view matrix
-    # This represents the view of the camera
-    def get_view : Matrix4f
-      camera_rotation = self.transform.get_transformed_rot.conjugate.to_rotation_matrix
-      camera_pos = self.transform.get_transformed_pos * -1
-      camera_translation = Matrix4f.new.init_translation(camera_pos.x, camera_pos.y, camera_pos.z)
-
-      camera_rotation * camera_translation
-    end
-
     # Returns the projection matrix.
     # This represents the projection of entities on the screen.
     # In other words, things get bigger or smaller as they get closing to the screen or farther away.
