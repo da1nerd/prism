@@ -52,6 +52,16 @@ module Prism::Systems
       LibGL.disable(LibGL::CULL_FACE)
     end
 
+    # Uses the transformation of the *entity* to calculate the view that the camera has of the world.
+    # This allows you to attach the camera view to any entity
+    def calculate_view_matrix(entity : Crash::Entity)
+      transform = entity.get(Prism::Transform).as(Prism::Transform)
+      camera_rotation = transform.get_transformed_rot.conjugate.to_rotation_matrix
+      camera_pos = transform.get_transformed_pos * -1
+      camera_translation = Matrix4f.new.init_translation(camera_pos.x, camera_pos.y, camera_pos.z)
+      camera_rotation * camera_translation
+    end
+
     @[Override]
     def update(time : Float64)
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
@@ -67,12 +77,19 @@ module Prism::Systems
       LibGL.depth_mask(LibGL::TRUE)
       LibGL.disable(LibGL::BLEND)
 
-      main_camera = @cameras[0].get(Prism::Camera).as(Prism::Camera)
+      # calculate camera matricies
+      cam_entity = @cameras[0];
+      cam = cam_entity.get(Prism::Camera).as(Prism::Camera)
+      projection_matrix = cam.get_projection
+      view_matrix = calculate_view_matrix(cam_entity)
+      eye_pos = cam_entity.get(Prism::Transform).as(Prism::Transform).get_transformed_pos
+
+      # start shading
       @shader.start
-      @shader.projection_matrix = main_camera.get_projection
-      @shader.view_matrix = main_camera.get_view
-      @shader.light = @lights[0].get(Prism::DirectionalLight).as(Prism::DirectionalLight) # if @lights.size > 0
-      @shader.eye_pos = main_camera.transform.get_transformed_pos
+      @shader.projection_matrix = projection_matrix
+      @shader.view_matrix = view_matrix
+      @shader.eye_pos = eye_pos
+      @shader.light = @lights[0].get(Prism::DirectionalLight).as(Prism::DirectionalLight) if @lights.size > 0
       @entities.each do |entity|
         material = entity.get(Prism::Material).as(Prism::Material)
         transform = entity.get(Prism::Transform).as(Prism::Transform)
