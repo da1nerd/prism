@@ -78,7 +78,7 @@ class Demo < Prism::GameEngine
     # Generate a bunch of random cubes to test performance
     cube_model = Prism::TexturedModel.new(Prism::Mesh.cube(2), Prism::Material.new)
     random = Random.new
-    0.upto(3000) do |i|
+    0.upto(1000) do |i|
       x : Float32 = random.next_float.to_f32 * 800
       y : Float32 = random.next_float.to_f32 * 100
       z : Float32 = random.next_float.to_f32 * 800
