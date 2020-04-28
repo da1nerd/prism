@@ -1,6 +1,11 @@
 module Prism
-  # TODO: Turn this into a generator.
-  # This shouldn't be an Entity on it's own.
+  # Generates a terrain from a height map
+  # Since things will probably travel accross this terrain
+  # you can check the height at a point on the terrain to properly position other objects.
+  #
+  # ```
+  # height : Float32 = terrain.height_at(entity)
+  # ```
   class Terrain < Prism::Entity
     SIZE            = 800
     MAX_HEIGHT      =  40
