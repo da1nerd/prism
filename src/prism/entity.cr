@@ -1,9 +1,8 @@
 require "crash"
-require "./moveable.cr"
 
 module Prism
-  # Represents an object within the scene graph.
-  # The screen graph is composed of a tree of `Entity`s.
+  # An entity is a collection of components
+  # All entities start with a default `Transform` `Crash::Component`.
   class Entity < Crash::Entity
     def initialize
       super()
