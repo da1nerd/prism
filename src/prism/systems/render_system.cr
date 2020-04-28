@@ -4,6 +4,9 @@ require "annotation"
 module Prism::Systems
   # A default system for rendering `Prism::Entity`s.
   class RenderSystem < Crash::System
+    # RGB
+    SKY_COLOR = Vector3f.new(0.6, 0.8, 1)
+
     @entities : Array(Crash::Entity)
     @lights : Array(Crash::Entity)
     @cameras : Array(Crash::Entity)
@@ -27,7 +30,7 @@ module Prism::Systems
     end
 
     def prepare
-      LibGL.clear_color(0.0f32, 0.0f32, 0.0f32, 0.0f32)
+      LibGL.clear_color(SKY_COLOR.x, SKY_COLOR.y, SKY_COLOR.z, 1f32)
       LibGL.front_face(LibGL::CW)
       enable_culling
       LibGL.enable(LibGL::DEPTH_TEST)
@@ -139,6 +142,7 @@ module Prism::Systems
       @shader.projection_matrix = projection_matrix
       @shader.view_matrix = view_matrix
       @shader.eye_pos = eye_pos
+      @shader.sky_color = SKY_COLOR
 
       if @lights.size > 0
         light_entity = @lights[0]
