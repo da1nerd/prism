@@ -18,7 +18,8 @@ module Prism
     def initialize(@sensitivity : Float32, @unlock_mouse_key : Window::Key)
     end
 
-    def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
+    # Performs a rotation on the *transform*
+    def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, transform : Prism::Transform)
       center_position = Vector2f.new(input.get_center[:x].to_f32, input.get_center[:y].to_f32)
       mouse_position = Vector2f.new(input.get_mouse_position[:x].to_f32, input.get_mouse_position[:y].to_f32)
 
@@ -36,10 +37,10 @@ module Prism
         rot_x = delta_pos.y != 0
 
         if rot_y
-          self.transform.rotate(Y_AXIS, Prism::Maths.to_rad(delta_pos.x * @sensitivity))
+          transform.rotate(Y_AXIS, Prism::Maths.to_rad(delta_pos.x * @sensitivity))
         end
         if rot_x
-          self.transform.rotate(self.transform.rot.right, Prism::Maths.to_rad(delta_pos.y * @sensitivity))
+          transform.rotate(transform.rot.right, Prism::Maths.to_rad(delta_pos.y * @sensitivity))
         end
 
         if rot_y || rot_x

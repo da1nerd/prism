@@ -21,16 +21,17 @@ module Prism::Systems
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       @entities.each do |e|
         e.get(Prism::Transform).as(Prism::Transform).update
+        transform = e.get(Prism::Transform).as(Prism::Transform)
 
         if e.has Prism::FreeLook
           move = e.get(Prism::FreeMove).as(Prism::FreeMove)
-          move.input(tick, input, e.get(Prism::Transform).as(Prism::Transform))
+          move.input(tick, input, transform)
           e.as(Prism::Entity).transform.pos = move.position
         end
 
         if e.has Prism::FreeLook
           look = e.get(Prism::FreeLook).as(Prism::FreeLook)
-          look.input(tick, input)
+          look.input!(tick, input, transform)
         end
       end
     end
