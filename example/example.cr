@@ -15,8 +15,7 @@ class Demo < Prism::GameEngine
     object = Prism::Entity.new
     object.name = name
     # add components to entity
-    object.add mesh
-    object.add material
+    object.add Prism::TexturedModel.new(mesh, material)
     object
   end
 
@@ -32,8 +31,7 @@ class Demo < Prism::GameEngine
     terrain_material.specular_power = 10f32
     terrain = Prism::Terrain.new(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
     terrain.material = terrain_material
-    terrain.add terrain_material
-    terrain.add terrain.mesh.as(Prism::Mesh)
+    terrain.add Prism::TexturedModel.new(terrain.mesh.as(Prism::Mesh), terrain_material)
 
     # Add a merchant stall
     stall = load_model("stall")
@@ -43,7 +41,6 @@ class Demo < Prism::GameEngine
     fern = load_model("fern") do |m|
       m.specular_intensity = 0.5f32
       m.has_transparency = true
-      # m.use_fake_lighting = true
       m
     end
     fern.get(Prism::Transform).as(Prism::Transform).move_north(50).move_east(40).elevate_to(terrain.height_at(fern))
@@ -51,7 +48,7 @@ class Demo < Prism::GameEngine
     # add a tree
     tree = load_model("lowPolyTree")
     tree.get(Prism::Transform).as(Prism::Transform).move_north(55).move_east(60).elevate_to(terrain.height_at(tree))
-    tree.get(Prism::Material).as(Prism::Material).wire_frame = true
+    tree.get(Prism::TexturedModel).as(Prism::TexturedModel).material.wire_frame = true
 
     # add a lamp
     lamp = load_model("lamp")

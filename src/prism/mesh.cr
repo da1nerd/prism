@@ -1,13 +1,12 @@
 require "./mesh/mesh_cache.cr"
 require "lib_gl"
-require "crash"
 
 module Prism
   # Manages the state of a model mesh
   # Meshes give the shapes which can be covered in `Material`s.
   # This is also known as the "model"
   # TODO: rename to "model"
-  class Mesh < Crash::Component
+  class Mesh
     @@loaded_models = {} of String => MeshResource
     @resource : MeshResource
     @file_name : String?
