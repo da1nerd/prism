@@ -1,5 +1,4 @@
 require "annotation"
-require "./component.cr"
 require "crash"
 
 module Prism

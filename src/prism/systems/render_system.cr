@@ -78,7 +78,7 @@ module Prism::Systems
       LibGL.disable(LibGL::BLEND)
 
       # calculate camera matricies
-      cam_entity = @cameras[0];
+      cam_entity = @cameras[0]
       cam = cam_entity.get(Prism::Camera).as(Prism::Camera)
       projection_matrix = cam.get_projection
       view_matrix = calculate_view_matrix(cam_entity)

@@ -15,7 +15,6 @@ module Prism::Systems
       @entities = engine.get_entities Prism::Camera
     end
 
-
     @[Override]
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       @entities.each do |e|
