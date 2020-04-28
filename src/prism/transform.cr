@@ -26,6 +26,13 @@ module Prism
       @parent_matrix = Matrix4f.new.init_identity
     end
 
+    def initialize(x : Float32, y : Float32, z : Float32)
+      @pos = Vector3f.new(x, y, z)
+      @rot = Quaternion.new(0.0f64, 0.0f64, 0.0f64, 1.0f64)
+      @scale = Vector3f.new(1.0f32, 1.0f32, 1.0f32)
+      @parent_matrix = Matrix4f.new.init_identity
+    end
+
     def update
       if @old_pos != nil
         @old_pos = @pos

@@ -1,9 +1,8 @@
-require "./shape"
-
 module Prism
   # A basic cube shape.
   # You can configure the *size* of the cube to make it smaller or bigger.
-  class Cube < Shape
+  # TODO: turn this into a generator
+  class Cube < Prism::Entity
     def initialize(@size : Float32)
       initialize(@size, {
         bottom_left:  Vector2f.new(0, 0),

@@ -30,7 +30,6 @@ class Demo < Prism::GameEngine
     terrain_material.specular_intensity = 0.7f32
     terrain_material.specular_power = 10f32
     terrain = Prism::Terrain.new(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
-    terrain.material = terrain_material
     terrain.add Prism::TexturedModel.new(terrain.mesh.as(Prism::Mesh), terrain_material)
 
     # Add a merchant stall
@@ -75,6 +74,19 @@ class Demo < Prism::GameEngine
     camera = Prism::GhostCamera.new
     camera.name = "camera"
     camera.add Prism::Transform.new.look_at(stall).move_north(30).move_east(30).elevate_to(20)
+
+    # Generate a bunch of random cubes to test performance
+    cube_model = Prism::TexturedModel.new(Prism::Mesh.cube(2), Prism::Material.new)
+    random = Random.new
+    0.upto(3000) do |i|
+      x : Float32 = random.next_float.to_f32 * 800
+      y : Float32 = random.next_float.to_f32 * 100
+      z : Float32 = random.next_float.to_f32 * 800
+      e = Prism::Entity.new
+      e.add cube_model
+      e.add Prism::Transform.new(x, y, z)
+      add_entity e
+    end
 
     # add everything to the scene
     add_entity(lamp)

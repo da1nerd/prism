@@ -25,7 +25,7 @@ module Prism
 
     # The reflectivity determines how shiny the surface of the object is.
     @[Prism::Shader::Field(name: "specularIntensity")]
-    @specular_intensity : Float32 = 1
+    @specular_intensity : Float32 = 0.7
 
     # The shine dampening determines how close the camera has to be
     # to the reflected light to see any change in the brightness on surface of the object.
