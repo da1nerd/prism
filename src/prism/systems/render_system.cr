@@ -17,7 +17,7 @@ module Prism::Systems
 
     @[Override]
     def add_to_engine(engine : Crash::Engine)
-      @entities = engine.get_entities Prism::Material, Prism::Mesh, Prism::Transform
+      @entities = engine.get_entities Prism::TexturedModel
       # TODO: just get the lights within range
       @lights = engine.get_entities Prism::DirectionalLight
       @cameras = engine.get_entities Prism::Camera
@@ -100,17 +100,21 @@ module Prism::Systems
         @shader.set_uniform("light.direction", light_transform.get_transformed_rot.forward)
       end
 
+      # TODO: for added efficiency we could sort the entities into groups based on their material and mesh.
+      #  If the material and mesh is the same we can bind the data once and then
+      #  simply draw the different transformations.
+
       @entities.each do |entity|
-        material = entity.get(Prism::Material).as(Prism::Material)
+        model = entity.get(Prism::TexturedModel).as(Prism::TexturedModel)
         transform = entity.get(Prism::Transform).as(Prism::Transform)
-        @shader.material = material
+        @shader.material = model.material
         @shader.transformation_matrix = transform.get_transformation
-        disable_culling if material.has_transparency?
-        if material.wire_frame?
+        disable_culling if model.material.has_transparency?
+        if model.material.wire_frame?
           disable_culling
           enable_wires
         end
-        entity.get(Prism::Mesh).as(Prism::Mesh).draw
+        model.mesh.draw
         disable_wires
         enable_culling
       end
