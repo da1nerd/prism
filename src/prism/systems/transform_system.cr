@@ -24,7 +24,7 @@ module Prism::Systems
 
         if e.has Prism::FreeLook
           move = e.get(Prism::FreeMove).as(Prism::FreeMove)
-          move.input(tick, input)
+          move.input(tick, input, e.get(Prism::Transform).as(Prism::Transform))
           e.as(Prism::Entity).transform.pos = move.position
         end
 

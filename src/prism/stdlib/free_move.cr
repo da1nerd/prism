@@ -2,9 +2,7 @@ module Prism
   # Causes the parent `Entity`'s position to be controlled by the keyboard.
   class FreeMove < Prism::Component
     include Prism::Adapter::GLFW
-    # TODO: change to property
-    getter movement
-    setter movement
+    property movement
     @position : Vector3f
     getter position
 
@@ -20,7 +18,7 @@ module Prism
       @position = Vector3f.new(0, 0, 0)
     end
 
-    def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
+    def input(tick : RenderLoop::Tick, input : RenderLoop::Input, transform : Prism::Transform)
       mov_amt = @speed * tick.frame_time.to_f32
 
       movement = Vector3f.new(0, 0, 0)
@@ -29,40 +27,24 @@ module Prism
         mov_amt *= 10
       end
       if input.get_key(@forward_key)
-        movement = movement + calculate_move(self.transform.rot.forward, mov_amt)
+        movement = movement + calculate_move(transform.rot.forward, mov_amt)
       end
       if input.get_key(@back_key)
-        movement = movement + calculate_move(self.transform.rot.forward, -mov_amt)
+        movement = movement + calculate_move(transform.rot.forward, -mov_amt)
       end
       if input.get_key(@left_key)
-        movement = movement + calculate_move(self.transform.rot.left, mov_amt)
+        movement = movement + calculate_move(transform.rot.left, mov_amt)
       end
       if input.get_key(@right_key)
-        movement = movement + calculate_move(self.transform.rot.right, mov_amt)
+        movement = movement + calculate_move(transform.rot.right, mov_amt)
       end
 
-      @position = calculate_position(movement)
-
-      # propogate position to parent
-      # TODO: we shouldn't be modifying the parent directly like this.
-      # if @position.length > 0
-      #   self.transform.pos = @position
-      # end
-    end
-
-    # moves the camera
-    def move(direction : Vector3f, amount : Float32)
-      self.transform.pos = get_move(direction, amount)
+      @position = transform.pos + movement
     end
 
     # Generates the movement vector
     private def calculate_move(direction : Vector3f, amount : Float32)
       direction * amount
-    end
-
-    # Generates the position fector
-    private def calculate_position(move : Vector3f) : Vector3f
-      self.transform.pos + move
     end
   end
 end
