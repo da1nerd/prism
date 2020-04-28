@@ -1,5 +1,7 @@
 module Prism
-  class Terrain < Shape
+  # TODO: Turn this into a generator.
+  # This shouldn't be an Entity on it's own.
+  class Terrain < Prism::Entity
     SIZE            = 800
     MAX_HEIGHT      =  40
     MAX_PIXEL_COLOR = 256 * 256 * 256 # because there are three color channels
