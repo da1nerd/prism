@@ -69,29 +69,10 @@ module Prism
       end
     end
 
-    # Performs game update logic on this object's children
-    def update_all(tick : RenderLoop::Tick)
-      update(tick)
-
-      0.upto(@children.size - 1) do |i|
-        @children[i].update_all(tick)
-      end
-    end
-
     # Performs input update logic on this object
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
+      # TODO: the transform needs to be a component attached to the entity
       @transform.update
-
-      0.upto(@legacy_components.size - 1) do |i|
-        @legacy_components[i].input(tick, input)
-      end
-    end
-
-    # Performs game update logic on this object
-    def update(tick : RenderLoop::Tick)
-      0.upto(@legacy_components.size - 1) do |i|
-        @legacy_components[i].update(tick)
-      end
     end
 
     # Returns an array of all attached objects including it's self

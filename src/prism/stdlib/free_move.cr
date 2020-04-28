@@ -6,6 +6,7 @@ module Prism
     getter movement
     setter movement
     @position : Vector3f
+    getter position
 
     def initialize
       initialize(10)
@@ -19,7 +20,6 @@ module Prism
       @position = Vector3f.new(0, 0, 0)
     end
 
-    @[Override]
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       mov_amt = @speed * tick.frame_time.to_f32
 
@@ -42,12 +42,12 @@ module Prism
       end
 
       @position = calculate_position(movement)
-    end
 
-    def update(tick : RenderLoop::Tick)
-      if @position.length > 0
-        self.transform.pos = @position
-      end
+      # propogate position to parent
+      # TODO: we shouldn't be modifying the parent directly like this.
+      # if @position.length > 0
+      #   self.transform.pos = @position
+      # end
     end
 
     # moves the camera

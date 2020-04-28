@@ -9,20 +9,10 @@ module Prism
     setter parent
     @parent : Prism::Entity = Prism::Entity.new
 
-    # Receives input between frames
-    # TODO: this should be triggered by a system
-    # DEPRECATED components that need an input method should implement it and then use a custom system
-    def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
-    end
-
-    # Receives update events between frames
-    # TODO: this should be triggered by a system
-    # DEPRECATED components that need an update method should implement it and then use a custom system
-    def update(tick : RenderLoop::Tick)
-    end
-
     # Receives it's transformation from it's parent `Entity`.
     # DEPRECATED `Transform` is now a `Component` so it should not be linked here.
+    #  Components are no longer managed directly by the entity, so hard linking it here will
+    #  not be cleaned up
     def transform : Prism::Transform
       @parent.transform
     end

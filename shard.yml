@@ -9,6 +9,10 @@ description: |
 
 crystal: 0.34.0
 
+targets:
+  example:
+    main: example/example.cr
+
 dependencies:
   crash:
     github: neutrinog/crash
