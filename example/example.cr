@@ -20,15 +20,6 @@ class Demo < Prism::GameEngine
     object
   end
 
-  def create_entity(*components : Crash::Component) : Prism::Entity
-    entity = Prism::Entity.new
-    components.each do |comp|
-      entity.add comp
-    end
-    add_entity entity
-    entity
-  end
-
   # Loads a texture from the resources and returns it as a material
   def load_material(name : String)
     Prism::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
