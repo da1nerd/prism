@@ -128,6 +128,11 @@ module Prism
   end
 
   class Transform < Crash::Component
+
+    def scale(factor : Float32)
+      @scale *= factor
+    end
+
     # Elevates the object to the exact position
     def elevate_to(position : Float32)
       # TODO: use parent transformation
