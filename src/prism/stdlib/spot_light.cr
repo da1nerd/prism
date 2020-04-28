@@ -21,10 +21,11 @@ module Prism
       @point_light = PointLight.new(color, intensity, attenuation)
     end
 
-    @[Override]
-    def update(tick : RenderLoop::Tick)
-      @point_light.transform.parent = transform
-    end
+    # TODO: this will need to be fixed
+    # @[Override]
+    # def update(tick : RenderLoop::Tick)
+    #   @point_light.transform.parent = transform
+    # end
 
     @[Prism::Shader::Field]
     def direction : Prism::Maths::Vector3f

@@ -18,7 +18,6 @@ module Prism
     def initialize(@sensitivity : Float32, @unlock_mouse_key : Window::Key)
     end
 
-    @[Override]
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       center_position = Vector2f.new(input.get_center[:x].to_f32, input.get_center[:y].to_f32)
       mouse_position = Vector2f.new(input.get_mouse_position[:x].to_f32, input.get_mouse_position[:y].to_f32)

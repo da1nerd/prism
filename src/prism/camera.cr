@@ -18,9 +18,7 @@ module Prism
     def sync_aspect_ratio=(@sync_aspect_ratio : Bool)
     end
 
-    @[Override]
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
-      super
       # keep the aspect ratio in sync with the window
       if @sync_aspect_ratio
         size = input.window_size
