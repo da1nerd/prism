@@ -16,6 +16,7 @@ module Prism
       @z = (grid_z * SIZE).to_f32
       @heights = [] of Array(Float32)
       generate_terrain(height_map)
+      add Transform.new.move_to(grid_x.to_f32 * SIZE, 0f32, grid_z.to_f32 * SIZE)
     end
 
     def transform
@@ -25,7 +26,7 @@ module Prism
     end
 
     def height_at(object : Prism::Entity)
-      height_at(object.transform.pos)
+      height_at(object.get(Prism::Transform).as(Prism::Transform).pos)
     end
 
     def height_at(position : Vector3f) : Float32

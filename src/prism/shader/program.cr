@@ -188,28 +188,28 @@ module Prism::Shader
     end
 
     # Sets an integer uniform variable value
-    private def set_uniform(name : String, value : LibGL::Int)
+    def set_uniform(name : String, value : LibGL::Int)
       LibGL.uniform_1i(get_uniform_location(name), value)
     end
 
     # Sets a float uniform variable value
-    private def set_uniform(name : String, value : LibGL::Float)
+    def set_uniform(name : String, value : LibGL::Float)
       LibGL.uniform_1f(get_uniform_location(name), value)
     end
 
     # Sets a 3 dimensional float vector value to a uniform variable
-    private def set_uniform(name : String, value : Vector3f)
+    def set_uniform(name : String, value : Vector3f)
       LibGL.uniform_3f(get_uniform_location(name), value.x, value.y, value.z)
     end
 
     # Sets a 4 dimensional matrix float value to a uniform variable
-    private def set_uniform(name : String, value : Matrix4f)
+    def set_uniform(name : String, value : Matrix4f)
       LibGL.uniform_matrix_4fv(get_uniform_location(name), 1, LibGL::TRUE, value.as_array)
     end
 
     # Sets a boolean uniform variable value.
     # Booleans are represented as floats in GLSL
-    private def set_uniform(name : String, value : Bool)
+    def set_uniform(name : String, value : Bool)
       LibGL.uniform_1f(get_uniform_location(name), value ? 1.0 : 0.0)
     end
 

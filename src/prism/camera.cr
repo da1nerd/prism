@@ -1,8 +1,9 @@
 require "annotation"
 require "./component.cr"
+require "crash"
 
 module Prism
-  class Camera < Prism::Component
+  class Camera < Crash::Component
     @projection : Maths::Matrix4f
     @sync_aspect_ratio : Bool
 

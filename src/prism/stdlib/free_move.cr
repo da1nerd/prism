@@ -1,6 +1,8 @@
+require "crash"
+
 module Prism
   # Causes the parent `Entity`'s position to be controlled by the keyboard.
-  class FreeMove < Prism::Component
+  class FreeMove < Crash::Component
     include Prism::Adapter::GLFW
     property movement
     @position : Vector3f

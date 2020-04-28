@@ -1,6 +1,8 @@
+require "crash"
+
 module Prism
   # Causes the parent `Entity`'s position to be controlled by the mouse.
-  class FreeLook < Prism::Component
+  class FreeLook < Crash::Component
     include Prism::Adapter::GLFW
     Y_AXIS = Vector3f.new(0, 1, 0)
     @mouse_locked = false
