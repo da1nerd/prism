@@ -6,6 +6,7 @@ module Prism::Shader
     uniform view_matrix, Matrix4f
     uniform light, Prism::Light
     uniform eye_pos, Vector3f
+    uniform sky_color, Vector3f
 
     def initialize
       super("static")
