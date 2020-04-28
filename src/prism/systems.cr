@@ -1,3 +1,4 @@
+require "./systems/crash_adapter"
 require "./systems/**"
 
 # A collection of pre-build systems.

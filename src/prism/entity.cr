@@ -60,21 +60,6 @@ module Prism
       return self
     end
 
-    # Performs input update logic on this object's children
-    def input_all(tick : RenderLoop::Tick, input : RenderLoop::Input)
-      input(tick, input)
-
-      0.upto(@children.size - 1) do |i|
-        @children[i].input_all(tick, input)
-      end
-    end
-
-    # Performs input update logic on this object
-    def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
-      # TODO: the transform needs to be a component attached to the entity
-      @transform.update
-    end
-
     # Returns an array of all attached objects including it's self
     def get_all_attached : Array(Prism::Entity)
       result = [] of Prism::Entity
