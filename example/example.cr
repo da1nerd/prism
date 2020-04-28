@@ -17,7 +17,6 @@ class Demo < Prism::GameEngine
     # add components to entity
     object.add mesh
     object.add material
-    object.add object.transform
     object
   end
 
@@ -26,7 +25,6 @@ class Demo < Prism::GameEngine
     components.each do |comp|
       entity.add comp
     end
-    entity.add entity.transform
     add_entity entity
     entity
   end
@@ -44,13 +42,11 @@ class Demo < Prism::GameEngine
     terrain = Prism::Terrain.new(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
     terrain.material = terrain_material
     terrain.add terrain_material
-    terrain.add terrain.transform
     terrain.add terrain.mesh.as(Prism::Mesh)
 
     # Add a merchant stall
     stall = load_model("stall")
-    stall.move_north(65).move_east(55)
-    stall.elevate_to(terrain.height_at(stall))
+    stall.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(55).elevate_to(terrain.height_at(stall))
 
     # Add a fern
     fern = load_model("fern") do |m|
@@ -59,19 +55,16 @@ class Demo < Prism::GameEngine
       # m.use_fake_lighting = true
       m
     end
-    fern.move_north(50).move_east(40)
-    fern.elevate_to(terrain.height_at(fern))
+    fern.get(Prism::Transform).as(Prism::Transform).move_north(50).move_east(40).elevate_to(terrain.height_at(fern))
 
     # add a tree
     tree = load_model("lowPolyTree")
-    tree.move_north(55).move_east(60)
-    tree.elevate_to(terrain.height_at(tree))
+    tree.get(Prism::Transform).as(Prism::Transform).move_north(55).move_east(60).elevate_to(terrain.height_at(tree))
     tree.get(Prism::Material).as(Prism::Material).wire_frame = true
 
     # add a lamp
     lamp = load_model("lamp")
-    lamp.move_north(65).move_east(50)
-    lamp.elevate_to(terrain.height_at(lamp))
+    lamp.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(50).elevate_to(terrain.height_at(lamp))
 
     # add some grass
     grass = load_model("grass") do |m|
@@ -80,31 +73,30 @@ class Demo < Prism::GameEngine
       m.use_fake_lighting = true
       m
     end
-    grass.move_north(50).move_east(45)
-    grass.elevate_to(terrain.height_at(fern))
+    grass.get(Prism::Transform).as(Prism::Transform).move_north(50).move_east(45).elevate_to(terrain.height_at(fern))
 
     # Add some sunlight
     sun_light = Prism::Entity.new
-    sun_light.add_component(Prism::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.8))
-    sun_light.transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::Maths.to_rad(-80f32))
+    sun_light.add Prism::DirectionalLight.new(Vector3f.new(1, 1, 1), 0.8)
+    light_transform = Prism::Transform.new()
+    light_transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::Maths.to_rad(-80f32))
+    sun_light.add light_transform
     sun_light.name = "sun"
 
     # Add a moveable camera
     camera = Prism::GhostCamera.new
     camera.name = "camera"
-    camera.add camera.transform
-    camera.move_north(30).move_east(30).elevate_to(20)
-    camera.transform.look_at(stall)
+    camera.add Prism::Transform.new.look_at(stall).move_north(30).move_east(30).elevate_to(20)
 
     # add everything to the scene
-    add_object(lamp)
-    add_object(tree)
-    add_object(fern)
-    add_object(grass)
-    add_object(terrain)
-    add_object(sun_light)
-    add_object(stall)
-    add_object(camera)
+    add_entity(lamp)
+    add_entity(tree)
+    add_entity(fern)
+    add_entity(grass)
+    add_entity(terrain)
+    add_entity(sun_light)
+    add_entity(stall)
+    add_entity(camera)
   end
 end
 

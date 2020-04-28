@@ -27,9 +27,10 @@ module Prism
     #   @point_light.transform.parent = transform
     # end
 
-    @[Prism::Shader::Field]
-    def direction : Prism::Maths::Vector3f
-      return self.transform.get_transformed_rot.forward
-    end
+    # TODO: fix this
+    # @[Prism::Shader::Field]
+    # def direction : Prism::Maths::Vector3f
+    #   return self.transform.get_transformed_rot.forward
+    # end
   end
 end

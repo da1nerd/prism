@@ -50,9 +50,8 @@ module Prism
     end
 
     # Adds an object to the game's scene graph.
-    def add_object(object : Entity)
-      @crash_engine.add_entity object
-      @root.add_child(object)
+    def add_entity(entity : Entity)
+      @crash_engine.add_entity entity
     end
 
     def get_open_gl_version

@@ -89,7 +89,17 @@ module Prism::Systems
       @shader.projection_matrix = projection_matrix
       @shader.view_matrix = view_matrix
       @shader.eye_pos = eye_pos
-      @shader.light = @lights[0].get(Prism::DirectionalLight).as(Prism::DirectionalLight) if @lights.size > 0
+
+      if @lights.size > 0
+        light_entity = @lights[0]
+        light_transform = light_entity.get(Prism::Transform).as(Prism::Transform)
+        @shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
+        # TRICKY: this is a temporary hack to help decouple entities from lights.
+        #  We'll need a better solution later. We could potentially pass the light
+        #  entity to the shader so it can set the proper uniforms.
+        @shader.set_uniform("light.direction", light_transform.get_transformed_rot.forward)
+      end
+
       @entities.each do |entity|
         material = entity.get(Prism::Material).as(Prism::Material)
         transform = entity.get(Prism::Transform).as(Prism::Transform)

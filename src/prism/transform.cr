@@ -44,12 +44,14 @@ module Prism
 
     # Rotates to look at the *object*
     def look_at(object : Prism::Entity)
-      @rot = get_look_at_direction(object.transform.pos, @rot.up)
+      @rot = get_look_at_direction(object.get(Prism::Transform).as(Prism::Transform).pos, @rot.up)
+      self
     end
 
     # Rotates to look at the point
     def look_at(point : Vector3f, up : Vector3f)
       @rot = get_look_at_direction(point, up)
+      self
     end
 
     # Creates a transformation to look at a point
@@ -115,6 +117,68 @@ module Prism
       end
 
       return @parent_matrix
+    end
+  end
+
+  class Transform < Crash::Component
+    # Elevates the object to the exact position
+    def elevate_to(position : Float32)
+      # TODO: use parent transformation
+      @pos.y = position # = @transform.rot.up * position
+      self
+    end
+
+    # Changes the object's elevation by the distance
+    def elevate_by(amount : Float32)
+      @pos.y += amount # @transform.rot.up * amount
+      self
+    end
+
+    # Rotates the shape around the x-axis
+    def rotate_x_axis(angle : Angle)
+      rotate(Vector3f.new(1, 0, 0), angle.radians)
+      self
+    end
+
+    # Rotates the shape around the y-axis
+    def rotate_y_axis(angle : Angle)
+      rotate(Vector3f.new(0, 1, 0), angle.radians)
+      self
+    end
+
+    # Rotates the shape around the z-axis
+    def rotate_z_axis(angle : Angle)
+      rotate(Vector3f.new(0, 0, 1), angle.radians)
+      self
+    end
+
+    # Moves the shape towards north by the *distance*
+    def move_north(distance : Float32)
+      @pos = get_transformed_pos + Vector3f.new(0, 0, 1) * distance
+      self
+    end
+
+    def move_south(distance : Float32)
+      move_north(-distance)
+      self
+    end
+
+    # Moves the shape towards east by the *distance*
+    def move_east(distance : Float32)
+      @pos = get_transformed_pos + Vector3f.new(1, 0, 0) * distance
+      self
+    end
+
+    def move_west(distance : Float32)
+      move_east(-distance)
+      self
+    end
+
+    def move_to(x : Float32, y : Float32, z : Float32)
+      @pos.x = x
+      @pos.y = y
+      @pos.z = z
+      self
     end
   end
 end

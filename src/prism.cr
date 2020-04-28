@@ -1,3 +1,4 @@
+require "crash"
 require "./prism/**"
 
 module Prism

@@ -5,9 +5,9 @@ module Prism
   class GhostCamera < Prism::Entity
     def initialize
       super
-      add_component(Prism::Camera.new)
-      add_component(Prism::FreeLook.new)
-      add_component(Prism::FreeMove.new)
+      add Prism::Camera.new
+      add Prism::FreeLook.new
+      add Prism::FreeMove.new
     end
   end
 end
