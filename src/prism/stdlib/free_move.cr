@@ -9,7 +9,7 @@ module Prism
     getter position
 
     def initialize
-      initialize(10)
+      initialize(20)
     end
 
     def initialize(speed : Float32)

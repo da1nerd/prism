@@ -28,11 +28,16 @@ class Demo < Prism::GameEngine
     object
   end
 
-  # Seeds the game with some objects
   def seed(name : String, terrain : Prism::Terrain, scale : Float32)
+    seed(name, terrain, scale) { |m| m }
+  end
+
+  # Seeds the game with some objects
+  def seed(name : String, terrain : Prism::Terrain, scale : Float32, &modify_material : Prism::Material -> Prism::Material)
     model = load_model(name)
+    model.material = modify_material.call((model.material))
     random = Random.new
-    0.upto(100) do |i|
+    0.upto(200) do |i|
       x : Float32 = random.next_float.to_f32 * 800 # the terrain is 800x800
       z : Float32 = random.next_float.to_f32 * 800
 
@@ -58,14 +63,6 @@ class Demo < Prism::GameEngine
     stall = load_entity("stall")
     stall.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(55).elevate_to(terrain.height_at(stall))
 
-    # Add a fern
-    fern = load_entity("fern") do |m|
-      m.specular_intensity = 0.5f32
-      m.has_transparency = true
-      m
-    end
-    fern.get(Prism::Transform).as(Prism::Transform).move_north(50).move_east(40).elevate_to(terrain.height_at(fern))
-
     # add a tree
     tree = load_entity("lowPolyTree")
     tree.get(Prism::Transform).as(Prism::Transform).move_north(55).move_east(60).elevate_to(terrain.height_at(tree))
@@ -74,15 +71,6 @@ class Demo < Prism::GameEngine
     # add a lamp
     lamp = load_entity("lamp")
     lamp.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(50).elevate_to(terrain.height_at(lamp))
-
-    # add some grass
-    grass = load_entity("grass") do |m|
-      m.specular_intensity = 0.5f32
-      m.has_transparency = true
-      m.use_fake_lighting = true
-      m
-    end
-    grass.get(Prism::Transform).as(Prism::Transform).move_north(50).move_east(45).elevate_to(terrain.height_at(fern))
 
     # Add some sunlight
     sun_light = Prism::Entity.new
@@ -101,7 +89,11 @@ class Demo < Prism::GameEngine
     seed("tree", terrain, 8)
 
     # Generate a bunch of random ferns
-    seed("fern", terrain, 1)
+    seed("fern", terrain, 1) do |m|
+      m.specular_intensity = 0.5f32
+      m.has_transparency = true
+      m
+    end
 
     # Generate a bunch of random cubes to test performance
     # cube_model = Prism::TexturedModel.new(Prism::Mesh.cube(2), Prism::Material.new)
@@ -119,8 +111,6 @@ class Demo < Prism::GameEngine
     # add everything to the scene
     add_entity(lamp)
     add_entity(tree)
-    add_entity(fern)
-    add_entity(grass)
     add_entity(terrain)
     add_entity(sun_light)
     add_entity(stall)
