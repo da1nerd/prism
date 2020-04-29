@@ -1,19 +1,19 @@
 require "crash"
 require "annotation"
+require "./render_system/**"
 
 module Prism::Systems
   # A default system for rendering `Prism::Entity`s.
   class RenderSystem < Crash::System
-    # RGB
-    SKY_COLOR = Vector3f.new(0.6, 0.8, 1)
-
     @entities : Array(Crash::Entity)
     @lights : Array(Crash::Entity)
     @cameras : Array(Crash::Entity)
     @shader : Prism::Shader::Program
     @grouped_entities : Hash(Prism::TexturedModel, Array(Crash::Entity))
+    @renderer : Prism::Systems::Renderer
 
     def initialize(@shader : Prism::Shader::Program)
+      @renderer = Prism::Systems::Renderer.new(@shader)
       @entities = [] of Crash::Entity
       @lights = [] of Crash::Entity
       @cameras = [] of Crash::Entity
@@ -26,33 +26,6 @@ module Prism::Systems
       # TODO: just get the lights within range
       @lights = engine.get_entities Prism::DirectionalLight
       @cameras = engine.get_entities Prism::Camera
-      prepare
-    end
-
-    def prepare
-      LibGL.clear_color(SKY_COLOR.x, SKY_COLOR.y, SKY_COLOR.z, 1f32)
-      LibGL.front_face(LibGL::CW)
-      enable_culling
-      LibGL.enable(LibGL::DEPTH_TEST)
-      LibGL.enable(LibGL::DEPTH_CLAMP)
-      LibGL.enable(LibGL::TEXTURE_2D)
-    end
-
-    def enable_wires
-      LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::LINE)
-    end
-
-    def disable_wires
-      LibGL.polygon_mode(LibGL::FRONT_AND_BACK, LibGL::FILL)
-    end
-
-    def enable_culling
-      LibGL.cull_face(LibGL::BACK)
-      LibGL.enable(LibGL::CULL_FACE)
-    end
-
-    def disable_culling
-      LibGL.disable(LibGL::CULL_FACE)
     end
 
     # Uses the transformation of the *entity* to calculate the view that the camera has of the world.
@@ -74,42 +47,6 @@ module Prism::Systems
         else
           @grouped_entities[model] = [entity] of Crash::Entity
         end
-      end
-    end
-
-    # Prepares the shader before rendering a batch of `TexturedModel`s
-    def prepare_textured_model(model : Prism::TexturedModel)
-      # TODO: should the vertex attribute arrays be enabled here instead of when the shader starts?
-      @shader.material = model.material
-      disable_culling if model.material.has_transparency?
-      if model.material.wire_frame?
-        disable_culling
-        enable_wires
-      end
-    end
-
-    # Prepares the shader for rendering the actual *entity*
-    def prepare_instance(entity : Crash::Entity)
-      transform = entity.get(Prism::Transform).as(Prism::Transform)
-      @shader.transformation_matrix = transform.get_transformation
-    end
-
-    # Cleans up after rendering a batch of `TexturedModel`s
-    def unbind_textured_model
-      # TODO: should the vertex attribute arrays be disabled here instead of when the shader stops?
-      disable_wires
-      enable_culling
-    end
-
-    # Renders batches of `TexturedModel`s at a time for increased performance
-    def render(entities : Hash(Prism::TexturedModel, Array(Crash::Entity)))
-      entities.each do |model, batch|
-        prepare_textured_model model
-        batch.each do |entity|
-          prepare_instance entity
-          model.mesh.draw
-        end
-        unbind_textured_model
       end
     end
 
@@ -138,11 +75,11 @@ module Prism::Systems
       eye_pos = cam_entity.get(Prism::Transform).as(Prism::Transform).get_transformed_pos
 
       # start shading
+      @renderer.prepare
       @shader.start
       @shader.projection_matrix = projection_matrix
       @shader.view_matrix = view_matrix
       @shader.eye_pos = eye_pos
-      @shader.sky_color = SKY_COLOR
 
       if @lights.size > 0
         light_entity = @lights[0]
@@ -154,7 +91,7 @@ module Prism::Systems
         @shader.set_uniform("light.direction", light_transform.get_transformed_rot.forward)
       end
 
-      render(@grouped_entities)
+      @renderer.render(@grouped_entities)
 
       @shader.stop
       @grouped_entities.clear
