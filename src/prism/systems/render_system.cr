@@ -5,23 +5,33 @@ require "./render_system/**"
 module Prism::Systems
   # A default system for rendering `Prism::Entity`s.
   class RenderSystem < Crash::System
+    # RGB
+    SKY_COLOR = Vector3f.new(0.6, 0.8, 1)
     @entities : Array(Crash::Entity)
+    @grouped_entities : Hash(Prism::TexturedModel, Array(Crash::Entity))
+    @terrains : Array(Crash::Entity)
     @lights : Array(Crash::Entity)
     @cameras : Array(Crash::Entity)
-    @shader : Prism::Shader::Program
-    @grouped_entities : Hash(Prism::TexturedModel, Array(Crash::Entity))
-    @renderer : Prism::Systems::Renderer
 
-    def initialize(@shader : Prism::Shader::Program)
-      @renderer = Prism::Systems::Renderer.new(@shader)
+    @shader : Prism::Shader::StaticShader = Prism::Shader::StaticShader.new
+    @entity_renderer : Prism::Systems::EntityRenderer
+
+    @terrain_shader : Prism::Shader::TerrainShader = Prism::Shader::TerrainShader.new
+    @terrain_renderer : Prism::Systems::TerrainRenderer
+
+    def initialize(shader : Prism::Shader::Program)
+      @entity_renderer = Prism::Systems::EntityRenderer.new(@shader)
+      @terrain_renderer = Prism::Systems::TerrainRenderer.new(@terrain_shader)
       @entities = [] of Crash::Entity
+      @grouped_entities = {} of Prism::TexturedModel => Array(Crash::Entity)
+      @terrains = [] of Crash::Entity
       @lights = [] of Crash::Entity
       @cameras = [] of Crash::Entity
-      @grouped_entities = {} of Prism::TexturedModel => Array(Crash::Entity)
     end
 
     @[Override]
     def add_to_engine(engine : Crash::Engine)
+      @terrains = engine.get_entities Prism::Terrain
       @entities = engine.get_entities Prism::TexturedModel
       # TODO: just get the lights within range
       @lights = engine.get_entities Prism::DirectionalLight
@@ -50,8 +60,74 @@ module Prism::Systems
       end
     end
 
+    # Handles the rendering.
+    # TODO: this is a little verbose and needs to be cleaned up a bit.
     @[Override]
     def update(time : Float64)
+      batch_entities(@entities)
+
+      # calculate camera matricies
+      cam_entity = @cameras[0]
+      cam = cam_entity.get(Prism::Camera).as(Prism::Camera)
+      projection_matrix = cam.get_projection
+      view_matrix = calculate_view_matrix(cam_entity)
+      eye_pos = cam_entity.get(Prism::Transform).as(Prism::Transform).get_transformed_pos
+
+      # start shading
+      prepare
+
+      #
+      # entities
+      #
+      @shader.start
+      # TODO: should we pass the projection matrix to the renderer?
+      #  Also, should we calculate this just once? We could take this out of the camera.
+      @shader.projection_matrix = projection_matrix
+      @shader.view_matrix = view_matrix
+      @shader.eye_pos = eye_pos
+      @shader.sky_color = SKY_COLOR
+      if @lights.size > 0
+        light_entity = @lights[0]
+        light_transform = light_entity.get(Prism::Transform).as(Prism::Transform)
+        @shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
+        # TRICKY: this is a temporary hack to help decouple entities from lights.
+        #  We'll need a better solution later. We could potentially pass the light
+        #  entity to the shader so it can set the proper uniforms.
+        @shader.set_uniform("light.direction", light_transform.get_transformed_rot.forward)
+      end
+      @entity_renderer.render(@grouped_entities)
+      @grouped_entities.clear
+      @shader.stop
+
+      #
+      # terrain
+      #
+      @terrain_shader.start
+      @terrain_shader.projection_matrix = projection_matrix
+      @terrain_shader.view_matrix = view_matrix
+      @terrain_shader.eye_pos = eye_pos
+      @terrain_shader.sky_color = SKY_COLOR
+      if @lights.size > 0
+        light_entity = @lights[0]
+        light_transform = light_entity.get(Prism::Transform).as(Prism::Transform)
+        @terrain_shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
+        # TRICKY: this is a temporary hack to help decouple entities from lights.
+        #  We'll need a better solution later. We could potentially pass the light
+        #  entity to the shader so it can set the proper uniforms.
+        @terrain_shader.set_uniform("light.direction", light_transform.get_transformed_rot.forward)
+      end
+      @terrain_renderer.render(@terrains)
+      @terrain_shader.stop
+    end
+
+    @[Override]
+    def remove_from_engine(engine : Crash::Engine)
+      @entities.clear
+      @lights.clear
+      @cameras.clear
+    end
+
+    def prepare
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
 
       LibGL.enable(LibGL::BLEND)
@@ -65,43 +141,13 @@ module Prism::Systems
       LibGL.depth_mask(LibGL::TRUE)
       LibGL.disable(LibGL::BLEND)
 
-      batch_entities(@entities)
-
-      # calculate camera matricies
-      cam_entity = @cameras[0]
-      cam = cam_entity.get(Prism::Camera).as(Prism::Camera)
-      projection_matrix = cam.get_projection
-      view_matrix = calculate_view_matrix(cam_entity)
-      eye_pos = cam_entity.get(Prism::Transform).as(Prism::Transform).get_transformed_pos
-
-      # start shading
-      @renderer.prepare
-      @shader.start
-      @shader.projection_matrix = projection_matrix
-      @shader.view_matrix = view_matrix
-      @shader.eye_pos = eye_pos
-
-      if @lights.size > 0
-        light_entity = @lights[0]
-        light_transform = light_entity.get(Prism::Transform).as(Prism::Transform)
-        @shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
-        # TRICKY: this is a temporary hack to help decouple entities from lights.
-        #  We'll need a better solution later. We could potentially pass the light
-        #  entity to the shader so it can set the proper uniforms.
-        @shader.set_uniform("light.direction", light_transform.get_transformed_rot.forward)
-      end
-
-      @renderer.render(@grouped_entities)
-
-      @shader.stop
-      @grouped_entities.clear
-    end
-
-    @[Override]
-    def remove_from_engine(engine : Crash::Engine)
-      @entities.clear
-      @lights.clear
-      @cameras.clear
+      LibGL.clear_color(SKY_COLOR.x, SKY_COLOR.y, SKY_COLOR.z, 1f32)
+      LibGL.front_face(LibGL::CW)
+      LibGL.cull_face(LibGL::BACK)
+      LibGL.enable(LibGL::CULL_FACE)
+      LibGL.enable(LibGL::DEPTH_TEST)
+      LibGL.enable(LibGL::DEPTH_CLAMP)
+      LibGL.enable(LibGL::TEXTURE_2D)
     end
   end
 end

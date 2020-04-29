@@ -1,7 +1,7 @@
 module Prism::Systems
-  class Renderer
-    # RGB
-    SKY_COLOR = Vector3f.new(0.6, 0.8, 1)
+  class EntityRenderer
+
+    @shader : Prism::Shader::StaticShader
 
     def initialize(@shader : Prism::Shader::StaticShader)
     end
@@ -18,15 +18,6 @@ module Prism::Systems
       end
     end
 
-    def prepare
-      LibGL.clear_color(SKY_COLOR.x, SKY_COLOR.y, SKY_COLOR.z, 1f32)
-      LibGL.front_face(LibGL::CW)
-      enable_culling
-      LibGL.enable(LibGL::DEPTH_TEST)
-      LibGL.enable(LibGL::DEPTH_CLAMP)
-      LibGL.enable(LibGL::TEXTURE_2D)
-    end
-
     # Prepares the shader before rendering a batch of `TexturedModel`s
     def prepare_textured_model(model : Prism::TexturedModel)
       # TODO: should the vertex attribute arrays be enabled here instead of when the shader starts?
@@ -36,7 +27,6 @@ module Prism::Systems
         disable_culling
         enable_wires
       end
-      @shader.sky_color = SKY_COLOR
     end
 
     # Prepares the shader for rendering the actual *entity*

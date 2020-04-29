@@ -28,12 +28,12 @@ class Demo < Prism::GameEngine
     object
   end
 
-  def seed(name : String, terrain : Prism::Terrain, scale : Float32)
+  def seed(name : String, terrain : Prism::TerrainEntity, scale : Float32)
     seed(name, terrain, scale) { |m| m }
   end
 
   # Seeds the game with some objects
-  def seed(name : String, terrain : Prism::Terrain, scale : Float32, &modify_material : Prism::Material -> Prism::Material)
+  def seed(name : String, terrain : Prism::TerrainEntity, scale : Float32, &modify_material : Prism::Material -> Prism::Material)
     model = load_model(name)
     model.material = modify_material.call((model.material))
     random = Random.new
@@ -41,7 +41,7 @@ class Demo < Prism::GameEngine
       x : Float32 = random.next_float.to_f32 * 800 # the terrain is 800x800
       z : Float32 = random.next_float.to_f32 * 800
 
-      y : Float32 = terrain.height_at(x, z)
+      y : Float32 = terrain.terrain.height_at(x, z)
       e = Prism::Entity.new
       e.add model
       transform = Prism::Transform.new(x, y, z)
@@ -53,24 +53,24 @@ class Demo < Prism::GameEngine
 
   def init
     # Generate the terrain
+    terrain = Prism::Mesh.terrain(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
     terrain_material = load_material("terrain")
     terrain_material.specular_intensity = 0.7f32
     terrain_material.specular_power = 10f32
-    terrain = Prism::Terrain.new(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
-    terrain.add Prism::TexturedModel.new(terrain.mesh.as(Prism::Mesh), terrain_material)
+    terrain.add terrain_material
 
     # Add a merchant stall
     stall = load_entity("stall")
-    stall.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(55).elevate_to(terrain.height_at(stall))
+    stall.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(55).elevate_to(terrain.terrain.height_at(stall))
 
     # add a tree
     tree = load_entity("lowPolyTree")
-    tree.get(Prism::Transform).as(Prism::Transform).move_north(55).move_east(60).elevate_to(terrain.height_at(tree))
+    tree.get(Prism::Transform).as(Prism::Transform).move_north(55).move_east(60).elevate_to(terrain.terrain.height_at(tree))
     tree.get(Prism::TexturedModel).as(Prism::TexturedModel).material.wire_frame = true
 
     # add a lamp
     lamp = load_entity("lamp")
-    lamp.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(50).elevate_to(terrain.height_at(lamp))
+    lamp.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(50).elevate_to(terrain.terrain.height_at(lamp))
 
     # Add some sunlight
     sun_light = Prism::Entity.new
