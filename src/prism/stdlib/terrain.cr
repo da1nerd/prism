@@ -6,6 +6,9 @@ module Prism
   # A custom entity type for terrain.
   # This overrides a few methods so we can restrict how terrain is used.
   # This will only have a `Terrain` component so we can easily pick it up in the rendering system.
+  # This wouldn't have to be so complicated if we had a more advanced matching algorithm in `Crash`.
+  # Once we do have a better matching algorithm we could simplify the terrain code and make it look
+  # like a normal entity.
   class TerrainEntity < Crash::Entity
 
     @[Raises]
