@@ -128,7 +128,6 @@ module Prism
   end
 
   class Transform < Crash::Component
-
     def scale(factor : Float32)
       @scale *= factor
     end
