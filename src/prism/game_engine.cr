@@ -50,7 +50,7 @@ module Prism
     end
 
     # Adds an object to the game's scene graph.
-    def add_entity(entity : Entity)
+    def add_entity(entity : Crash::Entity)
       @crash_engine.add_entity entity
     end
 
