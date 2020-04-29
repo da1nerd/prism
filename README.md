@@ -18,7 +18,9 @@ I'm building a roadmap in [this issue](https://github.com/neutrinog/prism/issues
 
 ## Demo
 
-![Prism Demo](https://user-images.githubusercontent.com/166412/79414532-15e03c00-7fd5-11ea-9bd8-ae19325a3332.gif)
+> NOTE: this was recorded at 5fps, but runs at 60fps.
+
+![Peek 2020-04-29 09-53](https://user-images.githubusercontent.com/166412/80556931-6dcc6900-89ff-11ea-8c78-b7dd11345d30.gif)
 
 
 You can find code for this demo in the [example](./example) dir.
