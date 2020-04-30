@@ -130,6 +130,10 @@ module Prism::Shader
 
         compile
 
+        # trash shaders
+        LibGL.delete_shader(vertex_shader_id)
+        LibGL.delete_shader(fragment_shader_id)
+
         # searches for attributes in the vertex shader code and automatically binds them to the program
         automatically_bind_attributes(vertex_shader_text)
 
@@ -236,9 +240,6 @@ module Prism::Shader
         puts "Error #{validate_error_code}: Failed validating shader program: #{validate_log_str}"
         exit 1
       end
-
-      # TODO: delete the shaders since they are linked into the program and we no longer need them
-      # LibGL.delete_shader(shader)
     end
 
     # Parses the shader text for attribute delcarations and automatically adds them
