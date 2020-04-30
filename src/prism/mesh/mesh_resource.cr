@@ -22,7 +22,6 @@ module Prism
     end
 
     # garbage collection
-    # TODO: make sure this is getting called
     def finalize
       LibGL.delete_buffers(1, out @vbo)
       LibGL.delete_buffers(1, out @ibo)

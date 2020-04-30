@@ -13,7 +13,6 @@ module Prism
     @[Override]
     def startup
       # configure entity framework
-      # TODO: add more systems here
       @crash_engine.add_system Systems::CameraSystem.new, 1
       @crash_engine.add_system Systems::TransformSystem.new, 5
       @crash_engine.add_system Systems::RenderSystem.new(Prism::Shader::StaticShader.new), 10
