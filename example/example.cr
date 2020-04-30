@@ -10,7 +10,7 @@ class Demo < Prism::GameEngine
   # Loads a texture from the resources and returns it as a material
   def load_material(name : String)
     material = Prism::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
-    material.color = Prism::Maths::Vector3f.new(0,0,0)
+    material.color = Prism::Maths::Vector3f.new(0, 0, 0)
     material
   end
 

@@ -2,7 +2,6 @@ require "crash"
 require "annotation"
 
 module Prism
-
   # A custom entity type for terrain.
   # This overrides a few methods so we can restrict how terrain is used.
   # This will only have a `Terrain` component so we can easily pick it up in the rendering system.
@@ -10,7 +9,6 @@ module Prism
   # Once we do have a better matching algorithm we could simplify the terrain code and make it look
   # like a normal entity.
   class TerrainEntity < Crash::Entity
-
     @[Raises]
     @[Override]
     def add(component : Crash::Component)
@@ -143,7 +141,7 @@ module Prism
       material.add_texture "rTexture", textures.red
       material.add_texture "gTexture", textures.green
       material.add_texture "bTexture", textures.blue
-      material.color = Vector3f.new(0,0,0)
+      material.color = Vector3f.new(0, 0, 0)
       material.specular_intensity = 0.2f32
       material.specular_power = 10f32
       @model = Prism::TexturedModel.new(@mesh, material)
