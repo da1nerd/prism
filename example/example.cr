@@ -4,40 +4,49 @@ class Demo < Prism::GameEngine
   alias Color = Prism::Maths::Vector3f
 
   def load_entity(name : String)
-    load_entity(name) { |m| m }
+    load_entity(name) do
+    end
   end
 
-  # Loads a texture from the resources and returns it as a material
-  def load_material(name : String)
-    material = Prism::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
-    material.color = Prism::Maths::Vector3f.new(0, 0, 0)
-    material
-  end
-
-  def load_model(name : String) : Prism::TexturedModel
-    material = load_material(name)
-    mesh = Prism::Mesh.new(File.join(__DIR__, "./res/models/#{name}.obj"))
-    Prism::TexturedModel.new(mesh, material)
+  # Loads a texture from the resources
+  def load_texture(name : String)
+    Prism::Texture.new(File.join(__DIR__, "./res/textures/#{name}.png"))
   end
 
   # Loads a model from the resources and attaches it's material
-  def load_entity(name : String, &modify_material : Prism::Material -> Prism::Material) : Prism::Entity
+  def load_model(name : String) : Prism::TexturedModel
+    texture = load_texture(name)
+    mesh = Prism::Mesh.new(File.join(__DIR__, "./res/models/#{name}.obj"))
+    texture_pack = Prism::TexturePack.new
+    texture_pack.add "diffuse", texture
+    Prism::TexturedModel.new(mesh, texture_pack)
+  end
+
+  # Generates a new entity with a model and textures
+  # You can optionally provide a material
+  def load_entity(name : String, &modify_material : -> Prism::Material | Nil) : Prism::Entity
     model = load_model(name)
-    model.material = modify_material.call(model.material)
+    material = modify_material.call
     object = Prism::Entity.new
     object.name = name
     object.add model
+    if material
+      object.add material.as(Prism::Material)
+    else
+      object.add Prism::Material.new
+    end
     object
   end
 
   def seed(name : String, terrain : Prism::TerrainEntity, scale : Float32)
-    seed(name, terrain, scale) { |m| m }
+    seed(name, terrain, scale) do
+    end
   end
 
   # Seeds the game with some objects
-  def seed(name : String, terrain : Prism::TerrainEntity, scale : Float32, &modify_material : Prism::Material -> Prism::Material)
+  def seed(name : String, terrain : Prism::TerrainEntity, scale : Float32, &modify_material : -> Prism::Material | Nil)
     model = load_model(name)
-    model.material = modify_material.call((model.material))
+    material = modify_material.call
     random = Random.new
     0.upto(200) do |i|
       x : Float32 = random.next_float.to_f32 * 800 # the terrain is 800x800
@@ -46,6 +55,11 @@ class Demo < Prism::GameEngine
       y : Float32 = terrain.terrain.height_at(x, z)
       e = Prism::Entity.new
       e.add model
+      if material
+        e.add material.as(Prism::Material)
+      else
+        e.add Prism::Material.new
+      end
       transform = Prism::Transform.new(x, y, z)
       transform.scale((random.next_float.to_f32 + 0.5) * scale)
       e.add transform
@@ -71,7 +85,10 @@ class Demo < Prism::GameEngine
     # add a tree
     tree = load_entity("lowPolyTree")
     tree.get(Prism::Transform).as(Prism::Transform).move_north(55).move_east(60).elevate_to(terrain.terrain.height_at(tree))
-    tree.get(Prism::TexturedModel).as(Prism::TexturedModel).material.wire_frame = true
+    tree.get(Prism::TexturedModel).as(Prism::TexturedModel)
+    tree_material = Prism::Material.new
+    tree_material.wire_frame = true
+    tree.add tree_material
 
     # add a lamp
     lamp = load_entity("lamp")
@@ -94,7 +111,8 @@ class Demo < Prism::GameEngine
     seed("tree", terrain, 8)
 
     # Generate a bunch of random ferns
-    seed("fern", terrain, 1) do |m|
+    seed("fern", terrain, 1) do
+      m = Prism::Material.new
       m.specular_intensity = 0.5f32
       m.has_transparency = true
       m

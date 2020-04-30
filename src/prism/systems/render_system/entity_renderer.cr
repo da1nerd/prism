@@ -20,16 +20,20 @@ module Prism::Systems
     # Prepares the shader before rendering a batch of `TexturedModel`s
     def prepare_textured_model(model : Prism::TexturedModel)
       # TODO: should the vertex attribute arrays be enabled here instead of when the shader starts?
-      @shader.material = model.material
-      disable_culling if model.material.has_transparency?
-      if model.material.wire_frame?
-        disable_culling
-        enable_wires
-      end
+      @shader.texture = model.texture
     end
 
     # Prepares the shader for rendering the actual *entity*
     def prepare_instance(entity : Crash::Entity)
+      material = entity.get(Prism::Material).as(Prism::Material)
+      disable_culling if material.has_transparency?
+      if material.wire_frame?
+        disable_culling
+        enable_wires
+      end
+      @shader.use_fake_lighting = material.use_fake_lighting
+      @shader.specular_intensity = material.specular_intensity
+      @shader.specular_power = material.specular_power
       transform = entity.get(Prism::Transform).as(Prism::Transform)
       @shader.transformation_matrix = transform.get_transformation
     end

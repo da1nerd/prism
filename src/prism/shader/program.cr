@@ -49,24 +49,6 @@ module Prism::Shader
     # This is used to clean up the programs map after garbage collection.
     @file_name : String
 
-    # Generates an inline uniform property.
-    # Rather than namespacing `Shader::Serializable` uniforms with *name*, the uniforms are instead expanded so they can be accessed directly.
-    # Properties added this way will be automatically bound to the compiled shader program when the shader is
-    # DEPRECATED: we were using this to set `Material`, but now we are going to set `TexturePack`s with `Program#uniform`
-    macro inline_uniform(name, type)
-      # Sets the value of the {{name}} uniform.
-      def {{name}}=(value : {{type}})
-          if value.is_a?(Shader::Serializable)
-              _{{name}}_uniforms = value.to_uniform(true)
-              _{{name}}_uniforms.each do |k, v|
-                  set_uniform(k, v)
-              end
-          else
-            set_uniform("{{name}}", value)
-          end
-      end
-    end
-
     # Generates a uniform property.
     #
     # You can define uniforms a few different ways. Below are two examples that bind to the *projection_matrix* uniform.
@@ -95,12 +77,14 @@ module Prism::Shader
           {% if name == :texture %}
             # Sets the value of the texture uniforms.
             # This will automatically bind textures to sampler slots and attach those to the correct uniform.
-            def {{name.id}}_pack=(pack : Prism::TexturePack)
+            def {{name.id}}=(pack : Prism::TexturePack)
               set_texture_pack pack
             end
           {% else %}
             {% raise "Unsupported uniform identifier #{name} in #{@type.stringify}." %}
           {% end %}
+        {% elsif name == "texture" %}
+            {% raise "Reserved uniform name \"texture\" cannot be used in #{@type.stringify}. If you are trying to add textures use `uniform :texture, TexturePack` instead." %}
         {% else %}
           # Sets the value of the **{{name}}** uniform.
           def {{name.id.underscore}}=(value : {{type}})

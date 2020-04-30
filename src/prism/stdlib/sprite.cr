@@ -1,9 +1,9 @@
 module Prism
-  # Represents a set of coordinates within the material.
+  # Represents a set of coordinates within the texture.
   class Sprite
-    getter coords, material
+    getter coords, texture
 
-    def initialize(@coords : TextureCoords, @material : Material)
+    def initialize(@coords : TextureCoords, @texture : Prism::Texture)
     end
   end
 end

@@ -3,7 +3,7 @@ require "lib_gl"
 
 module Prism
   # Manages the state of a model mesh
-  # Meshes give the shapes which can be covered in `Material`s.
+  # Meshes give the shapes which can be covered in `Texture`.
   # This is also known as the "model"
   # TODO: rename to "model"
   class Mesh

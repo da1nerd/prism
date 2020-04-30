@@ -15,6 +15,10 @@ module Prism
       raise Exception.new("You cannot add Crash::Component to a Prism::TerrainEntity")
     end
 
+    def add(component : Prism::Material)
+      add component, Prism::Material
+    end
+
     # Shortcut to get the `Terrain` component
     def terrain : Prism::Terrain
       get(Prism::Terrain).as(Prism::Terrain)
@@ -34,7 +38,6 @@ module Prism
     TERRAIN_MAX_PIXEL_COLOR = 256 * 256 * 256 # because there are three color channels
 
     # Generates a new terrain entity.
-    # All you have to do is add some `Material` to it.
     def self.terrain(grid_x : Int32, grid_z : Int32, height_map : String, textures : Prism::TerrainTexturePack) : Prism::TerrainEntity
       entity = Prism::TerrainEntity.new
 
@@ -45,6 +48,7 @@ module Prism
       transform = Transform.new.move_to(grid_x.to_f32 * TERRAIN_SIZE, 0f32, grid_z.to_f32 * TERRAIN_SIZE)
 
       entity.add Prism::Terrain.new(terrain[:mesh], terrain[:heights], textures, transform, TERRAIN_SIZE.to_f32), Prism::Terrain
+      entity.add Prism::Material.new
       entity
     end
 
@@ -133,23 +137,13 @@ module Prism
     getter model, transform, material
 
     def initialize(@mesh : Prism::Mesh, @heights : Array(Array(Float32)), textures : Prism::TerrainTexturePack, @transform : Prism::Transform, @terrain_size : Float32)
-      material = Prism::Material.new
-      # TRICKY: remove the default texture
-      material.remove_texture "diffuse"
-      material.add_texture "backgroundTexture", textures.background
-      material.add_texture "blendMap", textures.blend_map
-      material.add_texture "rTexture", textures.red
-      material.add_texture "gTexture", textures.green
-      material.add_texture "bTexture", textures.blue
-      material.color = Vector3f.new(0, 0, 0)
-      material.specular_intensity = 0.2f32
-      material.specular_power = 10f32
-      @model = Prism::TexturedModel.new(@mesh, material)
-    end
-
-    # Sets the `Terrain` material. This will re-build the terrain's `TexturedModel`
-    def set_material=(material : Prism::Material)
-      @model = Prism::TexturedModel.new(@mesh, material)
+      texture_pack = Prism::TexturePack.new
+      texture_pack.add "backgroundTexture", textures.background
+      texture_pack.add "blendMap", textures.blend_map
+      texture_pack.add "rTexture", textures.red
+      texture_pack.add "gTexture", textures.green
+      texture_pack.add "bTexture", textures.blue
+      @model = Prism::TexturedModel.new(@mesh, texture_pack)
     end
 
     def height_at(object : Prism::Entity)
