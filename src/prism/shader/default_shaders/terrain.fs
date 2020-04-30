@@ -18,8 +18,6 @@ uniform sampler2D gTexture;
 uniform sampler2D bTexture;
 uniform sampler2D blendMap;
 
-
-uniform vec3 materialColor;
 uniform DirectionalLight light;
 uniform vec3 sky_color;
 
@@ -42,6 +40,6 @@ void main(void) {
 
     vec4 lightRays = calcDirectionalLight(light, unitNormal, worldPosition);
     lightRays = max(lightRays, 0.2);
-    gl_FragColor = lightRays * (vec4(materialColor, 1.0) + totalColor);
+    gl_FragColor = lightRays * totalColor;
     gl_FragColor = mix(vec4(sky_color, 1.0), gl_FragColor, visibility);
 }
