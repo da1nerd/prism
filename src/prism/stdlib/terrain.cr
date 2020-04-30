@@ -143,8 +143,9 @@ module Prism
       material.add_texture "rTexture", textures.red
       material.add_texture "gTexture", textures.green
       material.add_texture "bTexture", textures.blue
-      material.specular_intensity = 0.001f32
-      material.specular_power = 1f32
+      material.color = Vector3f.new(0,0,0)
+      material.specular_intensity = 0.2f32
+      material.specular_power = 10f32
       @model = Prism::TexturedModel.new(@mesh, material)
     end
 
