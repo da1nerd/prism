@@ -14,17 +14,19 @@ module Prism
     @[Raises]
     @[Override]
     def add(component : Crash::Component)
-      raise Exception.new("You can only add Prism::Material to a Prism::TerrainEntity")
-    end
-
-    def add(material : Prism::Material)
-      terrain = get(Prism::Terrain).as(Prism::Terrain)
-      terrain.set_material = material;
+      raise Exception.new("You cannot add Crash::Component to a Prism::TerrainEntity")
     end
 
     # Shortcut to get the `Terrain` component
     def terrain : Prism::Terrain
       get(Prism::Terrain).as(Prism::Terrain)
+    end
+  end
+
+  struct TerrainTexturePack
+    getter background, blend_map, red, green, blue
+
+    def initialize(@background : Prism::Texture, @blend_map : Prism::Texture, @red : Prism::Texture, @green : Prism::Texture, @blue : Prism::Texture)
     end
   end
 
@@ -35,7 +37,7 @@ module Prism
 
     # Generates a new terrain entity.
     # All you have to do is add some `Material` to it.
-    def self.terrain(grid_x : Int32, grid_z : Int32, height_map : String) : Prism::TerrainEntity
+    def self.terrain(grid_x : Int32, grid_z : Int32, height_map : String, textures : Prism::TerrainTexturePack) : Prism::TerrainEntity
       entity = Prism::TerrainEntity.new
 
       x = (grid_x * TERRAIN_SIZE).to_f32
@@ -44,7 +46,7 @@ module Prism
       terrain = generate_terrain(height_map)
       transform = Transform.new.move_to(grid_x.to_f32 * TERRAIN_SIZE, 0f32, grid_z.to_f32 * TERRAIN_SIZE)
 
-      entity.add Prism::Terrain.new(terrain[:mesh], terrain[:heights], transform, TERRAIN_SIZE.to_f32), Prism::Terrain
+      entity.add Prism::Terrain.new(terrain[:mesh], terrain[:heights], textures, transform, TERRAIN_SIZE.to_f32), Prism::Terrain
       entity
     end
 
@@ -69,8 +71,8 @@ module Prism
             ),
             # texture coordinates
             Vector2f.new(
-              j.to_f32 / (vertex_count - 1) * 40,
-              i.to_f32 / (vertex_count - 1) * 40
+              j.to_f32 / (vertex_count - 1),
+              i.to_f32 / (vertex_count - 1)
             ),
             # normals
             calculate_normals(j, i, bitmap)
@@ -132,8 +134,18 @@ module Prism
   class Terrain < Crash::Component
     getter model, transform, material
 
-    def initialize(@mesh : Prism::Mesh, @heights : Array(Array(Float32)), @transform : Prism::Transform, @terrain_size : Float32)
-      @model = Prism::TexturedModel.new(@mesh, Prism::Material.new)
+    def initialize(@mesh : Prism::Mesh, @heights : Array(Array(Float32)), textures : Prism::TerrainTexturePack, @transform : Prism::Transform, @terrain_size : Float32)
+      material = Prism::Material.new
+      # TRICKY: remove the default texture
+      material.remove_texture "diffuse"
+      material.add_texture "backgroundTexture", textures.background
+      material.add_texture "blendMap", textures.blend_map
+      material.add_texture "rTexture", textures.red
+      material.add_texture "gTexture", textures.green
+      material.add_texture "bTexture", textures.blue
+      material.specular_intensity = 0.001f32
+      material.specular_power = 1f32
+      @model = Prism::TexturedModel.new(@mesh, material)
     end
 
     # Sets the `Terrain` material. This will re-build the terrain's `TexturedModel`
