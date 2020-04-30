@@ -4,6 +4,11 @@ require "./material/texture"
 require "./shader"
 
 module Prism
+  # TODO: Split this into two classes.
+  #  One will be a TexturePack that will manage the texture sampler slots.
+  #  The second will still be a Material that will manage special lighting propeties, transparency, etc.
+  #  Maybe the material shouldn't manage color. Instead we could put the default color in the shader code.
+  #  We may also want to move Material into the stdlib since it won't be very flexible by having uniforms hardcoded.
   class Material
     include Prism::Shader::Serializable
 
@@ -74,11 +79,19 @@ module Prism
       @texture_map[name] = texture
     end
 
+    # Removes a texture from the material
+    def remove_texture(name : String)
+      if @texture_map.has_key? name
+        @texture_map.delete name
+      end
+    end
+
     # Injects the texture sampler slots into the uniform map
     # so the shader can properly use them.
     @[Override]
     private def on_to_uniform : Prism::Shader::UniformMap | Nil
       # manually register the texture sampler slots
+      # TODO: I'm not certain this will properly map names to the correct sampler slot.
       sampler_slot : Int32 = 0
       map = Prism::Shader::UniformMap.new
       @texture_map.each do |key, texture|

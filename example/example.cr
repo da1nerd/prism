@@ -53,11 +53,18 @@ class Demo < Prism::GameEngine
 
   def init
     # Generate the terrain
-    terrain = Prism::Mesh.terrain(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"))
-    terrain_material = load_material("terrain")
-    terrain_material.specular_intensity = 0.7f32
-    terrain_material.specular_power = 10f32
-    terrain.add terrain_material
+    texture_pack = Prism::TerrainTexturePack.new(
+      background: Prism::Texture.new(File.join(__DIR__, "./res/textures/grassy2.png")),
+      blend_map: Prism::Texture.new(File.join(__DIR__, "./res/textures/blendMap.png")),
+      red: Prism::Texture.new(File.join(__DIR__, "./res/textures/mud.png")),
+      green: Prism::Texture.new(File.join(__DIR__, "./res/textures/grassFlowers.png")),
+      blue: Prism::Texture.new(File.join(__DIR__, "./res/textures/path.png"))
+    )
+    terrain = Prism::Mesh.terrain(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"), texture_pack)
+    # terrain_material = load_material("terrain")
+    # terrain_material.specular_intensity = 0.7f32
+    # terrain_material.specular_power = 10f32
+    # terrain.add terrain_material
 
     # Add a merchant stall
     stall = load_entity("stall")
