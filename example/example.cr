@@ -9,7 +9,9 @@ class Demo < Prism::GameEngine
 
   # Loads a texture from the resources and returns it as a material
   def load_material(name : String)
-    Prism::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
+    material = Prism::Material.new(File.join(__DIR__, "./res/textures/#{name}.png"))
+    material.color = Prism::Maths::Vector3f.new(0,0,0)
+    material
   end
 
   def load_model(name : String) : Prism::TexturedModel
@@ -61,10 +63,6 @@ class Demo < Prism::GameEngine
       blue: Prism::Texture.new(File.join(__DIR__, "./res/textures/path.png"))
     )
     terrain = Prism::Mesh.terrain(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"), texture_pack)
-    # terrain_material = load_material("terrain")
-    # terrain_material.specular_intensity = 0.7f32
-    # terrain_material.specular_power = 10f32
-    # terrain.add terrain_material
 
     # Add a merchant stall
     stall = load_entity("stall")
