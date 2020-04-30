@@ -1,6 +1,5 @@
 module Prism::Systems
   class EntityRenderer
-
     @shader : Prism::Shader::StaticShader
 
     def initialize(@shader : Prism::Shader::StaticShader)
