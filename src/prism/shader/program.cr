@@ -6,7 +6,14 @@ module Prism::Shader
   # Loads a shader program
   protected def read_shader_file(file_path : String, &file_reader : String -> String) : String
     input = file_reader.call file_path
-    evaluate_includes input, &file_reader
+    # strip out comments. Not the most efficient but it works for now.
+    clean_input = String.build do |io|
+      input.each_line() do |line|
+        next if line.starts_with?(/\s*\/\//)
+        io << line << "\n"
+      end
+    end
+    evaluate_includes clean_input, &file_reader
   end
 
   # Searches for include statements and combines them with the *input*
@@ -15,7 +22,7 @@ module Prism::Shader
     shader_source = ""
 
     input.each_line() do |line|
-      include_match = line.scan(/\#include\s+["<]([^">]*)[>"]/)
+      include_match = line.scan(/^\s*\#include\s+["<]([^">]*)[>"]/)
       if include_match.size > 0
         shader_source += read_shader_file(include_match[0][1], &file_reader)
       else
