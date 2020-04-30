@@ -52,6 +52,7 @@ module Prism::Shader
     # Generates an inline uniform property.
     # Rather than namespacing `Shader::Serializable` uniforms with *name*, the uniforms are instead expanded so they can be accessed directly.
     # Properties added this way will be automatically bound to the compiled shader program when the shader is
+    # DEPRECATED: we were using this to set `Material`, but now we are going to set `TexturePack`s with `Program#uniform`
     macro inline_uniform(name, type)
       # Sets the value of the {{name}} uniform.
       def {{name}}=(value : {{type}})
@@ -67,19 +68,52 @@ module Prism::Shader
     end
 
     # Generates a uniform property.
-    # Properties added this way will be automatically bound to the compiled shader program when the shader is
+    #
+    # You can define uniforms a few different ways. Below are two examples that bind to the *projection_matrix* uniform.
+    # ```
+    # uniform projection_matrix, Matrix4f
+    # uniform "projection_matrix", Matrix4f
+    # ```
+    #
+    # Now on your `Shader::Program` instance you can set the uniform
+    # ```
+    # shader.projection_matrix = myMatrix
+    # ```
+    #
+    # You can also use camel case for your *uniform* names. The generated methods will be underscored, but the uniform itself will remain camel case.
+    # ```
+    # uniform projectionMatrix, Matrix4f
+    #
+    # # later on...
+    # shader.projection_matrix = myMatrix
+    #
+    # # in the glsl code..
+    # uniform vec4 projectionMatrix
+    # ```
     macro uniform(name, type)
-        # Sets the value of the {{name}} uniform.
-        def {{name}}=(value : {{type}})
-            if value.is_a?(Shader::Serializable)
-                _{{name}}_uniforms = value.to_uniform(true)
-                _{{name}}_uniforms.each do |k, v|
-                    set_uniform("{{name}}.#{k}", v)
-                end
-            else
-                set_uniform("{{name}}", value)
+        {% if name.stringify.starts_with? ":" %}
+          {% if name == :texture %}
+            # Sets the value of the texture uniforms.
+            # This will automatically bind textures to sampler slots and attach those to the correct uniform.
+            def {{name.id}}_pack=(pack : Prism::TexturePack)
+              set_texture_pack pack
             end
-        end
+          {% else %}
+            {% raise "Unsupported uniform identifier #{name} in #{@type.stringify}." %}
+          {% end %}
+        {% else %}
+          # Sets the value of the **{{name}}** uniform.
+          def {{name.id.underscore}}=(value : {{type}})
+              if value.is_a?(Shader::Serializable)
+                  _{{name.id}}_uniforms = value.to_uniform(true)
+                  _{{name.id}}_uniforms.each do |k, v|
+                      set_uniform("{{name.id}}.#{k}", v)
+                  end
+              else
+                  set_uniform("{{name.id}}", value)
+              end
+          end
+        {% end %}
     end
 
     # Creates a new shader from *file_name*.
@@ -188,6 +222,16 @@ module Prism::Shader
         @resource.uniforms[name]
       else
         raise Exception.new "The uniform \"#{name}\" is not defined in your glsl code. Update your shader or remove \"#{name}\" from your Shader::Program."
+      end
+    end
+
+    # Sets the texture uniforms for all textures in the *pack*
+    def set_texture_pack(pack : Prism::TexturePack)
+      sampler_slot : Int32 = 0
+      pack.textures.each do |name, texture|
+        texture.bind(sampler_slot)
+        set_uniform(name, sampler_slot)
+        sampler_slot += 1
       end
     end
 
