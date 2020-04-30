@@ -1,6 +1,9 @@
 module Prism::Shader
   class StaticShader < Program
-    inline_uniform material, Material
+    uniform :texture, Prism::TexturePack
+    uniform "useFakeLighting", Bool
+    uniform "specularIntensity", Float32
+    uniform "specularPower", Float32
     uniform transformation_matrix, Matrix4f
     uniform projection_matrix, Matrix4f
     uniform view_matrix, Matrix4f

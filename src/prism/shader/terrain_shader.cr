@@ -1,8 +1,8 @@
 module Prism::Shader
   class TerrainShader < Program
-    # TODO: replace the material here with a texture pack
-    inline_uniform material, Material
-    # uniform :texture, Prism::TexturePack
+    uniform :texture, Prism::TexturePack
+    uniform "specularIntensity", Float32
+    uniform "specularPower", Float32
     uniform transformation_matrix, Matrix4f
     uniform projection_matrix, Matrix4f
     uniform view_matrix, Matrix4f
