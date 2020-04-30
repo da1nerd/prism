@@ -13,14 +13,14 @@ module Prism::Systems
     @lights : Array(Crash::Entity)
     @cameras : Array(Crash::Entity)
 
-    @shader : Prism::Shader::StaticShader = Prism::Shader::StaticShader.new
+    @entity_shader : Prism::Shader::EntityShader = Prism::Shader::EntityShader.new
     @entity_renderer : Prism::Systems::EntityRenderer
 
     @terrain_shader : Prism::Shader::TerrainShader = Prism::Shader::TerrainShader.new
     @terrain_renderer : Prism::Systems::TerrainRenderer
 
-    def initialize(shader : Prism::Shader::Program)
-      @entity_renderer = Prism::Systems::EntityRenderer.new(@shader)
+    def initialize
+      @entity_renderer = Prism::Systems::EntityRenderer.new(@entity_shader)
       @terrain_renderer = Prism::Systems::TerrainRenderer.new(@terrain_shader)
       @entities = [] of Crash::Entity
       @grouped_entities = {} of Prism::TexturedModel => Array(Crash::Entity)
@@ -79,25 +79,25 @@ module Prism::Systems
       #
       # entities
       #
-      @shader.start
+      @entity_shader.start
       # TODO: should we pass the projection matrix to the renderer?
       #  Also, should we calculate this just once? We could take this out of the camera.
-      @shader.projection_matrix = projection_matrix
-      @shader.view_matrix = view_matrix
-      @shader.eye_pos = eye_pos
-      @shader.sky_color = SKY_COLOR
+      @entity_shader.projection_matrix = projection_matrix
+      @entity_shader.view_matrix = view_matrix
+      @entity_shader.eye_pos = eye_pos
+      @entity_shader.sky_color = SKY_COLOR
       if @lights.size > 0
         light_entity = @lights[0]
         light_transform = light_entity.get(Prism::Transform).as(Prism::Transform)
-        @shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
+        @entity_shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
         # TRICKY: this is a temporary hack to help decouple entities from lights.
         #  We'll need a better solution later. We could potentially pass the light
         #  entity to the shader so it can set the proper uniforms.
-        @shader.set_uniform("light.direction", light_transform.get_transformed_rot.forward)
+        @entity_shader.set_uniform("light.direction", light_transform.get_transformed_rot.forward)
       end
       @entity_renderer.render(@grouped_entities)
       @grouped_entities.clear
-      @shader.stop
+      @entity_shader.stop
 
       #
       # terrain
