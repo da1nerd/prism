@@ -118,6 +118,14 @@ class Demo < Prism::GameEngine
       m
     end
 
+    cube_model = Prism::TexturedModel.new(Prism::Mesh.cube(2), Prism::TexturePack.new.add("diffuse", load_texture("mud")))
+    person = Prism::Entity.new
+    person.add cube_model
+    person.add Prism::Material.new
+    person.add Prism::Player.new
+    person.get(Prism::Transform).as(Prism::Transform).move_to(lamp)
+    add_entity person
+
     # Generate a bunch of random cubes to test performance
     # cube_model = Prism::TexturedModel.new(Prism::Mesh.cube(2), Prism::Material.new)
     # random = Random.new
