@@ -77,6 +77,8 @@ module Prism::Shader
   # c = A.new
   # c.to_uniform # => {"R_spotLight.a" => 1}
   # ```
+  # TODO: We might want to change this to something like `UniformStruct`.
+  #  That would make more sense because that's what we are trying to represent here.
   module Serializable
     annotation Options
     end

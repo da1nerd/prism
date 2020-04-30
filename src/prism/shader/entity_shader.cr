@@ -1,5 +1,6 @@
+require "../shader/program"
 module Prism::Shader
-  class StaticShader < Program
+  class EntityShader < Prism::Shader::Program
     uniform :texture, Prism::TexturePack
     uniform "useFakeLighting", Bool
     uniform "specularIntensity", Float32
@@ -12,7 +13,7 @@ module Prism::Shader
     uniform sky_color, Vector3f
 
     def initialize
-      super("static")
+      super("entity")
     end
   end
 end

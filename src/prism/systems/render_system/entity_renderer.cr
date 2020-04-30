@@ -1,8 +1,8 @@
 module Prism::Systems
   class EntityRenderer
-    @shader : Prism::Shader::StaticShader
+    @shader : Prism::Shader::EntityShader
 
-    def initialize(@shader : Prism::Shader::StaticShader)
+    def initialize(@shader : Prism::Shader::EntityShader)
     end
 
     # Renders batches of `TexturedModel`s at a time for increased performance
