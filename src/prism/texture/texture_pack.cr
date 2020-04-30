@@ -13,6 +13,7 @@ module Prism
     # The *name* that should match the name of a sampler uniform in the shader program
     def add(name : String, texture : Prism::Texture)
       @textures[name] = texture
+      self
     end
 
     # Removes a named texture from the pack
@@ -20,6 +21,7 @@ module Prism
       if @textures.has_key? name
         @textures.delete name1
       end
+      self
     end
   end
 end

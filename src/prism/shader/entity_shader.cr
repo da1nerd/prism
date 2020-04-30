@@ -1,4 +1,5 @@
 require "../shader/program"
+
 module Prism::Shader
   class EntityShader < Prism::Shader::Program
     uniform :texture, Prism::TexturePack

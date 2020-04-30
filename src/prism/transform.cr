@@ -190,5 +190,12 @@ module Prism
       @pos.z = z
       self
     end
+
+    def move_to(entity : Crash::Entity)
+      if entity.has Prism::Transform
+        pos = entity.get(Prism::Transform).as(Prism::Transform).pos
+        move_to(pos.x, pos.y, pos.z)
+      end
+    end
   end
 end
