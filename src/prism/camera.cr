@@ -1,8 +1,10 @@
 require "annotation"
 require "crash"
+require "./input_receiver.cr"
 
 module Prism
   class Camera < Crash::Component
+    include Prism::InputReceiver
     @projection : Maths::Matrix4f
     @sync_aspect_ratio : Bool
 
@@ -18,7 +20,7 @@ module Prism
     def sync_aspect_ratio=(@sync_aspect_ratio : Bool)
     end
 
-    def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
+    def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, entity : Crash::Entity)
       # keep the aspect ratio in sync with the window
       if @sync_aspect_ratio
         size = input.window_size

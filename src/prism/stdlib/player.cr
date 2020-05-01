@@ -1,6 +1,7 @@
 module Prism
     class Player < Crash::Component
         include Prism::Adapter::GLFW
+        include Prism::InputReceiver
 
         RUN_SPEED = 20f32
         TURN_SPEED = 160f32
@@ -14,7 +15,8 @@ module Prism
         @upwards_speed : Float32 = 0
         @is_in_air : Bool = false
 
-        def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, transform : Prism::Transform)
+        def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, entity : Crash::Entity)
+            transform = entity.get(Prism::Transform).as(Prism::Transform)
             # move
             if input.get_key(Window::Key::W)
                 @current_speed = RUN_SPEED

@@ -33,6 +33,10 @@ module Prism
       @parent_matrix = Matrix4f.new.init_identity
     end
 
+    def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, entity : Prism::Entity)
+      update
+    end
+
     def update
       if @old_pos != nil
         @old_pos = @pos

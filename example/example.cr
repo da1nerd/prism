@@ -106,6 +106,7 @@ class Demo < Prism::GameEngine
     camera = Prism::GhostCamera.new
     camera.name = "camera"
     camera.add Prism::Transform.new.look_at(stall).move_north(30).move_east(30).elevate_to(20)
+    camera.add Prism::InputDispatcher.new
 
     # Generate a bunch of random trees
     seed("tree", terrain, 8)
@@ -123,6 +124,7 @@ class Demo < Prism::GameEngine
     person.add cube_model
     person.add Prism::Material.new
     person.add Prism::Player.new
+    person.add Prism::InputDispatcher.new
     person.get(Prism::Transform).as(Prism::Transform).move_to(lamp)
     add_entity person
 

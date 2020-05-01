@@ -63,7 +63,7 @@ module Prism::Systems
     # Handles the rendering.
     # TODO: this is a little verbose and needs to be cleaned up a bit.
     @[Override]
-    def update(time : Float64)
+    def render
       batch_entities(@entities)
 
       # calculate camera matricies

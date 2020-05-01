@@ -3,6 +3,7 @@ require "crash"
 module Prism
   # Causes the parent `Entity`'s position to be controlled by the mouse.
   class FreeLook < Crash::Component
+    include Prism::InputReceiver
     include Prism::Adapter::GLFW
     Y_AXIS = Vector3f.new(0, 1, 0)
     @mouse_locked = false
@@ -21,7 +22,8 @@ module Prism
     end
 
     # Performs a rotation on the *transform*
-    def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, transform : Prism::Transform)
+    def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, entity : Crash::Entity)
+      transform = entity.get(Prism::Transform).as(Prism::Transform)
       center_position = Vector2f.new(input.get_center[:x].to_f32, input.get_center[:y].to_f32)
       mouse_position = Vector2f.new(input.get_mouse_position[:x].to_f32, input.get_mouse_position[:y].to_f32)
 
