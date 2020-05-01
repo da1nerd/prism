@@ -4,6 +4,7 @@ require "./render_system/**"
 
 module Prism::Systems
   # A default system for rendering `Prism::Entity`s.
+  # TODO: move this into stdlib
   class RenderSystem < Crash::System
     # RGB
     SKY_COLOR = Vector3f.new(0.6, 0.8, 1)

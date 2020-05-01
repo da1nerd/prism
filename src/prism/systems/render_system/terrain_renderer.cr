@@ -1,4 +1,5 @@
 module Prism::Systems
+  # TODO: move this into stdlib
   class TerrainRenderer
     def initialize(@shader : Prism::Shader::TerrainShader)
     end

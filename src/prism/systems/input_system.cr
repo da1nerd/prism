@@ -17,7 +17,6 @@ module Prism::Systems
 
     @[Override]
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
-      puts "fps: #{1/Math.max(tick.last_actual_frame_time, tick.frame_time)}"
       @entities.each do |e|
         e.get(Prism::InputDispatcher).as(Prism::InputDispatcher).input!(tick, input, e)
       end

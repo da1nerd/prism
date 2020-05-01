@@ -49,7 +49,6 @@ module Prism
 
       # gravity slows jump speed
       @upwards_speed += GRAVITY * tick.frame_time.to_f32
-      puts @upwards_speed
       transform.pos.y += @upwards_speed * tick.frame_time.to_f32
       if transform.pos.y < TERRAIN_HEIGHT
         @is_in_air = false
