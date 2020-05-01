@@ -22,6 +22,7 @@ module Prism
     end
 
     # Performs a rotation on the *transform*
+    @[Override]
     def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, entity : Crash::Entity)
       transform = entity.get(Prism::Transform).as(Prism::Transform)
       center_position = Vector2f.new(input.get_center[:x].to_f32, input.get_center[:y].to_f32)
