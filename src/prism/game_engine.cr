@@ -5,6 +5,8 @@ require "crash"
 module Prism
   # The game interace.
   # A game must inherit this class in order to be used by the engine.
+  # TODO: the custom logic here needs to be moved into a different game engine in stdlib.
+  #  We don't want anything in the core interacting with anything in sdtlib.
   abstract class GameEngine < RenderLoop::Engine
     @root : Entity = Entity.new
     @window_size : RenderLoop::Size?
@@ -12,12 +14,11 @@ module Prism
 
     @[Override]
     def startup
-      # configure entity framework
-      @crash_engine.add_system Systems::CameraSystem.new, 1
-      @crash_engine.add_system Systems::TransformSystem.new, 5
-      @crash_engine.add_system Systems::RenderSystem.new, 10
+      # Register some default systems
+      add_system Systems::InputSystem.new, 1
+      add_system Systems::RenderSystem.new, 10
 
-      # pass initialization to the developer
+      # Initialize the game
       self.init
     end
 
@@ -35,7 +36,7 @@ module Prism
     @[Override]
     def render
       # TODO: pass in the correct time
-      @crash_engine.update(0)
+      @crash_engine.render
     end
 
     # Flush the GL buffers and resize the viewport to match the window size
@@ -51,6 +52,10 @@ module Prism
     # Adds an object to the game's scene graph.
     def add_entity(entity : Crash::Entity)
       @crash_engine.add_entity entity
+    end
+
+    def add_system(system : Crash::System, priority : Int32)
+      @crash_engine.add_system system, priority
     end
 
     def get_open_gl_version

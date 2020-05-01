@@ -3,10 +3,9 @@ require "crash"
 module Prism
   # Causes the parent `Entity`'s position to be controlled by the keyboard.
   class FreeMove < Crash::Component
+    include Prism::InputReceiver
     include Prism::Adapter::GLFW
     property movement
-    @position : Vector3f
-    getter position
 
     def initialize
       initialize(20)
@@ -17,10 +16,10 @@ module Prism
     end
 
     def initialize(@speed : Float32, @forward_key : Window::Key, @back_key : Window::Key, @left_key : Window::Key, @right_key : Window::Key)
-      @position = Vector3f.new(0, 0, 0)
     end
 
-    def input(tick : RenderLoop::Tick, input : RenderLoop::Input, transform : Prism::Transform)
+    def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, entity : Crash::Entity)
+      transform = entity.get(Prism::Transform).as(Prism::Transform)
       mov_amt = @speed * tick.frame_time.to_f32
 
       movement = Vector3f.new(0, 0, 0)
@@ -41,7 +40,7 @@ module Prism
         movement = movement + calculate_move(transform.rot.right, mov_amt)
       end
 
-      @position = transform.pos + movement
+      transform.pos += movement
     end
 
     # Generates the movement vector

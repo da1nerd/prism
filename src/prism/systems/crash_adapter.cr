@@ -9,10 +9,20 @@ module Crash
       @updating = false
       emit UpdateCompleteEvent
     end
+
+    def render
+      @updating = true
+      @systems.each do |system|
+        system.render
+      end
+      @updating = false
+      emit UpdateCompleteEvent
+    end
   end
 
   abstract class System
     # Extend `Crash::System` with an input method
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input); end
+    def render; end
   end
 end
