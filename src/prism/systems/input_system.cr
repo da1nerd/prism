@@ -2,7 +2,7 @@ require "crash"
 require "annotation"
 
 module Prism::Systems
-  # Passes input events to the `InputDispatcher`
+  # Passes input events to the `InputSubscriber`
   class InputSystem < Crash::System
     @entities : Array(Crash::Entity)
 
@@ -12,13 +12,13 @@ module Prism::Systems
 
     @[Override]
     def add_to_engine(engine : Crash::Engine)
-      @entities = engine.get_entities Prism::InputDispatcher
+      @entities = engine.get_entities Prism::InputSubscriber
     end
 
     @[Override]
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       @entities.each do |e|
-        e.get(Prism::InputDispatcher).as(Prism::InputDispatcher).input!(tick, input, e)
+        e.get(Prism::InputSubscriber).as(Prism::InputSubscriber).input!(tick, input, e)
       end
     end
 

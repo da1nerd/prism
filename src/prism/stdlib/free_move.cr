@@ -18,6 +18,7 @@ module Prism
     def initialize(@speed : Float32, @forward_key : Window::Key, @back_key : Window::Key, @left_key : Window::Key, @right_key : Window::Key)
     end
 
+    @[Override]
     def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, entity : Crash::Entity)
       transform = entity.get(Prism::Transform).as(Prism::Transform)
       mov_amt = @speed * tick.frame_time.to_f32
