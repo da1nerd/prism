@@ -1,6 +1,7 @@
 require "../shader/program"
 
 module Prism::Shader
+  # TODO: move this into stdlib
   class EntityShader < Prism::Shader::Program
     uniform :texture, Prism::TexturePack
     uniform "useFakeLighting", Bool

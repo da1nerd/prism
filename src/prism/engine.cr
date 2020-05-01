@@ -3,39 +3,33 @@ require "annotation"
 require "crash"
 
 module Prism
-  # The game interace.
-  # A game must inherit this class in order to be used by the engine.
-  # TODO: the custom logic here needs to be moved into a different game engine in stdlib.
-  #  We don't want anything in the core interacting with anything in sdtlib.
-  abstract class GameEngine < RenderLoop::Engine
-    @root : Entity = Entity.new
+  # The main engine to run the game.
+  # You can implement your game engine by inheriting this class and adding your logic.
+  abstract class Engine < RenderLoop::Engine
     @window_size : RenderLoop::Size?
     @crash_engine : Crash::Engine = Crash::Engine.new
 
+    # Starts up the engine.
     @[Override]
     def startup
-      # Register some default systems
-      add_system Systems::InputSystem.new, 1
-      add_system Systems::RenderSystem.new, 10
-
-      # Initialize the game
       self.init
     end
 
     # Games should implement this to start their game logic
     abstract def init
 
-    # Gives input state to the game
+    # Process inputs
+    # This will pass time and input to the engine systems.
     @[Override]
     def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
+      # get window size so we can adjust the viewport during flush
       @window_size = input.window_size
       @crash_engine.input(tick, input)
     end
 
-    # Renders the game's scene graph
+    # Renders the game
     @[Override]
     def render
-      # TODO: pass in the correct time
       @crash_engine.render
     end
 
@@ -49,11 +43,12 @@ module Prism
       LibGL.flush
     end
 
-    # Adds an object to the game's scene graph.
+    # Adds an entity to the entity engine
     def add_entity(entity : Crash::Entity)
       @crash_engine.add_entity entity
     end
 
+    # Adds a system to the entity engine
     def add_system(system : Crash::System, priority : Int32)
       @crash_engine.add_system system, priority
     end

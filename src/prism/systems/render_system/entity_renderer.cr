@@ -1,4 +1,5 @@
 module Prism::Systems
+  # TODO: move this into stdlib
   class EntityRenderer
     @shader : Prism::Shader::EntityShader
 

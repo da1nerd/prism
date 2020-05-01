@@ -1,4 +1,5 @@
 module Prism::Shader
+  # TODO: move this into stdlib
   class TerrainShader < Program
     uniform :texture, Prism::TexturePack
     uniform "specularIntensity", Float32
