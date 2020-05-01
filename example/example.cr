@@ -100,12 +100,6 @@ class Demo < Prism::GameEngine
     light_transform = Prism::Transform.new
     light_transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::Maths.to_rad(-80f32))
     sun_light.add light_transform
-    sun_light.name = "sun"
-
-    # Add a moveable camera
-    camera = Prism::GhostCamera.new
-    camera.name = "camera"
-    camera.add Prism::Transform.new.look_at(stall).move_north(30).move_east(30).elevate_to(20)
 
     # Generate a bunch of random trees
     seed("tree", terrain, 8)
@@ -124,8 +118,12 @@ class Demo < Prism::GameEngine
     person.add Prism::Material.new
     person.add Prism::Player.new
     person.add Prism::InputSubscriber.new
-    person.get(Prism::Transform).as(Prism::Transform).move_to(lamp)
+    person.get(Prism::Transform).as(Prism::Transform).look_at(stall).move_north(32).move_east(32).elevate_to(20)
     add_entity person
+
+    # Add a moveable camera
+    camera = Prism::GhostCamera.new
+    camera.add Prism::Transform.new.look_at(stall).move_north(30).move_east(30).elevate_to(20)
 
     # Generate a bunch of random cubes to test performance
     # cube_model = Prism::TexturedModel.new(Prism::Mesh.cube(2), Prism::Material.new)
