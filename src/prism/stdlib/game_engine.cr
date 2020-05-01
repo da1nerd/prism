@@ -14,7 +14,7 @@ module Prism
     @[Override]
     def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
       super(tick, input)
-      puts "fps: #{1/Math.max(tick.last_actual_frame_time, tick.frame_time)}"
+      # puts "fps: #{1/Math.max(tick.last_actual_frame_time, tick.frame_time)}"
     end
   end
 end

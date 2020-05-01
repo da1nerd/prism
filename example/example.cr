@@ -118,14 +118,15 @@ class Demo < Prism::GameEngine
     person.add Prism::Material.new
     person.add Prism::PlayerMovement.new
     person.add Prism::InputSubscriber.new
+    person.add Prism::ThirdPersonCameraControls.new
     person.get(Prism::Transform).as(Prism::Transform).look_at(stall).move_north(32).move_east(32).elevate_to(20)
-    # person.add Prism::Camera.new
+    person.add Prism::Camera.new
     add_entity person
 
     # Add a moveable camera
-    camera = Prism::GhostCamera.new
-    camera.add Prism::Transform.new.look_at(stall).move_north(30).move_east(30).elevate_to(20)
-    add_entity camera
+    # camera = Prism::GhostCamera.new
+    # camera.add Prism::Transform.new.look_at(stall).move_north(30).move_east(30).elevate_to(20)
+    # add_entity camera
 
     # Generate a bunch of random cubes to test performance
     # random = Random.new

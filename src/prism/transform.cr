@@ -43,6 +43,12 @@ module Prism
       self
     end
 
+    # Rotates to look at the *transform*
+    def look_at(transform : Prism::Transform)
+      @rot = get_look_at_direction(transform.pos, @rot.up)
+      self
+    end
+
     # Rotates to look at the point
     def look_at(point : Vector3f, up : Vector3f)
       @rot = get_look_at_direction(point, up)
