@@ -116,17 +116,18 @@ class Demo < Prism::GameEngine
     person = Prism::Entity.new
     person.add cube_model
     person.add Prism::Material.new
-    person.add Prism::Player.new
+    person.add Prism::PlayerMovement.new
     person.add Prism::InputSubscriber.new
     person.get(Prism::Transform).as(Prism::Transform).look_at(stall).move_north(32).move_east(32).elevate_to(20)
+    # person.add Prism::Camera.new
     add_entity person
 
     # Add a moveable camera
     camera = Prism::GhostCamera.new
     camera.add Prism::Transform.new.look_at(stall).move_north(30).move_east(30).elevate_to(20)
+    add_entity camera
 
     # Generate a bunch of random cubes to test performance
-    # cube_model = Prism::TexturedModel.new(Prism::Mesh.cube(2), Prism::Material.new)
     # random = Random.new
     # 0.upto(1000) do |i|
     #   x : Float32 = random.next_float.to_f32 * 800
@@ -134,6 +135,7 @@ class Demo < Prism::GameEngine
     #   z : Float32 = random.next_float.to_f32 * 800
     #   e = Prism::Entity.new
     #   e.add cube_model
+    #   e.add Prism::Material.new
     #   e.add Prism::Transform.new(x, y, z)
     #   add_entity e
     # end
@@ -144,7 +146,6 @@ class Demo < Prism::GameEngine
     add_entity(terrain)
     add_entity(sun_light)
     add_entity(stall)
-    add_entity(camera)
   end
 end
 

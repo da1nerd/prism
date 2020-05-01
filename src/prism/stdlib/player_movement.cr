@@ -1,5 +1,10 @@
 module Prism
-  class Player < Crash::Component
+  # TODO: we might want to move this into the core.
+  #  It will depend on how this class evolves.
+  #
+  # This adds player like movement to an Entity.
+  # You'll be able to control the entity using the keyboard and perform some basic actions.
+  class PlayerMovement < Crash::Component
     include Prism::Adapter::GLFW
     include Prism::InputReceiver
 
