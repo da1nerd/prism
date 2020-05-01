@@ -41,8 +41,17 @@ module Prism::Systems
 
     # Uses the transformation of the *entity* to calculate the view that the camera has of the world.
     # This allows you to attach the camera view to any entity
-    def calculate_view_matrix(entity : Crash::Entity)
-      transform = entity.get(Prism::Transform).as(Prism::Transform)
+    def calculate_camera_view_matrix(entity : Crash::Entity)
+      if entity.has Prism::CameraControls
+        # use the camera transform
+        return build_view_matrix entity.get(Prism::CameraControls).as(Prism::CameraControls).camera_transform
+      else
+        # use the entity transform
+        return build_view_matrix entity.get(Prism::Transform).as(Prism::Transform)
+      end
+    end
+
+    def build_view_matrix(transform : Prism::Transform)
       camera_rotation = transform.get_transformed_rot.conjugate.to_rotation_matrix
       camera_pos = transform.get_transformed_pos * -1
       camera_translation = Matrix4f.new.init_translation(camera_pos.x, camera_pos.y, camera_pos.z)
@@ -71,7 +80,7 @@ module Prism::Systems
       cam_entity = @cameras[0]
       cam = cam_entity.get(Prism::Camera).as(Prism::Camera)
       projection_matrix = cam.get_projection
-      view_matrix = calculate_view_matrix(cam_entity)
+      view_matrix = calculate_camera_view_matrix(cam_entity)
       eye_pos = cam_entity.get(Prism::Transform).as(Prism::Transform).get_transformed_pos
 
       # start shading
