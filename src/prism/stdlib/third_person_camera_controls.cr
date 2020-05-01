@@ -31,6 +31,8 @@ module Prism
 
     # TODO: this works but it a little buggy.
     #  The camera has a slight tilt to it and it appears a little lopsided.
+    # TODO: limit range of pitch
+    # TODO: limit range of zoom
     private def calculate_camera_position(horizontal_distance : Float32, vertical_distance : Float32, entity_transform : Prism::Transform)
       @camera_transform = Prism::Transform.new
       theta : Float32 = entity_transform.rot.y.to_f32 + @angle_around_entity
@@ -39,6 +41,8 @@ module Prism
       @camera_transform.pos.x = entity_transform.pos.x - offset_x
       @camera_transform.pos.z = entity_transform.pos.z - offset_z
       @camera_transform.pos.y = entity_transform.pos.y + vertical_distance
+      # TODO: this is not exactly want we want. We want the camera to follow behind the entity.
+      #  Simply turning to look at it is probably were we are getting the visual bugs.
       rot = @camera_transform.get_look_at_direction(entity_transform.pos, Vector3f.new(0, 1, 0))
       @camera_transform.rot = rot
     end
