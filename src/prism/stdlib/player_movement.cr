@@ -14,7 +14,6 @@ module Prism
     Y_AXIS         = Vector3f.new(0, 1, 0)
     GRAVITY        = -50.0f32
     JUMP_POWER     =    30f32
-    TERRAIN_HEIGHT =     0f32
 
     @current_speed : Float32 = 0
     @current_turn_speed : Float32 = 0
@@ -56,10 +55,18 @@ module Prism
       # gravity slows jump speed
       @upwards_speed += GRAVITY * tick.frame_time.to_f32
       transform.pos.y += @upwards_speed * tick.frame_time.to_f32
-      if transform.pos.y < TERRAIN_HEIGHT
+    end
+
+    # Called by the terrain system so we can check the terrain height of the entity.
+    # this is a rudimentary form of collision detection.
+    def detect_terrain!(entity : Crash::Entity, terrain : Crash::Entity)
+      entity_transform = entity.get(Prism::Transform).as(Prism::Transform)
+      terrain_component = terrain.get(Prism::Terrain).as(Prism::Terrain)
+      terrain_height = terrain_component.height_at(entity_transform.pos)
+      if entity_transform.pos.y < terrain_height
+        entity_transform.pos.y = terrain_height
         @is_in_air = false
         @upwards_speed = 0
-        transform.pos.y = TERRAIN_HEIGHT
       end
     end
   end
