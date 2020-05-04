@@ -5,8 +5,6 @@ module Prism
   # Handles positional transformations
   class Transform < Crash::Component
     include Prism::Maths
-    @parent : Transform?
-    @parent_matrix : Matrix4f
 
     @pos : Vector3f
     @rot : Quaternion
@@ -23,14 +21,12 @@ module Prism
       @pos = Vector3f.new(0.0f32, 0.0f32, 0.0f32)
       @rot = Quaternion.new(0.0f64, 0.0f64, 0.0f64, 1.0f64)
       @scale = Vector3f.new(1.0f32, 1.0f32, 1.0f32)
-      @parent_matrix = Matrix4f.new.init_identity
     end
 
     def initialize(x : Float32, y : Float32, z : Float32)
       @pos = Vector3f.new(x, y, z)
       @rot = Quaternion.new(0.0f64, 0.0f64, 0.0f64, 1.0f64)
       @scale = Vector3f.new(1.0f32, 1.0f32, 1.0f32)
-      @parent_matrix = Matrix4f.new.init_identity
     end
 
     def rotate(axis : Vector3f, angle : Float32)
@@ -61,30 +57,13 @@ module Prism
       return Quaternion.new(Matrix4f.new.init_rotation((point - @pos).normalized, up))
     end
 
-    # Returns the transformation as affected by the parent
+    # Returns the transformation
     def get_transformation : Matrix4f
       translation_matrix = Matrix4f.new.init_translation(@pos.x, @pos.y, @pos.z)
       rotation_matrix = @rot.to_rotation_matrix
       scale_matrix = Matrix4f.new.init_scale(@scale.x, @scale.y, @scale.z)
 
-      return self.get_parent_matrix * translation_matrix * rotation_matrix * scale_matrix
-    end
-
-    # Returns the the position after it has been transformed by it's parent
-    def get_transformed_pos : Vector3f
-      return self.get_parent_matrix.transform(@pos)
-    end
-
-    # Returns the rotation after it has been transformed by it's parent
-    def get_transformed_rot : Quaternion
-      parent_rotation = Quaternion.new(0f64, 0f64, 0f64, 1f64)
-      return parent_rotation * @rot
-    end
-
-    # Returns the parent transformation matrix
-    # DEPRECATED transforms no longer have parents
-    private def get_parent_matrix : Matrix4f
-      return @parent_matrix
+      return translation_matrix * rotation_matrix * scale_matrix
     end
   end
 
@@ -125,7 +104,7 @@ module Prism
 
     # Moves the shape towards north by the *distance*
     def move_north(distance : Float32)
-      @pos = get_transformed_pos + Vector3f.new(0, 0, 1) * distance
+      @pos = @pos + Vector3f.new(0, 0, 1) * distance
       self
     end
 
@@ -136,7 +115,7 @@ module Prism
 
     # Moves the shape towards east by the *distance*
     def move_east(distance : Float32)
-      @pos = get_transformed_pos + Vector3f.new(1, 0, 0) * distance
+      @pos = @pos + Vector3f.new(1, 0, 0) * distance
       self
     end
 
