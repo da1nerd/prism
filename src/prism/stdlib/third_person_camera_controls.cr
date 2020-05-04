@@ -8,7 +8,7 @@ module Prism
   # This provides third person view and controls to the camera.
   # The `Camera` will be positioned view it's attached `Entity` from the third person.
   class ThirdPersonCameraControls < CameraControls
-    MIN_ZOOM = 0f32
+    MIN_ZOOM = 1f32
     MAX_ZOOM = 100f32
     MIN_PITCH = 0f32
     MAX_PITCH = 89.999f32
