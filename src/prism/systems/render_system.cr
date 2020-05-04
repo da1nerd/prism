@@ -52,8 +52,8 @@ module Prism::Systems
     end
 
     def build_view_matrix(transform : Prism::Transform)
-      camera_rotation = transform.get_transformed_rot.conjugate.to_rotation_matrix
-      camera_pos = transform.get_transformed_pos * -1
+      camera_rotation = transform.rot.conjugate.to_rotation_matrix
+      camera_pos = transform.pos * -1
       camera_translation = Matrix4f.new.init_translation(camera_pos.x, camera_pos.y, camera_pos.z)
       camera_rotation * camera_translation
     end
@@ -81,7 +81,7 @@ module Prism::Systems
       cam = cam_entity.get(Prism::Camera).as(Prism::Camera)
       projection_matrix = cam.get_projection
       view_matrix = calculate_camera_view_matrix(cam_entity)
-      eye_pos = cam_entity.get(Prism::Transform).as(Prism::Transform).get_transformed_pos
+      eye_pos = cam_entity.get(Prism::Transform).as(Prism::Transform).pos
 
       # start shading
       prepare
@@ -103,7 +103,7 @@ module Prism::Systems
         # TRICKY: this is a temporary hack to help decouple entities from lights.
         #  We'll need a better solution later. We could potentially pass the light
         #  entity to the shader so it can set the proper uniforms.
-        @entity_shader.set_uniform("light.direction", light_transform.get_transformed_rot.forward)
+        @entity_shader.set_uniform("light.direction", light_transform.rot.forward)
       end
       @entity_renderer.render(@grouped_entities)
       @grouped_entities.clear
@@ -124,7 +124,7 @@ module Prism::Systems
         # TRICKY: this is a temporary hack to help decouple entities from lights.
         #  We'll need a better solution later. We could potentially pass the light
         #  entity to the shader so it can set the proper uniforms.
-        @terrain_shader.set_uniform("light.direction", light_transform.get_transformed_rot.forward)
+        @terrain_shader.set_uniform("light.direction", light_transform.rot.forward)
       end
       @terrain_renderer.render(@terrains)
       @terrain_shader.stop

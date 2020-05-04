@@ -34,7 +34,6 @@ module Prism
     # TODO: this works but it a little buggy.
     #  There is some slight jarring when the angle is at +/-117 degrees.
     #  it's probably fine for now, but this should get fixed
-    #  The camera has a slight tilt to it and it appears a little lopsided.
     private def calculate_camera_position(horizontal_distance : Float32, vertical_distance : Float32, entity : Crash::Entity)
       entity_transform = entity.get(Prism::Transform).as(Prism::Transform)
       @camera_transform = Prism::Transform.new
