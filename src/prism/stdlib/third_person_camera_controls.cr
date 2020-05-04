@@ -8,6 +8,8 @@ module Prism
   # This provides third person view and controls to the camera.
   # The `Camera` will be positioned view it's attached `Entity` from the third person.
   class ThirdPersonCameraControls < CameraControls
+    MIN_ZOOM = 0f32
+    MAX_ZOOM = 100f32
     include Prism::InputReceiver
     include Prism::Adapter::GLFW
     @camera_transform : Prism::Transform = Prism::Transform.new
@@ -59,6 +61,12 @@ module Prism
       offset = input.get_scroll_offset
       zoom_level = offset[:y].to_f32 * 2f32
       @distance_from_entity -= zoom_level
+      if @distance_from_entity < MIN_ZOOM
+        @distance_from_entity = MIN_ZOOM
+      end
+      if @distance_from_entity > MAX_ZOOM
+        @distance_from_entity = MAX_ZOOM
+      end
     end
 
     private def calculate_pitch(input : RenderLoop::Input)
