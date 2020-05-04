@@ -77,10 +77,12 @@ class Demo < Prism::GameEngine
       blue: Prism::Texture.new(File.join(__DIR__, "./res/textures/path.png"))
     )
     terrain = Prism::Mesh.terrain(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"), texture_pack)
+    add_entity terrain
 
     # Add a merchant stall
     stall = load_entity("stall")
     stall.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(55).elevate_to(terrain.terrain.height_at(stall))
+    add_entity stall
 
     # add a tree
     tree = load_entity("lowPolyTree")
@@ -89,10 +91,12 @@ class Demo < Prism::GameEngine
     tree_material = Prism::Material.new
     tree_material.wire_frame = true
     tree.add tree_material
+    add_entity tree
 
     # add a lamp
     lamp = load_entity("lamp")
     lamp.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(50).elevate_to(terrain.terrain.height_at(lamp))
+    add_entity lamp
 
     # Add some sunlight
     sun_light = Prism::Entity.new
@@ -100,6 +104,7 @@ class Demo < Prism::GameEngine
     light_transform = Prism::Transform.new
     light_transform.rot = Quaternion.new(Vector3f.new(1f32, 0f32, 0f32), Prism::Maths.to_rad(-80f32))
     sun_light.add light_transform
+    add_entity sun_light
 
     # Generate a bunch of random trees
     seed("tree", terrain, 8)
@@ -118,12 +123,13 @@ class Demo < Prism::GameEngine
     person.add Prism::Material.new
     person.add Prism::PlayerMovement.new
     person.add Prism::InputSubscriber.new
+    # Disable this for first person view
     person.add Prism::ThirdPersonCameraControls.new
     person.get(Prism::Transform).as(Prism::Transform).move_north(32).move_east(32).elevate_to(20)
     person.add Prism::Camera.new
     add_entity person
 
-    # Add a moveable camera
+    # Enable this (and disable the person above) to enable a free flying camera
     # camera = Prism::GhostCamera.new
     # camera.add Prism::Transform.new.look_at(stall).move_north(30).move_east(30).elevate_to(20)
     # add_entity camera
@@ -140,13 +146,6 @@ class Demo < Prism::GameEngine
     #   e.add Prism::Transform.new(x, y, z)
     #   add_entity e
     # end
-
-    # add everything to the scene
-    add_entity(lamp)
-    add_entity(tree)
-    add_entity(terrain)
-    add_entity(sun_light)
-    add_entity(stall)
   end
 end
 

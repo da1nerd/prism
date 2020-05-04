@@ -77,6 +77,11 @@ module Prism::Systems
       batch_entities(@entities)
 
       # calculate camera matricies
+      if @cameras.size == 0
+        raise Exception.new("Woops! This rendering system requires one camera. Try adding one.")
+      elsif @cameras.size > 1
+        raise Exception.new("Woops! This rendering system only supports one camera. Try disabling one.")
+      end
       cam_entity = @cameras[0]
       cam = cam_entity.get(Prism::Camera).as(Prism::Camera)
       projection_matrix = cam.get_projection
