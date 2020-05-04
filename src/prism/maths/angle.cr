@@ -21,5 +21,9 @@ module Prism::Maths
     def self.from_radians(radians) : Angle
       Angle.new(radians.to_f32)
     end
+
+    def to_degrees
+      @angle * 180f32 / Math::PI
+    end
   end
 end

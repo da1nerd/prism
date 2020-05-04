@@ -41,10 +41,25 @@ module Prism::Maths
       )
     end
 
-    # Normalizes this vector to a length of 1
+    # Returns a new normalized vector
+    # DEPRECATED use `#to_normalized` instead
     def normalized
+      to_normalized
+    end
+
+    # Returns a new normalized vector.
+    def to_normalized
       length = length()
       return Vector3f.new(@x / length, @y / length, @z / length)
+    end
+
+    # Normalizes this vector
+    def normalize!
+      length = length()
+      @x = @x / length
+      @y = @y / length
+      @z = @z / length
+      self
     end
 
     # Rotates the vector by some angle
@@ -56,6 +71,15 @@ module Prism::Maths
       conjugate = rotation.conjugate
       w = (rotation * self) * conjugate
       return Vector3f.new(w.x.to_f32, w.y.to_f32, w.z.to_f32)
+    end
+
+    def reflect(q : Quaternion)
+      qq = ((q * self) * q).normalize
+      Vector3f.new(
+        qq.x,
+        qq.y,
+        qq.z
+      )
     end
 
     # Linear interpolation
