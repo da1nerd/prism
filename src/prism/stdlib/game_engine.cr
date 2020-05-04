@@ -5,7 +5,8 @@ module Prism
     def startup
       # Register some default systems
       add_system Systems::InputSystem.new, 1
-      add_system Systems::RenderSystem.new, 10
+      add_system Systems::RenderSystem.new, 2
+      add_system Systems::TerrainSystem.new, 3
 
       # Initialize the game
       self.init
