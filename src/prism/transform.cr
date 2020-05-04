@@ -17,7 +17,7 @@ module Prism
     @old_scale : Vector3f?
 
     getter pos, rot, scale
-    setter pos, rot, scale, parent
+    setter pos, rot, scale
 
     def initialize
       @pos = Vector3f.new(0.0f32, 0.0f32, 0.0f32)
@@ -61,27 +61,6 @@ module Prism
       return Quaternion.new(Matrix4f.new.init_rotation((point - @pos).normalized, up))
     end
 
-    # Checks if the transformation higher up the tree has changed
-    def has_changed
-      if parent = @parent
-        return parent.has_changed
-      end
-
-      if @pos == @old_pos
-        return true
-      end
-
-      if @rot == @old_rot
-        return true
-      end
-
-      if @scale == @old_scale
-        return true
-      end
-
-      return false
-    end
-
     # Returns the transformation as affected by the parent
     def get_transformation : Matrix4f
       translation_matrix = Matrix4f.new.init_translation(@pos.x, @pos.y, @pos.z)
@@ -99,24 +78,12 @@ module Prism
     # Returns the rotation after it has been transformed by it's parent
     def get_transformed_rot : Quaternion
       parent_rotation = Quaternion.new(0f64, 0f64, 0f64, 1f64)
-
-      if parent = @parent
-        if parent.has_changed
-          parent_rotation = parent.get_transformed_rot
-        end
-      end
-
       return parent_rotation * @rot
     end
 
     # Returns the parent transformation matrix
+    # DEPRECATED transforms no longer have parents
     private def get_parent_matrix : Matrix4f
-      if parent = @parent
-        if parent.has_changed
-          @parent_matrix = parent.get_transformation
-        end
-      end
-
       return @parent_matrix
     end
   end

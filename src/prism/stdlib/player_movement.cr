@@ -8,7 +8,8 @@ module Prism
     include Prism::Adapter::GLFW
     include Prism::InputReceiver
 
-    RUN_SPEED      =  20f32
+    WALK_SPEED      =  20f32
+    RUN_SPEED      =  100f32
     TURN_SPEED     = 160f32
     Y_AXIS         = Vector3f.new(0, 1, 0)
     GRAVITY        = -50.0f32
@@ -24,9 +25,9 @@ module Prism
       transform = entity.get(Prism::Transform).as(Prism::Transform)
       # move
       if input.get_key(Window::Key::W)
-        @current_speed = RUN_SPEED
+        @current_speed = input.get_key(Window::Key::LeftShift) ? RUN_SPEED : WALK_SPEED
       elsif input.get_key(Window::Key::S)
-        @current_speed = -RUN_SPEED
+        @current_speed = input.get_key(Window::Key::LeftShift) ? -RUN_SPEED : -WALK_SPEED
       else
         @current_speed = 0
       end

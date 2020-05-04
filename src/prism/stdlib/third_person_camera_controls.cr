@@ -10,6 +10,8 @@ module Prism
   class ThirdPersonCameraControls < CameraControls
     MIN_ZOOM = 0f32
     MAX_ZOOM = 100f32
+    MIN_PITCH = 0f32
+    MAX_PITCH = 89.999f32
     include Prism::InputReceiver
     include Prism::Adapter::GLFW
     @camera_transform : Prism::Transform = Prism::Transform.new
@@ -24,29 +26,26 @@ module Prism
       calculate_angle input
       @prev_mouse_position = input.get_mouse_position
 
-      # camera = entity.get(Prism::Camera).as(Prism::Camera)
-      transform = entity.get(Prism::Transform).as(Prism::Transform)
       vertical_distance = calculate_vertical_distance
       horizontal_distance = calculate_horizontal_distance
-      calculate_camera_position(horizontal_distance, vertical_distance, transform)
+      calculate_camera_position(horizontal_distance, vertical_distance, entity)
     end
 
     # TODO: this works but it a little buggy.
+    #  There is some slight jarring when the angle is at +/-117 degrees.
+    #  it's probably fine for now, but this should get fixed
     #  The camera has a slight tilt to it and it appears a little lopsided.
-    # TODO: limit range of pitch
-    # TODO: limit range of zoom
-    private def calculate_camera_position(horizontal_distance : Float32, vertical_distance : Float32, entity_transform : Prism::Transform)
+    private def calculate_camera_position(horizontal_distance : Float32, vertical_distance : Float32, entity : Crash::Entity)
+      entity_transform = entity.get(Prism::Transform).as(Prism::Transform)
       @camera_transform = Prism::Transform.new
-      theta : Float32 = entity_transform.rot.y.to_f32 + @angle_around_entity
+      y_rotation_angle = Prism::Maths::Angle.new(entity_transform.rot.to_euler.y.to_f32).to_degrees.to_f32
+      theta : Float32 = y_rotation_angle + @angle_around_entity
       offset_x = horizontal_distance * Math.sin(Prism::Maths.to_rad(theta))
       offset_z = horizontal_distance * Math.cos(Prism::Maths.to_rad(theta))
       @camera_transform.pos.x = entity_transform.pos.x - offset_x
       @camera_transform.pos.z = entity_transform.pos.z - offset_z
       @camera_transform.pos.y = entity_transform.pos.y + vertical_distance
-      # TODO: this is not exactly want we want. We want the camera to follow behind the entity.
-      #  Simply turning to look at it is probably were we are getting the visual bugs.
-      rot = @camera_transform.get_look_at_direction(entity_transform.pos, Vector3f.new(0, 1, 0))
-      @camera_transform.rot = rot
+      @camera_transform.look_at(entity_transform)
     end
 
     private def calculate_horizontal_distance
@@ -69,23 +68,30 @@ module Prism
       end
     end
 
+    # Calculates the pitch of the camera
     private def calculate_pitch(input : RenderLoop::Input)
-      if input.get_mouse(Window::MouseButton::Right)
+      if input.get_mouse(Window::MouseButton::Left)
         if position = @prev_mouse_position
           delta = input.get_mouse_position[:y] - position[:y]
           pitch_change = delta * 0.1f32
-          @pitch -= pitch_change
+          @pitch += pitch_change
         end
       end
-      # puts "pitch #{@pitch}"
+      if @pitch < MIN_PITCH
+        @pitch = MIN_PITCH
+      end
+      if @pitch > MAX_PITCH
+        @pitch = MAX_PITCH
+      end
     end
 
+    # Calculates the angle of rotation around the entity
     private def calculate_angle(input : RenderLoop::Input)
       if input.get_mouse(Window::MouseButton::Left)
         if position = @prev_mouse_position
           delta = input.get_mouse_position[:x] - position[:x]
           angle_change = delta * 0.3f32
-          @angle_around_entity -= angle_change
+          @angle_around_entity += angle_change
         end
       end
     end

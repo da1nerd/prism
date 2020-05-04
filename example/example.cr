@@ -119,7 +119,7 @@ class Demo < Prism::GameEngine
     person.add Prism::PlayerMovement.new
     person.add Prism::InputSubscriber.new
     person.add Prism::ThirdPersonCameraControls.new
-    person.get(Prism::Transform).as(Prism::Transform).look_at(stall).move_north(32).move_east(32).elevate_to(20)
+    person.get(Prism::Transform).as(Prism::Transform).move_north(32).move_east(32).elevate_to(20)
     person.add Prism::Camera.new
     add_entity person
 

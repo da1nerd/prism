@@ -124,7 +124,7 @@ module Prism::Maths
 
     # Converts euler angles to Quaternion
     # Angles are in radians!
-    def self.from_euler(euler : Vector3)
+    def self.from_euler(euler : Vector3f)
       sx, sy, sz = euler.x / 2.0, euler.y / 2.0, euler.z / 2.0
       c1 = Math.cos sy
       s1 = Math.sin sy
@@ -148,22 +148,22 @@ module Prism::Maths
       unit = sqx + sqy + sqz + sqw
       test = self.x*self.y + self.z*self.w
       if test > 0.4999 * unit
-        Vector3.new(
-          Math::PI/2,
-          2 * Math.atan2(self.x, self.w),
-          0.0
+        Vector3f.new(
+          (Math::PI/2).to_f32,
+          (2 * Math.atan2(self.x, self.w)).to_f32,
+          0.0f32
         )
       elsif test < -0.4999 * unit
-        Vector3.new(
-          -Math::PI/2,
-          -2 * Math.atan2(self.x, self.w),
-          0.0
+        Vector3f.new(
+          (-Math::PI/2).to_f32,
+          (-2 * Math.atan2(self.x, self.w)).to_f32,
+          0.0f32
         )
       else
-        Vector3.new(
-          Math.asin(2*test/unit),
-          Math.atan2(2 * self.y * self.w - 2 * self.x * self.z, sqx - sqy - sqz + sqw),
-          Math.atan2(2 * self.x * self.w - 2 * self.y * self.z, -sqx + sqy - sqz + sqw)
+        Vector3f.new(
+          Math.asin(2*test/unit).to_f32,
+          Math.atan2(2 * self.y * self.w - 2 * self.x * self.z, sqx - sqy - sqz + sqw).to_f32,
+          Math.atan2(2 * self.x * self.w - 2 * self.y * self.z, -sqx + sqy - sqz + sqw).to_f32
         )
       end
     end
@@ -202,7 +202,7 @@ module Prism::Maths
       Quaternion.new(-self.x, -self.y, -self.z, -self.w)
     end
 
-    def *(other : Vector3)
+    def *(other : Vector3f)
       Quaternion.new(
         self.w * other.x + self.y * other.z - self.z * other.y,
         self.w * other.y - self.x * other.z + self.z * other.x,
@@ -236,10 +236,10 @@ module Prism::Maths
     end
 
     def axis
-      Vector3.new(x, y, z)
+      Vector3f.new(x, y, z)
     end
 
-    def axis=(v : Vector3)
+    def axis=(v : Vector3f)
       @x, @y, @z = v.x, v.y, v.z
     end
 
@@ -382,27 +382,6 @@ module Prism::Maths
           )
         end
       end
-    end
-  end
-
-  struct Vector3
-    def rotate(q : Quaternion)
-      qi = q.conjugate
-      qq = (q*self)*qi
-      Vector3.new(
-        qq.x,
-        qq.y,
-        qq.z
-      )
-    end
-
-    def reflect(q : Quaternion)
-      qq = ((q*self)*q).normalize
-      Vector3.new(
-        qq.x,
-        qq.y,
-        qq.z
-      )
     end
   end
 end
