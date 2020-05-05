@@ -1,6 +1,5 @@
 module Prism
   struct TextureAtlas
-
     @size : UInt32
     getter size
 
