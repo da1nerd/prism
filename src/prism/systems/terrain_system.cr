@@ -15,19 +15,19 @@ module Prism::Systems
 
     @[Override]
     def add_to_engine(engine : Crash::Engine)
-        @terrain = engine.get_entities Prism::Terrain
-        @entities = engine.get_entities Prism::PlayerMovement
+      @terrain = engine.get_entities Prism::Terrain
+      @entities = engine.get_entities Prism::PlayerMovement
     end
 
     @[Override]
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
-        if @terrain.size == 1
-            @entities.each do |e|
-                e.get(Prism::PlayerMovement).as(Prism::PlayerMovement).detect_terrain!(e, @terrain[0])
-            end
-        else
-            raise Exception.new("Woops! The terrain system currently requires a single terrain.")
+      if @terrain.size == 1
+        @entities.each do |e|
+          e.get(Prism::PlayerMovement).as(Prism::PlayerMovement).detect_terrain!(e, @terrain[0])
         end
+      else
+        raise Exception.new("Woops! The terrain system currently requires a single terrain.")
+      end
     end
 
     @[Override]
