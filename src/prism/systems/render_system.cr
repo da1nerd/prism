@@ -14,10 +14,10 @@ module Prism::Systems
     @lights : Array(Crash::Entity)
     @cameras : Array(Crash::Entity)
 
-    @entity_shader : Prism::Shader::EntityShader = Prism::Shader::EntityShader.new
+    @entity_shader : Prism::EntityShader = Prism::EntityShader.new
     @entity_renderer : Prism::Systems::EntityRenderer
 
-    @terrain_shader : Prism::Shader::TerrainShader = Prism::Shader::TerrainShader.new
+    @terrain_shader : Prism::TerrainShader = Prism::TerrainShader.new
     @terrain_renderer : Prism::Systems::TerrainRenderer
 
     def initialize

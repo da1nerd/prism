@@ -10,7 +10,12 @@ class Demo < Prism::GameEngine
 
   # Loads a texture from the resources
   def load_texture(name : String)
-    Prism::Texture.new(File.join(__DIR__, "./res/textures/#{name}.png"))
+    # simple hack to load fern atlas
+    if name == "fern"
+      Prism::Texture.new(File.join(__DIR__, "./res/textures/#{name}.png"), 2)
+    else
+      Prism::Texture.new(File.join(__DIR__, "./res/textures/#{name}.png"))
+    end
   end
 
   # Loads a model from the resources and attaches it's material
@@ -63,6 +68,10 @@ class Demo < Prism::GameEngine
       transform = Prism::Transform.new(x, y, z)
       transform.scale((random.next_float.to_f32 + 0.5) * scale)
       e.add transform
+      # hack to load fern texture atlas
+      if name === "fern"
+        e.add Prism::TextureAtlasIndex.new(rand(4).to_u32)
+      end
       add_entity e
     end
   end
