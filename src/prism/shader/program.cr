@@ -170,6 +170,7 @@ module Prism::Shader
 
     # An internal initalizer that uses `ShaderStorage` to load embedded shaders.
     # This makes it easy to use the embeded default shaders.
+    # TODO: this should not be part of core. This should be in stdlib.
     protected def initialize(@file_name : String)
       initialize @file_name do |path|
         Prism::Shader::ShaderStorage.get(path).gets_to_end
@@ -239,6 +240,11 @@ module Prism::Shader
     # Sets a 3 dimensional float vector value to a uniform variable
     def set_uniform(name : String, value : Vector3f)
       LibGL.uniform_3f(get_uniform_location(name), value.x, value.y, value.z)
+    end
+
+    # Sets a 2 dimensional float vector value to a uniform variable
+    def set_uniform(name : String, value : Vector2f)
+      LibGL.uniform_2f(get_uniform_location(name), value.x, value.y)
     end
 
     # Sets a 4 dimensional matrix float value to a uniform variable

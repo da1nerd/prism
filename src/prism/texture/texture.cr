@@ -7,6 +7,7 @@ module Prism
     @resource : TextureResource
     @file_name : String
     @atlas : Prism::TextureAtlas
+    getter atlas
 
     # Creates a blank texture.
     def initialize

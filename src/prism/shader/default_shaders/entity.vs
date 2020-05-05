@@ -20,6 +20,10 @@ uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
 uniform float useFakeLighting;
 
+// offset for texture atlas
+uniform float numberOfRows;
+uniform vec2 offset;
+
 // fog const
 const float density = 0.0035;
 const float gradient = 5.0;
@@ -34,7 +38,9 @@ void main(void) {
     worldPosition = (transformation_matrix * vec4(position, 1.0)).xyz;
     vec4 positionRelativeToCam = view_matrix * vec4(worldPosition, 1.0);
     gl_Position = projection_matrix * positionRelativeToCam;
-    pass_textureCoords = textureCoords;
+
+    pass_textureCoords = (textureCoords / numberOfRows) + offset;
+
     surfaceNormal = (transformation_matrix * vec4(actualNormal, 0.0)).xyz;
 
     // distance of this vertex to the camera

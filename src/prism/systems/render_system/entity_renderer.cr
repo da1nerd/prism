@@ -1,9 +1,9 @@
 module Prism::Systems
   # TODO: move this into stdlib
   class EntityRenderer
-    @shader : Prism::Shader::EntityShader
+    @shader : Prism::EntityShader
 
-    def initialize(@shader : Prism::Shader::EntityShader)
+    def initialize(@shader : Prism::EntityShader)
     end
 
     # Renders batches of `TexturedModel`s at a time for increased performance
@@ -27,10 +27,26 @@ module Prism::Systems
     # Prepares the shader for rendering the actual *entity*
     def prepare_instance(entity : Crash::Entity)
       material = entity.get(Prism::Material).as(Prism::Material)
+      model = entity.get(Prism::TexturedModel).as(Prism::TexturedModel)
       disable_culling if material.has_transparency?
       if material.wire_frame?
         disable_culling
         enable_wires
+      end
+      # Enable texture offseting for single textures.
+      # TODO: this could probably be made more generic so we support everything inside the texture pack.
+      if model.texture.textures.size == 1 && model.texture.textures.values[0].atlas.size > 1
+        @shader.number_of_rows = model.texture.textures.values[0].atlas.size.to_f32
+        if entity.has(Prism::TextureAtlasIndex)
+          atlas_index = entity.get(Prism::TextureAtlasIndex).as(Prism::TextureAtlasIndex)
+          coords = model.texture.textures.values[0].atlas.get_coords atlas_index.index
+          @shader.offset = coords[:top_right]
+        else
+          raise "#{entity.name} uses a TextureAtlas but does not have a TextureAtlasIndex. You must specify the index."
+        end
+      else
+        @shader.number_of_rows = 1f32
+        @shader.offset = Vector2f.new(0, 0)
       end
       @shader.use_fake_lighting = material.use_fake_lighting
       @shader.specular_intensity = material.specular_intensity

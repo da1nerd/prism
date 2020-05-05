@@ -1,7 +1,7 @@
 module Prism::Systems
   # TODO: move this into stdlib
   class TerrainRenderer
-    def initialize(@shader : Prism::Shader::TerrainShader)
+    def initialize(@shader : Prism::TerrainShader)
     end
 
     # Renders batches of `TexturedModel`s at a time for increased performance
