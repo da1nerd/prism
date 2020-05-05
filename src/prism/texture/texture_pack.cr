@@ -1,4 +1,6 @@
 module Prism
+  # Represents a collection of textures that will be bound to a model.
+  #
   class TexturePack
     @textures : Hash(String, Prism::Texture)
 
