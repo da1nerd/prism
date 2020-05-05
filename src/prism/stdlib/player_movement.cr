@@ -8,12 +8,12 @@ module Prism
     include Prism::Adapter::GLFW
     include Prism::InputReceiver
 
-    WALK_SPEED      =  20f32
-    RUN_SPEED      =  100f32
-    TURN_SPEED     = 160f32
-    Y_AXIS         = Vector3f.new(0, 1, 0)
-    GRAVITY        = -50.0f32
-    JUMP_POWER     =    30f32
+    WALK_SPEED =  20f32
+    RUN_SPEED  = 100f32
+    TURN_SPEED = 160f32
+    Y_AXIS     = Vector3f.new(0, 1, 0)
+    GRAVITY    = -50.0f32
+    JUMP_POWER =    30f32
 
     @current_speed : Float32 = 0
     @current_turn_speed : Float32 = 0
