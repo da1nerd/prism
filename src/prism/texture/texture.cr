@@ -6,24 +6,25 @@ module Prism
     @@loaded_textures = {} of String => TextureResource
     @resource : TextureResource
     @file_name : String
+    @atlas : Prism::TextureAtlas
 
+    # Creates a blank texture.
     def initialize
       @file_name = ""
       @resource = TextureResource.new
+      @atlas = Prism::TextureAtlas.new()
     end
 
-    def initialize(file : File)
-      @file_name = file.path
-      if @@loaded_textures.has_key?(@file_name)
-        @resource = @@loaded_textures[@file_name]
-        @resource.add_reference
-      else
-        @resource = load_texture(@file_name)
-        @@loaded_textures[@file_name] = @resource
-      end
+    def initialize(file_path : String)
+      initialize(file_path, 1)
     end
 
-    def initialize(@file_name : String)
+    # Creates a texture.
+    # The *atlas_size* controls how many rows of textures are represented in the *file_name*.
+    # A value of 1 means there is on one texture.
+    # A value of 2 means there are 4 textures (a 2x2 grid)
+    def initialize(@file_name : String, atlas_size : UInt32)
+      @atlas = Prism::TextureAtlas.new(atlas_size)
       if @@loaded_textures.has_key?(@file_name)
         @resource = @@loaded_textures[@file_name]
         @resource.add_reference
