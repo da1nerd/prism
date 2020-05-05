@@ -9,7 +9,7 @@ module Prism
 
   describe Prism::Model do
     it "loads a 3d model" do
-        model = Prism::Model.load(File.join(__DIR__, "./obj/grass.obj"))
+      model = Prism::Model.load(File.join(__DIR__, "./obj/grass.obj"))
     end
   end
 end

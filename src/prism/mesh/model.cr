@@ -9,7 +9,8 @@ module Prism
     # The *vao_id* is the vertex array object id.
     # the *vbos* are just an array of vertex buffers that should be deleted when the object is garbage collected.
     # The *vertex_count* is how many verticies are in the model.
-    def initialize(@vao_id : LibGL::UInt, @vbos : Array(LibGL::UInt), @vertex_count : Int32)
+    # *num_attributes* indicates how many vertex attribute arrays will be used.
+    def initialize(@vao_id : LibGL::UInt, @vbos : Array(LibGL::UInt), @vertex_count : Int32, @num_attributes : UInt32)
     end
 
     def finalize
@@ -19,20 +20,20 @@ module Prism
 
     def draw
       LibGL.bind_vertex_array(@vao_id)
-      LibGL.enable_vertex_attrib_array(0)
-      LibGL.enable_vertex_attrib_array(1)
-      LibGL.enable_vertex_attrib_array(2)
+      0.upto(@num_attributes - 1) do |i|
+        LibGL.enable_vertex_attrib_array(i)
+      end
       offset = Pointer(Void).new(0)
       LibGL.draw_elements(LibGL::TRIANGLES, @vertex_count, LibGL::UNSIGNED_INT, offset)
-      LibGL.disable_vertex_attrib_array(0)
-      LibGL.disable_vertex_attrib_array(1)
-      LibGL.disable_vertex_attrib_array(2)
+      0.upto(@num_attributes - 1) do |i|
+        LibGL.disable_vertex_attrib_array(i)
+      end
       LibGL.bind_vertex_array(0)
     end
 
     def self.load(file_name : String)
-        data = OBJ.load(file_name)
-        load(data.vertices, data.texture_coords, data.normals, data.indices)
+      data = OBJ.load(file_name)
+      load(data.vertices, data.texture_coords, data.normals, data.indices)
     end
 
     def self.load(positions : Array(Float32), texture_coords : Array(Float32), normals : Array(Float32), indicies : Array(Int32))
@@ -43,7 +44,7 @@ module Prism
       vbos << store_data_in_attribute_list(1, 2, texture_coords)
       vbos << store_data_in_attribute_list(2, 3, normals)
       unbind_vao
-      Model.new(vao_id, vbos, indicies.size)
+      Model.new(vao_id, vbos, indicies.size, 3)
     end
 
     private def self.create_vao
