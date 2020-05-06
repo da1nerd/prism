@@ -2,7 +2,6 @@ require "lib_gl"
 
 module Prism
   # Represents a 3d model that has been loaded into opengl.
-  # TODO: the static methods in here need to be moved into a module
   class Model
     getter vao_id, vertex_count
 
@@ -41,13 +40,13 @@ module Prism
     end
 
     # Loads an OBJ file into opengl and returns a model object that can be used for drawing.
-    def self.load(file_name : String)
+    def self.load(file_name : String) : Prism::Model
       data = OBJ.load(file_name)
       load(data.vertices, data.texture_coords, data.normals, data.indices)
     end
 
     # Loads some raw mesh data into open gl and returns a model object that can be used for drawing.
-    def self.load(positions : Array(Float32), texture_coords : Array(Float32), normals : Array(Float32), indicies : Array(Int32))
+    def self.load(positions : Array(Float32), texture_coords : Array(Float32), normals : Array(Float32), indicies : Array(Int32)) : Prism::Model
       vao_id = create_vao()
       vbos = [] of LibGL::UInt
       vbos << bind_indicies_buffer(indicies)
@@ -75,7 +74,6 @@ module Prism
       LibGL.gen_buffers(1, out vbo_id)
       LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, vbo_id)
       LibGL.buffer_data(LibGL::ELEMENT_ARRAY_BUFFER, indicies.size * sizeof(Int32), indicies, LibGL::STATIC_DRAW)
-      LibGL.bind_buffer(LibGL::ELEMENT_ARRAY_BUFFER, 0)
       return vbo_id
     end
 

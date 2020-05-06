@@ -58,27 +58,39 @@ module Prism
       # reset height map
       heights = Array.new(vertex_count) { [] of Float32 }
 
-      vertices = [] of Prism::Vertex
+      vertices = [] of Float32
+      texture_coords = [] of Float32
+      normals = [] of Float32
       indices = [] of Int32
       0.upto(vertex_count - 1) do |i|
         0.upto(vertex_count - 1) do |j|
           height = get_height(j, i, bitmap)
           heights[j] << height
-          vertices.push(Prism::Vertex.new(
-            # vertex position
-            Vector3f.new(
-              (j / (vertex_count - 1) * TERRAIN_SIZE).to_f32,
-              height,
-              (i / (vertex_count - 1) * TERRAIN_SIZE).to_f32
-            ),
-            # texture coordinates
-            Vector2f.new(
-              j.to_f32 / (vertex_count - 1),
-              i.to_f32 / (vertex_count - 1)
-            ),
-            # normals
-            calculate_normals(j, i, bitmap)
-          ))
+          vertices << (j / (vertex_count - 1) * TERRAIN_SIZE).to_f32
+          vertices << height
+          vertices << (i / (vertex_count - 1) * TERRAIN_SIZE).to_f32
+          texture_coords << j.to_f32 / (vertex_count - 1)
+          texture_coords << i.to_f32 / (vertex_count - 1)
+          norm = calculate_normals(j, i, bitmap)
+          normals << norm.x
+          normals << norm.y
+          normals << norm.z
+
+          # vertices.push(Prism::Vertex.new(
+          #   # vertex position
+          #   Vector3f.new(
+          #     (j / (vertex_count - 1) * TERRAIN_SIZE).to_f32,
+          #     height,
+          #     (i / (vertex_count - 1) * TERRAIN_SIZE).to_f32
+          #   ),
+          #   # texture coordinates
+          #   Vector2f.new(
+          #     j.to_f32 / (vertex_count - 1),
+          #     i.to_f32 / (vertex_count - 1)
+          #   ),
+          #   # normals
+          #   calculate_normals(j, i, bitmap)
+          # ))
         end
       end
 
@@ -98,7 +110,7 @@ module Prism
       end
 
       {
-        mesh:    Mesh.new(vertices, indices),
+        mesh:    Prism::Model.load(vertices, texture_coords, normals, indices),
         heights: heights,
       }
     end
@@ -136,7 +148,7 @@ module Prism
   class Terrain < Crash::Component
     getter model, transform, material
 
-    def initialize(@mesh : Prism::Mesh, @heights : Array(Array(Float32)), textures : Prism::TerrainTexturePack, @transform : Prism::Transform, @terrain_size : Float32)
+    def initialize(@mesh : Prism::Model, @heights : Array(Array(Float32)), textures : Prism::TerrainTexturePack, @transform : Prism::Transform, @terrain_size : Float32)
       texture_pack = Prism::TexturePack.new
       texture_pack.add "backgroundTexture", textures.background
       texture_pack.add "blendMap", textures.blend_map

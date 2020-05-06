@@ -21,7 +21,7 @@ class Demo < Prism::GameEngine
   # Loads a model from the resources and attaches it's material
   def load_model(name : String) : Prism::TexturedModel
     texture = load_texture(name)
-    mesh = Prism::Mesh.new(File.join(__DIR__, "./res/models/#{name}.obj"))
+    mesh = Prism::Model.load(File.join(__DIR__, "./res/models/#{name}.obj"))
     texture_pack = Prism::TexturePack.new
     texture_pack.add "diffuse", texture
     Prism::TexturedModel.new(mesh, texture_pack)
@@ -126,9 +126,11 @@ class Demo < Prism::GameEngine
       m
     end
 
-    cube_model = Prism::TexturedModel.new(Prism::Mesh.cube(2), Prism::TexturePack.new.add("diffuse", load_texture("mud")))
+    # cube_model = Prism::TexturedModel.new(Prism::Mesh.cube(2), Prism::TexturePack.new.add("diffuse", load_texture("mud")))
+    person_model = Prism::Model.load(File.join(__DIR__, "./res/models/tree.obj"))
+    person_texture = load_texture("tree")
     person = Prism::Entity.new
-    person.add cube_model
+    person.add Prism::TexturedModel.new(person_model, Prism::TexturePack.new.add("diffuse", person_texture))
     person.add Prism::Material.new
     person.add Prism::PlayerMovement.new
     person.add Prism::InputSubscriber.new
