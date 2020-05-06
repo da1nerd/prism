@@ -3,6 +3,7 @@ require "./obj_index"
 module Prism
   # Represents an OBJ model.
   # This class can load and parses OBJ models
+  # DEPRECATED
   class OBJModel
     @verticies : Array(Vector3f)
     @textures : Array(Vector2f)

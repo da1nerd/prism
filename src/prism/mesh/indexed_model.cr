@@ -1,4 +1,5 @@
 module Prism
+  # DEPRECATED
   class IndexedModel
     @positions : Array(Vector3f)
     @tex_coords : Array(Vector2f)

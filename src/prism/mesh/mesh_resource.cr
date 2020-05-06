@@ -5,6 +5,7 @@ module Prism
   #
   # Keeps track of references to a single GL mesh (represented by several buffers)
   # and performs cleanup operations during garbage collection
+  # DEPRECATED
   class MeshResource < Prism::ReferenceCounter
     # Vertex buffer object
     @vbo : LibGL::UInt

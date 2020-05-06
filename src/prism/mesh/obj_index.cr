@@ -1,4 +1,5 @@
 module Prism
+  # DEPRECATED
   class OBJIndex
     BASE       = 17i32
     MULTIPLIER = 31i32

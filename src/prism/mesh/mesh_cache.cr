@@ -1,4 +1,5 @@
 module Prism
+  # DEPRECATED
   struct MeshCache
     property verticies, indicies, calc_normals
 

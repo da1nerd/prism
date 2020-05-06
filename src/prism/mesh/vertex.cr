@@ -1,4 +1,5 @@
 module Prism
+  # DEPRECATED
   struct Vertex
     SIZE = 8
 
