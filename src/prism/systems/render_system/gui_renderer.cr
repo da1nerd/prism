@@ -5,7 +5,7 @@ module Prism::Systems
     @quad : Prism::Model
 
     def initialize
-      @quad = Prism::Model.load([-1, 1, -1, -1, 1, 1, 1, -1] of Float32)
+      @quad = Prism::Model.load_2f([-1, 1, -1, -1, 1, 1, 1, -1] of Float32)
     end
 
     def create_transformation_matrix(translation : Vector2f, scale : Vector2f)

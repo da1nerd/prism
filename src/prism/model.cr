@@ -58,7 +58,7 @@ module Prism
 
     # Loads some 2d vertices into a model.
     # This is useful for creating models for the GUI
-    def self.load(vertices : Array(Float32))
+    def self.load_2f(vertices : Array(Float32))
       if vertices.size % 2 != 0
         raise "2d vertices expected."
       end
