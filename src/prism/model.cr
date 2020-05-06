@@ -56,22 +56,27 @@ module Prism
       load(data.vertices, data.texture_coords, data.normals, data.indices)
     end
 
-    # Loads some positions into a model.
+    # Loads some vertices into a model.
     # This is useful for creating models for the GUI
-    def self.load(positions : Array(Float32))
+    # This is designed to load 2d vertices
+    def self.load(vertices : Array(Float32))
+      if vertices.size % 2 != 0
+        raise "2d vertices expected."
+      end
       vao_id = create_vao
       vbos = [] of LibGL::UInt
-      vbos << store_data_in_attribute_list(0, 2, positions)
+      vbos << store_data_in_attribute_list(0, 2, vertices)
       unbind_vao
-      Model.new(vao_id, vbos, (positions.size / 2).to_i32, vbos.size)
+      Model.new(vao_id, vbos, (vertices.size / 2).to_i32, vbos.size)
     end
 
     # Loads some raw data into open gl and returns a model object that can be used for drawing.
-    def self.load(positions : Array(Float32), texture_coords : Array(Float32), normals : Array(Float32), indicies : Array(Int32)) : Prism::Model
+    # This is designed to load 3d vertices
+    def self.load(vertices : Array(Float32), texture_coords : Array(Float32), normals : Array(Float32), indicies : Array(Int32)) : Prism::Model
       vao_id = create_vao
       vbos = [] of LibGL::UInt
       vbos << bind_indicies_buffer(indicies)
-      vbos << store_data_in_attribute_list(0, 3, positions)
+      vbos << store_data_in_attribute_list(0, 3, vertices)
       vbos << store_data_in_attribute_list(1, 2, texture_coords)
       vbos << store_data_in_attribute_list(2, 3, normals)
       unbind_vao
