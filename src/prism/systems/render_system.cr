@@ -92,6 +92,7 @@ module Prism::Systems
       view_matrix = calculate_camera_view_matrix(cam_entity)
       eye_pos = cam_entity.get(Prism::Transform).as(Prism::Transform).pos
 
+
       # start shading
       prepare
 
@@ -121,7 +122,6 @@ module Prism::Systems
       #
       # GUI
       #
-
       @gui_renderer.render(@guis)
 
       #
@@ -154,18 +154,6 @@ module Prism::Systems
 
     def prepare
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
-
-      LibGL.enable(LibGL::BLEND)
-      LibGL.blend_equation(LibGL::FUNC_ADD)
-      LibGL.blend_func(LibGL::ONE, LibGL::ONE_MINUS_SRC_ALPHA)
-
-      LibGL.depth_mask(LibGL::FALSE)
-      LibGL.depth_func(LibGL::EQUAL)
-
-      LibGL.depth_func(LibGL::LESS)
-      LibGL.depth_mask(LibGL::TRUE)
-      LibGL.disable(LibGL::BLEND)
-
       LibGL.clear_color(SKY_COLOR.x, SKY_COLOR.y, SKY_COLOR.z, 1f32)
       LibGL.front_face(LibGL::CW)
       LibGL.cull_face(LibGL::BACK)
