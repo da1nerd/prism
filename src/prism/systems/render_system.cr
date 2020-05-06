@@ -13,12 +13,14 @@ module Prism::Systems
     @terrains : Array(Crash::Entity)
     @lights : Array(Crash::Entity)
     @cameras : Array(Crash::Entity)
+    @guis : Array(Crash::Entity)
 
     @entity_shader : Prism::EntityShader = Prism::EntityShader.new
     @entity_renderer : Prism::Systems::EntityRenderer
 
     @terrain_shader : Prism::TerrainShader = Prism::TerrainShader.new
     @terrain_renderer : Prism::Systems::TerrainRenderer
+    @gui_renderer : Prism::Systems::GUIRenderer = Prism::Systems::GUIRenderer.new
 
     def initialize
       @entity_renderer = Prism::Systems::EntityRenderer.new(@entity_shader)
@@ -28,6 +30,7 @@ module Prism::Systems
       @terrains = [] of Crash::Entity
       @lights = [] of Crash::Entity
       @cameras = [] of Crash::Entity
+      @guis = [] of Crash::Entity
     end
 
     @[Override]
@@ -37,6 +40,7 @@ module Prism::Systems
       # TODO: just get the lights within range
       @lights = engine.get_entities Prism::DirectionalLight
       @cameras = engine.get_entities Prism::Camera
+      @guis = engine.get_entities Prism::GUITexture
     end
 
     # Uses the transformation of the *entity* to calculate the view that the camera has of the world.
@@ -133,6 +137,11 @@ module Prism::Systems
       end
       @terrain_renderer.render(@terrains)
       @terrain_shader.stop
+
+      #
+      # GUI
+      #
+      @gui_renderer.render(@guis)
     end
 
     @[Override]
@@ -144,18 +153,6 @@ module Prism::Systems
 
     def prepare
       LibGL.clear(LibGL::COLOR_BUFFER_BIT | LibGL::DEPTH_BUFFER_BIT)
-
-      LibGL.enable(LibGL::BLEND)
-      LibGL.blend_equation(LibGL::FUNC_ADD)
-      LibGL.blend_func(LibGL::ONE, LibGL::ONE_MINUS_SRC_ALPHA)
-
-      LibGL.depth_mask(LibGL::FALSE)
-      LibGL.depth_func(LibGL::EQUAL)
-
-      LibGL.depth_func(LibGL::LESS)
-      LibGL.depth_mask(LibGL::TRUE)
-      LibGL.disable(LibGL::BLEND)
-
       LibGL.clear_color(SKY_COLOR.x, SKY_COLOR.y, SKY_COLOR.z, 1f32)
       LibGL.front_face(LibGL::CW)
       LibGL.cull_face(LibGL::BACK)
