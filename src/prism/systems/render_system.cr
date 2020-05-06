@@ -119,11 +119,6 @@ module Prism::Systems
       @entity_shader.stop
 
       #
-      # GUI
-      #
-      @gui_renderer.render(@guis)
-
-      #
       # terrain
       #
       @terrain_shader.start
@@ -142,6 +137,11 @@ module Prism::Systems
       end
       @terrain_renderer.render(@terrains)
       @terrain_shader.stop
+
+      #
+      # GUI
+      #
+      @gui_renderer.render(@guis)
     end
 
     @[Override]

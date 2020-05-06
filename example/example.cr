@@ -126,11 +126,8 @@ class Demo < Prism::GameEngine
       m
     end
 
-    # cube_model = Prism::TexturedModel.new(Prism::Mesh.cube(2), Prism::TexturePack.new.add("diffuse", load_texture("mud")))
-    person_model = Prism::Model.load(File.join(__DIR__, "./res/models/tree.obj"))
-    person_texture = load_texture("tree")
     person = Prism::Entity.new
-    person.add Prism::TexturedModel.new(person_model, Prism::TexturePack.new.add("diffuse", person_texture))
+    person.add load_model("person")
     person.add Prism::Material.new
     person.add Prism::PlayerMovement.new
     person.add Prism::InputSubscriber.new
@@ -139,6 +136,10 @@ class Demo < Prism::GameEngine
     person.get(Prism::Transform).as(Prism::Transform).move_north(32).move_east(32).elevate_to(20)
     person.add Prism::Camera.new
     add_entity person
+
+    gui_entity = Prism::Entity.new
+    gui_entity.add Prism::GUITexture.new(load_texture("health"), Vector2f.new(-0.75, 0.95), Vector2f.new(0.25, 0.25))
+    add_entity gui_entity
 
     # Enable this (and disable the person above) to enable a free flying camera
     # camera = Prism::GhostCamera.new

@@ -17,6 +17,9 @@ module Prism::Systems
     def render(entities : Array(Crash::Entity))
 
       LibGL.front_face(LibGL::CCW)
+      LibGL.enable(LibGL::BLEND)
+      LibGL.blend_func(LibGL::SRC_ALPHA, LibGL::ONE_MINUS_SRC_ALPHA)
+      LibGL.disable(LibGL::DEPTH_TEST)
       @shader.start
       @quad.bind
       entities.each do |entity|
@@ -25,6 +28,8 @@ module Prism::Systems
         @shader.transformation_matrix = create_transformation_matrix(gui.position, gui.scale)
         LibGL.draw_arrays(LibGL::TRIANGLE_STRIP, 0, @quad.vertex_count)
       end
+      LibGL.enable(LibGL::DEPTH_TEST)
+      LibGL.disable(LibGL::BLEND)
       @quad.unbind
       @shader.stop
       LibGL.front_face(LibGL::CW)
