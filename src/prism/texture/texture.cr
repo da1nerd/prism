@@ -2,6 +2,8 @@ require "lib_gl"
 require "./bitmap.cr"
 
 module Prism
+  # TODO: the texture class should just be a light wrapper around the opengl texture id.
+  #  Texture atlasing, and loading should be handled elsewhere.
   class Texture
     @@loaded_textures = {} of String => TextureResource
     @resource : TextureResource
@@ -61,6 +63,7 @@ module Prism
     end
 
     # Loads a texture
+    # TODO: this should be made into static method, and the Texture should just be a wrapper around the OpenGL ids
     private def load_texture(file_path : String) : TextureResource
       # read texture data
       bitmap = Bitmap.new(file_path)

@@ -227,6 +227,15 @@ module Prism::Shader
       end
     end
 
+    # TODO: this should be able to automatically look up the sampler slot based on the uniform name and then bind the texture to it.
+    #  This will simplify a lot of things. E.g. we may not need to do any special logic for texture packs anymore.
+    def set_uniform(name : String, value : Prism::Texture)
+      # TODO: this is a quick hack so we can use texture iniforms.
+      #  eventually we will want to look up the sampler slot.
+      value.bind
+      set_uniform(name, 0)
+    end
+
     # Sets an integer uniform variable value
     def set_uniform(name : String, value : LibGL::Int)
       LibGL.uniform_1i(get_uniform_location(name), value)
