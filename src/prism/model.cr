@@ -19,24 +19,32 @@ module Prism
       @vbos.each { |id| LibGL.delete_buffers(1, pointerof(id)) }
     end
 
-    # Draws the model
-    def draw
+    def bind
       LibGL.bind_vertex_array(@vao_id)
 
       # enable attributes
       0.upto(@num_attrib_arrays - 1) do |i|
         LibGL.enable_vertex_attrib_array(i)
       end
+    end
 
-      offset = Pointer(Void).new(0)
-      LibGL.draw_elements(LibGL::TRIANGLES, @vertex_count, LibGL::UNSIGNED_INT, offset)
-
-      # enable attributes
+    def unbind
+      # disable attributes
       0.upto(@num_attrib_arrays - 1) do |i|
         LibGL.disable_vertex_attrib_array(i)
       end
 
       LibGL.bind_vertex_array(0)
+    end
+
+    # Convenience method to draw the model.
+    # This draws using `LibGL::TRIANGLES`.
+    # You can always manually draw using the `#bind` and `#unbind` mthods.
+    def draw
+      bind
+      offset = Pointer(Void).new(0)
+      LibGL.draw_elements(LibGL::TRIANGLES, @vertex_count, LibGL::UNSIGNED_INT, offset)
+      unbind
     end
 
     # Loads an OBJ file into opengl and returns a model object that can be used for drawing.
@@ -48,9 +56,19 @@ module Prism
       load(data.vertices, data.texture_coords, data.normals, data.indices)
     end
 
+    # Loads some positions into a model.
+    # This is useful for creating models for the GUI
+    def self.load(positions : Array(Float32))
+      vao_id = create_vao
+      vbos = [] of LibGL::UInt
+      vbos << store_data_in_attribute_list(0, 2, positions)
+      unbind_vao
+      Model.new(vao_id, vbos, (positions.size / 2).to_i32, vbos.size)
+    end
+
     # Loads some raw data into open gl and returns a model object that can be used for drawing.
     def self.load(positions : Array(Float32), texture_coords : Array(Float32), normals : Array(Float32), indicies : Array(Int32)) : Prism::Model
-      vao_id = create_vao()
+      vao_id = create_vao
       vbos = [] of LibGL::UInt
       vbos << bind_indicies_buffer(indicies)
       vbos << store_data_in_attribute_list(0, 3, positions)

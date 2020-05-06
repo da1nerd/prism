@@ -13,12 +13,14 @@ module Prism::Systems
     @terrains : Array(Crash::Entity)
     @lights : Array(Crash::Entity)
     @cameras : Array(Crash::Entity)
+    @guis : Array(Crash::Entity)
 
     @entity_shader : Prism::EntityShader = Prism::EntityShader.new
     @entity_renderer : Prism::Systems::EntityRenderer
 
     @terrain_shader : Prism::TerrainShader = Prism::TerrainShader.new
     @terrain_renderer : Prism::Systems::TerrainRenderer
+    @gui_renderer : Prism::Systems::GUIRenderer = Prism::Systems::GUIRenderer.new
 
     def initialize
       @entity_renderer = Prism::Systems::EntityRenderer.new(@entity_shader)
@@ -28,6 +30,7 @@ module Prism::Systems
       @terrains = [] of Crash::Entity
       @lights = [] of Crash::Entity
       @cameras = [] of Crash::Entity
+      @guis = [] of Crash::Entity
     end
 
     @[Override]
@@ -37,6 +40,7 @@ module Prism::Systems
       # TODO: just get the lights within range
       @lights = engine.get_entities Prism::DirectionalLight
       @cameras = engine.get_entities Prism::Camera
+      @guis = engine.get_entities Prism::GUITexture
     end
 
     # Uses the transformation of the *entity* to calculate the view that the camera has of the world.
@@ -113,6 +117,12 @@ module Prism::Systems
       @entity_renderer.render(@grouped_entities)
       @grouped_entities.clear
       @entity_shader.stop
+
+      #
+      # GUI
+      #
+
+      @gui_renderer.render(@guis)
 
       #
       # terrain
