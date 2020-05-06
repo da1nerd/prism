@@ -92,7 +92,6 @@ module Prism::Systems
       view_matrix = calculate_camera_view_matrix(cam_entity)
       eye_pos = cam_entity.get(Prism::Transform).as(Prism::Transform).pos
 
-
       # start shading
       prepare
 

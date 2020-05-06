@@ -56,9 +56,8 @@ module Prism
       load(data.vertices, data.texture_coords, data.normals, data.indices)
     end
 
-    # Loads some vertices into a model.
+    # Loads some 2d vertices into a model.
     # This is useful for creating models for the GUI
-    # This is designed to load 2d vertices
     def self.load(vertices : Array(Float32))
       if vertices.size % 2 != 0
         raise "2d vertices expected."
@@ -68,6 +67,18 @@ module Prism
       vbos << store_data_in_attribute_list(0, 2, vertices)
       unbind_vao
       Model.new(vao_id, vbos, (vertices.size / 2).to_i32, vbos.size)
+    end
+
+    # Loads some 3d vertices into a model.
+    def self.load_f3(vertices : Array(Float32))
+      if vertices.size % 3 != 0
+        raise "3d vertices expected."
+      end
+      vao_id = create_vao
+      vbos = [] of LibGL::UInt
+      vbos << store_data_in_attribute_list(0, 3, vertices)
+      unbind_vao
+      Model.new(vao_id, vbos, (vertices.size / 3).to_i32, vbos.size)
     end
 
     # Loads some raw data into open gl and returns a model object that can be used for drawing.
