@@ -41,7 +41,10 @@ module Prism
 
     # Loads an OBJ file into opengl and returns a model object that can be used for drawing.
     def self.load(file_name : String) : Prism::Model
-      data = OBJ.load(file_name)
+      load(OBJ.load(file_name))
+    end
+
+    def self.load(data : ModelData) : Prism::Model
       load(data.vertices, data.texture_coords, data.normals, data.indices)
     end
 

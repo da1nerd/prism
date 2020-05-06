@@ -1,7 +1,7 @@
 module Prism::OBJ
   extend self
 
-  def load(file_name : String) : OBJ::ModelData
+  def load(file_name : String) : Prism::ModelData
     vertices = [] of OBJ::Vertex
     textures = [] of Vector2f
     normals = [] of Vector3f
@@ -54,7 +54,7 @@ module Prism::OBJ
     textures_array = Array(Float32).new(vertices.size * 2, 0)
     normals_array = Array(Float32).new(vertices.size * 3, 0)
     furthest = convert_data_to_arrays(vertices, textures, normals, vertices_array, textures_array, normals_array)
-    OBJ::ModelData.new(vertices_array, textures_array, normals_array, indices, furthest)
+    Prism::ModelData.new(vertices_array, textures_array, normals_array, indices, furthest)
   end
 
   private def process_vertex(vertex : Array(String), vertices : Array(OBJ::Vertex), indices : Array(Int32))

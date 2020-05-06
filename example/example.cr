@@ -85,7 +85,7 @@ class Demo < Prism::GameEngine
       green: Prism::Texture.new(File.join(__DIR__, "./res/textures/grassFlowers.png")),
       blue: Prism::Texture.new(File.join(__DIR__, "./res/textures/path.png"))
     )
-    terrain = Prism::Mesh.terrain(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"), texture_pack)
+    terrain = Prism::ModelData.terrain(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"), texture_pack)
     add_entity terrain
 
     # Add a merchant stall

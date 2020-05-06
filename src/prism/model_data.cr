@@ -1,4 +1,4 @@
-module Prism::OBJ
+module Prism
   class ModelData
     @vertices : Array(Float32)
     @texture_coords : Array(Float32)

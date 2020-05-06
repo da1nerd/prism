@@ -32,14 +32,20 @@ module Prism
     end
   end
 
-
-  # TODO: migrate this into `ModelData` as a generator. e.g. `ModelData.generate_terrain`.
-  class Mesh
+  # TODO: the terrain model data should be a subclass of ModelData.
+  #  then we can do something like
+  #  ```
+  # terrain_model = Model.load(TerrainData.new(height_map, textures))
+  #  ```
+  #  This will keep the model data abstract from the model.
+  #
+  class ModelData
     TERRAIN_SIZE            = 800
     TERRAIN_MAX_HEIGHT      =  40
     TERRAIN_MAX_PIXEL_COLOR = 256 * 256 * 256 # because there are three color channels
 
     # Generates a new terrain entity.
+    # TODO: move this onto the terrain class as *generate_terrain
     def self.terrain(grid_x : Int32, grid_z : Int32, height_map : String, textures : Prism::TerrainTexturePack) : Prism::TerrainEntity
       entity = Prism::TerrainEntity.new
 
@@ -77,22 +83,6 @@ module Prism
           normals << norm.x
           normals << norm.y
           normals << norm.z
-
-          # vertices.push(Prism::Vertex.new(
-          #   # vertex position
-          #   Vector3f.new(
-          #     (j / (vertex_count - 1) * TERRAIN_SIZE).to_f32,
-          #     height,
-          #     (i / (vertex_count - 1) * TERRAIN_SIZE).to_f32
-          #   ),
-          #   # texture coordinates
-          #   Vector2f.new(
-          #     j.to_f32 / (vertex_count - 1),
-          #     i.to_f32 / (vertex_count - 1)
-          #   ),
-          #   # normals
-          #   calculate_normals(j, i, bitmap)
-          # ))
         end
       end
 
@@ -112,7 +102,7 @@ module Prism
       end
 
       {
-        model:    Prism::Model.load(vertices, texture_coords, normals, indices),
+        model:   Prism::Model.load(vertices, texture_coords, normals, indices),
         heights: heights,
       }
     end

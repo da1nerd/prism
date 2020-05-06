@@ -1,34 +1,44 @@
 module Prism
+  class ModelData
+    # Generates a square plane
+    def self.generate_plane(size : Int32)
+      vertex_count = size
 
-  # TODO: migrate this into `ModelData` as a generator. e.g. `ModelData.generate_plane`
-  class Mesh
-    # Generates a flat plane mesh
-    def self.plane(width : Float32, depth : Float32)
-      plane(width, depth, {
-        bottom_left:  Vector2f.new(0, 0),
-        top_left:     Vector2f.new(0, 1),
-        bottom_right: Vector2f.new(1, 0),
-        top_right:    Vector2f.new(1, 1),
-      })
-    end
+      vertices = [] of Float32
+      texture_coords = [] of Float32
+      normals = [] of Float32
+      indices = [] of Int32
+      0.upto(vertex_count - 1) do |i|
+        0.upto(vertex_count - 1) do |j|
+          height = 0f32
+          vertices << (j / (vertex_count - 1) * size).to_f32
+          vertices << height
+          vertices << (i / (vertex_count - 1) * size).to_f32
+          texture_coords << j.to_f32 / (vertex_count - 1)
+          texture_coords << i.to_f32 / (vertex_count - 1)
+          normals << 0
+          normals << 1
+          normals << 0
+        end
+      end
 
-    def self.plane(width : Float32, depth : Float32, texture_coords : TextureCoords)
-      field_depth = 1.0f32
-      field_width = 1.0f32
+      0.upto(vertex_count - 2) do |gz|
+        0.upto(vertex_count - 2) do |gx|
+          top_left : Int32 = (gz * vertex_count) + gx
+          top_right : Int32 = top_left + 1
+          bottom_left : Int32 = ((gz + 1)*vertex_count) + gx
+          bottom_right : Int32 = bottom_left + 1
+          indices << top_left
+          indices << bottom_left
+          indices << top_right
+          indices << top_right
+          indices << bottom_left
+          indices << bottom_right
+        end
+      end
 
-      verticies = [
-        Prism::Vertex.new(Vector3f.new(0, 0, 0), texture_coords[:bottom_left]),
-        Prism::Vertex.new(Vector3f.new(0, 0, depth), texture_coords[:top_left]),
-        Prism::Vertex.new(Vector3f.new(width, 0, 0), texture_coords[:bottom_right]),
-        Prism::Vertex.new(Vector3f.new(width, 0, depth), texture_coords[:top_right]),
-      ]
-
-      indicies = Array(Int32){
-        0, 1, 2,
-        2, 1, 3,
-      }
-
-      Mesh.new(verticies, indicies, true)
+      # TODO: not sure what the furthest point is for.
+      Prism::ModelData.new(vertices, texture_coords, normals, indices, 0f32)
     end
   end
 end
