@@ -8,20 +8,20 @@ module Prism::Systems
 
     # Renders batches of `TexturedModel`s at a time for increased performance
     def render(entities : Hash(Prism::TexturedModel, Array(Crash::Entity)))
-      entities.each do |model, batch|
-        prepare_textured_model model
+      entities.each do |textured_model, batch|
+        prepare_textured_model textured_model
         batch.each do |entity|
           prepare_instance entity
-          model.mesh.draw
+          textured_model.model.draw
         end
         unbind_textured_model
       end
     end
 
     # Prepares the shader before rendering a batch of `TexturedModel`s
-    def prepare_textured_model(model : Prism::TexturedModel)
+    def prepare_textured_model(textured_model : Prism::TexturedModel)
       # TODO: should the vertex attribute arrays be enabled here instead of when the shader starts?
-      @shader.texture = model.texture
+      @shader.texture = textured_model.texture
     end
 
     # Prepares the shader for rendering the actual *entity*

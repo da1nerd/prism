@@ -1,9 +1,10 @@
 require "annotations"
 
 module Prism
-  class Mesh
-    # Generates a cube mesh
-    def self.cube(size : Float32) : Prism::Mesh
+  class ModelData
+    # Generates a cube model
+    # TODO: finish migrating this
+    def self.generate_cube(size : Float32) : Prism::ModelData
       cube(size, {
         bottom_left:  Vector2f.new(0, 0),
         top_left:     Vector2f.new(0, 1),
@@ -12,7 +13,7 @@ module Prism
       })
     end
 
-    def self.cube(size : Float32, texture_coords : TextureCoords) : Prism::Mesh
+    def self.generate_cube(size : Float32, texture_coords : TextureCoords) : Prism::ModelData
       field_depth = 1.0f32
       field_width = 1.0f32
 
@@ -74,7 +75,7 @@ module Prism
         20, 22, 21,
       }
 
-      Mesh.new(verticies, indicies, true)
+      ModelData.new(verticies, indicies, true)
     end
   end
 end

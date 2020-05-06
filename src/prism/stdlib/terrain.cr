@@ -32,12 +32,20 @@ module Prism
     end
   end
 
-  class Mesh
+  # TODO: the terrain model data should be a subclass of ModelData.
+  #  then we can do something like
+  #  ```
+  # terrain_model = Model.load(TerrainData.new(height_map, textures))
+  #  ```
+  #  This will keep the model data abstract from the model.
+  #
+  class ModelData
     TERRAIN_SIZE            = 800
     TERRAIN_MAX_HEIGHT      =  40
     TERRAIN_MAX_PIXEL_COLOR = 256 * 256 * 256 # because there are three color channels
 
     # Generates a new terrain entity.
+    # TODO: move this onto the terrain class as *generate_terrain
     def self.terrain(grid_x : Int32, grid_z : Int32, height_map : String, textures : Prism::TerrainTexturePack) : Prism::TerrainEntity
       entity = Prism::TerrainEntity.new
 
@@ -47,7 +55,7 @@ module Prism
       terrain = generate_terrain(height_map)
       transform = Transform.new.move_to(grid_x.to_f32 * TERRAIN_SIZE, 0f32, grid_z.to_f32 * TERRAIN_SIZE)
 
-      entity.add Prism::Terrain.new(terrain[:mesh], terrain[:heights], textures, transform, TERRAIN_SIZE.to_f32), Prism::Terrain
+      entity.add Prism::Terrain.new(terrain[:model], terrain[:heights], textures, transform, TERRAIN_SIZE.to_f32), Prism::Terrain
       entity.add Prism::Material.new
       entity
     end
@@ -58,27 +66,23 @@ module Prism
       # reset height map
       heights = Array.new(vertex_count) { [] of Float32 }
 
-      vertices = [] of Prism::Vertex
+      vertices = [] of Float32
+      texture_coords = [] of Float32
+      normals = [] of Float32
       indices = [] of Int32
       0.upto(vertex_count - 1) do |i|
         0.upto(vertex_count - 1) do |j|
           height = get_height(j, i, bitmap)
           heights[j] << height
-          vertices.push(Prism::Vertex.new(
-            # vertex position
-            Vector3f.new(
-              (j / (vertex_count - 1) * TERRAIN_SIZE).to_f32,
-              height,
-              (i / (vertex_count - 1) * TERRAIN_SIZE).to_f32
-            ),
-            # texture coordinates
-            Vector2f.new(
-              j.to_f32 / (vertex_count - 1),
-              i.to_f32 / (vertex_count - 1)
-            ),
-            # normals
-            calculate_normals(j, i, bitmap)
-          ))
+          vertices << (j / (vertex_count - 1) * TERRAIN_SIZE).to_f32
+          vertices << height
+          vertices << (i / (vertex_count - 1) * TERRAIN_SIZE).to_f32
+          texture_coords << j.to_f32 / (vertex_count - 1)
+          texture_coords << i.to_f32 / (vertex_count - 1)
+          norm = calculate_normals(j, i, bitmap)
+          normals << norm.x
+          normals << norm.y
+          normals << norm.z
         end
       end
 
@@ -98,7 +102,7 @@ module Prism
       end
 
       {
-        mesh:    Mesh.new(vertices, indices),
+        model:   Prism::Model.load(vertices, texture_coords, normals, indices),
         heights: heights,
       }
     end
@@ -134,16 +138,16 @@ module Prism
   # height : Float32 = terrain.height_at(entity)
   # ```
   class Terrain < Crash::Component
-    getter model, transform, material
+    getter textured_model, transform, material
 
-    def initialize(@mesh : Prism::Mesh, @heights : Array(Array(Float32)), textures : Prism::TerrainTexturePack, @transform : Prism::Transform, @terrain_size : Float32)
+    def initialize(@model : Prism::Model, @heights : Array(Array(Float32)), textures : Prism::TerrainTexturePack, @transform : Prism::Transform, @terrain_size : Float32)
       texture_pack = Prism::TexturePack.new
       texture_pack.add "backgroundTexture", textures.background
       texture_pack.add "blendMap", textures.blend_map
       texture_pack.add "rTexture", textures.red
       texture_pack.add "gTexture", textures.green
       texture_pack.add "bTexture", textures.blue
-      @model = Prism::TexturedModel.new(@mesh, texture_pack)
+      @textured_model = Prism::TexturedModel.new(@model, texture_pack)
     end
 
     def height_at(object : Prism::Entity)

@@ -1,7 +1,6 @@
 require "./spec_helper"
 
 module Prism
-
   describe Prism::Shader do
     it "loads a shader program with from compiled storage" do
       program = Prism::Shader.read_shader_file "a.txt" do |path|
