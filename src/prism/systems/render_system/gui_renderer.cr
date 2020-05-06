@@ -15,7 +15,6 @@ module Prism::Systems
     end
 
     def render(entities : Array(Crash::Entity))
-
       LibGL.front_face(LibGL::CCW)
       LibGL.enable(LibGL::BLEND)
       LibGL.blend_func(LibGL::SRC_ALPHA, LibGL::ONE_MINUS_SRC_ALPHA)
