@@ -47,7 +47,6 @@ module Prism::Shader
     # In older versions of glsl code this will be variables prefixed with `attribute` keyword.
     # Newer versions of glsl use the `in` keyword.
     # In both cases these represent values stored in the "vertex attribute buffer" or "vertex buffer object" (vbo).
-    # See `MeshResource.vbo`.
     def bind_attribute(variable_name : String, attribute_location : LibGL::Int)
       LibGL.bind_attrib_location(@program, attribute_location, variable_name)
       @num_attributes += 1

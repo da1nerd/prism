@@ -289,10 +289,7 @@ module Prism::Shader
     # This is handy because you don't need to worry about declaring the attributes yourself.
     # You only need to:
     # 1. define the attributes in your glsl code
-    # 2. write the data to the buffer. `Mesh`
-    # 3. position the pointers before drawing. `Mesh`
-    #
-    # TODO: It would be nice to eventually automate point 3 above.
+    # 2. write the data to the buffer. `Model`
     private def automatically_bind_attributes(shader_text : String)
       version = shader_text.scan(/#version\s+(\d+)/)[0][1].to_i
       keyword = version > 120 ? "in" : "attribute"

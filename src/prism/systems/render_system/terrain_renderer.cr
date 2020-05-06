@@ -10,7 +10,7 @@ module Prism::Systems
         terrain = entity.get(Prism::Terrain).as(Prism::Terrain)
         prepare_terrain entity
         load_model_matrix terrain.transform
-        terrain.model.mesh.draw
+        terrain.textured_model.model.draw
         unbind_textured_model
       end
     end
@@ -20,7 +20,7 @@ module Prism::Systems
       material = entity.get(Prism::Material).as(Prism::Material)
       terrain = entity.get(Prism::Terrain).as(Prism::Terrain)
       # TODO: should the vertex attribute arrays be enabled here instead of when the shader starts?
-      @shader.texture = terrain.model.texture
+      @shader.texture = terrain.textured_model.texture
       disable_culling if material.has_transparency?
       if material.wire_frame?
         disable_culling

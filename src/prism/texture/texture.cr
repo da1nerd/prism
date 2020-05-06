@@ -13,7 +13,7 @@ module Prism
     def initialize
       @file_name = ""
       @resource = TextureResource.new
-      @atlas = Prism::TextureAtlas.new()
+      @atlas = Prism::TextureAtlas.new
     end
 
     def initialize(file_path : String)

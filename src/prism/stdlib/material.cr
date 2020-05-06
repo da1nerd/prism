@@ -16,7 +16,7 @@ module Prism
     @has_transparency : Bool = false
 
     # This allows you to simulate some half decent lighting.
-    # This is helpful when rendering entities that are composed of a bunch of flat meshes. e.g. plants, trees, etc.
+    # This is helpful when rendering entities that are composed of a bunch of flat surfaces. e.g. plants, trees, etc.
     # @[Prism::Shader::Field(name: "useFakeLighting")]
     @use_fake_lighting : Bool = false
 
