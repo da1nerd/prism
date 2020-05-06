@@ -45,7 +45,7 @@ module Prism
       load(data.vertices, data.texture_coords, data.normals, data.indices)
     end
 
-    # Loads some raw mesh data into open gl and returns a model object that can be used for drawing.
+    # Loads some raw data into open gl and returns a model object that can be used for drawing.
     def self.load(positions : Array(Float32), texture_coords : Array(Float32), normals : Array(Float32), indicies : Array(Int32)) : Prism::Model
       vao_id = create_vao()
       vbos = [] of LibGL::UInt

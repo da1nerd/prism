@@ -1,4 +1,6 @@
 module Prism
+
+  # TODO: migrate this into `ModelData` as a generator. e.g. `ModelData.generate_plane`
   class Mesh
     # Generates a flat plane mesh
     def self.plane(width : Float32, depth : Float32)

@@ -32,6 +32,8 @@ module Prism
     end
   end
 
+
+  # TODO: migrate this into `ModelData` as a generator. e.g. `ModelData.generate_terrain`.
   class Mesh
     TERRAIN_SIZE            = 800
     TERRAIN_MAX_HEIGHT      =  40
@@ -47,7 +49,7 @@ module Prism
       terrain = generate_terrain(height_map)
       transform = Transform.new.move_to(grid_x.to_f32 * TERRAIN_SIZE, 0f32, grid_z.to_f32 * TERRAIN_SIZE)
 
-      entity.add Prism::Terrain.new(terrain[:mesh], terrain[:heights], textures, transform, TERRAIN_SIZE.to_f32), Prism::Terrain
+      entity.add Prism::Terrain.new(terrain[:model], terrain[:heights], textures, transform, TERRAIN_SIZE.to_f32), Prism::Terrain
       entity.add Prism::Material.new
       entity
     end
@@ -110,7 +112,7 @@ module Prism
       end
 
       {
-        mesh:    Prism::Model.load(vertices, texture_coords, normals, indices),
+        model:    Prism::Model.load(vertices, texture_coords, normals, indices),
         heights: heights,
       }
     end
@@ -146,16 +148,16 @@ module Prism
   # height : Float32 = terrain.height_at(entity)
   # ```
   class Terrain < Crash::Component
-    getter model, transform, material
+    getter textured_model, transform, material
 
-    def initialize(@mesh : Prism::Model, @heights : Array(Array(Float32)), textures : Prism::TerrainTexturePack, @transform : Prism::Transform, @terrain_size : Float32)
+    def initialize(@model : Prism::Model, @heights : Array(Array(Float32)), textures : Prism::TerrainTexturePack, @transform : Prism::Transform, @terrain_size : Float32)
       texture_pack = Prism::TexturePack.new
       texture_pack.add "backgroundTexture", textures.background
       texture_pack.add "blendMap", textures.blend_map
       texture_pack.add "rTexture", textures.red
       texture_pack.add "gTexture", textures.green
       texture_pack.add "bTexture", textures.blue
-      @model = Prism::TexturedModel.new(@mesh, texture_pack)
+      @textured_model = Prism::TexturedModel.new(@model, texture_pack)
     end
 
     def height_at(object : Prism::Entity)

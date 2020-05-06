@@ -1,6 +1,7 @@
 require "annotations"
 
 module Prism
+  # TODO: migrate this into `ModelData` as a generator. e.g. `ModelData.generate_cube`
   class Mesh
     # Generates a cube mesh
     def self.cube(size : Float32) : Prism::Mesh
