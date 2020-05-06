@@ -9,8 +9,8 @@ module Prism
     # The *vao_id* is the vertex array object id.
     # the *vbos* are just an array of vertex buffers that should be deleted when the object is garbage collected.
     # The *vertex_count* is how many verticies are in the model.
-    # *num_attributes* indicates how many vertex attribute arrays will be used.
-    def initialize(@vao_id : LibGL::UInt, @vbos : Array(LibGL::UInt), @vertex_count : Int32, @num_attributes : UInt32)
+    # the *num_attrib_arrays* indicates how many vertex attribute arrays need to be used.
+    def initialize(@vao_id : LibGL::UInt, @vbos : Array(LibGL::UInt), @vertex_count : Int32, @num_attrib_arrays : Int32)
     end
 
     def finalize
@@ -20,14 +20,20 @@ module Prism
 
     def draw
       LibGL.bind_vertex_array(@vao_id)
-      0.upto(@num_attributes - 1) do |i|
+
+      # enable attributes
+      0.upto(@num_attrib_arrays - 1) do |i|
         LibGL.enable_vertex_attrib_array(i)
       end
+
       offset = Pointer(Void).new(0)
       LibGL.draw_elements(LibGL::TRIANGLES, @vertex_count, LibGL::UNSIGNED_INT, offset)
-      0.upto(@num_attributes - 1) do |i|
+
+      # enable attributes
+      0.upto(@num_attrib_arrays - 1) do |i|
         LibGL.disable_vertex_attrib_array(i)
       end
+
       LibGL.bind_vertex_array(0)
     end
 
@@ -44,7 +50,9 @@ module Prism
       vbos << store_data_in_attribute_list(1, 2, texture_coords)
       vbos << store_data_in_attribute_list(2, 3, normals)
       unbind_vao
-      Model.new(vao_id, vbos, indicies.size, 3)
+      # TRICKY: one of the vbos is for the indicies, so we don't need an attribute array for that.
+      num_attrib_arrays = vbos.size - 1
+      Model.new(vao_id, vbos, indicies.size, num_attrib_arrays)
     end
 
     private def self.create_vao
