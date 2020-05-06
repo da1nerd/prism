@@ -86,7 +86,7 @@ module Prism::OBJ
       vertices_array[i * 3 + 1] = position.y
       vertices_array[i * 3 + 2] = position.z
       textures_array[i * 2] = texture_coord.x
-      textures_array[i * 2 + 1] = texture_coord.y
+      textures_array[i * 2 + 1] = 1 - texture_coord.y
       normals_array[i * 3] = normal_vector.x
       normals_array[i * 3 + 1] = normal_vector.y
       normals_array[i * 3 + 2] = normal_vector.z
