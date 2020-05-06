@@ -2,6 +2,7 @@ require "lib_gl"
 
 module Prism
   # Represents a 3d model that has been loaded into opengl.
+  # TODO: the static methods in here need to be moved into a module
   class Model
     getter vao_id, vertex_count
 
@@ -13,11 +14,13 @@ module Prism
     def initialize(@vao_id : LibGL::UInt, @vbos : Array(LibGL::UInt), @vertex_count : Int32, @num_attrib_arrays : Int32)
     end
 
+    # Deletes the vertex array and buffers durring garbage collection.
     def finalize
       LibGL.delete_vertex_arrays(1, out @vao_id)
       @vbos.each { |id| LibGL.delete_buffers(1, pointerof(id)) }
     end
 
+    # Draws the model
     def draw
       LibGL.bind_vertex_array(@vao_id)
 
@@ -37,11 +40,13 @@ module Prism
       LibGL.bind_vertex_array(0)
     end
 
+    # Loads an OBJ file into opengl and returns a model object that can be used for drawing.
     def self.load(file_name : String)
       data = OBJ.load(file_name)
       load(data.vertices, data.texture_coords, data.normals, data.indices)
     end
 
+    # Loads some raw mesh data into open gl and returns a model object that can be used for drawing.
     def self.load(positions : Array(Float32), texture_coords : Array(Float32), normals : Array(Float32), indicies : Array(Int32))
       vao_id = create_vao()
       vbos = [] of LibGL::UInt
@@ -55,6 +60,7 @@ module Prism
       Model.new(vao_id, vbos, indicies.size, num_attrib_arrays)
     end
 
+    # Creates a new vertex array object so we can store all of our buffered data.
     private def self.create_vao
       LibGL.gen_vertex_arrays(1, out vao_id)
       LibGL.bind_vertex_array(vao_id)
@@ -74,7 +80,9 @@ module Prism
     end
 
     # Stores some data into an attribute list.
+    # *attribute_number* is which attribute the data will be bound to. You should use sequental numbers starting at 0 otherwise something may break.
     # *coordinate_size* is how big the data is e.g. 3d coordinates, 2d coordinats.
+    # if your data is a 3d vector you should set the value to 3.
     private def self.store_data_in_attribute_list(attribute_number : LibGL::UInt, coordinate_size : LibGL::UInt, data : Array(Float32))
       LibGL.gen_buffers(1, out vbo_id)
       LibGL.bind_buffer(LibGL::ARRAY_BUFFER, vbo_id)
