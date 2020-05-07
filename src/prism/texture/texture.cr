@@ -4,25 +4,17 @@ require "./bitmap.cr"
 module Prism
   # Represents a texture that has been loaded into OpenGL
   class Texture
-    ReferencePool.create_persistent_pool(Texture)
+    ReferencePool.create_persistent_pool(UInt32) do |key, id|
+      # delete the texture
+      LibGL.delete_textures(1, pointerof(id))
+    end
 
     # Creates a new texture
     def initialize(@id : UInt32, @pool_key : String)
     end
 
     def finalize
-      LibGL.delete_textures(1, pointerof(@id))
-    end
-
-    # Returns the OpenGL texture id
-    def id
-      return @id
-    end
-
-    # Binds to the first sampler slot (0)
-    # DEPRECATED
-    def bind
-      bind(0)
+      pool.trash(@pool_key)
     end
 
     # Binds the texture to a sampler slot
@@ -41,11 +33,13 @@ module Prism
       if !pool.has_key? file_name
         pool.add(file_name, load_texture(file_name))
       end
-      return pool.use file_name
+
+      # produce a texture with the pooled texture id
+      Texture.new(pool.use(file_name), file_name)
     end
 
     # Loads a texture into opengl
-    private def self.load_texture(file_name : String) : Texture
+    private def self.load_texture(file_name : String) : UInt32
       # read texture data
       bitmap = Bitmap.new(file_name)
 
@@ -69,7 +63,7 @@ module Prism
 
       # close the texture
       LibGL.bind_texture(LibGL::TEXTURE_2D, 0)
-      return Texture.new(texture_id, file_name)
+      return texture_id
     end
   end
 end

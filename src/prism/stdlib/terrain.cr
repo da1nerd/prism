@@ -2,9 +2,9 @@ require "crash"
 require "annotation"
 
 module Prism
-
   struct TerrainTexturePack
     getter background, blend_map, red, green, blue
+
     def initialize(@background : Prism::Texture, @blend_map : Prism::Texture, @red : Prism::Texture, @green : Prism::Texture, @blue : Prism::Texture)
     end
   end
@@ -15,8 +15,9 @@ module Prism
     TERRAIN_MAX_PIXEL_COLOR = 256 * 256 * 256 # because there are three color channels
 
     # Generates a new terrain entity.
-    # TODO: move this onto the terrain class as *generate_terrain
-    def self.terrain(grid_x : Int32, grid_z : Int32, height_map : String, textures : Prism::TerrainTexturePack) : Prism::Entity
+    # TODO: this should just create the model data.
+    #  The rest of the terrain should be created elsewhere.
+    def self.generate_terrain(grid_x : Int32, grid_z : Int32, height_map : String, textures : Prism::TerrainTexturePack) : Prism::Entity
       entity = Prism::Entity.new
 
       x = (grid_x * TERRAIN_SIZE).to_f32

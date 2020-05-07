@@ -78,7 +78,7 @@ class Demo < Prism::GameEngine
       green: Prism::Texture.load(File.join(__DIR__, "./res/textures/grassFlowers.png")),
       blue: Prism::Texture.load(File.join(__DIR__, "./res/textures/path.png"))
     )
-    terrain = Prism::ModelData.terrain(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"), texture_pack)
+    terrain = Prism::ModelData.generate_terrain(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"), texture_pack)
     add_entity terrain
 
     # Add a merchant stall
@@ -96,9 +96,9 @@ class Demo < Prism::GameEngine
     add_entity tree
 
     # add a lamp
-    lamp = load_entity("lamp")
-    lamp.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(50).elevate_to(terrain.get(Prism::Terrain).as(Prism::Terrain).height_at(lamp))
-    add_entity lamp
+    # lamp = load_entity("lamp")
+    # lamp.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(50).elevate_to(terrain.get(Prism::Terrain).as(Prism::Terrain).height_at(lamp))
+    # add_entity lamp
 
     # Add some sunlight
     sun_light = Prism::Entity.new

@@ -98,8 +98,7 @@ module Prism::Systems
       # entities
       #
       @entity_shader.start
-      # TODO: should we pass the projection matrix to the renderer?
-      #  Also, should we calculate this just once? We could take this out of the camera.
+      # TODO: should we calculate the projection matrix just once? We could take this out of the camera.
       @entity_shader.projection_matrix = projection_matrix
       @entity_shader.view_matrix = view_matrix
       @entity_shader.eye_pos = eye_pos

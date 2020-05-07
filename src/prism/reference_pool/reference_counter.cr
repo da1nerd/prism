@@ -21,9 +21,12 @@ module Prism
     end
 
     # Trashes a single reference to the resource.
-    def trash_one
+    # This will return the resource value. This is just a convenience so we can clean up the value
+    # when the reference counter reaches 0. YOu should **never** use the returned value for anything other than cleanup.
+    def trash_one : T
       raise "You cannot decrement the counter below 0" if @count == 0
       @count -= 1
+      @resource
     end
 
     # Checks if this reference is orphaned (no references).

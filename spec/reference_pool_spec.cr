@@ -2,14 +2,14 @@ require "./spec_helper"
 include Prism
 
 class MyType
-  ReferencePool.create_persistent_pool(String)
+  ReferencePool.create_persistent_pool(String) { }
 end
 
 class MyChildType < MyType
 end
 
 class MyOtherType
-  ReferencePool.create_persistent_pool(String)
+  ReferencePool.create_persistent_pool(String) { }
 end
 
 describe MyType do
@@ -40,7 +40,7 @@ end
 
 describe Prism::ReferencePool(String) do
   it "adds a resource to the pool" do
-    pool = Prism::ReferencePool(String).new
+    pool = Prism::ReferencePool(String).new { }
     pool.has_key?("key").should eq(false)
     pool.add("key", "value")
     pool.has_key?("key").should eq(true)
@@ -49,7 +49,7 @@ describe Prism::ReferencePool(String) do
 
   it "uses a pooled reference" do
     value = "value"
-    pool = Prism::ReferencePool(String).new
+    pool = Prism::ReferencePool(String).new { }
     pool.add("key", value)
     pool.reference_count("key").should eq(0)
     used_value = pool.use("key")
@@ -58,7 +58,7 @@ describe Prism::ReferencePool(String) do
   end
 
   it "trashes a reference" do
-    pool = Prism::ReferencePool(String).new
+    pool = Prism::ReferencePool(String).new { }
     pool.add("key", "value")
     pool.use("key")
     pool.use("key")
@@ -68,7 +68,7 @@ describe Prism::ReferencePool(String) do
   end
 
   it "deletes an orphaned resource" do
-    pool = Prism::ReferencePool(String).new
+    pool = Prism::ReferencePool(String).new { }
     pool.add("key", "value")
     pool.use("key")
     pool.reference_count("key").should eq(1)
