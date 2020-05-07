@@ -5,6 +5,8 @@ module Prism
   # TODO: the texture class should just be a light wrapper around the opengl texture id.
   #  Texture atlasing, and loading should be handled elsewhere.
   class Texture
+    ReferencePool.create_persistent_pool(Texture)
+
     @@loaded_textures = {} of String => TextureResource
     @resource : TextureResource
     @file_name : String

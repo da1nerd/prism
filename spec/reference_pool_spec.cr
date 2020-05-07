@@ -2,14 +2,14 @@ require "./spec_helper"
 include Prism
 
 class MyType
-  make_reference_pool(String)
+  ReferencePool.create_persistent_pool(String)
 end
 
 class MyChildType < MyType
 end
 
 class MyOtherType
-  make_reference_pool(String)
+  ReferencePool.create_persistent_pool(String)
 end
 
 describe MyType do
