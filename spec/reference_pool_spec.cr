@@ -1,6 +1,44 @@
 require "./spec_helper"
+include Prism
 
-describe Prism::ReferencePool do
+class MyType
+  make_reference_pool(String)
+end
+
+class MyChildType < MyType
+end
+
+class MyOtherType
+  make_reference_pool(String)
+end
+
+describe MyType do
+  it "maintains the pool accross inheritance" do
+    MyType.pool.size.should eq(0)
+    MyChildType.pool.size.should eq(0)
+    MyOtherType.pool.size.should eq(0)
+
+    MyType.pool.add("key", "value")
+
+    MyType.pool.size.should eq(1)
+    MyChildType.pool.size.should eq(1)
+    MyOtherType.pool.size.should eq(0)
+
+    MyChildType.pool.add("key2", "value")
+
+    MyType.pool.size.should eq(2)
+    MyChildType.pool.size.should eq(2)
+    MyOtherType.pool.size.should eq(0)
+
+    MyOtherType.pool.add("key", "value")
+
+    MyType.pool.size.should eq(2)
+    MyChildType.pool.size.should eq(2)
+    MyOtherType.pool.size.should eq(1)
+  end
+end
+
+describe Prism::ReferencePool(String) do
   it "adds a resource to the pool" do
     pool = Prism::ReferencePool(String).new
     pool.has_key?("key").should eq(false)
