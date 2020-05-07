@@ -3,9 +3,9 @@ module Prism
   # Items in the pool are available for re-use, and items without any references
   # are removed and garbage collected.
   class ReferencePool(T)
-    # Generates a new typed reference pool.
-    # A private singleton class, and methods will be injected to access the pool.
-    # This pool will persist to sub-classes as well.
+    # Generates a new typed `ReferencePool` that is unique to the class (and sub-classes) in which this macro is called.
+    # The `ReferencePool` is wrapped in a singleton so that it persists to all sub-classes.
+    # The pool itself will be made available from the class method `#pool`
     macro create_persistent_pool(t)
       # A singleton that provides a pool of `{{t}}`.
       # This pool will persist to sub-classes as well.
@@ -14,9 +14,18 @@ module Prism
           class_getter pool = ReferencePool({{t}}).new
       end
 
-      # Retrieve the `ReferencePool({{t}})` pool associated with this class.
+      # Retrieves the `ReferencePool({{t}})` pool.
+      # The pool allows you to re-use `{{t}}`s, and will automatically manage references to each `{{t}}`.
+      # See `ReferencePool` for more information.
       def self.pool
           {{t}}ReferencePool.pool
+      end
+
+      # Retrieves the `ReferencePool({{t}})` pool.
+      # The pool allows you to re-use `{{t}}`s, and will automatically manage references to each `{{t}}`.
+      # See `ReferencePool` for more information.
+      protected def pool
+        {{t}}ReferencePool.pool
       end
     end
 

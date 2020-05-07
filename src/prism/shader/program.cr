@@ -80,31 +80,17 @@ module Prism::Shader
     # uniform vec4 projectionMatrix
     # ```
     macro uniform(name, type)
-        {% if name.stringify.starts_with? ":" %}
-          {% if name == :texture %}
-            # Sets the value of the texture uniforms.
-            # This will automatically bind textures to sampler slots and attach those to the correct uniform.
-            def {{name.id}}=(pack : Prism::TexturePack)
-              set_texture_pack pack
-            end
-          {% else %}
-            {% raise "Unsupported uniform identifier #{name} in #{@type.stringify}." %}
-          {% end %}
-        {% elsif name == "texture" %}
-            {% raise "Reserved uniform name \"texture\" cannot be used in #{@type.stringify}. If you are trying to add textures use `uniform :texture, TexturePack` instead." %}
-        {% else %}
-          # Sets the value of the **{{name}}** uniform.
-          def {{name.id.underscore}}=(value : {{type}})
-              if value.is_a?(Shader::Serializable)
-                  _{{name.id}}_uniforms = value.to_uniform(true)
-                  _{{name.id}}_uniforms.each do |k, v|
-                      set_uniform("{{name.id}}.#{k}", v)
-                  end
-              else
-                  set_uniform("{{name.id}}", value)
-              end
+      # Sets the value of the **{{name}}** uniform.
+      def {{name.id.underscore}}=(value : {{type}})
+        if value.is_a?(Shader::Serializable)
+          _{{name.id}}_uniforms = value.to_uniform(true)
+          _{{name.id}}_uniforms.each do |k, v|
+            set_uniform("{{name.id}}.#{k}", v)
           end
-        {% end %}
+        else
+          set_uniform("{{name.id}}", value)
+        end
+      end
     end
 
     # Creates a new shader from *file_name*.
@@ -204,14 +190,6 @@ module Prism::Shader
         @resource.uniforms[name]
       else
         raise Exception.new "The uniform \"#{name}\" is not defined in your glsl code. Update your shader or remove \"#{name}\" from your Shader::Program."
-      end
-    end
-
-    # Sets the texture uniforms for all textures in the *pack*
-    # TODO: this might be deprecated in the future.
-    def set_texture_pack(pack : Prism::TexturePack)
-      pack.textures.each do |name, texture|
-        set_uniform(name, texture)
       end
     end
 

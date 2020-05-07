@@ -1,7 +1,7 @@
 module Prism
   # A generic shader for `Entity` objects.
   class EntityShader < Prism::DefaultShader
-    uniform :texture, Prism::TexturePack
+    uniform "diffuse", Prism::Texture
     uniform "useFakeLighting", Bool
     uniform "specularIntensity", Float32
     uniform "specularPower", Float32

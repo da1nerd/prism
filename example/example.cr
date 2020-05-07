@@ -10,21 +10,14 @@ class Demo < Prism::GameEngine
 
   # Loads a texture from the resources
   def load_texture(name : String)
-    # simple hack to load fern atlas
-    if name == "fern"
-      Prism::Texture.new(File.join(__DIR__, "./res/textures/#{name}.png"), 2)
-    else
-      Prism::Texture.new(File.join(__DIR__, "./res/textures/#{name}.png"))
-    end
+    Prism::Texture.load(File.join(__DIR__, "./res/textures/#{name}.png"))
   end
 
   # Loads a model from the resources and attaches it's material
   def load_model(name : String) : Prism::TexturedModel
     texture = load_texture(name)
     mesh = Prism::Model.load(File.join(__DIR__, "./res/models/#{name}.obj"))
-    texture_pack = Prism::TexturePack.new
-    texture_pack.add "diffuse", texture
-    Prism::TexturedModel.new(mesh, texture_pack)
+    Prism::TexturedModel.new(mesh, texture)
   end
 
   # Generates a new entity with a model and textures
@@ -70,7 +63,7 @@ class Demo < Prism::GameEngine
       e.add transform
       # hack to load fern texture atlas
       if name === "fern"
-        e.add Prism::TextureAtlasIndex.new(rand(4).to_u32)
+        e.add Prism::TextureOffset.new(2, rand(4).to_u32)
       end
       add_entity e
     end
@@ -79,11 +72,11 @@ class Demo < Prism::GameEngine
   def init
     # Generate the terrain
     texture_pack = Prism::TerrainTexturePack.new(
-      background: Prism::Texture.new(File.join(__DIR__, "./res/textures/grassy2.png")),
-      blend_map: Prism::Texture.new(File.join(__DIR__, "./res/textures/blendMap.png")),
-      red: Prism::Texture.new(File.join(__DIR__, "./res/textures/mud.png")),
-      green: Prism::Texture.new(File.join(__DIR__, "./res/textures/grassFlowers.png")),
-      blue: Prism::Texture.new(File.join(__DIR__, "./res/textures/path.png"))
+      background: Prism::Texture.load(File.join(__DIR__, "./res/textures/grassy2.png")),
+      blend_map: Prism::Texture.load(File.join(__DIR__, "./res/textures/blendMap.png")),
+      red: Prism::Texture.load(File.join(__DIR__, "./res/textures/mud.png")),
+      green: Prism::Texture.load(File.join(__DIR__, "./res/textures/grassFlowers.png")),
+      blue: Prism::Texture.load(File.join(__DIR__, "./res/textures/path.png"))
     )
     terrain = Prism::ModelData.terrain(0, 0, File.join(__DIR__, "./res/textures/heightmap.png"), texture_pack)
     add_entity terrain

@@ -134,13 +134,7 @@ module Prism
     getter textured_model, transform, material
 
     def initialize(@model : Prism::Model, @heights : Array(Array(Float32)), textures : Prism::TerrainTexturePack, @transform : Prism::Transform, @terrain_size : Float32)
-      texture_pack = Prism::TexturePack.new
-      texture_pack.add "backgroundTexture", textures.background
-      texture_pack.add "blendMap", textures.blend_map
-      texture_pack.add "rTexture", textures.red
-      texture_pack.add "gTexture", textures.green
-      texture_pack.add "bTexture", textures.blue
-      @textured_model = Prism::TexturedModel.new(@model, texture_pack)
+      @textured_model = Prism::TexturedTerrainModel.new(@model, textures)
     end
 
     def height_at(object : Prism::Entity)

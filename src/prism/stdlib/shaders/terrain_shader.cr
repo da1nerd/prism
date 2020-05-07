@@ -1,7 +1,11 @@
 module Prism
   # A generic shader for the terrain
   class TerrainShader < Prism::DefaultShader
-    uniform :texture, Prism::TexturePack
+    uniform "backgroundTexture", Prism::Texture
+    uniform "blendMap", Prism::Texture
+    uniform "rTexture", Prism::Texture
+    uniform "gTexture", Prism::Texture
+    uniform "bTexture", Prism::Texture
     uniform "specularIntensity", Float32
     uniform "specularPower", Float32
     uniform transformation_matrix, Matrix4f

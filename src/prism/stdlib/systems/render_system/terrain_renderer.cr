@@ -18,7 +18,12 @@ module Prism::Systems
     def prepare_terrain(entity : Crash::Entity)
       material = entity.get(Prism::Material).as(Prism::Material)
       terrain = entity.get(Prism::Terrain).as(Prism::Terrain)
-      @shader.texture = terrain.textured_model.texture
+      @shader.background_texture = terrain.textured_model.textures.background
+      @shader.blend_map = terrain.textured_model.textures.blend_map
+      @shader.r_texture = terrain.textured_model.textures.red
+      @shader.g_texture = terrain.textured_model.textures.green
+      @shader.b_texture = terrain.textured_model.textures.blue
+
       disable_culling if material.has_transparency?
       if material.wire_frame?
         disable_culling
