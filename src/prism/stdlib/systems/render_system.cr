@@ -4,7 +4,6 @@ require "./render_system/**"
 
 module Prism::Systems
   # A default system for rendering `Prism::Entity`s.
-  # TODO: move this into stdlib
   class RenderSystem < Crash::System
     # RGB
     SKY_COLOR = Vector3f.new(0.6, 0.8, 1)
@@ -40,15 +39,15 @@ module Prism::Systems
       # TODO: just get the lights within range
       @lights = engine.get_entities Prism::DirectionalLight
       @cameras = engine.get_entities Prism::Camera
-      @guis = engine.get_entities Prism::GUITexture
+      @guis = engine.get_entities Prism::GUIElement
     end
 
     # Uses the transformation of the *entity* to calculate the view that the camera has of the world.
     # This allows you to attach the camera view to any entity
     def calculate_camera_view_matrix(entity : Crash::Entity)
-      if entity.has Prism::CameraControls
+      if entity.has Prism::CameraControls::Controller
         # use the camera transform
-        return build_view_matrix entity.get(Prism::CameraControls).as(Prism::CameraControls).camera_transform
+        return build_view_matrix entity.get(Prism::CameraControls::Controller).as(Prism::CameraControls::Controller).camera_transform
       else
         # use the entity transform
         return build_view_matrix entity.get(Prism::Transform).as(Prism::Transform)

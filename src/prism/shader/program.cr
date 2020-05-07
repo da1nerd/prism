@@ -208,22 +208,18 @@ module Prism::Shader
     end
 
     # Sets the texture uniforms for all textures in the *pack*
+    # TODO: this might be deprecated in the future.
     def set_texture_pack(pack : Prism::TexturePack)
-      sampler_slot : Int32 = 0
       pack.textures.each do |name, texture|
-        texture.bind(sampler_slot)
-        set_uniform(name, sampler_slot)
-        sampler_slot += 1
+        set_uniform(name, texture)
       end
     end
 
-    # TODO: this should be able to automatically look up the sampler slot based on the uniform name and then bind the texture to it.
-    #  This will simplify a lot of things. E.g. we may not need to do any special logic for texture packs anymore.
+    # Sets a texture uniform variable value.
     def set_uniform(name : String, value : Prism::Texture)
-      # TODO: this is a quick hack so we can use texture iniforms.
-      #  eventually we will want to look up the sampler slot.
-      value.bind
-      set_uniform(name, 0)
+      slot = get_uniform_location(name)
+      value.bind(slot)
+      set_uniform(name, slot)
     end
 
     # Sets an integer uniform variable value

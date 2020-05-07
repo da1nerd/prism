@@ -1,13 +1,9 @@
 require "crash"
 
-module Prism
-  # TODO: can't we come up with a better name? Or just put it in a namespace.
-  # CameraControls::ThirdPerson
-  # We may want to put this in the core as well.
-  #
+module Prism::CameraControls
   # This provides third person view and controls to the camera.
   # The `Camera` will be positioned view it's attached `Entity` from the third person.
-  class ThirdPersonCameraControls < CameraControls
+  class ThirdPerson < CameraControls::Controller
     MIN_ZOOM  =      1f32
     MAX_ZOOM  =    100f32
     MIN_PITCH =      0f32

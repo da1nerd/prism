@@ -32,13 +32,6 @@ module Prism
     end
   end
 
-  # TODO: the terrain model data should be a subclass of ModelData.
-  #  then we can do something like
-  #  ```
-  # terrain_model = Model.load(TerrainData.new(height_map, textures))
-  #  ```
-  #  This will keep the model data abstract from the model.
-  #
   class ModelData
     TERRAIN_SIZE            = 800
     TERRAIN_MAX_HEIGHT      =  40
@@ -52,7 +45,7 @@ module Prism
       x = (grid_x * TERRAIN_SIZE).to_f32
       z = (grid_z * TERRAIN_SIZE).to_f32
       heights = [] of Array(Float32)
-      terrain = generate_terrain(height_map)
+      terrain = generate_terrain_data(height_map)
       transform = Transform.new.move_to(grid_x.to_f32 * TERRAIN_SIZE, 0f32, grid_z.to_f32 * TERRAIN_SIZE)
 
       entity.add Prism::Terrain.new(terrain[:model], terrain[:heights], textures, transform, TERRAIN_SIZE.to_f32), Prism::Terrain
@@ -60,7 +53,7 @@ module Prism
       entity
     end
 
-    private def self.generate_terrain(height_map : String)
+    private def self.generate_terrain_data(height_map : String)
       bitmap = Prism::Bitmap.new(height_map)
       vertex_count = bitmap.height
       # reset height map
@@ -170,23 +163,14 @@ module Prism
       z_coord = (terrain_z % grid_square_size) / grid_square_size
 
       if x_coord <= 1 - z_coord
-        barryCentric(Vector3f.new(0, @heights[grid_x][grid_z], 0), Vector3f.new(1,
+        Maths.barry_centric_weight(Vector3f.new(0, @heights[grid_x][grid_z], 0), Vector3f.new(1,
           @heights[grid_x + 1][grid_z], 0), Vector3f.new(0,
           @heights[grid_x][grid_z + 1], 1), Vector2f.new(x_coord, z_coord))
       else
-        barryCentric(Vector3f.new(1, @heights[grid_x + 1][grid_z], 0), Vector3f.new(1,
+        Maths.barry_centric_weight(Vector3f.new(1, @heights[grid_x + 1][grid_z], 0), Vector3f.new(1,
           @heights[grid_x + 1][grid_z + 1], 1), Vector3f.new(0,
           @heights[grid_x][grid_z + 1], 1), Vector2f.new(x_coord, z_coord))
       end
-    end
-
-    # TODO: move this into math module
-    private def barryCentric(p1 : Vector3f, p2 : Vector3f, p3 : Vector3f, pos : Vector2f) : Float32
-      det : Float32 = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z)
-      l1 : Float32 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det
-      l2 : Float32 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det
-      l3 : Float32 = 1.0f32 - l1 - l2
-      l1 * p1.y + l2 * p2.y + l3 * p3.y
     end
   end
 end

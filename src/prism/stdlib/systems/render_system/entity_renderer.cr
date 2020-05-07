@@ -1,5 +1,4 @@
 module Prism::Systems
-  # TODO: move this into stdlib
   class EntityRenderer
     @shader : Prism::EntityShader
 
@@ -20,7 +19,6 @@ module Prism::Systems
 
     # Prepares the shader before rendering a batch of `TexturedModel`s
     def prepare_textured_model(textured_model : Prism::TexturedModel)
-      # TODO: should the vertex attribute arrays be enabled here instead of when the shader starts?
       @shader.texture = textured_model.texture
     end
 
@@ -35,6 +33,7 @@ module Prism::Systems
       end
       # Enable texture offseting for single textures.
       # TODO: this could probably be made more generic so we support everything inside the texture pack.
+      #  I think we'll deprecate the texture pack anyway.
       if model.texture.textures.size == 1 && model.texture.textures.values[0].atlas.size > 1
         @shader.number_of_rows = model.texture.textures.values[0].atlas.size.to_f32
         if entity.has(Prism::TextureAtlasIndex)
@@ -57,7 +56,6 @@ module Prism::Systems
 
     # Cleans up after rendering a batch of `TexturedModel`s
     def unbind_textured_model
-      # TODO: should the vertex attribute arrays be disabled here instead of when the shader stops?
       disable_wires
       enable_culling
     end

@@ -132,13 +132,13 @@ class Demo < Prism::GameEngine
     person.add Prism::PlayerMovement.new
     person.add Prism::InputSubscriber.new
     # Disable this for first person view
-    person.add Prism::ThirdPersonCameraControls.new
+    person.add Prism::CameraControls::ThirdPerson.new
     person.get(Prism::Transform).as(Prism::Transform).move_north(32).move_east(32).elevate_to(20)
     person.add Prism::Camera.new
     add_entity person
 
     gui_entity = Prism::Entity.new
-    gui_entity.add Prism::GUITexture.new(load_texture("health"), Vector2f.new(-0.75, 0.95), Vector2f.new(0.25, 0.25))
+    gui_entity.add Prism::GUIElement.new(load_texture("health"), Vector2f.new(-0.75, 0.95), Vector2f.new(0.25, 0.25))
     add_entity gui_entity
 
     # Enable this (and disable the person above) to enable a free flying camera
