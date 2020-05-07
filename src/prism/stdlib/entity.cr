@@ -3,6 +3,8 @@ require "crash"
 module Prism
   # An entity is a collection of components
   # All entities start with a default `Transform` and `Material`
+  # TODO: I might make transform a regular class intead of a component.
+  #  Then all entities will simply contain a transform property.
   class Entity < Crash::Entity
     def initialize
       super()

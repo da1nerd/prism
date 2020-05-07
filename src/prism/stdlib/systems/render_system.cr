@@ -34,7 +34,7 @@ module Prism::Systems
 
     @[Override]
     def add_to_engine(engine : Crash::Engine)
-      @terrains = engine.get_entities Prism::Terrain
+      @terrains = engine.get_entities Prism::TexturedTerrainModel
       @entities = engine.get_entities Prism::TexturedModel
       # TODO: just get the lights within range
       @lights = engine.get_entities Prism::DirectionalLight

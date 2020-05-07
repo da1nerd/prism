@@ -2,32 +2,9 @@ require "crash"
 require "annotation"
 
 module Prism
-  # A custom entity type for terrain.
-  # This overrides a few methods so we can restrict how terrain is used.
-  # This will only have a `Terrain` component so we can easily pick it up in the rendering system.
-  # This wouldn't have to be so complicated if we had a more advanced matching algorithm in `Crash`.
-  # Once we do have a better matching algorithm we could simplify the terrain code and make it look
-  # like a normal entity.
-  class TerrainEntity < Crash::Entity
-    @[Raises]
-    @[Override]
-    def add(component : Crash::Component)
-      raise Exception.new("You cannot add Crash::Component to a Prism::TerrainEntity")
-    end
-
-    def add(component : Prism::Material)
-      add component, Prism::Material
-    end
-
-    # Shortcut to get the `Terrain` component
-    def terrain : Prism::Terrain
-      get(Prism::Terrain).as(Prism::Terrain)
-    end
-  end
 
   struct TerrainTexturePack
     getter background, blend_map, red, green, blue
-
     def initialize(@background : Prism::Texture, @blend_map : Prism::Texture, @red : Prism::Texture, @green : Prism::Texture, @blue : Prism::Texture)
     end
   end
@@ -39,8 +16,8 @@ module Prism
 
     # Generates a new terrain entity.
     # TODO: move this onto the terrain class as *generate_terrain
-    def self.terrain(grid_x : Int32, grid_z : Int32, height_map : String, textures : Prism::TerrainTexturePack) : Prism::TerrainEntity
-      entity = Prism::TerrainEntity.new
+    def self.terrain(grid_x : Int32, grid_z : Int32, height_map : String, textures : Prism::TerrainTexturePack) : Prism::Entity
+      entity = Prism::Entity.new
 
       x = (grid_x * TERRAIN_SIZE).to_f32
       z = (grid_z * TERRAIN_SIZE).to_f32
@@ -48,8 +25,10 @@ module Prism
       terrain = generate_terrain_data(height_map)
       transform = Transform.new.move_to(grid_x.to_f32 * TERRAIN_SIZE, 0f32, grid_z.to_f32 * TERRAIN_SIZE)
 
-      entity.add Prism::Terrain.new(terrain[:model], terrain[:heights], textures, transform, TERRAIN_SIZE.to_f32), Prism::Terrain
+      entity.add transform
+      entity.add Prism::Terrain.new(terrain[:heights], transform, TERRAIN_SIZE.to_f32), Prism::Terrain
       entity.add Prism::Material.new
+      entity.add Prism::TexturedTerrainModel.new(terrain[:model], textures)
       entity
     end
 
@@ -130,11 +109,9 @@ module Prism
   # ```
   # height : Float32 = terrain.height_at(entity)
   # ```
+  # TODO: This should be turned into a generic hights component, and not store the transform directly.
   class Terrain < Crash::Component
-    getter textured_model, transform, material
-
-    def initialize(@model : Prism::Model, @heights : Array(Array(Float32)), textures : Prism::TerrainTexturePack, @transform : Prism::Transform, @terrain_size : Float32)
-      @textured_model = Prism::TexturedTerrainModel.new(@model, textures)
+    def initialize(@heights : Array(Array(Float32)), @transform : Prism::Transform, @terrain_size : Float32)
     end
 
     def height_at(object : Prism::Entity)

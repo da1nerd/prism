@@ -36,13 +36,13 @@ class Demo < Prism::GameEngine
     object
   end
 
-  def seed(name : String, terrain : Prism::TerrainEntity, scale : Float32)
+  def seed(name : String, terrain : Prism::Entity, scale : Float32)
     seed(name, terrain, scale) do
     end
   end
 
   # Seeds the game with some objects
-  def seed(name : String, terrain : Prism::TerrainEntity, scale : Float32, &modify_material : -> Prism::Material | Nil)
+  def seed(name : String, terrain : Prism::Entity, scale : Float32, &modify_material : -> Prism::Material | Nil)
     model = load_model(name)
     material = modify_material.call
     random = Random.new
@@ -50,7 +50,7 @@ class Demo < Prism::GameEngine
       x : Float32 = random.next_float.to_f32 * 800 # the terrain is 800x800
       z : Float32 = random.next_float.to_f32 * 800
 
-      y : Float32 = terrain.terrain.height_at(x, z)
+      y : Float32 = terrain.get(Prism::Terrain).as(Prism::Terrain).height_at(x, z)
       e = Prism::Entity.new
       e.add model
       if material
@@ -83,12 +83,12 @@ class Demo < Prism::GameEngine
 
     # Add a merchant stall
     stall = load_entity("stall")
-    stall.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(55).elevate_to(terrain.terrain.height_at(stall))
+    stall.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(55).elevate_to(terrain.get(Prism::Terrain).as(Prism::Terrain).height_at(stall))
     add_entity stall
 
     # add a tree
     tree = load_entity("lowPolyTree")
-    tree.get(Prism::Transform).as(Prism::Transform).move_north(55).move_east(60).elevate_to(terrain.terrain.height_at(tree))
+    tree.get(Prism::Transform).as(Prism::Transform).move_north(55).move_east(60).elevate_to(terrain.get(Prism::Terrain).as(Prism::Terrain).height_at(tree))
     tree.get(Prism::TexturedModel).as(Prism::TexturedModel)
     tree_material = Prism::Material.new
     tree_material.wire_frame = true
@@ -97,7 +97,7 @@ class Demo < Prism::GameEngine
 
     # add a lamp
     lamp = load_entity("lamp")
-    lamp.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(50).elevate_to(terrain.terrain.height_at(lamp))
+    lamp.get(Prism::Transform).as(Prism::Transform).move_north(65).move_east(50).elevate_to(terrain.get(Prism::Terrain).as(Prism::Terrain).height_at(lamp))
     add_entity lamp
 
     # Add some sunlight
