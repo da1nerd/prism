@@ -114,7 +114,7 @@ module Prism
       height_u = get_height(x, z + 1, image)
 
       normal = Vector3f.new(height_l - height_r, 2f32, height_d - height_u)
-      normal.normalized
+      normal.to_normalized
     end
 
     # Returns the height represented by a pixel in the image

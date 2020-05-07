@@ -129,7 +129,6 @@ module Prism::Shader
     # end
     # ```
     #
-    # TODO: let this take in a path to the vertex shader and fragment shader for more flexibility.
     def initialize(@file_name : String, &shader_reader : String -> String)
       @@programs = {} of String => CompiledProgram
       if @@programs.has_key?(@file_name)
@@ -165,15 +164,6 @@ module Prism::Shader
         # searches for uniforms in the shader code and automatically binds them to the program
         add_all_uniforms(vertex_shader_text)
         add_all_uniforms(fragment_shader_text)
-      end
-    end
-
-    # An internal initalizer that uses `ShaderStorage` to load embedded shaders.
-    # This makes it easy to use the embeded default shaders.
-    # TODO: this should not be part of core. This should be in stdlib.
-    protected def initialize(@file_name : String)
-      initialize @file_name do |path|
-        Prism::Shader::ShaderStorage.get(path).gets_to_end
       end
     end
 

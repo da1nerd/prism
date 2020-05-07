@@ -41,12 +41,6 @@ module Prism::Maths
       )
     end
 
-    # Returns a new normalized vector
-    # DEPRECATED use `#to_normalized` instead
-    def normalized
-      to_normalized
-    end
-
     # Returns a new normalized vector.
     def to_normalized
       length = length()

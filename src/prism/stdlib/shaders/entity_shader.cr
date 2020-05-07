@@ -1,8 +1,6 @@
-require "../shader/program"
-
 module Prism
-  # TODO: move this into stdlib
-  class EntityShader < Prism::Shader::Program
+  # A generic shader for `Entity` objects.
+  class EntityShader < Prism::DefaultShader
     uniform :texture, Prism::TexturePack
     uniform "useFakeLighting", Bool
     uniform "specularIntensity", Float32

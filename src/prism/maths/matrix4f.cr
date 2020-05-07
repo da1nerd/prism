@@ -1,7 +1,6 @@
 require "matrix"
 
 module Prism::Maths
-  # TODO: port another matrix class to here
   class Matrix4f
     @m : Matrix(Float32)
 
@@ -68,8 +67,8 @@ module Prism::Maths
     end
 
     def init_rotation(forward : Vector3f, up : Vector3f)
-      f = forward.normalized
-      r = up.normalized.cross(f)
+      f = forward.to_normalized
+      r = up.to_normalized.cross(f)
       u = f.cross(r)
 
       return self.init_rotation(f, u, r)

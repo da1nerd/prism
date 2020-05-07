@@ -1,6 +1,6 @@
 module Prism
-  # TODO: move this into stdlib
-  class TerrainShader < Prism::Shader::Program
+  # A generic shader for the terrain
+  class TerrainShader < Prism::DefaultShader
     uniform :texture, Prism::TexturePack
     uniform "specularIntensity", Float32
     uniform "specularPower", Float32
