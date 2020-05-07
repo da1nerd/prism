@@ -2,10 +2,9 @@ module Prism
   # A pool of items which are managed with `Prism::Reference`s.
   # Items in the pool are available for re-use, and items without any references
   # are removed and garbage collected.
-  # TODO: this is not going to work. We can't simply store a whole Texture in the pool because now there's no way to garbage collect the texture.
-  #  What we need to do is simply pool the raw data that makes up a larger class.
-  #  We could do that as is, but we still have a problem. We need a way to clean up the stored data.
-  #  A simple solution would be to provide block that will operate on the cleaned up items.
+  #
+  # You should try to pool mostly raw data. E.g. an OpenGL texture id instead of the whole texture class.
+  # Because whatever is using the pooled must be able to implement a `finalize` method in which it can `#trash` the pooled item.
   class ReferencePool(T)
     # Generates a new typed `ReferencePool` that is unique to the class (and sub-classes) in which this macro is called.
     # The `ReferencePool` is wrapped in a singleton so that it persists to all sub-classes.
@@ -50,6 +49,8 @@ module Prism
 
     @references : Hash(String, Prism::Reference(T))
 
+    # Creates a new pool with a **clean_callback** that will be called any time an item is orphaned and removed.
+    # Use this callback to perform final cleanup operations such as freeing OpenGL resources.
     def initialize(&clean_callback : String, T -> Nil)
       @references = Hash(String, Prism::Reference(T)).new
       @clean_callback = clean_callback
