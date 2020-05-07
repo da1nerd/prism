@@ -1,22 +1,29 @@
 module Prism
-  # Generates a new reference pool
+  # Generates a new typed reference pool.
+  # A private singleton class, and methods will be injected to access the pool.
+  # This pool will persist to sub-classes as well.
   macro make_reference_pool(t)
-      class {{t}}ResourcePool
+      # A singleton that provides a pool of `{{t}}`.
+      # This pool will persist to sub-classes as well.
+      # See `ReferencePool` for details.
+      private class {{t}}ResourcePool
           class_getter pool = ReferencePool({{t}}).new
       end
 
+      # Retrieve the reference pool associated with this class
       private def pool
           {{t}}ResourcePool.pool
       end
 
+      # Retrieves the reference pool associated with this class
       def self.pool
           {{t}}ResourcePool.pool
       end
   end
 
-  # Represents a reference pool singleton.
-  # This pools instance of objects and keeps track of references to them.
-  # The pool auto cleans itself once a resource loses all of it's references.
+  # A pool of items which are managed with `Prism::Reference`s.
+  # Items in the pool are available for re-use, and items without any references
+  # are removed and garbage collected.
   class ReferencePool(T)
     @references : Hash(String, Prism::Reference(T))
 
@@ -24,31 +31,31 @@ module Prism
       @references = Hash(String, Prism::Reference(T)).new
     end
 
-    # Checks of the pool contains the resource
+    # Checks of the pool contains the item
     def has_key?(key : String) : Bool
       @references.has_key? key
     end
 
-    # Retrieves a resource from the pool.
+    # Retrieves an item from the pool.
     # This will increment the reference counter.
     def use(key) : T
-      raise "Resource does not exist: #{key}" unless @references.has_key? key
+      raise "Item does not exist in the pool: #{key}" unless @references.has_key? key
       @references[key].use
     end
 
-    # Adds a resource to the pool.
+    # Adds an item to the pool.
     # This will set the reference counter to 0.
     # You must then call `#use` to get your first reference.
-    # WARNING: do not use the *resource* you passed in without calling `#use` or you will mess up the reference counter.
-    def add(key : String, resource : T)
-      raise "Duplicate resource key: #{key}" if @references.has_key? key
-      @references[key] = Prism::Reference(T).new(resource)
+    # WARNING: do not use the *item* you passed in without calling `#use` or you will mess up the reference counter.
+    def add(key : String, item : T)
+      raise "Duplicate pool key: #{key}" if @references.has_key? key
+      @references[key] = Prism::Reference(T).new(item)
     end
 
-    # Trashes a reference to a resource in the pool.
-    # The resource will be removed from the pool after there are no more references.
+    # Trashes a reference to an item in the pool.
+    # The item will be removed from the pool if there are no more references to it.
     def trash(key : String)
-      raise "Resource does not exist: #{key}" unless @references.has_key? key
+      raise "Item does not exist in the pool: #{key}" unless @references.has_key? key
       reference = @references[key]
       reference.trash_one
       @references.delete(key) if reference.is_orphaned?
@@ -56,7 +63,7 @@ module Prism
 
     # Returns the number of remaining references to the resource
     protected def reference_count(key : String) : Int32
-      raise "Resource does not exist: #{key}" unless @references.has_key? key
+      raise "Item does not exist in the pool: #{key}" unless @references.has_key? key
       @references[key].reference_count
     end
 

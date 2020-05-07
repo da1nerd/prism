@@ -13,7 +13,7 @@ class MyOtherType
 end
 
 describe MyType do
-  it "maintains the pool accross inheritance" do
+  it "maintains the pool across inheritance" do
     MyType.pool.size.should eq(0)
     MyChildType.pool.size.should eq(0)
     MyOtherType.pool.size.should eq(0)
