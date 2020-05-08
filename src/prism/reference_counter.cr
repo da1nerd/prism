@@ -1,5 +1,6 @@
 module Prism
   # Keeps track of references to the class instance
+  # DEPRECATED we are migrating to `ReferencePool` instead.
   abstract class ReferenceCounter
     @ref_count : Int32 = 1
 

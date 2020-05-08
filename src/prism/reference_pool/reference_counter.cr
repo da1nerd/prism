@@ -3,7 +3,7 @@ module Prism
   # This counts the number of references to an object.
   # To properly use the reference you must initialize it with an object to be reference.
   # Then you must only retrives copies of the object with the `#use` method.
-  # TODO: rename this to ReferenceCounter
+  # TODO: rename this to ReferenceCounter once we can finally replace the old reference counter.
   class Reference(T)
     @count : Int32
     @resource : T
