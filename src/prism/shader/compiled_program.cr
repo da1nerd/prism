@@ -2,12 +2,11 @@ require "lib_gl"
 require "../reference_counter.cr"
 
 module Prism::Shader
-  # An internal representation of a `ShaderProgram`.
-  # Manages the state of a single GL shader program.
+  # Stores the OpenGL ids and other information for a shader program
   #
-  # Keeps track of references to a single GL shader program
-  # and performs cleanup operations during garbage collection
-  class CompiledProgram < Prism::ReferenceCounter
+  # TODO: this doing a lot of work. I'd rather this simply be a data holder
+  #  and let `Shader::Loader` do all the work. Then this could be a struct.
+  class CompiledProgram
     @program : LibGL::UInt
     @uniforms : Hash(String, Int32)
     @uniform_names : Array(String)

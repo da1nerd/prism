@@ -2,17 +2,12 @@ require "./serializable"
 require "../reference_pool"
 
 module Prism::Shader
-  # Represents a shader.
-  # The terminology is a little inconsistent and needs some work.
+  # Represents a shader program.
+  # This utilizes a `ReferencePool(CompiledProgram)` in order to re-use shader programs.
+  # Orphaned shaders will be garbage collected and their OpenGL resources released.
   #
-  # A `CompiledProgram` is a light wrapper around the shader program information. This holds information like the id, uniform names, etc.
-  # This might be considered the heart of the `ShaderProgram` because well... it is.
-  # The key purpose of the `CompiledProgram` is to prevent compiling the same program if it's used more than once.
-  # Instead we will simply reuse the compiled program.
-  #
-  # This `ShaderProgram` contains all of the shader implementation.
-  #
-  # I probably need to rename these two classes
+  # The key feature of this class is you can bind to uniforms by name.
+  # All of the complicated location binding is handled automatically.
   abstract class Program
     ReferencePool.create_persistent_pool(CompiledProgram) { }
 
@@ -88,7 +83,6 @@ module Prism::Shader
     end
 
     def finalize
-      puts "cleanup"
       pool.trash(@pool_key)
     end
 
