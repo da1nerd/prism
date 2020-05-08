@@ -1,5 +1,4 @@
 require "lib_gl"
-require "../reference_counter.cr"
 
 module Prism::Shader
   # Stores the OpenGL ids and other information for a shader program

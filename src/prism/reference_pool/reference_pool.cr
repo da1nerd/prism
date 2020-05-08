@@ -47,12 +47,12 @@ module Prism
       end
     end
 
-    @references : Hash(String, Prism::Reference(T))
+    @references : Hash(String, Prism::ReferenceCounter(T))
 
     # Creates a new pool with a **clean_callback** that will be called any time an item is orphaned and removed.
     # Use this callback to perform final cleanup operations such as freeing OpenGL resources.
     def initialize(&clean_callback : String, T -> Nil)
-      @references = Hash(String, Prism::Reference(T)).new
+      @references = Hash(String, Prism::ReferenceCounter(T)).new
       @clean_callback = clean_callback
     end
 
@@ -74,7 +74,7 @@ module Prism
     # WARNING: do not use the *item* you passed in without calling `#use` or you will mess up the reference counter.
     def add(key : String, item : T)
       raise "Duplicate pool key: #{key}" if @references.has_key? key
-      @references[key] = Prism::Reference(T).new(item)
+      @references[key] = Prism::ReferenceCounter(T).new(item)
     end
 
     # Trashes a reference to an item in the pool.
