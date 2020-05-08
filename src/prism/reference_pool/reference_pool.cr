@@ -1,5 +1,5 @@
 module Prism
-  # A pool of items which are managed with `Prism::Reference`s.
+  # A pool of items which are managed with `Prism::ReferenceCounter`s.
   # Items in the pool are available for re-use, and items without any references
   # are removed and garbage collected.
   #
