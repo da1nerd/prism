@@ -3,14 +3,14 @@ require "./spec_helper"
 module Prism
   describe Prism::Shader do
     it "loads a shader program with from compiled storage" do
-      program = Prism::Shader.read_shader_file "a.txt" do |path|
+      program = Prism::Shader::Loader.read_shader_file "a.txt" do |path|
         DemoStorage.get(path).gets_to_end
       end
       program.should eq("line a.1\nline b.1\nline a.2\n")
     end
 
     it "loads a shader program with from a file" do
-      program = Prism::Shader.read_shader_file "a.txt" do |path|
+      program = Prism::Shader::Loader.read_shader_file "a.txt" do |path|
         File.read(File.join(__DIR__, "storage", path))
       end
       program.should eq("line a.1\nline b.1\nline a.2\n")

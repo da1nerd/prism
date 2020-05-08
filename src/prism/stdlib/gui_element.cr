@@ -1,9 +1,9 @@
 require "crash"
 
 module Prism
-  # TODO: this needs a better name. It confuses with the actual texture.
-  #  Maybe just GUIComponent.
-  class GUITexture < Crash::Component
+  # Represents a single GUI element.
+  # GUIElements are 2d graphics drawn on the screen with a z-axis equal to 0.
+  class GUIElement < Crash::Component
     @position : Vector2f
     @scale : Vector2f
     @texture : Prism::Texture
@@ -14,7 +14,6 @@ module Prism
     # So the screen top left corner is -1, 1 while the bottom right corner is 1, -1
     # The *position* represents the center of the GUI texture.
     # The *scale* represents the size of the GUI texture relative to the screen.
-    # However, that's not working.
     def initialize(@texture, @position, @scale)
     end
   end

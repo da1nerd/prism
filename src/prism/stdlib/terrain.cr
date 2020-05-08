@@ -2,29 +2,6 @@ require "crash"
 require "annotation"
 
 module Prism
-  # A custom entity type for terrain.
-  # This overrides a few methods so we can restrict how terrain is used.
-  # This will only have a `Terrain` component so we can easily pick it up in the rendering system.
-  # This wouldn't have to be so complicated if we had a more advanced matching algorithm in `Crash`.
-  # Once we do have a better matching algorithm we could simplify the terrain code and make it look
-  # like a normal entity.
-  class TerrainEntity < Crash::Entity
-    @[Raises]
-    @[Override]
-    def add(component : Crash::Component)
-      raise Exception.new("You cannot add Crash::Component to a Prism::TerrainEntity")
-    end
-
-    def add(component : Prism::Material)
-      add component, Prism::Material
-    end
-
-    # Shortcut to get the `Terrain` component
-    def terrain : Prism::Terrain
-      get(Prism::Terrain).as(Prism::Terrain)
-    end
-  end
-
   struct TerrainTexturePack
     getter background, blend_map, red, green, blue
 
@@ -32,35 +9,31 @@ module Prism
     end
   end
 
-  # TODO: the terrain model data should be a subclass of ModelData.
-  #  then we can do something like
-  #  ```
-  # terrain_model = Model.load(TerrainData.new(height_map, textures))
-  #  ```
-  #  This will keep the model data abstract from the model.
-  #
   class ModelData
     TERRAIN_SIZE            = 800
     TERRAIN_MAX_HEIGHT      =  40
     TERRAIN_MAX_PIXEL_COLOR = 256 * 256 * 256 # because there are three color channels
 
     # Generates a new terrain entity.
-    # TODO: move this onto the terrain class as *generate_terrain
-    def self.terrain(grid_x : Int32, grid_z : Int32, height_map : String, textures : Prism::TerrainTexturePack) : Prism::TerrainEntity
-      entity = Prism::TerrainEntity.new
+    # TODO: this should just create the model data.
+    #  The rest of the terrain should be created elsewhere.
+    def self.generate_terrain(grid_x : Int32, grid_z : Int32, height_map : String, textures : Prism::TerrainTexturePack) : Prism::Entity
+      entity = Prism::Entity.new
 
       x = (grid_x * TERRAIN_SIZE).to_f32
       z = (grid_z * TERRAIN_SIZE).to_f32
       heights = [] of Array(Float32)
-      terrain = generate_terrain(height_map)
+      terrain = generate_terrain_data(height_map)
       transform = Transform.new.move_to(grid_x.to_f32 * TERRAIN_SIZE, 0f32, grid_z.to_f32 * TERRAIN_SIZE)
 
-      entity.add Prism::Terrain.new(terrain[:model], terrain[:heights], textures, transform, TERRAIN_SIZE.to_f32), Prism::Terrain
+      entity.add transform
+      entity.add Prism::Terrain.new(terrain[:heights], transform, TERRAIN_SIZE.to_f32), Prism::Terrain
       entity.add Prism::Material.new
+      entity.add Prism::TexturedTerrainModel.new(terrain[:model], textures)
       entity
     end
 
-    private def self.generate_terrain(height_map : String)
+    private def self.generate_terrain_data(height_map : String)
       bitmap = Prism::Bitmap.new(height_map)
       vertex_count = bitmap.height
       # reset height map
@@ -114,7 +87,7 @@ module Prism
       height_u = get_height(x, z + 1, image)
 
       normal = Vector3f.new(height_l - height_r, 2f32, height_d - height_u)
-      normal.normalized
+      normal.to_normalized
     end
 
     # Returns the height represented by a pixel in the image
@@ -137,17 +110,9 @@ module Prism
   # ```
   # height : Float32 = terrain.height_at(entity)
   # ```
+  # TODO: This should be turned into a generic hights component, and not store the transform directly.
   class Terrain < Crash::Component
-    getter textured_model, transform, material
-
-    def initialize(@model : Prism::Model, @heights : Array(Array(Float32)), textures : Prism::TerrainTexturePack, @transform : Prism::Transform, @terrain_size : Float32)
-      texture_pack = Prism::TexturePack.new
-      texture_pack.add "backgroundTexture", textures.background
-      texture_pack.add "blendMap", textures.blend_map
-      texture_pack.add "rTexture", textures.red
-      texture_pack.add "gTexture", textures.green
-      texture_pack.add "bTexture", textures.blue
-      @textured_model = Prism::TexturedModel.new(@model, texture_pack)
+    def initialize(@heights : Array(Array(Float32)), @transform : Prism::Transform, @terrain_size : Float32)
     end
 
     def height_at(object : Prism::Entity)
@@ -170,23 +135,14 @@ module Prism
       z_coord = (terrain_z % grid_square_size) / grid_square_size
 
       if x_coord <= 1 - z_coord
-        barryCentric(Vector3f.new(0, @heights[grid_x][grid_z], 0), Vector3f.new(1,
+        Maths.barry_centric_weight(Vector3f.new(0, @heights[grid_x][grid_z], 0), Vector3f.new(1,
           @heights[grid_x + 1][grid_z], 0), Vector3f.new(0,
           @heights[grid_x][grid_z + 1], 1), Vector2f.new(x_coord, z_coord))
       else
-        barryCentric(Vector3f.new(1, @heights[grid_x + 1][grid_z], 0), Vector3f.new(1,
+        Maths.barry_centric_weight(Vector3f.new(1, @heights[grid_x + 1][grid_z], 0), Vector3f.new(1,
           @heights[grid_x + 1][grid_z + 1], 1), Vector3f.new(0,
           @heights[grid_x][grid_z + 1], 1), Vector2f.new(x_coord, z_coord))
       end
-    end
-
-    # TODO: move this into math module
-    private def barryCentric(p1 : Vector3f, p2 : Vector3f, p3 : Vector3f, pos : Vector2f) : Float32
-      det : Float32 = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z)
-      l1 : Float32 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det
-      l2 : Float32 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det
-      l3 : Float32 = 1.0f32 - l1 - l2
-      l1 * p1.y + l2 * p2.y + l3 * p3.y
     end
   end
 end

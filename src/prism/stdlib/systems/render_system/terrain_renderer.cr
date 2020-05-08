@@ -1,5 +1,4 @@
 module Prism::Systems
-  # TODO: move this into stdlib
   class TerrainRenderer
     def initialize(@shader : Prism::TerrainShader)
     end
@@ -7,10 +6,11 @@ module Prism::Systems
     # Renders batches of `TexturedModel`s at a time for increased performance
     def render(terrains : Array(Crash::Entity))
       terrains.each do |entity|
+        textured_model = entity.get(Prism::TexturedTerrainModel).as(Prism::TexturedTerrainModel)
         terrain = entity.get(Prism::Terrain).as(Prism::Terrain)
         prepare_terrain entity
-        load_model_matrix terrain.transform
-        terrain.textured_model.model.draw
+        load_model_matrix entity.get(Prism::Transform).as(Prism::Transform)
+        textured_model.model.draw
         unbind_textured_model
       end
     end
@@ -19,8 +19,13 @@ module Prism::Systems
     def prepare_terrain(entity : Crash::Entity)
       material = entity.get(Prism::Material).as(Prism::Material)
       terrain = entity.get(Prism::Terrain).as(Prism::Terrain)
-      # TODO: should the vertex attribute arrays be enabled here instead of when the shader starts?
-      @shader.texture = terrain.textured_model.texture
+      textured_model = entity.get(Prism::TexturedTerrainModel).as(Prism::TexturedTerrainModel)
+      @shader.background_texture = textured_model.textures.background
+      @shader.blend_map = textured_model.textures.blend_map
+      @shader.r_texture = textured_model.textures.red
+      @shader.g_texture = textured_model.textures.green
+      @shader.b_texture = textured_model.textures.blue
+
       disable_culling if material.has_transparency?
       if material.wire_frame?
         disable_culling
@@ -35,7 +40,6 @@ module Prism::Systems
 
     # Cleans up after rendering a batch of `TexturedModel`s
     def unbind_textured_model
-      # TODO: should the vertex attribute arrays be disabled here instead of when the shader stops?
       disable_wires
       enable_culling
     end

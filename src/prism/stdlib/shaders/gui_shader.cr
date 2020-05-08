@@ -1,5 +1,6 @@
 module Prism
-  class GUIShader < Prism::Shader::Program
+  # A generic shader for the GUI
+  class GUIShader < Prism::DefaultShader
     uniform "guiTexture", Prism::Texture
     uniform "transformationMatrix", Matrix4f
 

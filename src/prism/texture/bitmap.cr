@@ -6,8 +6,6 @@ module Prism
   # This keeps the image loading abstracted from the engine thus enabling
   # it to be easily changed in the future.
   class Bitmap
-    @@loaded_bitmaps = {} of String => BitmapResource
-    @resource : BitmapResource
     @file_name : String
     @width : LibGL::Int = 0
     @height : LibGL::Int = 0
@@ -17,13 +15,7 @@ module Prism
     getter width, height
 
     def initialize(@file_name : String)
-      if @@loaded_bitmaps.has_key?(@file_name)
-        @resource = @@loaded_bitmaps[@file_name]
-        @resource.add_reference
-      else
-        @resource = load_bitmap(@file_name)
-        @@loaded_bitmaps[@file_name] = @resource
-      end
+      load_bitmap(@file_name)
     end
 
     # Checks if the bitmap has an alpha channel
@@ -47,14 +39,6 @@ module Prism
         end
       end
       self
-    end
-
-    # garbage collection
-    def finalize
-      if @resource.remove_reference
-        # puts "Trashed bitmap #{@file_name}"
-        @@loaded_bitmaps.delete(@file_name)
-      end
     end
 
     # Flips the x-axis
@@ -123,13 +107,11 @@ module Prism
     end
 
     # Loads a bitmap
-    private def load_bitmap(file_path : String) : BitmapResource
+    private def load_bitmap(file_path : String)
       # read bitmap data
       canvas = StumpyPNG.read(file_path)
 
       # create bitmap
-      resource = BitmapResource.new
-
       @num_channels = 4
       @width = canvas.width
       @height = canvas.height
@@ -142,7 +124,6 @@ module Prism
           @pixels.push(color[3])
         end
       end
-      return resource
     end
   end
 end

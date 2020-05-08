@@ -2,75 +2,50 @@ require "lib_gl"
 require "./bitmap.cr"
 
 module Prism
-  # TODO: the texture class should just be a light wrapper around the opengl texture id.
-  #  Texture atlasing, and loading should be handled elsewhere.
+  # Represents a texture that has been loaded into OpenGL
   class Texture
-    @@loaded_textures = {} of String => TextureResource
-    @resource : TextureResource
-    @file_name : String
-    @atlas : Prism::TextureAtlas
-    getter atlas
-
-    # Creates a blank texture.
-    def initialize
-      @file_name = ""
-      @resource = TextureResource.new
-      @atlas = Prism::TextureAtlas.new
+    ReferencePool.create_persistent_pool(UInt32) do |key, id|
+      # delete the texture
+      LibGL.delete_textures(1, pointerof(id))
     end
 
-    def initialize(file_path : String)
-      initialize(file_path, 1)
+    # Creates a new texture
+    def initialize(@id : UInt32, @pool_key : String)
     end
 
-    # Creates a texture.
-    # The *atlas_size* controls how many rows of textures are represented in the *file_name*.
-    # A value of 1 means there is on one texture.
-    # A value of 2 means there are 4 textures (a 2x2 grid)
-    def initialize(@file_name : String, atlas_size : UInt32)
-      @atlas = Prism::TextureAtlas.new(atlas_size)
-      if @@loaded_textures.has_key?(@file_name)
-        @resource = @@loaded_textures[@file_name]
-        @resource.add_reference
-      else
-        @resource = load_texture(@file_name)
-        @@loaded_textures[@file_name] = @resource
-      end
-    end
-
-    # garbage collection
     def finalize
-      if @resource.remove_reference
-        # puts "Trashed texture #{@file_name}"
-        @@loaded_textures.delete(@file_name)
-      end
+      pool.trash(@pool_key)
     end
 
-    def id
-      return @resource.id
-    end
-
-    # Binds to the first sampler slot (0)
-    def bind
-      bind(0)
-    end
-
+    # Binds the texture to a sampler slot
+    # Valid slots range from 0 to 31.
     def bind(sampler_slot : LibGL::Int)
       if sampler_slot < 0 || sampler_slot > 31
         puts "Error: Sampler slot #{sampler_slot} is out of bounds"
       end
       LibGL.active_texture(LibGL::TEXTURE0 + sampler_slot)
-      LibGL.bind_texture(LibGL::TEXTURE_2D, @resource.id)
+      LibGL.bind_texture(LibGL::TEXTURE_2D, @id)
     end
 
-    # Loads a texture
-    # TODO: this should be made into static method, and the Texture should just be a wrapper around the OpenGL ids
-    private def load_texture(file_path : String) : TextureResource
+    # Loads a new texture.
+    # Textures that have already been loaded will be re-used.
+    def self.load(file_name : String) : Prism::Texture
+      if !pool.has_key? file_name
+        pool.add(file_name, load_texture(file_name))
+      end
+
+      # produce a texture with the pooled texture id
+      Texture.new(pool.use(file_name), file_name)
+    end
+
+    # Loads a texture into opengl
+    private def self.load_texture(file_name : String) : UInt32
       # read texture data
-      bitmap = Bitmap.new(file_path)
+      bitmap = Bitmap.new(file_name)
 
       # create texture
-      resource = TextureResource.new
-      LibGL.bind_texture(LibGL::TEXTURE_2D, resource.id)
+      LibGL.gen_textures(1, out texture_id)
+      LibGL.bind_texture(LibGL::TEXTURE_2D, texture_id)
 
       # wrapping options
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_WRAP_S, LibGL::REPEAT)
@@ -85,7 +60,10 @@ module Prism
       LibGL.generate_mipmap(LibGL::TEXTURE_2D)
       LibGL.tex_parameter_i(LibGL::TEXTURE_2D, LibGL::TEXTURE_MIN_FILTER, LibGL::LINEAR_MIPMAP_LINEAR)
       LibGL.tex_parameter_f(LibGL::TEXTURE_2D, LibGL::TEXTURE_LOD_BIAS, -0.4)
-      return resource
+
+      # close the texture
+      LibGL.bind_texture(LibGL::TEXTURE_2D, 0)
+      return texture_id
     end
   end
 end

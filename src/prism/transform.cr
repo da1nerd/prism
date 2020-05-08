@@ -54,7 +54,7 @@ module Prism
     # Creates a transformation to look at a point
     # This is handy for applying some form of lerp'ing.
     def get_look_at_direction(point : Vector3f, up : Vector3f) : Quaternion
-      return Quaternion.new(Matrix4f.new.init_rotation((point - @pos).normalized, up))
+      return Quaternion.new(Matrix4f.new.init_rotation((point - @pos).to_normalized, up))
     end
 
     # Returns the transformation

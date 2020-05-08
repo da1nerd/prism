@@ -22,17 +22,15 @@ module Prism::Maths
     end
 
     # Normalizes this vector to a length of 1
-    def normalized : Vector2f
+    def to_normalized : Vector2f
       length = length()
       return Vector2f.new(@x / length, @y / length)
     end
 
-    # Rotates the vector by some angle in degrees
-    # TODO ths should be in radians
+    # Rotates the vector by some angle in radians
     def rotate(angle : Float32) : Vector2f
-      rad : Float32 = Prism.to_rad(angle)
-      cos : Float32 = Math.cos(rad)
-      sin : Float32 = Math.sin(rad)
+      cos : Float32 = Math.cos(angle)
+      sin : Float32 = Math.sin(angle)
 
       return Vector2f.new(@x * cos - @y * sin, @x * sin + @y * cos)
     end

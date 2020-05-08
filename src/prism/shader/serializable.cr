@@ -78,7 +78,10 @@ module Prism::Shader
   # c.to_uniform # => {"R_spotLight.a" => 1}
   # ```
   # TODO: We might want to change this to something like `UniformStruct`.
+  #  It would also be great if we did away with the annotations and used the same macro syntax as the shader program.
+  #  That would make it appear more consistent. e.g. `struct_field "someName", SomeType`
   #  That would make more sense because that's what we are trying to represent here.
+  # TODO: Do I need to validate the types here at all? The types should be validated in the shader program when the uniforms are set. However, the downside would be that's at runtime.
   module Serializable
     annotation Options
     end

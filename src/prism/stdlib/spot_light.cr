@@ -20,17 +20,5 @@ module Prism
     def initialize(color : Vector3f, intensity : Float32, attenuation : Prism::Attenuation, @cutoff : Float32)
       @point_light = PointLight.new(color, intensity, attenuation)
     end
-
-    # TODO: this will need to be fixed
-    # @[Override]
-    # def update(tick : RenderLoop::Tick)
-    #   @point_light.transform.parent = transform
-    # end
-
-    # TODO: fix this
-    # @[Prism::Shader::Field]
-    # def direction : Prism::Maths::Vector3f
-    #   return self.transform.get_transformed_rot.forward
-    # end
   end
 end

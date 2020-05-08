@@ -15,12 +15,6 @@ module Prism
     @[Prism::Shader::Field(name: "atten")]
     @attenuation : Prism::Attenuation
 
-    # TODO: fix this
-    # @[Prism::Shader::Field]
-    # def position : Prism::Maths::Vector3f
-    #   self.transform.get_transformed_pos
-    # end
-
     def initialize
       initialize(Vector3f.new(1, 1, 1), 2, DEFAULT_ATTEN)
     end

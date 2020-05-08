@@ -1,7 +1,8 @@
 module Prism
-  # TODO: move this into stdlib
-  class TerrainShader < Prism::Shader::Program
-    uniform :texture, Prism::TexturePack
+  # A generic shader for `Entity` objects.
+  class EntityShader < Prism::DefaultShader
+    uniform "diffuse", Prism::Texture
+    uniform "useFakeLighting", Bool
     uniform "specularIntensity", Float32
     uniform "specularPower", Float32
     uniform transformation_matrix, Matrix4f
@@ -10,9 +11,11 @@ module Prism
     uniform light, Prism::Light
     uniform eye_pos, Vector3f
     uniform sky_color, Vector3f
+    uniform "numberOfRows", Float32
+    uniform offset, Vector2f
 
     def initialize
-      super("terrain")
+      super("entity")
     end
   end
 end

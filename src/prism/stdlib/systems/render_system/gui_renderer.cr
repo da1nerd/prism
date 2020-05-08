@@ -1,5 +1,4 @@
 module Prism::Systems
-  # TODO: move this into stdlib
   class GUIRenderer
     @shader = Prism::GUIShader.new
     @quad : Prism::Model
@@ -22,7 +21,7 @@ module Prism::Systems
       @shader.start
       @quad.bind
       entities.each do |entity|
-        gui = entity.get(GUITexture).as(GUITexture)
+        gui = entity.get(GUIElement).as(GUIElement)
         @shader.gui_texture = gui.texture
         @shader.transformation_matrix = create_transformation_matrix(gui.position, gui.scale)
         LibGL.draw_arrays(LibGL::TRIANGLE_STRIP, 0, @quad.vertex_count)
