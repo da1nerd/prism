@@ -104,16 +104,12 @@ module Prism::Systems
       # This is the camera position
       # @entity_shader.eye_pos = eye_pos
       @entity_shader.sky_color = SKY_COLOR
-      if @lights.size > 0
-        light_entity = @lights[0]
-        light_transform = light_entity.get(Prism::Transform).as(Prism::Transform)
-        # @entity_shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
-        @entity_shader.lights = StaticArray[light_entity.get(Prism::NewLight).as(Prism::NewLight)]
-        # TRICKY: this is a temporary hack to help decouple entities from lights.
-        #  We'll need a better solution later. We could potentially pass the light
-        #  entity to the shader so it can set the proper uniforms.
-        # @entity_shader.set_uniform("light.direction", light_transform.rot.forward)
+      entity_lights = StaticArray(Prism::NewLight, Prism::EntityShader::MAX_LIGHTS).new(Prism::NewLight.new(Vector3f.new(0, 0, 0)))
+      0.upto(Math.min(@lights.size, Prism::EntityShader::MAX_LIGHTS) - 1) do |i|
+        light_entity = @lights[i]
+        entity_lights[i] = light_entity.get(Prism::NewLight).as(Prism::NewLight)
       end
+      @entity_shader.lights = entity_lights
       @entity_renderer.render(@grouped_entities)
       @grouped_entities.clear
       @entity_shader.stop
@@ -126,16 +122,12 @@ module Prism::Systems
       @terrain_shader.view_matrix = view_matrix
       # @terrain_shader.eye_pos = eye_pos
       @terrain_shader.sky_color = SKY_COLOR
-      if @lights.size > 0
-        light_entity = @lights[0]
-        light_transform = light_entity.get(Prism::Transform).as(Prism::Transform)
-        # @terrain_shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
-        # TRICKY: this is a temporary hack to help decouple entities from lights.
-        #  We'll need a better solution later. We could potentially pass the light
-        #  entity to the shader so it can set the proper uniforms.
-        # @terrain_shader.set_uniform("light.direction", light_transform.rot.forward)
-        @terrain_shader.lights = StaticArray[light_entity.get(Prism::NewLight).as(Prism::NewLight)]
+      terrain_lights = StaticArray(Prism::NewLight, Prism::TerrainShader::MAX_LIGHTS).new(Prism::NewLight.new(Vector3f.new(0, 0, 0)))
+      0.upto(Math.min(@lights.size, Prism::TerrainShader::MAX_LIGHTS) - 1) do |i|
+        light_entity = @lights[i]
+        terrain_lights[i] = light_entity.get(Prism::NewLight).as(Prism::NewLight)
       end
+      @terrain_shader.lights = terrain_lights
       @terrain_renderer.render(@terrains)
       @terrain_shader.stop
 

@@ -1,7 +1,7 @@
 module Prism
   # A generic shader for the terrain
   class TerrainShader < Prism::DefaultShader
-    MAX_LIGHTS = 1
+    MAX_LIGHTS = 3
     uniform "backgroundTexture", Prism::Texture
     uniform "blendMap", Prism::Texture
     uniform "rTexture", Prism::Texture

@@ -1,7 +1,7 @@
 module Prism
   # A generic shader for `Entity` objects.
   class EntityShader < Prism::DefaultShader
-    MAX_LIGHTS = 1
+    MAX_LIGHTS = 3
     uniform "diffuse", Prism::Texture
     uniform "useFakeLighting", Bool
     uniform "reflectivity", Float32
