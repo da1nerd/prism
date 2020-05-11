@@ -40,7 +40,12 @@ module Prism::Shader
     macro uniform(name, type)
       # Sets the value of the **{{name}}** uniform.
       def {{name.id.underscore}}=(value : {{type}})
-        set_uniform("{{name.id}}", value)
+        if value.is_a?(StaticArray)
+          # TRICKY: convert static arrays to regular arrays so the uniform setters can remain generic.
+          set_uniform("{{name.id}}", value.to_a)
+        else
+          set_uniform("{{name.id}}", value)
+        end
       end
     end
 

@@ -6,13 +6,15 @@ struct Light
     vec3 position;
 };
 
+const int maxLights = 1;
+
 in vec3 position;
 in vec2 textureCoords;
 in vec3 normal;
 
 out vec2 pass_textureCoords;
 out vec3 surfaceNormal;
-out vec3 toLightVector[1];
+out vec3 toLightVector[1]; // TODO: glsl parser needs to resolve variables
 out vec3 toCameraVector;
 out vec3 worldPosition;
 out float visibility;
@@ -21,7 +23,7 @@ uniform mat4 transformation_matrix;
 uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
 uniform float useFakeLighting;
-uniform Light lights[1];
+uniform Light lights[1]; // TODO: glsl parser needs to resolve variables
 
 // offset for texture atlas
 uniform float numberOfRows;
@@ -45,7 +47,7 @@ void main(void) {
     pass_textureCoords = (textureCoords / numberOfRows) + offset;
 
     surfaceNormal = (transformation_matrix * vec4(actualNormal, 0.0)).xyz;
-    for(int i=0; i < 4; i ++) {
+    for(int i=0; i < maxLights; i ++) {
         toLightVector[i] = lights[i].position - worldPosition.xyz;
     }
 
