@@ -6,6 +6,8 @@ struct Light
     vec3 position;
 };
 
+const int maxLights = 1;
+
 in vec2 pass_textureCoords;
 in vec3 surfaceNormal;
 in vec3 toLightVector[1];

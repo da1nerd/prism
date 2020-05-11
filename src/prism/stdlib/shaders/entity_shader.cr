@@ -9,9 +9,7 @@ module Prism
     uniform transformation_matrix, Matrix4f
     uniform projection_matrix, Matrix4f
     uniform view_matrix, Matrix4f
-    # uniform light, Prism::Light
     uniform lights, StaticArray(Prism::Light, MAX_LIGHTS)
-    # uniform eye_pos, Vector3f
     uniform sky_color, Vector3f
     uniform "numberOfRows", Float32
     uniform offset, Vector2f

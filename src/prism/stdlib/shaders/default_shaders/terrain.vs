@@ -1,4 +1,4 @@
-#version 120
+#version 140
 
 struct Light
 {
@@ -6,19 +6,24 @@ struct Light
     vec3 position;
 };
 
-attribute vec3 position;
-attribute vec2 textureCoords;
-attribute vec3 normal;
+const int maxLights = 1;
 
-varying vec2 pass_textureCoords;
-varying vec3 surfaceNormal;
-varying vec3 worldPosition;
-varying float visibility;
+in vec3 position;
+in vec2 textureCoords;
+in vec3 normal;
+
+out vec2 pass_textureCoords;
+out vec3 surfaceNormal;
+out vec3 toLightVector[1];
+out vec3 toCameraVector;
+out vec3 worldPosition;
+out float visibility;
 
 uniform mat4 transformation_matrix;
 uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
 uniform float useFakeLighting;
+uniform Light lights[1];
 
 // fog const
 const float density = 0.0035;
@@ -34,8 +39,16 @@ void main(void) {
     worldPosition = (transformation_matrix * vec4(position, 1.0)).xyz;
     vec4 positionRelativeToCam = view_matrix * vec4(worldPosition, 1.0);
     gl_Position = projection_matrix * positionRelativeToCam;
+
     pass_textureCoords = textureCoords;
+
     surfaceNormal = (transformation_matrix * vec4(actualNormal, 0.0)).xyz;
+    for(int i=0; i < maxLights; i ++) {
+        toLightVector[i] = lights[i].position - worldPosition.xyz;
+    }
+
+    vec3 cameraPosition = (inverse(view_matrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+    toCameraVector = cameraPosition - worldPosition.xyz;
 
     // distance of this vertex to the camera
     float distance = length(positionRelativeToCam.xyz);

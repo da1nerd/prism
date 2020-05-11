@@ -124,7 +124,7 @@ module Prism::Systems
       @terrain_shader.start
       @terrain_shader.projection_matrix = projection_matrix
       @terrain_shader.view_matrix = view_matrix
-      @terrain_shader.eye_pos = eye_pos
+      # @terrain_shader.eye_pos = eye_pos
       @terrain_shader.sky_color = SKY_COLOR
       if @lights.size > 0
         light_entity = @lights[0]
@@ -133,7 +133,8 @@ module Prism::Systems
         # TRICKY: this is a temporary hack to help decouple entities from lights.
         #  We'll need a better solution later. We could potentially pass the light
         #  entity to the shader so it can set the proper uniforms.
-        @terrain_shader.set_uniform("light.direction", light_transform.rot.forward)
+        # @terrain_shader.set_uniform("light.direction", light_transform.rot.forward)
+        @terrain_shader.lights = StaticArray[light_entity.get(Prism::NewLight).as(Prism::NewLight)]
       end
       @terrain_renderer.render(@terrains)
       @terrain_shader.stop
