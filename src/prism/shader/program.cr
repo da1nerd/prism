@@ -3,8 +3,8 @@ require "./serializable"
 require "../reference_pool"
 
 module Prism::Shader
-
   Log.setup_from_env
+
   # Represents a shader program.
   # This utilizes a `ReferencePool(CompiledProgram)` in order to re-use shader programs.
   # Orphaned shaders will be garbage collected and their OpenGL resources released.
@@ -107,8 +107,7 @@ module Prism::Shader
       if @resource.uniforms.has_key? name
         @resource.uniforms[name]
       else
-        Log.warn(exception: Exception.new) { "The uniform \"#{name}\" is not defined in your glsl code. Update your shader or remove \"#{name}\" from your Shader::Program." }
-        -1
+        raise Exception.new "The uniform \"#{name}\" is not defined in your glsl code. Update your shader or remove \"#{name}\" from your Shader::Program."
       end
     end
 

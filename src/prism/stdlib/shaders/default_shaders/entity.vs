@@ -1,4 +1,4 @@
-#version 120
+#version 140
 
 struct Light
 {
@@ -6,19 +6,22 @@ struct Light
     vec3 position;
 };
 
-attribute vec3 position;
-attribute vec2 textureCoords;
-attribute vec3 normal;
+in vec3 position;
+in vec2 textureCoords;
+in vec3 normal;
 
-varying vec2 pass_textureCoords;
-varying vec3 surfaceNormal;
-varying vec3 worldPosition;
-varying float visibility;
+out vec2 pass_textureCoords;
+out vec3 surfaceNormal;
+out vec3 toLightVector;
+out vec3 toCameraVector;
+out vec3 worldPosition;
+out float visibility;
 
 uniform mat4 transformation_matrix;
 uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
 uniform float useFakeLighting;
+uniform Light lights[1];
 
 // offset for texture atlas
 uniform float numberOfRows;
@@ -42,6 +45,10 @@ void main(void) {
     pass_textureCoords = (textureCoords / numberOfRows) + offset;
 
     surfaceNormal = (transformation_matrix * vec4(actualNormal, 0.0)).xyz;
+    toLightVector = lights[0].position - worldPosition.xyz;
+
+    vec3 cameraPosition = (inverse(view_matrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+    toCameraVector = cameraPosition - worldPosition.xyz;
 
     // distance of this vertex to the camera
     float distance = length(positionRelativeToCam.xyz);

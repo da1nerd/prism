@@ -9,6 +9,16 @@ module Prism
       LibGL.delete_textures(1, pointerof(id))
     end
 
+    # Determines how close the camera has to be to the reflected light to see any change in the brightness on the surface of the texture.
+    # This is also known as "specular power."
+    @shine_damper : Float32 = 1
+
+    # Determines how shiny the surface of the texture is.
+    # This is also known as "specular intensity."
+    @reflectivity : Float32 = 0
+
+    property shine_damper, reflectivity
+
     # Creates a new texture
     def initialize(@id : UInt32, @pool_key : String)
     end

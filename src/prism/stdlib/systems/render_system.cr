@@ -37,7 +37,7 @@ module Prism::Systems
       @terrains = engine.get_entities Prism::TexturedTerrainModel
       @entities = engine.get_entities Prism::TexturedModel
       # TODO: just get the lights within range
-      @lights = engine.get_entities Prism::DirectionalLight
+      @lights = engine.get_entities Prism::NewLight
       @cameras = engine.get_entities Prism::Camera
       @guis = engine.get_entities Prism::GUIElement
     end
@@ -101,17 +101,18 @@ module Prism::Systems
       # TODO: should we calculate the projection matrix just once? We could take this out of the camera.
       @entity_shader.projection_matrix = projection_matrix
       @entity_shader.view_matrix = view_matrix
-      @entity_shader.eye_pos = eye_pos
+      # This is the camera position
+      # @entity_shader.eye_pos = eye_pos
       @entity_shader.sky_color = SKY_COLOR
       if @lights.size > 0
         light_entity = @lights[0]
         light_transform = light_entity.get(Prism::Transform).as(Prism::Transform)
-        @entity_shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
-        @entity_shader.lights = [light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)] of Prism::Light
+        # @entity_shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
+        @entity_shader.lights = [light_entity.get(Prism::NewLight).as(Prism::NewLight)] of Prism::Light
         # TRICKY: this is a temporary hack to help decouple entities from lights.
         #  We'll need a better solution later. We could potentially pass the light
         #  entity to the shader so it can set the proper uniforms.
-        @entity_shader.set_uniform("light.direction", light_transform.rot.forward)
+        # @entity_shader.set_uniform("light.direction", light_transform.rot.forward)
       end
       @entity_renderer.render(@grouped_entities)
       @grouped_entities.clear
@@ -128,7 +129,7 @@ module Prism::Systems
       if @lights.size > 0
         light_entity = @lights[0]
         light_transform = light_entity.get(Prism::Transform).as(Prism::Transform)
-        @terrain_shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
+        # @terrain_shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
         # TRICKY: this is a temporary hack to help decouple entities from lights.
         #  We'll need a better solution later. We could potentially pass the light
         #  entity to the shader so it can set the proper uniforms.

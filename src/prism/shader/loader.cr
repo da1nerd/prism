@@ -162,7 +162,7 @@ module Prism::Shader::Loader
       uniform_location = LibGL.get_uniform_location(resource.program, uniform_name)
       if uniform_location == -1
         uniform_error_code = LibGL.get_error
-        raise Exception.new("Error #{uniform_error_code}: Could not find location for uniform '#{uniform_name}'.")
+        raise Exception.new("Error #{uniform_error_code}: Could not find location for uniform '#{uniform_name}' with type '#{uniform_type}'.")
       end
 
       resource.uniforms[uniform_name] = uniform_location
