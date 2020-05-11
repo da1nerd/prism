@@ -4,6 +4,7 @@ struct Light
 {
     vec3 color;
     vec3 position;
+    vec3 attenuation;
 };
 
 const int maxLights = 4;
@@ -32,6 +33,8 @@ void main(void) {
     vec3 totalSpecular = vec3(0.0);
 
     for(int i=0; i < maxLights; i ++) {
+        float distance = length(toLightVector[i]);
+        float attenFactor = lights[i].attenuation.x + (lights[i].attenuation.y * distance) + (lights[i].attenuation.z * distance * distance);
         vec3 unitLightVector = normalize(toLightVector[i]);
         float nDot1 = dot(unitNormal, unitLightVector);
         float brightness = max(nDot1, 0.0);
@@ -40,8 +43,8 @@ void main(void) {
         float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);
         specularFactor = max(specularFactor, 0);
         float dampedFactor = pow(specularFactor, shineDamper);
-        totalDiffuse = totalDiffuse + brightness * lights[i].color;
-        totalSpecular = totalSpecular + dampedFactor * reflectivity * lights[i].color;
+        totalDiffuse = totalDiffuse + (brightness * lights[i].color) / attenFactor;
+        totalSpecular = totalSpecular + (dampedFactor * reflectivity * lights[i].color) / attenFactor;
     }
     totalDiffuse = max(totalDiffuse, 0.2);
 

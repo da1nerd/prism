@@ -12,7 +12,10 @@ module Prism
     @[Prism::Shader::Field]
     @color : Vector3f
 
-    property color
+    @[Prism::Shader::Field]
+    @attenuation : Vector3f
+
+    property color, attenuation
     getter position
 
     # Creates a new light.
@@ -21,6 +24,12 @@ module Prism
     # TODO: it would be nice to not have to add the subscriber component to the entity.
     def initialize(@color)
       @position = Vector3f.new(0,0,0)
+      @attenuation = Vector3f.new(1, 0, 0)
+    end
+
+    def initialize(@color, @attenuation)
+      @position = Vector3f.new(0,0,0)
+      @attenuation = Vector3f.new(1, 0, 0)
     end
 
     @[Override]
