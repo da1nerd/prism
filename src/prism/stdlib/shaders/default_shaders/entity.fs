@@ -14,7 +14,7 @@ varying float visibility;
 
 uniform sampler2D diffuse;
 uniform vec3 materialColor;
-uniform DirectionalLight light;
+uniform DirectionalLight lights[1];
 uniform vec3 sky_color;
 
 void main(void) {
@@ -24,7 +24,13 @@ void main(void) {
         discard;
     }
     vec3 unitNormal = normalize(surfaceNormal);
-    vec4 lightRays = calcDirectionalLight(light, unitNormal, worldPosition);
+
+    // vec4 lightRays = calcDirectionalLight(light, unitNormal, worldPosition);
+    vec4 lightRays = vec4(0.0);
+    for(int i=0; i <1; i ++) {
+        lightRays = lightRays + calcDirectionalLight(lights[i], unitNormal, worldPosition);
+    }
+
     lightRays = max(lightRays, 0.2);
     gl_FragColor = lightRays * (vec4(materialColor, 1.0) + textureColor);
     gl_FragColor = mix(vec4(sky_color, 1.0), gl_FragColor, visibility);

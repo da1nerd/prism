@@ -107,6 +107,7 @@ module Prism::Systems
         light_entity = @lights[0]
         light_transform = light_entity.get(Prism::Transform).as(Prism::Transform)
         @entity_shader.light = light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)
+        @entity_shader.lights = [light_entity.get(Prism::DirectionalLight).as(Prism::DirectionalLight)] of Prism::Light
         # TRICKY: this is a temporary hack to help decouple entities from lights.
         #  We'll need a better solution later. We could potentially pass the light
         #  entity to the shader so it can set the proper uniforms.

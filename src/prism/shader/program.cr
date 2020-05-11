@@ -1,7 +1,10 @@
+require "log"
 require "./serializable"
 require "../reference_pool"
 
 module Prism::Shader
+
+  Log.setup_from_env
   # Represents a shader program.
   # This utilizes a `ReferencePool(CompiledProgram)` in order to re-use shader programs.
   # Orphaned shaders will be garbage collected and their OpenGL resources released.
@@ -37,14 +40,7 @@ module Prism::Shader
     macro uniform(name, type)
       # Sets the value of the **{{name}}** uniform.
       def {{name.id.underscore}}=(value : {{type}})
-        if value.is_a?(Shader::Serializable)
-          _{{name.id}}_uniforms = value.to_uniform(true)
-          _{{name.id}}_uniforms.each do |k, v|
-            set_uniform("{{name.id}}.#{k}", v)
-          end
-        else
-          set_uniform("{{name.id}}", value)
-        end
+        set_uniform("{{name.id}}", value)
       end
     end
 
@@ -111,7 +107,8 @@ module Prism::Shader
       if @resource.uniforms.has_key? name
         @resource.uniforms[name]
       else
-        raise Exception.new "The uniform \"#{name}\" is not defined in your glsl code. Update your shader or remove \"#{name}\" from your Shader::Program."
+        Log.warn(exception: Exception.new) { "The uniform \"#{name}\" is not defined in your glsl code. Update your shader or remove \"#{name}\" from your Shader::Program." }
+        -1
       end
     end
 
@@ -120,6 +117,23 @@ module Prism::Shader
       slot = get_uniform_location(name)
       value.bind(slot)
       set_uniform(name, slot)
+    end
+
+    # Sets an array of serializable uniforms.
+    def set_uniform(name : String, value : Array(Shader::Serializable))
+      index = 0
+      value.each do |v|
+        set_uniform("#{name}[#{index}]", v)
+        index += 1
+      end
+    end
+
+    # Sets a serializable uniform. The value will be serialized and it's generated values stored in the uniform.
+    def set_uniform(name : String, value : Shader::Serializable)
+      uniforms = value.to_uniform(true)
+      uniforms.each do |k, v|
+        set_uniform("#{name}.#{k}", v)
+      end
     end
 
     # Sets an integer uniform variable value

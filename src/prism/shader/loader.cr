@@ -178,13 +178,28 @@ module Prism::Shader::Loader
     while start = start_location
       end_location = shader_text.index(";", start).not_nil!
       uniform_line = shader_text[start..end_location]
-      matches = uniform_line.scan(/\b#{keyword}\b\s+([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_]+)/)
+      matches = uniform_line.scan(/\b#{keyword}\b\s+([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_]+(\[\d+\])?)/)
       uniform_type = matches[0][1]
       uniform_name = matches[0][2]
 
-      resource.uniform_names.push(uniform_name)
-      resource.uniform_types.push(uniform_type)
-      register_uniform(resource, uniform_name, uniform_type, structs)
+      # TODO: this is a little repetative. We could probably write this better.
+      if uniform_name.includes?("[")
+        # Expand arrays found in uniform_name and register the uniforms
+        array_matches = uniform_name.scan(/([a-zA-Z0-9_]+)\[(\d+)\]/)
+        uniform_name = array_matches[0][1]
+        size = array_matches[0][2]
+        0.upto(size.to_u32 - 1) do |i|
+          uniform_ary_name = "#{uniform_name}[#{i}]"
+          resource.uniform_names.push(uniform_ary_name)
+          resource.uniform_types.push(uniform_type)
+          register_uniform(resource, uniform_ary_name, uniform_type, structs)
+        end
+      else
+        # register uniform
+        resource.uniform_names.push(uniform_name)
+        resource.uniform_types.push(uniform_type)
+        register_uniform(resource, uniform_name, uniform_type, structs)
+      end
 
       start_location = shader_text.index(/\b#{keyword}\b/, end_location)
     end
