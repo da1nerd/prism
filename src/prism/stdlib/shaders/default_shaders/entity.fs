@@ -8,7 +8,7 @@ struct Light
 
 in vec2 pass_textureCoords;
 in vec3 surfaceNormal;
-in vec3 toLightVector;
+in vec3 toLightVector[1];
 in vec3 toCameraVector;
 in vec3 worldPosition;
 in float visibility;
@@ -23,34 +23,32 @@ uniform Light lights[1];
 uniform vec3 sky_color;
 
 void main(void) {
+    vec3 unitVectorToCamera = normalize(toCameraVector);
+    vec3 unitNormal = normalize(surfaceNormal);
+
+    vec3 totalDiffuse = vec3(0.0);
+    vec3 totalSpecular = vec3(0.0);
+
+    for(int i=0; i <1; i ++) {
+        vec3 unitLightVector = normalize(toLightVector[i]);
+        float nDot1 = dot(unitNormal, unitLightVector);
+        float brightness = max(nDot1, 0.0);
+        vec3 lightDirection = -unitLightVector;
+        vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);
+        float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);
+        specularFactor = max(specularFactor, 0);
+        float dampedFactor = pow(specularFactor, shineDamper);
+        totalDiffuse = totalDiffuse + brightness * lights[i].color;
+        totalSpecular = totalSpecular + dampedFactor * reflectivity * lights[i].color;
+    }
+    totalDiffuse = max(totalDiffuse, 0.2);
+
     vec4 textureColor = texture2D(diffuse, pass_textureCoords);
     // discards transparent pixels
     if (textureColor.a <= 0.5) {
         discard;
     }
-    vec3 unitNormal = normalize(surfaceNormal);
-    vec3 unitLightVector = normalize(toLightVector);
 
-    float nDot1 = dot(unitNormal, unitLightVector);
-    float brightness = max(nDot1, 0.2);
-    vec3 diffuse = brightness * lights[0].color;
-
-    vec3 unitVectorToCamera = normalize(toCameraVector);
-    vec3 lightDirection = -unitLightVector;
-    vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);
-
-    float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);
-    specularFactor = max(specularFactor, 0);
-    float dampedFactor = pow(specularFactor, shineDamper);
-    vec3 finalSpecular = dampedFactor * reflectivity * lights[0].color;
-
-    // vec4 lightRays = calcDirectionalLight(light, unitNormal, worldPosition);
-    // vec4 lightRays = vec4(0.0);
-    // for(int i=0; i <1; i ++) {
-    //     lightRays = lightRays + calcDirectionalLight(lights[i], unitNormal, worldPosition);
-    // }
-
-    // lightRays = max(lightRays, 0.2);
-    out_Color = vec4(diffuse, 1.0) * (vec4(materialColor, 1.0) + textureColor) + vec4(finalSpecular, 1);
+    out_Color = vec4(totalDiffuse, 1.0) * (vec4(materialColor, 1.0) + textureColor) + vec4(totalSpecular, 1);
     out_Color = mix(vec4(sky_color, 1.0), out_Color, visibility);
 }

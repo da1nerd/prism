@@ -12,7 +12,7 @@ in vec3 normal;
 
 out vec2 pass_textureCoords;
 out vec3 surfaceNormal;
-out vec3 toLightVector;
+out vec3 toLightVector[1];
 out vec3 toCameraVector;
 out vec3 worldPosition;
 out float visibility;
@@ -45,7 +45,9 @@ void main(void) {
     pass_textureCoords = (textureCoords / numberOfRows) + offset;
 
     surfaceNormal = (transformation_matrix * vec4(actualNormal, 0.0)).xyz;
-    toLightVector = lights[0].position - worldPosition.xyz;
+    for(int i=0; i < 4; i ++) {
+        toLightVector[i] = lights[i].position - worldPosition.xyz;
+    }
 
     vec3 cameraPosition = (inverse(view_matrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
     toCameraVector = cameraPosition - worldPosition.xyz;

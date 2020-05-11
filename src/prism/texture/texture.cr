@@ -11,6 +11,8 @@ module Prism
 
     # Determines how close the camera has to be to the reflected light to see any change in the brightness on the surface of the texture.
     # This is also known as "specular power."
+    # TODO: rather than storing these values here I should repurpose the material class and make it extend texture.
+    #  Then in there I can add material properties.
     @shine_damper : Float32 = 1
 
     # Determines how shiny the surface of the texture is.
