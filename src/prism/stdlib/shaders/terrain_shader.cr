@@ -1,7 +1,9 @@
 module Prism
   # A generic shader for the terrain
   class TerrainShader < Prism::DefaultShader
-    MAX_LIGHTS = 3
+    # TRICKY: This must match the number of lights in your glsl code.
+    MAX_LIGHTS = 4
+
     uniform "backgroundTexture", Prism::Texture
     uniform "blendMap", Prism::Texture
     uniform "rTexture", Prism::Texture

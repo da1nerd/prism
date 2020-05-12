@@ -1,7 +1,9 @@
 module Prism
   # A generic shader for `Entity` objects.
   class EntityShader < Prism::DefaultShader
-    MAX_LIGHTS = 3
+    # TRICKY: This must match the number of lights in your glsl code.
+    MAX_LIGHTS = 4
+
     uniform "diffuse", Prism::Texture
     uniform "useFakeLighting", Bool
     uniform "reflectivity", Float32

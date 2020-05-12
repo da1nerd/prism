@@ -19,7 +19,6 @@ in float visibility;
 out vec4 out_Color;
 
 uniform sampler2D diffuse;
-uniform vec3 materialColor;
 uniform float shineDamper;
 uniform float reflectivity;
 uniform Light lights[4];
@@ -41,7 +40,7 @@ void main(void) {
         vec3 lightDirection = -unitLightVector;
         vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);
         float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);
-        specularFactor = max(specularFactor, 0);
+        specularFactor = max(specularFactor, 0.0);
         float dampedFactor = pow(specularFactor, shineDamper);
         totalDiffuse = totalDiffuse + (brightness * lights[i].color) / attenFactor;
         totalSpecular = totalSpecular + (dampedFactor * reflectivity * lights[i].color) / attenFactor;
@@ -54,6 +53,6 @@ void main(void) {
         discard;
     }
 
-    out_Color = vec4(totalDiffuse, 1.0) * (vec4(materialColor, 1.0) + textureColor) + vec4(totalSpecular, 1);
+    out_Color = vec4(totalDiffuse, 1.0) * textureColor + vec4(totalSpecular, 1);
     out_Color = mix(vec4(sky_color, 1.0), out_Color, visibility);
 }
