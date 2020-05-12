@@ -23,8 +23,8 @@ module Prism
       self.x
     end
 
-    # Controlls how quickly the intensity at the center of the light dissipates.
-    # A lage value causes the light to dissipate very quickly.
+    # Controls how quickly the intensity at the center of the light dissipates.
+    # A large value causes the light to dissipate very quickly.
     def linear : Float32
       self.y
     end

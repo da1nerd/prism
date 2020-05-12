@@ -136,6 +136,7 @@ module Prism
         pos = entity.get(Prism::Transform).as(Prism::Transform).pos
         move_to(pos.x, pos.y, pos.z)
       end
+      self
     end
   end
 end
