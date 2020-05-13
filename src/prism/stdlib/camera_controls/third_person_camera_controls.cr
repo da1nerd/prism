@@ -10,11 +10,21 @@ module Prism::CameraControls
     MAX_PITCH = 89.999f32
     include Prism::InputReceiver
     include Prism::Adapter::GLFW
+    @offset : Vector3f
     @camera_transform : Prism::Transform = Prism::Transform.new
     @distance_from_entity : Float32 = 50
     @angle_around_entity : Float32 = 0
     @pitch : Float32 = 20
     @prev_mouse_position : RenderLoop::Position | Nil = nil
+
+    def initialize
+      @offset = Vector3f.new(0, 0, 0)
+    end
+
+    # Create a controller with an pre-defined *offset*.
+    # This *offset* will be added to all camera transformations.
+    def initialize(@offset : Vector3f)
+    end
 
     def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, entity : Crash::Entity)
       calculate_zoom input
@@ -40,7 +50,8 @@ module Prism::CameraControls
       @camera_transform.pos.x = entity_transform.pos.x - offset_x
       @camera_transform.pos.z = entity_transform.pos.z - offset_z
       @camera_transform.pos.y = entity_transform.pos.y + vertical_distance
-      @camera_transform.look_at(entity_transform)
+      @camera_transform.pos += @offset
+      @camera_transform.look_at(entity_transform.pos + @offset, @camera_transform.rot.up)
     end
 
     private def calculate_horizontal_distance

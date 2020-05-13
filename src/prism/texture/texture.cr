@@ -43,7 +43,7 @@ module Prism
     # Textures that have already been loaded will be re-used.
     def self.load(file_name : String) : Prism::Texture
       if !pool.has_key? file_name
-        pool.add(file_name, load_texture(file_name))
+        pool.add(file_name, load_texture_2d(file_name))
       end
 
       # produce a texture with the pooled texture id
@@ -51,7 +51,7 @@ module Prism
     end
 
     # Loads a texture into opengl
-    private def self.load_texture(file_name : String) : UInt32
+    private def self.load_texture_2d(file_name : String) : UInt32
       # read texture data
       bitmap = Bitmap.new(file_name)
 
