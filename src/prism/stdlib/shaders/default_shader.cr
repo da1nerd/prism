@@ -4,6 +4,9 @@ module Prism
   # A light shader wrapper that loads shader programs from the code.
   # This is used for creating shaders in the stdlib.
   # If you want to create your own shader you should inherit from `Shader::Program` instead.
+  # It would be nice if we had the backed file system built into this shader
+  # so that subclasses can manualy bake their own shaders.
+  # Keeping all the shaders in this single directory is messy.
   abstract class DefaultShader < Prism::Shader::Program
     protected def initialize(file_name : String)
       initialize file_name do |path|

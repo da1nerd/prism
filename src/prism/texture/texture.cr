@@ -21,6 +21,11 @@ module Prism
 
     property shine_damper, reflectivity
 
+    # Returns the texture id.
+    # TODO: this is dangerous since we are pooling textures.
+    #  However, we need this for now until we can update the texture abstraction.
+    getter id
+
     # Creates a new texture
     def initialize(@id : UInt32, @pool_key : String)
     end
@@ -41,6 +46,7 @@ module Prism
 
     # Loads a new texture.
     # Textures that have already been loaded will be re-used.
+    # TODO: put this in a texture loader class
     def self.load(file_name : String) : Prism::Texture
       if !pool.has_key? file_name
         pool.add(file_name, load_texture_2d(file_name))
@@ -48,6 +54,35 @@ module Prism
 
       # produce a texture with the pooled texture id
       Texture.new(pool.use(file_name), file_name)
+    end
+
+    # Produces a cube map texture
+    # expects *texture_files* to be in the order of:
+    # right face, left face, top face, bottom face, back face, front face
+    def self.load_cube_map(texture_files : StaticArray(String, 6)) : Prism::Texture
+      # reuse from the pool
+      pool_key = texture_files.join
+      if pool.has_key? pool_key
+        return Texture.new(pool.use(pool_key), pool_key)
+      end
+
+      LibGL.gen_textures(1, out texture_id)
+      # LibGL.active_texture(LibGL::TEXTURE_2D) # need this???
+      LibGL.bind_texture(LibGL::TEXTURE_CUBE_MAP, texture_id)
+
+      0.upto(texture_files.size - 1) do |i|
+        bitmap = Bitmap.new(texture_files[i])
+        format = bitmap.alpha? ? LibGL::RGBA : LibGL::RGB
+        # TRICKY: expects files to be in the order of:
+        # right face, left face, top face, bottom face, back face, front face
+        LibGL.tex_image_2d(LibGL::TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, bitmap.width, bitmap.height, 0, format, LibGL::UNSIGNED_BYTE, bitmap.pixels)
+      end
+      LibGL.tex_parameter_i(LibGL::TEXTURE_CUBE_MAP, LibGL::TEXTURE_MAG_FILTER, LibGL::LINEAR)
+      LibGL.tex_parameter_i(LibGL::TEXTURE_CUBE_MAP, LibGL::TEXTURE_MIN_FILTER, LibGL::LINEAR)
+
+      # add to the pool
+      pool.add(pool_key, texture_id)
+      Texture.new(pool.use(pool_key), pool_key)
     end
 
     # Loads a texture into opengl

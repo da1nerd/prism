@@ -13,23 +13,30 @@ module Prism::Systems
     @lights : Array(Crash::Entity)
     @cameras : Array(Crash::Entity)
     @guis : Array(Crash::Entity)
+    @skybox : Array(Crash::Entity)
 
     @entity_shader : Prism::EntityShader = Prism::EntityShader.new
     @entity_renderer : Prism::Systems::EntityRenderer
 
     @terrain_shader : Prism::TerrainShader = Prism::TerrainShader.new
     @terrain_renderer : Prism::Systems::TerrainRenderer
+
     @gui_renderer : Prism::Systems::GUIRenderer = Prism::Systems::GUIRenderer.new
+
+    @skybox_shader : Prism::SkyboxShader = Prism::SkyboxShader.new
+    @skybox_renderer : Prism::Systems::SkyboxRenderer
 
     def initialize
       @entity_renderer = Prism::Systems::EntityRenderer.new(@entity_shader)
       @terrain_renderer = Prism::Systems::TerrainRenderer.new(@terrain_shader)
+      @skybox_renderer = Prism::Systems::SkyboxRenderer.new(@skybox_shader)
       @entities = [] of Crash::Entity
       @grouped_entities = {} of Prism::TexturedModel => Array(Crash::Entity)
       @terrains = [] of Crash::Entity
       @lights = [] of Crash::Entity
       @cameras = [] of Crash::Entity
       @guis = [] of Crash::Entity
+      @skybox = [] of Crash::Entity
     end
 
     @[Override]
@@ -40,6 +47,7 @@ module Prism::Systems
       @lights = engine.get_entities Prism::NewLight
       @cameras = engine.get_entities Prism::Camera
       @guis = engine.get_entities Prism::GUIElement
+      @skybox = engine.get_entities Prism::Skybox
     end
 
     # Uses the transformation of the *entity* to calculate the view that the camera has of the world.
@@ -130,6 +138,15 @@ module Prism::Systems
       @terrain_shader.lights = terrain_lights
       @terrain_renderer.render(@terrains)
       @terrain_shader.stop
+
+      #
+      # Skybox
+      #
+      @skybox_shader.start
+      @skybox_shader.projection_matrix = projection_matrix
+      @skybox_shader.view_matrix = view_matrix
+      @skybox_renderer.render(@skybox)
+      @skybox_shader.stop
 
       #
       # GUI

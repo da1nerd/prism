@@ -70,7 +70,7 @@ module Prism
     end
 
     # Loads some 3d vertices into a model.
-    def self.load_f3(vertices : Array(Float32))
+    def self.load_3f(vertices : Array(Float32))
       if vertices.size % 3 != 0
         raise "3d vertices expected."
       end

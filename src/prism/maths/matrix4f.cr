@@ -18,6 +18,10 @@ module Prism::Maths
       return @m.clone
     end
 
+    def []=(row : Int, column : Int, value : Float32)
+      @m.[]=(row, column, value)
+    end
+
     # Retrieves the element at the given row and column indexes.
     def [](row : Int, column : Int)
       @m.[](row, column)
@@ -151,6 +155,10 @@ module Prism::Maths
     def *(other : Matrix4f)
       result = @m * other.m
       return Matrix4f.new(result)
+    end
+
+    def to_s(io : IO)
+      @m.to_s(io)
     end
   end
 end
