@@ -12,9 +12,8 @@ module Prism
     @[Prism::Shader::Field]
     @color : Vector3f
 
-    # This is just a vector internally, but we use the `Attenuation` type in this class just to be verbose.
     @[Prism::Shader::Field]
-    @attenuation : Vector3f
+    @attenuation : Prism::Attenuation
 
     property color
     getter position

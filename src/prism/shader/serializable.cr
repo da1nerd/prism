@@ -81,18 +81,8 @@ module Prism::Shader
   #  It would also be great if we did away with the annotations and used the same macro syntax as the shader program.
   #  That would make it appear more consistent. e.g. `struct_field "someName", SomeType`
   #  That would make more sense because that's what we are trying to represent here.
-  # TODO: Do I need to validate the types here at all? The types should be validated in the shader program when the uniforms are set. However, the downside would be that's at runtime.
   module Serializable
     annotation Options
-    end
-
-    private def raise_uniform_parse_error(klass, field, type, valid_types, field_location)
-      message = <<-STRING
-  Invalid uniform configuration!
-  #{klass}.#{field} has an invalid uniform type '#{type}'. Try serialising '#{type}' or change '#{field}' to one of #{valid_types}.
-    from #{field_location[:file]}:#{field_location[:line]}:#{field_location[:column]}.
-  STRING
-      raise UniformTypeException.new(message)
     end
 
     # Serializes the class to a Uniform object that can be consumed by the `Prism::Shader`.
@@ -117,24 +107,13 @@ module Prism::Shader
           {% if ann && !ann[:ignore] %}
             {%
               is_serializable = ::Prism::Shader::Serializable.includers.any? { |t| t == mdef.return_type.id }
-              # TODO: the comparison here is too strict.
-              # t.name == mdef.return_type.id requires you to type out the full namespace or it will fail.
-              is_valid = UniformType.union_types.any? { |t| t.name == mdef.return_type.id }
               properties[mdef.name] = {
                 method:       true,
                 type:         mdef.return_type,
                 serializable: is_serializable,
-                valid:        is_valid,
                 name:         (ann && ann[:name]) ? ann[:name].id.stringify : mdef.name.stringify,
               }
             %}
-            {% if !is_serializable && !is_valid %}
-              raise_uniform_parse_error("{{@type.name}}", "{{mdef.name}}", "{{mdef.return_type}}", {{UniformType.union_types}}, {
-                file: {{mdef.filename}},
-                line: {{mdef.line_number}},
-                column: {{mdef.column_number}}
-              })
-            {% end %}
           {% end %}
         {% end %}
 
@@ -143,21 +122,12 @@ module Prism::Shader
           {% if ann && !ann[:ignore] %}
             {%
               is_serializable = ::Prism::Shader::Serializable.includers.any? { |t| t.name == ivar.type.name }
-              is_valid = UniformType.union_types.any? { |t| t.name == ivar.type.name }
               properties[ivar.id] = {
                 type:         ivar.type,
                 serializable: is_serializable,
-                valid:        is_valid,
                 name:         ((ann && ann[:name]) || ivar).id.stringify,
               }
             %}
-            {% if !is_serializable && !is_valid %}
-              raise_uniform_parse_error("{{@type.name}}", "{{ivar.id}}", "{{ivar.type}}", {{UniformType.union_types}}, {
-                file: {{ivar.filename}},
-                line: {{ivar.line_number}},
-                column: {{ivar.column_number}}
-              })
-            {% end %}
           {% end %}
         {% end %}
 
@@ -181,7 +151,7 @@ module Prism::Shader
               _{{name}}_uniforms.each do |k, v|
                 uniforms[%ukey + "." + k] = v
               end
-            {% elsif value[:valid] %}
+            {% else %}
               uniforms[%ukey] = _{{name}}
             {% end %}
           end
