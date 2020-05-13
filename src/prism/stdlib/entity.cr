@@ -1,15 +1,26 @@
 require "crash"
 
 module Prism
-  # An entity is a collection of components
-  # All entities start with a default `Transform` and `Material`
-  # TODO: I might make transform a regular class intead of a component.
-  #  Then all entities will simply contain a transform property.
+  # A default entity with some standard components baked in.
   class Entity < Crash::Entity
     def initialize
       super()
-      add Transform.new
+      # possess a position and rotation
+      add Prism::Transform.new
+      # subscribe to input events
+      add Prism::InputSubscriber.new
+      # legacy material information
       add Material.new
+    end
+
+    # Shortcut to retrieve the `Material` component.
+    def material : Prism::Material
+      get(Prism::Material).as(Prism::Material)
+    end
+
+    # Shortcut to retrieve the `Transform` component.
+    def transform : Prism::Transform
+      get(Prism::Transform).as(Prism::Transform)
     end
 
     # Force all camera controls under the same class type

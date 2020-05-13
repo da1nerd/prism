@@ -8,7 +8,6 @@ module Prism
       add Prism::Camera.new
       add Prism::FreeLook.new
       add Prism::FreeMove.new
-      add Prism::InputSubscriber.new
     end
   end
 end
