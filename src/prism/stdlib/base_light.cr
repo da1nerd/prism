@@ -4,12 +4,12 @@ module Prism
   # A pseudo light object that provides some of the basic light properties.
   # This light source is at a location within the scene.
   struct BaseLight
-    include Prism::Shader::Serializable
+    include Prism::Shader::UniformStruct
 
-    @[Prism::Shader::Field(name: "color")]
+    @[Field]
     @color : Vector3f
 
-    @[Prism::Shader::Field(name: "intensity")]
+    @[Field]
     @intensity : Float32
 
     getter color, intensity

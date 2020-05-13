@@ -6,13 +6,13 @@ module Prism
   class NewLight < Prism::Light
     include Prism::InputReceiver
 
-    @[Prism::Shader::Field]
+    @[Field]
     @position : Vector3f
 
-    @[Prism::Shader::Field]
+    @[Field]
     @color : Vector3f
 
-    @[Prism::Shader::Field]
+    @[Field]
     @attenuation : Prism::Attenuation
 
     property color
@@ -23,12 +23,12 @@ module Prism
     # But you must add an `InputSubscriber` component to your entity in order for this to work.
     # TODO: it would be nice to not have to add the subscriber component to the entity.
     def initialize(@color)
-      @position = Vector3f.new(0,0,0)
+      @position = Vector3f.new(0, 0, 0)
       @attenuation = Prism::Attenuation.new(1, 0, 0)
     end
 
     def initialize(@color, @attenuation : Prism::Attenuation)
-      @position = Vector3f.new(0,0,0)
+      @position = Vector3f.new(0, 0, 0)
     end
 
     def attenuation : Prism::Attenuation

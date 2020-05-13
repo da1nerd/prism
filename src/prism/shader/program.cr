@@ -1,5 +1,5 @@
 require "log"
-require "./serializable"
+require "./uniform_struct.cr"
 require "../reference_pool"
 
 module Prism::Shader
@@ -123,8 +123,8 @@ module Prism::Shader
       set_uniform(name, slot)
     end
 
-    # Sets an array of serializable uniforms.
-    def set_uniform(name : String, value : Array(Shader::Serializable))
+    # Sets an array of custom uniforms.
+    def set_uniform(name : String, value : Array(Shader::UniformStruct))
       index = 0
       value.each do |v|
         set_uniform("#{name}[#{index}]", v)
@@ -132,8 +132,8 @@ module Prism::Shader
       end
     end
 
-    # Sets a serializable uniform. The value will be serialized and it's generated values stored in the uniform.
-    def set_uniform(name : String, value : Shader::Serializable)
+    # Sets a custom uniform. The value will be serialized and it's generated values stored in the uniform.
+    def set_uniform(name : String, value : Shader::UniformStruct)
       uniforms = value.to_uniform(true)
       uniforms.each do |k, v|
         set_uniform("#{name}.#{k}", v)

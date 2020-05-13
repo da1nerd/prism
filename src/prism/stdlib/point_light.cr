@@ -8,11 +8,11 @@ module Prism
     property range
     getter attenuation
 
-    @[Prism::Shader::Field]
+    @[Field]
     @base : BaseLight
-    @[Prism::Shader::Field]
+    @[Field]
     @range : Float32
-    @[Prism::Shader::Field(name: "atten")]
+    @[Field(name: "atten")]
     @attenuation : Prism::Attenuation
 
     def initialize

@@ -11,7 +11,6 @@ module Prism
   #
   # This just a wrapper around a vector so we can document the different attenuation components.
   class Attenuation < Maths::Vector3f
-
     def initialize(constant : Float32, linear : Float32, exponent : Float32)
       super
     end

@@ -10,7 +10,7 @@ module Prism
       initialize(Vector3f.new(1, 1, 1), 0.8)
     end
 
-    @[Prism::Shader::Field]
+    @[Field]
     @base : BaseLight
 
     def initialize(color : Vector3f, intensity : Float32)
