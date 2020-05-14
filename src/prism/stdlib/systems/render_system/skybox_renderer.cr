@@ -4,7 +4,7 @@ module Prism::Systems
     @cube : Prism::Model
     @size : Float32 = 500
 
-    def initialize(@shader : Prism::SkyboxShader)
+    def initialize(@shader : Prism::SkyboxShader, @fog_color : Vector3f)
       @cube = build_cube(@size)
     end
 
@@ -63,6 +63,7 @@ module Prism::Systems
           @size = skybox.size
           @cube = build_cube(@size)
         end
+        @shader.fog_color = @fog_color
         @shader.cube_map = skybox.texture
         @cube.bind
         offset = Pointer(Void).new(0)

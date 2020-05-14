@@ -6,7 +6,7 @@ module Prism::Systems
   # A default system for rendering `Prism::Entity`s.
   class RenderSystem < Crash::System
     # RGB
-    SKY_COLOR = Vector3f.new(0.6, 0.8, 1)
+    SKY_COLOR = Vector3f.new(0.5444, 0.62, 0.69)
     @entities : Array(Crash::Entity)
     @grouped_entities : Hash(Prism::TexturedModel, Array(Crash::Entity))
     @terrains : Array(Crash::Entity)
@@ -29,7 +29,7 @@ module Prism::Systems
     def initialize
       @entity_renderer = Prism::Systems::EntityRenderer.new(@entity_shader)
       @terrain_renderer = Prism::Systems::TerrainRenderer.new(@terrain_shader)
-      @skybox_renderer = Prism::Systems::SkyboxRenderer.new(@skybox_shader)
+      @skybox_renderer = Prism::Systems::SkyboxRenderer.new(@skybox_shader, SKY_COLOR)
       @entities = [] of Crash::Entity
       @grouped_entities = {} of Prism::TexturedModel => Array(Crash::Entity)
       @terrains = [] of Crash::Entity
@@ -79,6 +79,10 @@ module Prism::Systems
           @grouped_entities[model] = [entity] of Crash::Entity
         end
       end
+    end
+
+    def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
+      @skybox_shader.tick(tick)
     end
 
     # Handles the rendering.
