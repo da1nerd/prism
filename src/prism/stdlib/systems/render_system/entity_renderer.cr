@@ -42,8 +42,8 @@ module Prism::Systems
         @shader.offset = Vector2f.new(0, 0)
       end
       @shader.use_fake_lighting = material.use_fake_lighting
-      @shader.reflectivity = model.texture.reflectivity
-      @shader.shine_damper = model.texture.shine_damper
+      @shader.reflectivity = material.reflectivity
+      @shader.shine_damper = material.shine_damper
       transform = entity.get(Prism::Transform).as(Prism::Transform)
       @shader.transformation_matrix = transform.get_transformation
     end

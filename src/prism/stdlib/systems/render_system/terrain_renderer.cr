@@ -26,9 +26,8 @@ module Prism::Systems
       @shader.g_texture = textured_model.textures.green
       @shader.b_texture = textured_model.textures.blue
 
-      # keep it simple and use the reflection settings from the background
-      @shader.reflectivity = textured_model.textures.background.reflectivity
-      @shader.shine_damper = textured_model.textures.background.shine_damper
+      @shader.reflectivity = material.reflectivity
+      @shader.shine_damper = material.shine_damper
 
       disable_culling if material.has_transparency?
       if material.wire_frame?

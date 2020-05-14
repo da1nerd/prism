@@ -4,7 +4,7 @@ module Prism
   #  We need some material values for terrain, and different ones for other entities.
   #  We probably need to just have a different material class for terrain and entities.
   class Material < Crash::Component
-    property specular_intensity, specular_power, color, use_fake_lighting
+    property color, use_fake_lighting, shine_damper, reflectivity
 
     # Indicates that this material has transparency
     setter has_transparency, wire_frame
@@ -20,14 +20,13 @@ module Prism
     # @[Prism::Shader::Field(name: "useFakeLighting")]
     @use_fake_lighting : Bool = false
 
-    # The reflectivity determines how shiny the surface of the object is.
-    # @[Prism::Shader::Field(name: "specularIntensity")]
-    @specular_intensity : Float32 = 0.7
+    # Determines how close the camera has to be to the reflected light to see any change in the brightness on the surface of the texture.
+    # This is also known as "specular power."
+    @shine_damper : Float32 = 1
 
-    # The shine dampening determines how close the camera has to be
-    # to the reflected light to see any change in the brightness on surface of the object.
-    # @[Prism::Shader::Field(name: "specularPower")]
-    @specular_power : Float32 = 10
+    # Determines how shiny the surface of the texture is.
+    # This is also known as "specular intensity."
+    @reflectivity : Float32 = 0
 
     # The color of the surface of the object.
     # this defaults to black
