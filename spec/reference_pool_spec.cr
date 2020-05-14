@@ -1,6 +1,8 @@
 require "./spec_helper"
 include Prism
 
+# simple class inheritance tests
+
 class MyType
   ReferencePool.create_persistent_pool(String) { }
 end
@@ -12,7 +14,16 @@ class MyOtherType
   ReferencePool.create_persistent_pool(String) { }
 end
 
-describe MyType do
+# abstract class inheritance test
+
+abstract class AbstractType
+  ReferencePool.create_persistent_pool(String) { }
+end
+
+class AbsSubType < AbstractType
+end
+
+describe Prism::ReferencePool do
   it "maintains the pool across inheritance" do
     MyType.pool.size.should eq(0)
     MyChildType.pool.size.should eq(0)
@@ -35,6 +46,21 @@ describe MyType do
     MyType.pool.size.should eq(2)
     MyChildType.pool.size.should eq(2)
     MyOtherType.pool.size.should eq(1)
+  end
+
+  it "maintains the pool accross abstract inheritance" do
+    AbstractType.pool.size.should eq(0)
+    AbsSubType.pool.size.should eq(0)
+
+    AbstractType.pool.add("key", "value")
+
+    AbstractType.pool.size.should eq(1)
+    AbsSubType.pool.size.should eq(1)
+
+    AbsSubType.pool.add("key2", "value")
+
+    AbstractType.pool.size.should eq(2)
+    AbsSubType.pool.size.should eq(2)
   end
 end
 

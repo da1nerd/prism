@@ -11,39 +11,39 @@ end
 module UniformTest
   include Prism
 
-  @[Shader::Serializable::Options(name: "Parent")]
+  @[Shader::UniformStruct::Options(name: "Parent")]
   class Parent
-    include Shader::Serializable
+    include Shader::UniformStruct
 
-    @[Shader::Field(name: "name")]
+    @[Field(name: "name")]
     @name : Int32 = 1
 
-    @[Shader::Field(name: "val")]
+    @[Field(name: "val")]
     @val : Int32 = 5
   end
 
-  @[Shader::Serializable::Options(name: "Person")]
+  @[Shader::UniformStruct::Options(name: "Person")]
   class Child < Parent
-    include Shader::Serializable
+    include Shader::UniformStruct
 
-    @[Shader::Field(name: "age")]
+    @[Field(name: "age")]
     @age : Int32 = 25
 
-    @[Shader::Field(name: "att")]
+    @[Field(name: "att")]
     @att : Attribute = Attribute.new
   end
 
-  @[Shader::Serializable::Options(name: "Attribute")]
+  @[Shader::UniformStruct::Options(name: "Attribute")]
   class Attribute
-    include Shader::Serializable
+    include Shader::UniformStruct
 
-    @[Shader::Field(name: "color")]
+    @[Field(name: "color")]
     @c : Int32 = 12
 
-    @[Shader::Field]
+    @[Field]
     @height : Int32 = 72
 
-    @[Shader::Field(name: "method_test")]
+    @[Field(name: "method_test")]
     def test : Float32
       6.2f32
     end
