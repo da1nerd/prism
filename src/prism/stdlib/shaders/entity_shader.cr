@@ -4,7 +4,7 @@ module Prism
     # TRICKY: This must match the number of lights in your glsl code.
     MAX_LIGHTS = 4
 
-    uniform "diffuse", Prism::Texture
+    uniform "diffuse", Prism::Texture2D
     uniform "useFakeLighting", Bool
     uniform "reflectivity", Float32
     uniform "shineDamper", Float32

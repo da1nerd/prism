@@ -5,7 +5,7 @@ module Prism
   class TexturedModel < Crash::Component
     property model, texture
 
-    def initialize(@model : Prism::Model, @texture : Prism::Texture)
+    def initialize(@model : Prism::Model, @texture : Prism::Texture2D)
     end
   end
 end

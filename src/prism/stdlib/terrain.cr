@@ -5,7 +5,7 @@ module Prism
   struct TerrainTexturePack
     getter background, blend_map, red, green, blue
 
-    def initialize(@background : Prism::Texture, @blend_map : Prism::Texture, @red : Prism::Texture, @green : Prism::Texture, @blue : Prism::Texture)
+    def initialize(@background : Prism::Texture2D, @blend_map : Prism::Texture2D, @red : Prism::Texture2D, @green : Prism::Texture2D, @blue : Prism::Texture2D)
     end
   end
 

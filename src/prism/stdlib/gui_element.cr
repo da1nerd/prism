@@ -6,7 +6,7 @@ module Prism
   class GUIElement < Crash::Component
     @position : Vector2f
     @scale : Vector2f
-    @texture : Prism::Texture
+    @texture : Prism::Texture2D
 
     getter position, scale, texture
 

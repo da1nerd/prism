@@ -4,7 +4,7 @@ module Prism
   class Skybox < Crash::Component
     getter texture, size
 
-    def initialize(@texture : Prism::Texture, @size : Float32)
+    def initialize(@texture : Prism::TextureCubeMap, @size : Float32)
     end
   end
 end
