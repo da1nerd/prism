@@ -4,6 +4,8 @@ module Prism
     ROTATE_SPEED = 1f32
 
     uniform "cubeMap", Prism::TextureCubeMap
+    uniform "cubeMap2", Prism::TextureCubeMap
+    uniform "blendFactor", Float32
     uniform "projectionMatrix", Prism::Maths::Matrix4f
     uniform "fogColor", Prism::Maths::Vector3f
 

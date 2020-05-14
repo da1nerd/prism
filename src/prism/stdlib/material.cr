@@ -3,6 +3,7 @@ module Prism
   # TODO: I don't like this. It's far too specific and not very flexible.
   #  We need some material values for terrain, and different ones for other entities.
   #  We probably need to just have a different material class for terrain and entities.
+  # TODO: It may be fine to put all of these in the texture. These are all optional values anyway.
   class Material < Crash::Component
     property color, use_fake_lighting, shine_damper, reflectivity
 

@@ -83,6 +83,7 @@ module Prism::Systems
 
     def input(tick : RenderLoop::Tick, input : RenderLoop::Input)
       @skybox_shader.tick(tick)
+      @skybox_renderer.tick(tick)
     end
 
     # Handles the rendering.
