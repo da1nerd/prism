@@ -44,7 +44,7 @@ module Prism::Systems
       @terrains = engine.get_entities Prism::TexturedTerrainModel
       @entities = engine.get_entities Prism::TexturedModel
       # TODO: just get the lights within range
-      @lights = engine.get_entities Prism::NewLight
+      @lights = engine.get_entities Prism::PointLight
       @cameras = engine.get_entities Prism::Camera
       @guis = engine.get_entities Prism::GUIElement
       @skybox = engine.get_entities Prism::Skybox
@@ -112,10 +112,10 @@ module Prism::Systems
       # This is the camera position
       # @entity_shader.eye_pos = eye_pos
       @entity_shader.sky_color = SKY_COLOR
-      entity_lights = StaticArray(Prism::NewLight, Prism::EntityShader::MAX_LIGHTS).new(Prism::NewLight.new(Vector3f.new(0, 0, 0)))
+      entity_lights = StaticArray(Prism::PointLight, Prism::EntityShader::MAX_LIGHTS).new(Prism::PointLight.new(Vector3f.new(0, 0, 0)))
       0.upto(Math.min(@lights.size, Prism::EntityShader::MAX_LIGHTS) - 1) do |i|
         light_entity = @lights[i]
-        entity_lights[i] = light_entity.get(Prism::NewLight).as(Prism::NewLight)
+        entity_lights[i] = light_entity.get(Prism::PointLight).as(Prism::PointLight)
       end
       @entity_shader.lights = entity_lights
       @entity_renderer.render(@grouped_entities)
@@ -130,10 +130,10 @@ module Prism::Systems
       @terrain_shader.view_matrix = view_matrix
       # @terrain_shader.eye_pos = eye_pos
       @terrain_shader.sky_color = SKY_COLOR
-      terrain_lights = StaticArray(Prism::NewLight, Prism::TerrainShader::MAX_LIGHTS).new(Prism::NewLight.new(Vector3f.new(0, 0, 0)))
+      terrain_lights = StaticArray(Prism::PointLight, Prism::TerrainShader::MAX_LIGHTS).new(Prism::PointLight.new(Vector3f.new(0, 0, 0)))
       0.upto(Math.min(@lights.size, Prism::TerrainShader::MAX_LIGHTS) - 1) do |i|
         light_entity = @lights[i]
-        terrain_lights[i] = light_entity.get(Prism::NewLight).as(Prism::NewLight)
+        terrain_lights[i] = light_entity.get(Prism::PointLight).as(Prism::PointLight)
       end
       @terrain_shader.lights = terrain_lights
       @terrain_renderer.render(@terrains)
