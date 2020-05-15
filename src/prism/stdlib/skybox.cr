@@ -6,6 +6,8 @@ module Prism
     include Prism::InputReceiver
     @activation_times : Array(Float64)
     @textures : Hash(Float64, Prism::TextureCubeMap)
+    # TODO: it would be better if the game had a global world time that could be used elsewere in the game as well.
+    #  Perhaps this could be something configured in the game class and passed to the input methods.
     @time : Float64 = 0
     @day_length : Float64
     @transition_durration : Float64
@@ -17,7 +19,7 @@ module Prism
     end
 
     def initialize(periods : Array(Skybox::Period), day_length : Float32)
-      initialize(periods, day_length, Skybox::Time.new(hour: 12), Skybox::Time.new(minute: 30), 500)
+      initialize(periods, day_length, Skybox::Time.new(hour: 12), Skybox::Time.new(hour: 1), 500)
     end
 
     # Creates a skybox different *periods* of the day/night.
@@ -90,6 +92,7 @@ module Prism
   class Skybox < Crash::Component
 
     # Represents a specific time of day in 24 hour time.
+    # TODO: change this to `WorldTime` and have it somewhere global
     struct Time
       # The length of a regular day in seconds
       REAL_DAY_LENGTH = 24 * 60 * 60
