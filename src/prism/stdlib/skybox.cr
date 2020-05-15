@@ -7,15 +7,17 @@ module Prism
     @activation_times : Array(Float64)
     @textures : Hash(Float64, Prism::TextureCubeMap)
     @time : Float64 = 0
+    @day_length : Float64
+    @transition_durration : Float64
 
     getter day_texture, night_texture, size
 
-    def initialize(periods : Skybox::Period, size : Float32)
-      initialize(periods, size, day_length, 10000, 1000)
+    def initialize(periods : Array(Skybox::Period))
+      initialize(periods, 1_200)
     end
 
-    def initialize(periods : Skybox::Period, size : Float32, day_length : Float32)
-      initialize(periods, size, day_length, 1000)
+    def initialize(periods : Array(Skybox::Period), day_length : Float32)
+      initialize(periods, day_length, Skybox::Time.new(hour: 12), Skybox::Time.new(minute: 30), 500)
     end
 
     # Creates a skybox different *periods* of the day/night.
@@ -23,13 +25,14 @@ module Prism
     # The *day_length* controls how long a day/night cycle is in seconds.
     # The *time* is the time of day we will start at.
     # The *transition_durration* controls how long it takes to transition between periods.
-    def initialize(periods : Array(Skybox::Period), @size : Float32, @day_length : Float32, time : Skybox::Time, transition_durration : Skybox::Time)
+    def initialize(periods : Array(Skybox::Period), day_length : Float32, time : Skybox::Time, transition_durration : Skybox::Time, @size : Float32)
+      @day_length = day_length.to_f64
       @activation_times = [] of Float64
       @textures = Hash(Float64, Prism::TextureCubeMap).new
 
       # Scale times
-      @time = Skybox::Time.scale(time, @day_length)
-      @transition_durration = Skybox::Time.scale(transition_durration, @day_length)
+      @time = time.scale(@day_length)
+      @transition_durration = transition_durration.scale(@day_length)
 
       # build schedule
       periods.each do |p|
@@ -48,24 +51,33 @@ module Prism
     end
 
     # Retrieves the current skybox values
-    def get_values : Tuple(current_texture: Prism::TextureCubeMap, next_texture: Prism::TextureCubeMap, blend_factor: Float32)
+    def get_values : NamedTuple(current_texture: Prism::TextureCubeMap, next_texture: Prism::TextureCubeMap, blend_factor: Float32)
       index = 0
       @activation_times.each do |t|
-        if @time < t && time >= t - @transition_durration
+        prev_index = (index + 1) % @activation_times.size
+        if @time < t && @time >= t - @transition_durration
           # transition from the previous period to this one
-          prev_t = @activation_times[Math.abs(index - 1)]
+          prev_t = @activation_times[prev_index]
           return {
             current_texture: @textures[prev_t],
-            previous_texture: @textures[t],
+            next_texture: @textures[t],
             blend_factor: ((@time - t + @transition_durration) / @transition_durration).to_f32
           }
         elsif @time > t
-          # Still in the previous period without any transition
-          prev_t = @activation_times[Math.abs(index - 1)]
+          # Still in this period without any transition
+          prev_t = @activation_times[prev_index]
+          return {
+            current_texture: @textures[t],
+            next_texture: @textures[prev_t],
+            blend_factor: 0f32
+          }
+        elsif @time < t && prev_index == 0
+          # Still in previous period without any transition
+          prev_t = @activation_times[prev_index]
           return {
             current_texture: @textures[prev_t],
-            previous_texture: @textures[t],
-            blend_factor: 0
+            next_texture: @textures[t],
+            blend_factor: 0f32
           }
         end
         index += 1
@@ -85,7 +97,7 @@ module Prism
       getter hour, minute, second
 
       # Creates a new time of day
-      def initialize(@hour : Float64, @minute : Float64, @second : Float64)
+      def initialize(@hour : Float64 = 0, @minute : Float64 = 0, @second : Float64 = 0)
       end
 
       # Scales the time to fit within a certain *day_length*
@@ -94,13 +106,13 @@ module Prism
         seconds += @hour * 60 * 60
         seconds += @minute * 60
         seconds += @second
-        Skybox.scale(seconds, day_length)
+        Skybox::Time.scale(seconds, day_length)
       end
 
       # Scales the time of dayh in *seconds* to fit within the *day_length*.
       # This will wrap the time to the next day if it overflows.
       def self.scale(seconds : Float64, day_length : Float64)
-        (seconds % day_length) / REAL_DAY_LENGTH * day_length
+        (seconds / REAL_DAY_LENGTH * day_length) % day_length
       end
     end
 
