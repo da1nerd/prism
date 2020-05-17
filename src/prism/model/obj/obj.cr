@@ -1,3 +1,5 @@
+require "./vertex.cr"
+
 module Prism::OBJ
   extend self
 

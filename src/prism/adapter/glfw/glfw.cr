@@ -1,5 +1,6 @@
 require "render_loop"
 require "crystglfw"
+require "./window.cr"
 
 # An adapter for the GLFW rendering context.
 module Prism::Adapter::GLFW

@@ -7,6 +7,8 @@ module Prism
   # It would be nice if we had the backed file system built into this shader
   # so that subclasses can manualy bake their own shaders.
   # Keeping all the shaders in this single directory is messy.
+  # TODO: allow shaders to bind their own shader files instead of using the defaults.
+  #  This will allow grouping features together. e.g. all the skybox logic can go into a skybox folder.
   abstract class DefaultShader < Prism::Shader::Program
     protected def initialize(file_name : String)
       initialize file_name do |path|
