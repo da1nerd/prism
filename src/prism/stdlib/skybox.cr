@@ -62,24 +62,24 @@ module Prism
           prev_t = @activation_times[prev_index]
           return {
             current_texture: @textures[prev_t],
-            next_texture: @textures[t],
-            blend_factor: ((@time - t + @transition_durration) / @transition_durration).to_f32
+            next_texture:    @textures[t],
+            blend_factor:    ((@time - t + @transition_durration) / @transition_durration).to_f32,
           }
         elsif @time > t
           # Still in this period without any transition
           prev_t = @activation_times[prev_index]
           return {
             current_texture: @textures[t],
-            next_texture: @textures[prev_t],
-            blend_factor: 0f32
+            next_texture:    @textures[prev_t],
+            blend_factor:    0f32,
           }
         elsif @time < t && prev_index == 0
           # Still in previous period without any transition
           prev_t = @activation_times[prev_index]
           return {
             current_texture: @textures[prev_t],
-            next_texture: @textures[t],
-            blend_factor: 0f32
+            next_texture:    @textures[t],
+            blend_factor:    0f32,
           }
         end
         index += 1
@@ -88,9 +88,7 @@ module Prism
     end
   end
 
-
   class Skybox < Crash::Component
-
     # Represents a specific time of day in 24 hour time.
     # TODO: change this to `WorldTime` and have it somewhere global
     struct Time
@@ -122,6 +120,7 @@ module Prism
     # Represents a period in which a texture is used in the skybox.
     struct Period
       getter activation_time, texture
+
       # Produces a period of day/night that will become actiev at the *activation_time*
       def initialize(@activation_time : Skybox::Time, @texture : Prism::TextureCubeMap)
       end
