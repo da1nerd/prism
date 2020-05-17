@@ -12,9 +12,6 @@ This is a stable, though not completely baked, 3D game engine. Documentation is 
 * **Simple** try to avoid obtuse graphics language, or at least document it very well so noobs can understand what's going on.
 * **Extensible** you can extend/replace/add engines to the core with ease.
 
-## Roadmap
-
-I'm building a roadmap in [this issue](https://github.com/neutrinog/prism/issues/45).
 
 ## Demo
 
@@ -23,7 +20,7 @@ I'm building a roadmap in [this issue](https://github.com/neutrinog/prism/issues
 ![Peek 2020-04-29 09-53](https://user-images.githubusercontent.com/166412/80556931-6dcc6900-89ff-11ea-8c78-b7dd11345d30.gif)
 
 
-You can find code for this demo in the [example](./example) dir.
+You can find code for this demo at https://github.com/neutrinog/tutorial-game
 
 ## Installation
 
