@@ -57,14 +57,25 @@ sudo apt install mesa-common-dev
 
 ```crystal
 require "prism"
-```
 
-> TODO: write some usage example here.
+class Game < Prism::GameEngine
+  def init
+    # Cube
+    # TODO: draw a box to look at
 
-For now you can run the same application in this repo.
+    # Sun light
+    sun = Prism::Entity.new
+    sun_color = Prism::Maths::Vector3f.new(0.2, 0.2, 0.2)
+    sun.add Prism::PointLight.new(sun_color)
+    sun.transform.move_to(0, 10000, -7000)
+    add_entity sun
 
-```bash
-make start
+    # Camera
+    add_entity Prism::GhostCamera.new
+  end
+end
+
+Prism::Context.run("Hello World", Game.new)
 ```
 
 ## Contributing
