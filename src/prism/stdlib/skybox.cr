@@ -110,7 +110,7 @@ module Prism
         Skybox::Time.scale(seconds, day_length)
       end
 
-      # Scales the time of dayh in *seconds* to fit within the *day_length*.
+      # Scales the time of day in *seconds* to fit within the *day_length*.
       # This will wrap the time to the next day if it overflows.
       def self.scale(seconds : Float64, day_length : Float64)
         (seconds / REAL_DAY_LENGTH * day_length) % day_length
