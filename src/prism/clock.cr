@@ -1,3 +1,5 @@
+require "./core/clock"
+
 module Prism
   # Represents a scalable game clock.
   # With the `Clock` you can use the concept of time in your game in a natural way.
@@ -50,6 +52,11 @@ module Prism
     # Creates a new `Clock` instance that corresponds to the current game time.
     def self.now(day_length : Float64 = REAL_DAY_LENGTH)
       new(unsafe_real_seconds: Core::Clock.seconds, day_length: day_length)
+    end
+
+    # Changes the current time.
+    def self.set_time(clock : Prism::Clock)
+      Prism::Core::Clock.reset(clock.real_seconds)
     end
   end
 end

@@ -2,6 +2,7 @@ require "./spec_helper"
 
 describe Prism::Core::Clock do
   it "increments the time" do
+    Prism::Core::Clock.reset
     Prism::Core::Clock.tick(1)
     Prism::Core::Clock.seconds.should eq(1)
     Prism::Core::Clock.tick(0.1)
@@ -35,9 +36,6 @@ describe Prism::Clock do
     Prism::Core::Clock.reset(12)
     clock = Prism::Clock.now
     clock.real_seconds.should eq(12)
-    clock.hour.should eq(0)
-    clock.minute.should eq(0)
-    clock.second.should eq(12)
   end
 
   it "scales start of day time" do
@@ -68,5 +66,13 @@ describe Prism::Clock do
   it "scales overflow day time" do
     clock = Prism::Clock.new(hour: 26, day_length: 60)
     clock.real_seconds.should eq(5)
+  end
+
+  it "changes the time" do
+    Prism::Core::Clock.reset
+    Prism::Clock.now.real_seconds.should eq(0)
+
+    Prism::Clock.set_time Prism::Clock.new(hour: 12, day_length: 60)
+    Prism::Clock.now.real_seconds.should eq(30)
   end
 end
