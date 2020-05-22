@@ -75,7 +75,7 @@ module Prism
       raise "The skybox time calculation is broken"
     end
 
-    # Represents a period in which a texture is used in the skybox.
+    # Represents a period of time in which a texture is used in the skybox.
     struct Period
       getter activation_time, texture
 
