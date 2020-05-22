@@ -4,7 +4,6 @@ require "../input_receiver.cr"
 
 module Prism
   class Skybox < Crash::Component
-    include Prism::InputReceiver
     @activation_times : Array(Float64)
     @textures : Hash(Float64, Prism::TextureCubeMap)
     @transition_durration : Float64
@@ -40,15 +39,9 @@ module Prism
       @activation_times.sort!.reverse!
     end
 
-    # Increment the clock
-    # DEPRECATED: 
-    def input!(tick : RenderLoop::Tick, input : RenderLoop::Input, entity : Crash::Entity)
-    end
-
     # Retrieves the current skybox values
     def get_values : NamedTuple(current_texture: Prism::TextureCubeMap, next_texture: Prism::TextureCubeMap, blend_factor: Float32)
-      time = Prism::Clock.now().real_seconds
-      pp time
+      time = Prism::Clock.now.real_seconds
       index = 0
       @activation_times.each do |t|
         prev_index = (index + 1) % @activation_times.size
