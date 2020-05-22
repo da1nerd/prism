@@ -75,4 +75,13 @@ describe Prism::Clock do
     Prism::Clock.set_time Prism::Clock.new(hour: 12, day_length: 60)
     Prism::Clock.now.real_seconds.should eq(30)
   end
+
+  it "changes the global day length" do
+    default_clock = Prism::Clock.new(hour: 1)
+    Prism::Clock.day_length = 60
+    updated_clock = Prism::Clock.new(hour: 1)
+
+    default_clock.real_seconds.should eq(3600)
+    updated_clock.real_seconds.should eq(2.5)
+  end
 end

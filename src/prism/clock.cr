@@ -2,10 +2,18 @@ require "./core/clock"
 
 module Prism
   # Represents a scalable game clock.
-  # With the `Clock` you can use the concept of time in your game in a natural way.
+  # With the `Clock` you can use the concept of 24 hour time in your game in a natural way.
+  #
+  # The `Clock` has a dual purpose. It can represent a point of time or a length of time.
+  # This is because all it does is produce a single float value.
+  #
+  # Therefore `1:30` could mean one thirty an or one hour and 30 minutes. It all depends on your context.
+  # TODO: allow configuring the day length for all clocks, but allow overiding individually if needed.
   struct Clock
     # The length of a regular day in seconds
     REAL_DAY_LENGTH = (24 * 60 * 60).to_f64
+
+    @@day_length : Float64 = REAL_DAY_LENGTH
 
     # TODO: I'm not sure we need to keep the relative time values here.
     @hour : Int32
@@ -28,12 +36,19 @@ module Prism
     # clock = Clock.new(hour: 12, day_length: 10)
     # clock.real_seconds # => 5
     # ```
-    def initialize(@hour : Int32 = 0, @minute : Int32 = 0, @second : Int32 = 0, day_length : Float64 = REAL_DAY_LENGTH)
+    def initialize(@hour : Int32 = 0, @minute : Int32 = 0, @second : Int32 = 0, day_length : Float64 = @@day_length)
       seconds : Float64 = 0
       seconds += @hour * 60 * 60
       seconds += @minute * 60
       seconds += @second
       @real_seconds = (seconds / REAL_DAY_LENGTH * day_length) % day_length
+    end
+
+    def self.day_length
+        @@day_length
+    end
+
+    def self.day_length=(@@day_length : Float64)
     end
 
     # :nodoc:
@@ -50,7 +65,7 @@ module Prism
     end
 
     # Creates a new `Clock` instance that corresponds to the current game time.
-    def self.now(day_length : Float64 = REAL_DAY_LENGTH)
+    def self.now(day_length : Float64 = @@day_length)
       new(unsafe_real_seconds: Core::Clock.seconds, day_length: day_length)
     end
 
