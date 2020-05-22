@@ -41,7 +41,6 @@ describe Prism::Clock do
   end
 
   it "scales start of day time" do
-    # TODO: this breaks
     clock = Prism::Clock.new(day_length: 60)
     clock.real_seconds.should eq(0)
   end

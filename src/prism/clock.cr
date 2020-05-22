@@ -57,7 +57,7 @@ module Prism
     end
 
     # :nodoc:
-    protected def initialize(unsafe_real_seconds : Float64 = 0, day_length : Float64 = 0)
+    protected def initialize(unsafe_real_seconds : Float64, day_length : Float64)
       @real_seconds = unsafe_real_seconds % day_length
 
       seconds = @real_seconds * REAL_DAY_LENGTH / day_length
