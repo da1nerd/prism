@@ -1,40 +1,18 @@
 module Prism
-  module Core
-    # Internal clock
-    # This simply keeps track of how many seconds have elapsed.
-    struct Clock
-      @@seconds : Float64 = 0
-      class_getter seconds
-
-      # Increments the clock by the *frame_time*
-      def self.tick(frame_time : Float64)
-        @@seconds += frame_time
-      end
-
-      # Sets the clock to 0
-      def self.reset
-        @@seconds = 0
-      end
-
-      # Sets the clock to a specific value.
-      def self.reset(@@seconds : Float64)
-      end
-    end
-  end
-
   # Represents a scalable game clock.
   # With the `Clock` you can use the concept of time in your game in a natural way.
   struct Clock
     # The length of a regular day in seconds
     REAL_DAY_LENGTH = (24 * 60 * 60).to_f64
 
+    # TODO: I'm not sure we need to keep the relative time values here.
     @hour : Int32
     @minute : Int32
     @second : Int32
 
     @real_seconds : Float64
 
-    getter hour, minute, second, real_seconds
+    getter real_seconds
 
     # Creates a new `Clock` instance that corresponds to the given time.
     #

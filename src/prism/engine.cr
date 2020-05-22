@@ -1,6 +1,7 @@
 require "render_loop"
 require "annotation"
 require "crash"
+require "./core/clock"
 
 module Prism
   # The main engine to run the game.
@@ -22,6 +23,7 @@ module Prism
     # This will pass time and input to the engine systems.
     @[Override]
     def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
+      Prism::Core::Clock.tick(tick.frame_time)
       # get window size so we can adjust the viewport during flush
       @window_size = input.window_size
       @crash_engine.input(tick, input)
