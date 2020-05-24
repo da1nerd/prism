@@ -7,7 +7,7 @@ module Prism
   # The `Clock` has a dual purpose. It can represent a point of time or a length of time.
   # This is because all it does is produce a single float value.
   #
-  # Therefore `1:30` could mean one thirty an or one hour and 30 minutes. It all depends on your context.
+  # Therefore `1:30` could mean one thirty am or one hour and 30 minutes. It all depends on your context.
   struct Clock
     # The length of a regular day in seconds
     REAL_DAY_LENGTH = (24 * 60 * 60).to_f64
@@ -19,7 +19,7 @@ module Prism
 
     # Creates a new `Clock` instance that corresponds to the given time.
     #
-    # By default the `Clock` will use a standard day length. Meaning, 12:20 in the game corresponds to 12:20 in the real world or 44,400 seconds.
+    # By default the `Clock` will use a standard day length. Meaning, the clock will use a 24 hour day.
     # You can scale the day down to a smaller time frame by a number of seconds to *day_length*.
     #
     # ## Example
