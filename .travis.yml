@@ -12,7 +12,7 @@ addons:
     update: true
 
 script:
-  - crystal spec
+  - crystal spec --error-trace
   - crystal tool format --check
 
 after_success:
