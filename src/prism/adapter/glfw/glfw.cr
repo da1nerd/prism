@@ -6,16 +6,16 @@ require "./window.cr"
 module Prism::Adapter::GLFW
   extend self
 
-  def run(title : String, game : Prism::GameEngine)
+  def run(title : String, game : Prism::Engine)
     run(title, game, frame_rate, 60, 800, 600)
   end
 
-  def run(title : String, game : Prism::GameEngine, frame_rate : Float64 = 60)
+  def run(title : String, game : Prism::Engine, frame_rate : Float64 = 60)
     run(title, game, frame_rate, 800, 600)
   end
 
   # Starts up the game engine
-  def run(title : String, game : Prism::GameEngine, frame_rate : Float64, width : Int32, height : Int32)
+  def run(title : String, game : Prism::Engine, frame_rate : Float64, width : Int32, height : Int32)
     harness = RenderLoop::LoopHarness.new(frame_rate, [game] of RenderLoop::Engine)
     CrystGLFW.run do
       window = GLFW::Window.new(title: title, width: width, height: height)

@@ -11,12 +11,14 @@ module Prism
     @crash_engine : Crash::Engine = Crash::Engine.new
 
     # Starts up the engine.
+    # TODO: we don't need to define this here. Let the implementations do it.
     @[Override]
     def startup
       self.init
     end
 
     # Games should implement this to start their game logic
+    # TODO: this init should be defined in the game engine abstract class
     abstract def init
 
     # Process inputs
