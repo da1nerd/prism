@@ -17,6 +17,10 @@ module RenderLoop
       end
     end
 
+    def framebuffer_size : RenderLoop::Size
+      @window.window.framebuffer_size
+    end
+
     def tick
       previous_def
       # clear the scroll offset after a tenth of a second

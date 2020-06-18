@@ -27,7 +27,7 @@ module Prism
     def tick(tick : RenderLoop::Tick, input : RenderLoop::Input)
       Prism::Core::Clock.tick(tick.frame_time)
       # get window size so we can adjust the viewport during flush
-      @window_size = input.window_size
+      @window_size = input.framebuffer_size
       @crash_engine.input(tick, input)
     end
 
