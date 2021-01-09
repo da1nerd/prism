@@ -15,11 +15,12 @@ targets:
 
 dependencies:
   crash:
-    github: neutrinog/crash
+    github: da1nerd/crash
   annotation:
     github: grottopress/annotation.cr
   render_loop:
-    github: neutrinog/render_loop
+    github: da1nerd/render_loop
+    branch: master
   lib_gl:
     github: calebuharrison/LibGL
     branch: master
@@ -30,7 +31,7 @@ dependencies:
     github: stumpycr/stumpy_png
     version: "~> 4.5.2"
   crystglfw:
-    github: neutrinog/CrystGLFW
+    github: da1nerd/CrystGLFW
     branch: support-crystal-0.31
   baked_file_system:
     github: schovi/baked_file_system
