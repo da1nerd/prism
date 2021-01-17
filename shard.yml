@@ -29,7 +29,7 @@ dependencies:
     branch: master
   stumpy_png:
     github: stumpycr/stumpy_png
-    version: "~> 4.5.2"
+    version: 5.0.0
   crystglfw:
     github: da1nerd/CrystGLFW
     branch: support-crystal-0.31
