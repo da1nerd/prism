@@ -1,5 +1,5 @@
 name: prism
-version: 0.11.1
+version: 0.11.2
 
 authors:
   - Joel Lonbeck <joel@neutrinographics.com>
@@ -7,7 +7,7 @@ authors:
 description: |
   A 3D game engine.
 
-crystal: 0.34.0
+crystal: ">= 0.35.1"
 
 targets:
   example:
@@ -35,5 +35,5 @@ dependencies:
     branch: support-crystal-0.31
   baked_file_system:
     github: schovi/baked_file_system
-    version: 0.9.8
+    branch: master
 license: MIT
