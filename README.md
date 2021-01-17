@@ -1,8 +1,8 @@
 # Prism
-[![GitHub release](https://img.shields.io/github/release/neutrinog/prism.svg)](https://github.com/neutrinog/prism/releases)
-[![Build Status](https://travis-ci.org/neutrinog/prism.svg?branch=master)](https://travis-ci.org/neutrinog/prism)
+[![GitHub release](https://img.shields.io/github/release/da1nerd/prism.svg)](https://github.com/da1nerd/prism/releases)
+[![Build Status](https://travis-ci.org/da1nerd/prism.svg?branch=master)](https://travis-ci.org/da1nerd/prism)
 
-This is a stable, though not completely baked, 3D game engine. Documentation is a little sparse right now, but hopefully the example linked below will help. *Disclaimer:* I barely know anything about game development much less game engine development. This has been a learn-as-i-go project. If you have ideas or suggestions I would love it if you opened an [issue](https://github.com/neutrinog/prism/issues).
+This is a stable, though not completely baked, 3D game engine. Documentation is a little sparse right now, but hopefully the example linked below will help. *Disclaimer:* I barely know anything about game development much less game engine development. This has been a learn-as-i-go project. If you have ideas or suggestions I would love it if you opened an [issue](https://github.com/da1nerd/prism/issues).
 
 
 ## Goals
@@ -20,7 +20,7 @@ This is a stable, though not completely baked, 3D game engine. Documentation is 
 ![Peek 2020-04-29 09-53](https://user-images.githubusercontent.com/166412/80556931-6dcc6900-89ff-11ea-8c78-b7dd11345d30.gif)
 
 
-You can find code for this demo at https://github.com/neutrinog/tutorial-game
+You can find code for this demo at https://github.com/da1nerd/tutorial-game
 
 ## Installation
 
@@ -29,7 +29,7 @@ Add this to your application's `shard.yml`:
 ```yaml
 dependencies:
   prism:
-    github: neutrinog/prism
+    github: da1nerd/prism
 ```
 
 Install GLFW on your system
@@ -80,7 +80,7 @@ Prism::Context.run("Hello World", Game.new)
 
 ## Contributing
 
-1. Fork it (<https://github.com/neutrinog/prism/fork>)
+1. Fork it (<https://github.com/da1nerd/prism/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -88,7 +88,7 @@ Prism::Context.run("Hello World", Game.new)
 
 ## Contributors
 
-- [neutrinog](https://github.com/neutrinog) Joel Lonbeck - creator, maintainer
+- [joel](https://github.com/da1nerd) - creator, maintainer
 
 ## Special Thanks
 
