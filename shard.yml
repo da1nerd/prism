@@ -31,8 +31,8 @@ dependencies:
     github: stumpycr/stumpy_png
     version: 5.0.0
   crystglfw:
-    github: da1nerd/CrystGLFW
-    branch: support-crystal-0.31
+    github: calebuharrison/CrystGLFW
+    version: 0.3.0
   baked_file_system:
     github: schovi/baked_file_system
     branch: master
